@@ -1,0 +1,24 @@
+-*- mode:org -*-
+#+TAGS: work
+#+TYP_TODO: TODO(t) PROG(p) | DONE(d)
+#+STARTUP: latexpreview
+#+TITLE: MMR
+* big todo stuff [0/3]
+** TODO organize [0/6]
+*** TODO org research notes
+*** TODO goodnotes research notes
+*** TODO meeting notes
+*** TODO calculation notes
+*** TODO new git repo+dropbox setup
+*** TODO clean up, organize files
+** TODO test
+** TODO finish summary
+
+* [2021-02-01 Mon]
+- summary table of runs, cross table, # runs, etc
+- relate eeq to disk properties
+- test cases [0/2]
+  - [ ] inner migrating out, 4 mup stability cases (no cap, cap unstable, cap librate, cap stable)
+    - [ ] equilibrium e
+  - [ ] outer migrating in, 2 mup capture cases, (no cap, cap)
+    - [ ] equilibrium e
