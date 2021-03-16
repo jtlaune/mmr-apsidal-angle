@@ -1,24 +1,153 @@
 -*- mode:org -*-
 #+TAGS: work
-#+TYP_TODO: TODO(t) PROG(p) | DONE(d)
+#+TYP_TODO: TODO(t) WAIT(w) | DONE(d)
 #+STARTUP: latexpreview
 #+TITLE: MMR
-* big todo stuff [0/3]
-** TODO organize [0/6]
-*** TODO org research notes
-*** TODO goodnotes research notes
+* capture 
+** DONE read paper 
+SCHEDULED: <2021-03-04 Thu>
+* TODOS
+** TODO [#A] list of figures and outline [0/3]
+*** TODO apsidal alignment [0/3] 
+  - [ ] combine internal & external plots
+  - [ ] plot heuristic line from EoM
+  - [ ] highlight example runs with red border
+*** TODO example runs
+  - blurred scatter plots
+  - pick 0.01,0.1 and 0.1,0.01
+*** TODO gamma eos
+** TODO [#A] comparable mass Hamiltonian [0/3]
+*** TODO make git commit w/ test particle test suite
+*** TODO clean up, organize files
+*** TODO write & test comparable mass H code
+** TODO [#B] phase diagrams [1/3]
+- [X] semianalytical
+- [ ] n body
+- [ ] describe resonance splitting
+** TODO [#B] finish summary [2/4]
+- [ ] need to include N-body runs for ext-perturber, non-confirmation or confirmation
+- [X] clarify chaotic nature of e1 excitation for omext >~ dn runs
+  - ep and edisk similar magnitude => chaotic based on a0
+- [X] summary table of runs, cross table, # runs, etc
+- [ ] relate eeq to disk properties
+** TODO [#B] test omext in H integrator 
+** TODO [#C] fix & shorton reference-pdf
+* WAITS
+** WAIT sympy confirmation of sidebyside summary EoMs
+** WAIT organize [2/4]
+*** DONE org research notes
+*** DONE goodnotes research notes
 *** TODO meeting notes
 *** TODO calculation notes
-*** TODO new git repo+dropbox setup
-*** TODO clean up, organize files
-** TODO test
-** TODO finish summary
+** WAIT REBOUND
+*** WAIT matter ring potential [0/3]
+- [ ] implement force in rebound
+- [ ] test implementation
+- [ ] compare to semianalytical
+*** WAIT add interrupt conditions  
+** small todo
+*** TODO [#C] fix rebound mmr Tm signs. simplify
+** WAIT figure out unknown res situation to be able to include internal runs in summary
+* validating w/ REBOUND [8/8]
+** DONE plot gammadot components to compare
+** DONE calculate ring potential
+- involves elliptic integral, ```sp.special.ellipkinc'''
+- research journal [2021-02-24 Wed] 
+** DONE test J_2 external forcing term for perihelion precession rates
+[[file:nbody/testsuite/test-omext/mup1.00e-04/om1.00e-03/e0.00e+00.png][file:~/mmr/nbody/testsuite/test-omext/mup1.00e-04/om1.00e-03/e0.00e+00.png]]
+** DONE calculate external forcing term in terms of J_2
+- research journal [2021-02-11 Thu]
+** DONE try to use REBOUNDx to implement om_eff
+- reboundx will not install on my system
+** DONE investigate REBOUNDx
+- implemented lots of extra forces already
+- https://reboundx.readthedocs.io/en/latest/effects.html
+- going to try to use a negative J_2 value with
+#+BEGIN_SRC python
+gh = rebx.load_force("gravitational_harmonics")
+#+END_SRC python
+** DONE check units on om_eff in migforce
+- current results show little change in behavior, contradict
+  semianalytical
+- this cannot be right. I stupidly set the cartesian coordinates of
+  the particle equal to the cartesian phase space coordinates:
+  #+BEGIN_SOURCE python
+if self.omext:
+    tpart.ax += -(self.omext**2)*tpart.x
+    tpart.ay += -(self.omext**2)*tpart.y
+  #+END_SOURCE python
+** DONE [#A] compare semianalytical ext-perturber results with REBOUND [2/2]
+*** DONE run bottomright test (nonchaotic for edisk = 0.01, ep = 0.1)
+finally s ecc excitation, but gammas have contradicting signs and
+thetas arculating. i'm thinking its some kind of issue in signs
+for om_exuld explain both)
+[[file:nbestsuite/collect/precess-eq1.00e-02-ep1.00e-01-om1.00e-03.png][file:~/mmr/nbody/testsuite/collect/precess-eq1.00e-02-ep1.00e-01-om1.00e-03.png]]
+[[file:exturber/varyomeff/eq1.00e-02/ep1.00e-01/1.00e-02-1.00e-03.png][file:~/mmr/ext-perturber/varyomeff/eq1.00e-02/ep1.00e-01/1.00e-02-1.00e-03.png]]
+*** DONE compare gamma derivatives 
+similar behavior, but the first term is circulating for nbody
+[[file:ext-perturber/varyomeff/gammadots-eq1.00e-02/ep1.00e-01/4-1.00e-03.png][file:~/mmr/ext-perturber/varyomeff/gammadots-eq1.00e-02/ep1.00e-01/4-1.00e-03.png]]
+[[file:nbody/testsuite/collect/precess-gammacomps-eq1.00e-02-ep1.00e-01-om1.00e-03.png][file:~/mmr/nbody/testsuite/collect/precess-gammacomps-eq1.00e-02-ep1.00e-01-om1.00e-03.png]]
+* summary
+** characteristics
+1. chaos (only when om_ext large)
+2. internal apsidal alignment
+   - om_eff = 0
+     * unknown res????<---- figure this out
+     * kind of all over the place if im being honest. maybe don't
+       include? maybe leave out just migfail runs? not sure what to do
+       here
+3. external apsidal alignment
+   - om_eff = 0
+     * gamma -> 0 
+     * ep vs edisk grid 
+     * EoM analytical analysis
+     * plots of gamma-components
+       [[file:///home/jtlaune/Dropbox/mmr/external-grid-1e-3/ext-perturber/varyomeff/gammadots-0weff/sum.pdf][summary]]
+   - om_eff > 0
+     * gamma -> pi
+     * heuristic description of EoM
+       [[file:/home/jtlaune/Dropbox/mmr/external-grid-1e-3/ext-perturber/varyomeff/sum.pdf][summary]]
+     * plot e1 eq numerical value vs om_eff w/ behaviors
+     * *figure* gamma component term plots (from above file bottom page 2)
+     * gamma component plots
+4. equilibrium eccentricity
+   - no om_eff ~ disk properties
+   - large enough om_eff ~ 1/gammadot from above
+* results summary table 
 
-* [2021-02-01 Mon]
-- summary table of runs, cross table, # runs, etc
-- relate eeq to disk properties
-- test cases [0/2]
-  - [ ] inner migrating out, 4 mup stability cases (no cap, cap unstable, cap librate, cap stable)
-    - [ ] equilibrium e
-  - [ ] outer migrating in, 2 mup capture cases, (no cap, cap)
-    - [ ] equilibrium e
+  |--------------+-----------------+---+------------+--------------------+--------------------+--------------------|
+  |              | *internal*      |   |            | *external*         |                    |                    |
+  |--------------+-----------------+---+------------+--------------------+--------------------+--------------------|
+  |              | om_ext = 0      |   | om_ext = 0 | om_ext < res width | om_ext ~ res width | om_ext > res width |
+  |--------------+-----------------+---+------------+--------------------+--------------------+--------------------|
+  | e_disk < e_p | *disaster zone* |   | *aligned*  |                    |                    |                    |
+  |              |                 |   |            |                    |                    |                    |
+  |--------------+-----------------+---+------------+--------------------+--------------------+--------------------|
+  | e_disk ~ e_p | *aligned*       |   |            |                    |                    | *chaotic*          |
+  |              |                 |   |            |                    |                    |                    |
+  |              |                 |   |            |                    |                    |                    |
+  |--------------+-----------------+---+------------+--------------------+--------------------+--------------------|
+  | e_disk > e_p |                 |   |            |                    |                    |                    |
+  |              |                 |   |            |                    |                    |                    |
+  |              |                 |   |            |                    |                    |                    |
+  |--------------+-----------------+---+------------+--------------------+--------------------+--------------------|
+
+** DONE fill in om_ext columns for external
+- in paper draft
+** DONE think about internal? is it important to include?
+yes, should include internal. explain away the bad parts by saying our
+model fails
+
+
+
+
+* semianalytical test cases [1/1]
+[[file:test-cases.py]]
+*** DONE test cases [5/5]
+  - [X] inner migrating out, 4 mup stability cases (no cap, cap unstable, cap librate, cap stable)
+  - [X] internal equilibrium e
+  - [X] outer migrating in, 2 mup capture cases, (no cap, cap)
+  - [X] external equilibrium e
+  - [X] stability cases w/ ep = 0.01 small
+* handwritten research journals
+[[file:~/Dropbox/Apps/GoodNotes 5/GoodNotes/multi-planet-architecture/research-notes.pdf::%PDF-1.3][Feb 2020-]]
