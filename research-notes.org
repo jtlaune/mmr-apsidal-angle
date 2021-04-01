@@ -7,17 +7,22 @@
 ** DONE read paper 
 SCHEDULED: <2021-03-04 Thu>
 * TODOS
-** TODO [#A] list of figures and outline [0/3]
-*** TODO apsidal alignment [0/3] 
-  - [ ] combine internal & external plots
-  - [ ] plot heuristic line from EoM
-  - [ ] highlight example runs with red border
-*** TODO example runs
+** TODO [#A] list of figures and outline [2/3]
+*** TODO apsidal alignment [2/3] 
+  - [X] combine internal & external plots
+  - [ ] plot heuristic contours from EoM
+    - important term is $\cos\theta/e$
+    - g-alignment 
+      - ep > ed => $\theta\neq\overline{\theta}$ => $\theta$ circ => 1/e term avgs out => $\dot\gamma\to 0$
+    - g-circulation
+      - ep < ed => $\theta\approx\overline{\theta}$ => $\theta\to 0,\pi$ => 1/e term dominates => $\abs{\dot\gamma}> 0$
+  - [X] highlight example runs with red border
+*** DONE example runs
   - blurred scatter plots
   - pick 0.01,0.1 and 0.1,0.01
-*** TODO gamma eos
-** TODO [#A] comparable mass Hamiltonian [0/3]
-*** TODO make git commit w/ test particle test suite
+*** DONE phase diagrams
+** TODO [#A] comparable mass Hamiltonian [1/3]
+*** DONE make git commit w/ test particle test suite
 *** TODO clean up, organize files
 *** TODO write & test comparable mass H code
 ** TODO [#B] phase diagrams [1/3]
@@ -31,7 +36,7 @@ SCHEDULED: <2021-03-04 Thu>
 - [X] summary table of runs, cross table, # runs, etc
 - [ ] relate eeq to disk properties
 ** TODO [#B] test omext in H integrator 
-** TODO [#C] fix & shorton reference-pdf
+** TODO [#C] fix & shorten reference-pdf
 * WAITS
 ** WAIT sympy confirmation of sidebyside summary EoMs
 ** WAIT organize [2/4]
@@ -48,6 +53,7 @@ SCHEDULED: <2021-03-04 Thu>
 ** small todo
 *** TODO [#C] fix rebound mmr Tm signs. simplify
 ** WAIT figure out unknown res situation to be able to include internal runs in summary
+* apsidal alignment figures
 * validating w/ REBOUND [8/8]
 ** DONE plot gammadot components to compare
 ** DONE calculate ring potential
