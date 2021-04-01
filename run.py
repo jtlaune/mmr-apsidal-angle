@@ -1,14 +1,6 @@
 import numpy as np
 from numpy import sin, cos, sqrt
 import scipy as sp
-from scipy import integrate
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
-import rebound
-import sys
-import os
-import math
 import LaplaceCoefficients as LC
 import helper
 from helper import *
@@ -40,89 +32,26 @@ class tp_resonance:
         self.lambda0 = lambda0
 
     def ebar(self, ep, e, A, B, g):
-        # return(sqrt(e**2 + 2*B/A*ep*e*cos(g) + B**2/A**2*ep**2))
         return helper.ebarfunc(ep, e, A, B, g)
 
     def eta(self, ep, e, A, B, g):
-        # return(sqrt(e**2 + 2*B/A*ep*e*cos(g) + B**2/A**2*ep**2))
         return helper.etafunc(ep, e, A, B, g)
 
     def alpha0(self, a, ap, j, ebar):
-        # return((a/ap)*(1+j*ebar**2))
         return helper.alpha0func(a, ap, j, ebar)
 
-    # need to fix for inner and outer resonance
-    # def R(self, ebar, j, A, mup, alpha0):
-    #    return(ebar**2*(3*j**2/(8*mup*alpha0*A))**(2./3.))
     def A(self, alpha):
-        # fd1 in MD
         return helper.A(alpha, self.j)
-        # return(0.5*(-2*(self.j+1)*LC.b(0.5,self.j+1,alpha)
-        #              -alpha*LC.Db(0.5,self.j+1,alpha)))
 
     def B(self, alpha):
-        # fd2 in MD
         return helper.B(alpha, self.j)
-        # return(0.5*((-1+2*(self.j+1))*LC.b(0.5,self.j,alpha)
-        #             +alpha*LC.Db(0.5,self.j,alpha)))
 
     def C(self, alpha):
-        # These are the values given in Murray Dermott.
-        # fs1
         return helper.C(alpha)
-        # return((0.25*alpha*LC.Db(0.5,0,alpha) +
-        #         alpha**2/8*0.5*(LC.Db(1.5,1,alpha)
-        #                         -2*alpha*LC.Db(1.5,0,alpha) +LC.Db(1.5,1,alpha)
-        #                         -2*LC.b(1.5,0,alpha))))
 
     def D(self, alpha):
         return helper.D(alpha)
-        # These are the values given in Murray Dermott.
-        # fs1
-        # return((0.5*LC.b(0.5,1,alpha) - 0.5*alpha*LC.Db(0.5,1.,alpha)
-        #         -0.25*alpha**2*0.5*(LC.Db(1.5,0,alpha)
-        #                             -2*alpha*LC.Db(1.5,1,alpha) +LC.Db(1.5,2,alpha)
-        #                             -2*LC.b(1.5,1,alpha))))
 
-    #    def alpha0_zero_func(self, x):
-    #        # the following is with alpha0 in the denominator:
-    #        return(3**(1./3.)*(self.mup*self.j*self.A)**(2./3.)*self.eta0
-    #        - ((self.j+1)*x**(3./2.)-self.j)/x**(2./3.))
-    #    def calc_alphanom(self):
-    #        # nominal resonance location
-    #        self.alphanom = (self.j/(self.j+1))**(2./3.)
-    #    def calc_a0(self):
-    #        alpha0 = sp.optimize.fsolve(self.alpha0_zero_func, self.alphanom, xtol=1e-5)[0]
-    #        if np.abs(self.alpha0_zero_func(alpha0)) > 0.001:
-    #            raise Warning("Unable to solve for alpha0 to 0.001 accuracy")
-    #        else:
-    #            self.alpha00 = alpha0
-    #            self.a0 = self.ap*self.alpha0/(1+self.j*self.ebar0**2)
-    #    def calc_bargamma0(self):
-    #        self.bargamma0 = np.arctan2((self.e0*sin(self.g0)),
-    #                                  ((self.e0*cos(self.g0)
-    #                                    +self.B/self.A*self.ep)))
-    #    def calc_lambda0(self):
-    #        self.lambda0 = (self.bargamma0 - self.theta0)/self.j
-    #    def calc_Rpre(self):
-    #        self.Rpre = (3*self.j**2/(8*self.mup*self.A))**(2./3.)
-    #    def calc_initparams(self, a0):
-    #        self.calc_alphanom()
-    #        self.calc_ABCD()
-    #        self.calc_Rpre()
-    #        self.ebar0 = self.ebar(self.ep, self.e0, self.A, self.B, self.g0)
-    #        if a0 is None:
-    #            # Place the particle directly into resonance.
-    #            self.calc_a0()
-    #        elif type(a0) is float:
-    #            self.a0 = a0
-    #            self.alpha00 = self.alpha0(self.a0, self.ap, self.j, self.ebar0)
-    #        else:
-    #            raise Warning("Incorrect type for a0")
-    #
-    #        self.R0 = self.R(self.ebar0, self.j, self.A, self.mup, self.alpha00)
-    #        self.calc_bargamma0()
-    #        self.calc_lambda0()
     def omega(self, a, ap, mu):
         if a <= ap:
             return (
@@ -173,7 +102,6 @@ class tp_intH(tp_resonance):
         j = self.j
 
         if self.Tm > 0:
-            # thetap = (j+1)*self.n_p*t/self.tau - j*l
             alpha = L * L
             theta = thetap + g
             dtheta_dl = -j
@@ -182,12 +110,8 @@ class tp_intH(tp_resonance):
             C = self.C(alpha)
             D = self.D(alpha)
         else:
-            # thetap = (j+1)*l-j*self.n_p*t/self.tau
             alpha = 1.0 / (L * L)
             theta = thetap + g
-            # for some reason i had set varpi_p = pi/2, may need to
-            # re-run summary plots?
-            # thetap = thetap + np.pi/2
             dtheta_dl = j + 1
             B = alpha * self.A(alpha)
             A = alpha * self.B(alpha)
@@ -220,41 +144,6 @@ class tp_intH(tp_resonance):
         xdot = mup * (-0.5 * np.cos(g) * GdotoversqrtG + np.sin(g) * sqrtGgdot)
 
         ydot = mup * (-0.5 * np.sin(g) * GdotoversqrtG - np.cos(g) * sqrtGgdot)
-
-        # if self.Tm > 0:
-        #    #thetap = (j+1)*self.n_p*t/self.tau - j*l
-        #    alpha = L*L
-        #    theta = thetap + g
-        #    dtheta_dl = -j
-        #    A = self.A(alpha)
-        #    B = self.B(alpha)
-        #    C = -self.C(alpha)
-        #    D = -self.D(alpha)
-        # else:
-        #    #thetap = (j+1)*l-j*self.n_p*t/self.tau
-        #    alpha = 1./(L*L)
-        #    theta = thetap + g
-        #    # for some reason i had set varpi_p = pi/2, may need to
-        #    # re-run summary plots?
-        #    # thetap = thetap + np.pi/2
-        #    dtheta_dl = j+1
-        #    B = alpha*self.A(alpha)
-        #    A = alpha*self.B(alpha)
-        #    C = -alpha*self.C(alpha)
-        #    D = -alpha*self.D(alpha)
-
-        #
-        # ldot = ((1/L/L/L) + mup*A*np.sqrt(G/(2*L*L*L))*np.cos(theta) - mup*C*(2*G/L/L) \
-        #       - mup*D*ep*np.sqrt(G/(2*L*L*L))*np.cos(g))
-
-        ## including because we need to examine small changes in the resonant location
-        ##ldot = ldot - mup*L*LC.Db(0.5,0.,alpha)
-
-        # Ldot = -mup*A*dtheta_dl*np.sqrt(2*G/L)*np.sin(theta) - mup*B*dtheta_dl*ep*np.sin(thetap)
-
-        # xdot = mup*(A*sin(g)*cos(theta)/sqrt(2*L) - 2*C*sin(g)*sqrt(G)/L - A*cos(g)*sin(theta)/sqrt(2*L))
-
-        # ydot = mup*(-A*(cos(g)*cos(theta)+sin(g)*sin(theta))/sqrt(2*L) + 2*C*sqrt(G)*cos(g)/L + D*ep/sqrt(2*L))
 
         if self.migrate:
             # Here we're using time = tau*t
@@ -316,12 +205,10 @@ class tp_intH(tp_resonance):
         int_cond = None
         if Tm > 0:
             self.e_eq = np.sqrt(self.Te / (2 * (self.j + 1) * self.Tm))
-            # int_cond = check_Lless1
             int_cond = check_ratio(0.8)
             int_cond.terminal = True
         else:
             self.e_eq = np.sqrt(self.Te / (2 * self.j * np.abs(self.Tm)))
-            # int_cond = check_Lgtr1
             int_cond = check_ratio(1.25)
             int_cond.terminal = True
 
@@ -348,13 +235,10 @@ class tp_intH(tp_resonance):
         )
 
         self.n_p = 2 * np.pi / sqrt(self.ap)
-        self.tau = self.n_p
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
         # up. can fix by adjusting EoM accordingly
-        # alpha_0_nom_circ = (self.j/(self.j+1))**(2./3.)*(1+self.e_eq**2) a_nom_circ =
-        # alpha_0_nom_circ*self.ap
-        # self.tau = 3**(1./3.)*(self.mup*self.j**2*alpha_0_nom_circ*self.A(alpha_0_nom_circ))**(2./3.)*2*np.pi/sqrt(a_nom_circ)
+        self.tau = self.n_p
 
         Lambda0 = np.sqrt(self.a0 / self.ap)
         Gamma0 = Lambda0 * (1 - np.sqrt(1 - self.e0 ** 2))
@@ -405,8 +289,6 @@ class tp_intH(tp_resonance):
                 ((e1 * np.cos(g) + self.A(alpha) / self.B(alpha) * self.ep)),
             )
             ebar = self.ebar(self.ep, e1, self.B(alpha), self.A(alpha), g)
-        # newresin = ((self.j+1)*self.n_p*teval/self.tau - self.j*l +barg)%(2*np.pi)
-        # newresout = ((self.j+1)*l - self.j*self.n_p*teval/self.tau +barg)%(2*np.pi)
         newresin = (thetap + barg) % (2 * np.pi)
         newresout = (thetap + barg) % (2 * np.pi)
         for i in range(len(newresin)):
@@ -420,9 +302,6 @@ class tp_intH(tp_resonance):
             self.mup * alpha0 * self.j * np.abs(self.A(alpha0))
         ) ** (2.0 / 3.0)
         eta = k / kc
-        # R = self.R(ebar, self.j, self.A(alpha0), self.mup, alpha0)
-        # H = (eta*R - R**2 + np.sqrt(R)*np.cos(newresin))
-        # turn teval into yrs
         teval = teval / self.tau
 
         return (
