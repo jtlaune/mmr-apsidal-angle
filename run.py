@@ -17,8 +17,8 @@ class check_ratio:
         return ratio - self.ratio0
 
 
-class tp_resonance:
-    # Parent class for test particle resonance with useful functions
+class resonance:
+    # Parent class for j:j+1 resonance with useful functions
     # that sets constants and initial values.
     def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0):
         # set other params and dirname in child classes
@@ -79,7 +79,7 @@ class tp_resonance:
             )
 
 
-class tp_intH(tp_resonance):
+class tp_intH(resonance):
     # This class integrates the Hamiltonian for an inner test
     # particle, with and without migration. Without migration we may
     # put the particle directly into resonance. In this case we still
@@ -379,7 +379,7 @@ class tp_intH(tp_resonance):
         return (teval, e, gamma, a)
 
 
-class comp_mass_resonance:
+class comp_mass_intH(resonance):
     # This class will take two comparable mass planets and push the
     # inner one towards the outer one. We will have T_m,1 and T_e,1
     # and T_e,2.  Unlike the test particle classes I am not bothering
@@ -388,200 +388,107 @@ class comp_mass_resonance:
     #
     # Left to fill in are calculating variables for the
     # Hamiltonian. This is just a shell class right now.
-    def __init__(self, j, mu1, mu2, a1, a2):
+    def __init__(self, j, mu1, q, a0, Tm, Te1, Te2):
         self.j = j
         self.mu1 = mu1
-        self.mu2 = mu2
-        self.a1 = a1
-        self.a2 = a2
-        self.calc_initparams()
+        self.q = q
+        self.a0 = a0
+
+        self.Tm = Tm
+        self.Te1 = Te1
+        self.Te2 = Te2
 
     def calc_alphanom(self):
         # nominal resonance location
         self.alphanom = (self.j / (self.j + 1)) ** (2.0 / 3.0)
 
-    def calc_ABCD(self):
-        # NOTE: signs are opposite those in tp_* classes.
-        # This is now consistent with Murray & Dermott.
-        self.A = 0.5 * (
-            -2 * (self.j + 1) * LC.b(0.5, self.j + 1, self.alphanom)
-            - self.alphanom * LC.Db(0.5, self.j + 1, self.alphanom)
-        )
-        self.B = 0.5 * (
-            (-1 + 2 * (self.j + 1)) * LC.b(0.5, self.j, self.alphanom)
-            + self.alphanom * LC.Db(0.5, self.j, self.alphanom)
-        )
-        self.C = 0.25 * self.alphanom * LC.Db(
-            0.5, 0, self.alphanom
-        ) + self.alphanom ** 2 / 8 * 0.5 * (
-            LC.Db(1.5, 1, self.alphanom)
-            - 2 * self.alphanom * LC.Db(1.5, 0, self.alphanom)
-            + LC.Db(1.5, 1, self.alphanom)
-            - 2 * LC.b(1.5, 0, self.alphanom)
-        )
-        self.D = (
-            0.5 * LC.b(0.5, 1, self.alphanom)
-            - 0.5 * self.alphanom * LC.Db(0.5, 1.0, self.alphanom)
-            - 0.25
-            * self.alphanom ** 2
-            * 0.5
-            * (
-                LC.Db(1.5, 0, self.alphanom)
-                - 2 * self.alphanom * LC.Db(1.5, 1, self.alphanom)
-                + LC.Db(1.5, 2, self.alphanom)
-                - 2 * LC.b(1.5, 1, self.alphanom)
-            )
-        )
-
-    def calc_initparams(self):
-        self.calc_alphanom()
-        self.calc_ABCD()
-
-
-class comp_mass_intH(comp_mass_resonance):
-    def __init__(self, j, mu1, mu2, a1, a2, Tm, Te1, Te2):
-        super().__init__(j, mu1, mu2, a1, a2)
-        self.Tm = Tm
-        self.Te1 = Te1
-        self.Te2 = Te2
-
     def H4dofsec(self, t, Y):
-        # t in yrs
-        # mass in Msun
-        # distance in au
-        G = 4 * np.pi ** 2
-        # mass of star is 1
-        m1 = self.mu1
-        m2 = self.mu2
-        l1 = Y[0]
+
+        # 7 variables
+        theta = Y[0]
         L1 = Y[1]
-        l2 = Y[2]
-        L2 = Y[3]
-        x1 = Y[4]
-        y1 = Y[5]
-        x2 = Y[6]
-        y2 = Y[7]
+        L2 = Y[2]
+        x1 = Y[3]
+        y1 = Y[4]
+        x2 = Y[5]
+        y2 = Y[6]
 
-        G1 = x1 * x1 + y1 * y1
         g1 = np.arctan2(y1, x1)
-        G2 = x2 * x2 + y2 * y2
+        G1 = x1 * x1 + y1 * y1
         g2 = np.arctan2(y2, x2)
+        G2 = x2 * x2 + y2 * y2
 
-        M1 = G * G * m1 * m1 * m1 / self.scale_factor
-        M2 = G * G * m2 * m2 * m2 / self.scale_factor
-        M3 = G * G * m1 * m2 * m2 * m2 / self.scale_factor
-        # M1 = m1*sqrt(m1)/m2/sqrt(m2)
-        # M2 = m2*sqrt(m2)/m1/sqrt(m1)
-        # M3 = sqrt(m2)*m2/sqrt(m1)
+        j = self.j
+        mu1 = self.mu1
+        mu2 = self.mu1 / self.q
 
-        theta1 = (self.j + 1) * l2 - self.j * l1 + g1
-        theta2 = (self.j + 1) * l2 - self.j * l1 + g2
+        e1 = np.sqrt(2 * G1 / L1)
+        e2 = np.sqrt(2 * G2 / L2)
 
-        A = self.A
-        B = self.B
+        # the Hamiltonian is -(constants) as the internal TP
+        # Hamiltonian
+        alpha1 = L1 * L1 / self.q / self.q
+        alpha2 = L2 * L2
+        theta1 = theta + g1
+        theta2 = theta + g2
+        f1 = -self.A(alpha)
+        f2 = -self.B(alpha)
 
-        #######################
-        # CONSERVATIVE FORCES #
-        #######################
-        l1cons = M1 / L1 / L1 / L1 + 0.5 * (M3 / L2 / L2) * A * sqrt(
-            2 * G1
-        ) / L1 / sqrt(L1) * cos(theta1)
-
-        L1cons = (self.j * M3 / L2 / L2) * (
-            A * sin(theta1) * sqrt(2 * G1 / L1) + B * sin(theta2) * sqrt(2 * G2 / L2)
+        l1dot = (1 / alpha1 / sqrt(alpha1)) + mu2 * f1 * e1 * cos(theta1) / (
+            2 * alpha2 * sqrt(alpha1)
+        )
+        l2dot = (1 / alpha2 / sqrt(alpha2)) + self.q * mu2 / (alpha2 * sqrt(alpha2)) * (
+            2 * f1 * e1 * cos(theta1) + 2.5 * f2 * e2 * cos(theta2)
         )
 
-        l2cons = M2 / L2 / L2 / L2 + (M3 / L2 / L2 / L2) * (
-            2 * A * sqrt(2 * G1 / L1) * cos(theta1)
-            + 2.5 * B * sqrt(2 * G2 / L2) * cos(theta2)
+        Ldot_prefactor = (
+            self.q * mu2 / alpha2 * (f1 * e1 * sin(theta1) + f2 * e2 * sin(theta2))
         )
+        L1dot = j * Ldot_prefactor
+        L2dot = -(j + 1) * Ldot_prefactor
 
-        L2cons = -(M3 * (self.j + 1) / L2 / L2) * (
-            A * sqrt(2 * G1 / L1) * sin(theta1) + B * sqrt(2 * G2 / L2) * sin(theta2)
-        )
+        e1g1dot = -self.q * mu2 * f1 * cos(theta1) / alpha1 / alpha2
+        e2g2dot = -self.q * mu2 * f2 * cos(theta2) / alpha2 / alpha2
 
-        x1cons = (
-            (M3 / L2 / L2)
-            * A
-            * sqrt(1 / 2 / L1)
-            * (-cos(g1) * sin(theta1) + sin(g1) * cos(theta1))
-        )
+        G1dot = self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
+        G2dot = -self.q * mu2 * f2 * e2 * sin(theta2) / alpha2
 
-        y1cons = (
-            -(M3 / L2 / L2)
-            * A
-            * sqrt(1 / 2 / L1)
-            * (sin(g1) * sin(theta1) + cos(g1) * cos(theta1))
-        )
+        x1dot = G1dot * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot
+        y1dot = G1dot * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot
 
-        x2cons = (
-            (M3 / L2 / L2)
-            * B
-            * (sqrt(1 / 2 / L2))
-            * (-cos(g2) * sin(theta2) + sin(g2) * cos(theta2))
-        )
+        x2dot = G2dot * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot
+        y2dot = G2dot * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot
 
-        y2cons = (
-            -(M3 / L2 / L2)
-            * B
-            * (sqrt(1 / 2 / L2))
-            * (sin(g2) * sin(theta2) + cos(g2) * cos(theta2))
-        )
+        thetadot = (j + 1) * l2dot - j * l1dot
+        if self.migrate:
+            # Here we're using time = tau*t
+            # Add in the dissipative terms for migration
 
-        ######################
-        # DISSIPATIVE FORCES #
-        ######################
-        Tm = self.Tm * sqrt(self.scale_factor)
-        Te1 = self.Te1 * sqrt(self.scale_factor)
-        Te2 = self.Te2 * sqrt(self.scale_factor)
+            # convert time units
+            T0 = 2 * np.pi
+            Tm1 = self.Tm * T0
+            Te1 = self.Te1 * T0
+            # Tm2 = infinity
+            Te2 = self.Te2 * T0
 
-        l1dis = 0
-        L1dis = (L1 / 2) * (1 / Tm - 4 * G1 / L1 / Te1)
-        x1dis = (
-            cos(g1) * sqrt(G1) * (-1.0 / Te1 + 0.25 * (1.0 / Tm - 4 * G1 / Te1 / L1))
-        )
-        y1dis = (
-            sin(g1) * sqrt(G1) * (-1.0 / Te1 + 0.25 * (1.0 / Tm - 4 * G1 / Te1 / L1))
-        )
+            L1dot = L1dot + (L1 / 2) * (1 / Tm1 - 4 * G1 / L1 / Te1)
+            L2dot = L2dot + (L2 / 2) * (-4 * G2 / L2 / Te2)
 
-        l2dis = 0
-        L2dis = (L2 / 2) * (-4 * G2 / L2 / Te2)
-        x2dis = cos(g2) * sqrt(G2) * (-1.0 / Te2 + 0.25 * (-4 * G2 / Te2 / L1))
-        y2dis = sin(g2) * sqrt(G2) * (-1.0 / Te2 + 0.25 * (-4 * G2 / Te2 / L1))
+            x1dot = x1dot + cos(g1) * sqrt(G1) * (
+                -1.0 / Te1 + 0.25 * (1.0 / Tm1 - 4 * G1 / Te1 / L1)
+            )
+            y1dot = y1dot + sin(g1) * sqrt(G1) * (
+                -1.0 / Te1 + 0.25 * (1.0 / Tm1 - 4 * G1 / Te1 / L1)
+            )
 
-        ##################
-        # SECULAR FORCES #
-        ##################
-        # Add later...
-        l1sec = 0
+            x2dot = x2dot + cos(g2) * sqrt(G2) * (
+                -1.0 / Te2 + 0.25 * (-4 * G2 / Te2 / L2)
+            )
+            y2dot = y2dot + sin(g2) * sqrt(G2) * (
+                -1.0 / Te2 + 0.25 * (-4 * G2 / Te2 / L2)
+            )
 
-        L1sec = 0
-
-        l2sec = 0
-
-        L2sec = 0
-
-        x1sec = 0
-
-        y1sec = 0
-
-        x2sec = 0
-
-        y2sec = 0
-
-        l1dot = l1cons + l1dis + l1sec
-        L1dot = L1cons + L1dis + L1sec
-        l2dot = l2cons + l2dis + l2sec
-        L2dot = L2cons + L2dis + L2sec
-        x1dot = x1cons + x1dis + x1sec
-        y1dot = y1cons + y1dis + y1sec
-        x2dot = x2cons + x2dis + x2sec
-        y2dot = y2cons + y2dis + y2sec
-        # print("vals=",np.array([l1, L1, l2, L2, x1, y1,
-        #                 x2, y2]))
-        # print("dots=",np.array([l1dot, L1dot, l2dot, L2dot, x1dot, y1dot,
-        #                 x2dot, y2dot]))
-        return np.array([l1dot, L1dot, l2dot, L2dot, x1dot, y1dot, x2dot, y2dot])
+        return np.array([thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot])
 
     def int_Hsec(self, t0, t1, tol):
         self.e_eq = np.sqrt(self.Te1 / (2 * (self.j + 1) * self.Tm))
