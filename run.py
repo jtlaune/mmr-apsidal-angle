@@ -1,6 +1,7 @@
 import numpy as np
-from numpy import sin, cos, sqrt
+from numpy import sin, cos, sqrt, pi
 import scipy as sp
+import scipy.integrate
 import LaplaceCoefficients as LC
 import helper
 from helper import *
@@ -20,17 +21,6 @@ class check_ratio:
 class resonance:
     # Parent class for j:j+1 resonance with useful functions
     # that sets constants and initial values.
-    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0):
-        # set other params and dirname in child classes
-        self.j = j
-        self.mup = mup
-        self.ep = ep
-        self.e0 = e0
-        self.ap = ap
-        self.g0 = g0
-        self.a0 = a0
-        self.lambda0 = lambda0
-
     def ebar(self, ep, e, A, B, g):
         return helper.ebarfunc(ep, e, A, B, g)
 
@@ -86,7 +76,15 @@ class tp_intH(resonance):
     # have all the other initial conditions set to exact resonance,
     # but this doesn't matter after significant migration anyways.
     def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0):
-        super().__init__(j, mup, ep, e0, ap, g0, a0, lambda0)
+        # set other params and dirname in child classes
+        self.j = j
+        self.mup = mup
+        self.ep = ep
+        self.e0 = e0
+        self.ap = ap
+        self.g0 = g0
+        self.a0 = a0
+        self.lambda0 = lambda0
 
     def H2dofsec(self, t, Y):
         thetap = Y[0]
@@ -381,26 +379,19 @@ class tp_intH(resonance):
 
 class comp_mass_intH(resonance):
     # This class will take two comparable mass planets and push the
-    # inner one towards the outer one. We will have T_m,1 and T_e,1
-    # and T_e,2.  Unlike the test particle classes I am not bothering
-    # with setting exact initial resonance parameters with the
-    # comparable mass case. There will only be migration in this case.
-    #
-    # Left to fill in are calculating variables for the
-    # Hamiltonian. This is just a shell class right now.
-    def __init__(self, j, mu1, q, a0, Tm, Te1, Te2):
+    # outer one towards the inner one. We will have T_m,2 and T_e,1
+    # and T_e,2.
+    def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2):
         self.j = j
         self.mu1 = mu1
         self.q = q
         self.a0 = a0
 
-        self.Tm = Tm
+        self.T0 = 2 * np.pi
+        self.Tm1 = Tm1
+        self.Tm2 = Tm2
         self.Te1 = Te1
         self.Te2 = Te2
-
-    def calc_alphanom(self):
-        # nominal resonance location
-        self.alphanom = (self.j / (self.j + 1)) ** (2.0 / 3.0)
 
     def H4dofsec(self, t, Y):
 
@@ -414,26 +405,31 @@ class comp_mass_intH(resonance):
         y2 = Y[6]
 
         g1 = np.arctan2(y1, x1)
-        G1 = x1 * x1 + y1 * y1
+        G1 = sqrt(x1 * x1 + y1 * y1)
         g2 = np.arctan2(y2, x2)
-        G2 = x2 * x2 + y2 * y2
+        G2 = sqrt(x2 * x2 + y2 * y2)
 
         j = self.j
-        mu1 = self.mu1
         mu2 = self.mu1 / self.q
 
         e1 = np.sqrt(2 * G1 / L1)
         e2 = np.sqrt(2 * G2 / L2)
 
         # the Hamiltonian is -(constants) as the internal TP
-        # Hamiltonian
+        # Hamiltonian, i.e. it matches MD
         alpha1 = L1 * L1 / self.q / self.q
         alpha2 = L2 * L2
+        alpha = alpha1 / alpha2
         theta1 = theta + g1
         theta2 = theta + g2
         f1 = -self.A(alpha)
         f2 = -self.B(alpha)
+        C = self.C(alpha)
+        D = self.D(alpha)
 
+        ###################
+        # Resonant forces #
+        ###################
         l1dot = (1 / alpha1 / sqrt(alpha1)) + mu2 * f1 * e1 * cos(theta1) / (
             2 * alpha2 * sqrt(alpha1)
         )
@@ -447,10 +443,10 @@ class comp_mass_intH(resonance):
         L1dot = j * Ldot_prefactor
         L2dot = -(j + 1) * Ldot_prefactor
 
-        e1g1dot = -self.q * mu2 * f1 * cos(theta1) / alpha1 / alpha2
-        e2g2dot = -self.q * mu2 * f2 * cos(theta2) / alpha2 / alpha2
+        e1g1dot = -self.q * mu2 * f1 * cos(theta1) / sqrt(alpha1) / alpha2
+        e2g2dot = -self.q * mu2 * f2 * cos(theta2) / sqrt(alpha2) / alpha2
 
-        G1dot = self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
+        G1dot = -self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
         G2dot = -self.q * mu2 * f2 * e2 * sin(theta2) / alpha2
 
         x1dot = G1dot * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot
@@ -460,96 +456,154 @@ class comp_mass_intH(resonance):
         y2dot = G2dot * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot
 
         thetadot = (j + 1) * l2dot - j * l1dot
-        if self.migrate:
-            # Here we're using time = tau*t
-            # Add in the dissipative terms for migration
 
-            # convert time units
-            T0 = 2 * np.pi
-            Tm1 = self.Tm * T0
-            Te1 = self.Te1 * T0
-            # Tm2 = infinity
-            Te2 = self.Te2 * T0
+        ##################
+        # Secular forces #
+        ##################
+        l1dot_sec = (mu2/alpha2/sqrt(alpha1)
+                     * (2*C*e1*e1+D*e1*e2/2*cos(g1-g2)))
+        l2dot_sec = (self.q*mu2/alpha2/sqrt(alpha2)
+                     * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
+        G1dot_sec = -mu2*D*e1*e2/alpha2*sin(g1-g2)
+        G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
 
-            L1dot = L1dot + (L1 / 2) * (1 / Tm1 - 4 * G1 / L1 / Te1)
-            L2dot = L2dot + (L2 / 2) * (-4 * G2 / L2 / Te2)
+        e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
+        e2g2dot_sec = (-self.q*mu2/alpha2/sqrt(alpha2)*(2*C*e2+D*e1))
 
-            x1dot = x1dot + cos(g1) * sqrt(G1) * (
-                -1.0 / Te1 + 0.25 * (1.0 / Tm1 - 4 * G1 / Te1 / L1)
-            )
-            y1dot = y1dot + sin(g1) * sqrt(G1) * (
-                -1.0 / Te1 + 0.25 * (1.0 / Tm1 - 4 * G1 / Te1 / L1)
-            )
+        x1dot_sec = G1dot_sec * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot_sec
+        y1dot_sec = G1dot_sec * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot_sec
 
-            x2dot = x2dot + cos(g2) * sqrt(G2) * (
-                -1.0 / Te2 + 0.25 * (-4 * G2 / Te2 / L2)
-            )
-            y2dot = y2dot + sin(g2) * sqrt(G2) * (
-                -1.0 / Te2 + 0.25 * (-4 * G2 / Te2 / L2)
-            )
+        x2dot_sec = G2dot_sec * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot_sec
+        y2dot_sec = G2dot_sec * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot_sec
 
-        return np.array([thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot])
+        l1dot = l1dot + l1dot_sec
+        x1dot = x1dot + x1dot_sec
+        y1dot = y1dot + y1dot_sec
 
-    def int_Hsec(self, t0, t1, tol):
-        self.e_eq = np.sqrt(self.Te1 / (2 * (self.j + 1) * self.Tm))
-        print("e1 eq =", self.e_eq)
-        print("mu^1/3=", self.mu2 ** (1.0 / 3.0))
+        l2dot = l2dot + l2dot_sec
+        x2dot = x2dot + x2dot_sec
+        y2dot = y2dot + y2dot_sec
 
-        G = 4 * np.pi ** 2
-        self.scale_factor = G ** 2 * self.mu1 ** 1.5 * self.mu2 ** 1.5
-        print(self.scale_factor)
-        print(sqrt(self.scale_factor))
-        t0 = t0
-        t1 = t1
+        #############
+        # MIGRATION #
+        #############
 
-        # Star is 1 solar mass
-        Lambda10 = self.mu1 * np.sqrt(G * self.a1) / sqrt(self.scale_factor)
-        Lambda20 = self.mu2 * np.sqrt(G * self.a2) / sqrt(self.scale_factor)
-        Gamma10 = Lambda10 * (0.5 * 0.0 ** 2)
-        Gamma20 = Lambda20 * (0.5 * 0.0 ** 2)
+        # Add in the dissipative terms for migration
+        # convert time units
+        T0 = self.T0
+        Tm1 = self.Tm1 * T0
+        Te1 = self.Te1 * T0
+        Tm2 = self.Tm2 * T0
+        Te2 = self.Te2 * T0
 
-        l10 = 0.0
-        l20 = 0.0
-        g10 = 0.0
-        g20 = 0.0
+        L1dot_dis = (L1 / 2) * (1 / Tm1 - 2 * e1*e1 / Te1)
+        L2dot_dis = (L2 / 2) * (1 / Tm2 - 2 * e2*e2 / Te2)
 
-        x10 = sqrt(Gamma10) * cos(g10)
-        y10 = sqrt(Gamma10) * sin(g10)
-        x20 = sqrt(Gamma20) * cos(g20)
-        y20 = sqrt(Gamma20) * sin(g20)
+        L1dot = L1dot + L1dot_dis
+        L2dot = L2dot + L2dot_dis
+
+        G1dot_dis = (L1dot_dis * G1 / L1) - 2 * G1 / Te1
+        G2dot_dis = (L2dot_dis * G2 / L2) - 2 * G2 / Te2
+
+        x1dot = x1dot + cos(g1) * G1dot_dis
+        y1dot = y1dot + sin(g1) * G1dot_dis
+
+        x2dot = x2dot + cos(g2) * G2dot_dis
+        y2dot = y2dot + sin(g2) * G2dot_dis
+
+        print(("alpha1: {:0.2f}    " \
+              "alpha2: {:0.2f}    " \
+              "alpha: {:0.2f}    " \
+              "theta1: {:0.2f}    " \
+              "theta2: {:0.2f}    " \
+              "done%: {:0.2f}" \
+              .format((L1/self.q)**2,
+                      L2**2,
+                      (L1/L2/self.q)**2,
+                      (theta1 % (2*pi)),
+                      (theta2 % (2*pi)),
+                      100.*t/self.T,
+                      )), end="\r")
+
+        return(np.array([thetadot, L1dot, L2dot, x1dot,
+                        y1dot, x2dot, y2dot]))
+
+    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0):
+        self.T = self.T0*t1
+        int_cond = None
+
+        Lambda1_0 = self.q * 1
+        Lambda2_0 = sqrt(alpha2_0)
+
+        # set initial eccentricities
+        G1_0 = 0.5 * Lambda1_0 * e1_0 ** 2
+        G2_0 = 0.5 * Lambda2_0 * e2_0 ** 2
+        # g0 = 0 for both
+        x1_0 = G1_0
+        y1_0 = 0
+        x2_0 = G2_0
+        y2_0 = 0
+        IV = (0, Lambda1_0, Lambda2_0, x1_0, y1_0, x2_0, y2_0)
+        print(IV)
+
+        g1_0 = np.arctan2(y1_0, x1_0)
+        g2_0 = np.arctan2(y2_0, x2_0)
+        print(g1_0, g2_0)
 
         RHS = self.H4dofsec
-        IV = (l10, Lambda10, l20, Lambda20, x10, y10, x20, y20)
-        print("IV=", IV)
-        teval = np.linspace(t0, t1, 1000) * sqrt(self.scale_factor)
+
+        teval = np.linspace(0., t1, 300000) * self.T0
         span = (teval[0], teval[-1])
         sol = sp.integrate.solve_ivp(
-            RHS, span, IV, t_eval=teval, method="RK45", rtol=tol, atol=tol
+            RHS,
+            span,
+            IV,
+            method="RK45",
+            events=int_cond,
+            t_eval=teval,
+            rtol=tol,
+            atol=tol,
+            dense_output=True,
         )
 
-        l1 = sol.y[0, :]
-        L1 = sol.y[1, :] * sqrt(self.scale_factor)
-        l2 = sol.y[2, :]
-        L2 = sol.y[3, :] * sqrt(self.scale_factor)
-        x1 = sol.y[4, :]
-        y1 = sol.y[5, :]
-        x2 = sol.y[6, :]
-        y2 = sol.y[7, :]
+        theta = sol.y[0, :]
+        L1 = sol.y[1, :]
+        L2 = sol.y[2, :]
+        x1 = sol.y[3, :]
+        y1 = sol.y[4, :]
+        x2 = sol.y[5, :]
+        y2 = sol.y[6, :]
+
+        teval = teval[0 : len(theta)]
 
         g1 = np.arctan2(y1, x1)
-        G1 = (x1 ** 2 + y1 ** 2) * sqrt(self.scale_factor)
+        G1 = sqrt(x1 ** 2 + y1 ** 2)
+
         g2 = np.arctan2(y2, x2)
-        G2 = (x2 ** 2 + y2 ** 2) * sqrt(self.scale_factor)
+        G2 = sqrt(x2 ** 2 + y2 ** 2)
 
-        theta1 = (self.j + 1) * l2 - self.j * l1 + g1
-        theta2 = (self.j + 1) * l2 - self.j * l1 + g2
-
-        # e1 = np.sqrt(2*G/L)
         e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
         e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
-        a1 = (L1 / self.mu1) ** 2 / G
-        a2 = (L2 / self.mu2) ** 2 / G
+        a1 = L1 ** 2 * self.a0 / self.q ** 2
+        a2 = L2 ** 2 * self.a0
+        alpha = a1 / a2
 
-        teval = teval / sqrt(self.scale_factor)
+        # convert back to time units
+        teval = teval / self.T0
 
-        return (teval, a1, e1, G1, theta1, a2, e2, G2, theta2)
+        return (
+            teval,
+            theta,
+            a1,
+            a2,
+            e1,
+            e2,
+            g1,
+            g2,
+            L1,
+            L2,
+            x1,
+            y1,
+            x2,
+            y2,
+        )

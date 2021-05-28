@@ -85,7 +85,7 @@ def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv):
         varname = value[0]
         data = value[1]
 
-        ax.scatter(teval/tscale, data, s=2)
+        ax.scatter(teval/tscale, data, s=2, c="k", alpha=0.15)
         ax.set_xlabel("t [{:0.1e} orbits]".format(tscale))
         ax.set_xlim((teval[0]/tscale, teval[-1]/tscale))
 
