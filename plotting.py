@@ -1,7 +1,6 @@
 import numpy as np
 import scipy as sp
 from scipy import optimize
-from IPython.display import display, clear_output
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
@@ -10,7 +9,6 @@ import importlib
 import run
 
 sys.path.append("/home/jtlaune/mmr/")
-mpl.rcParams.update({'font.size': 24})
 
 def loadsim(filename, ap, j, ep):
     sim = np.load(filename)
@@ -70,10 +68,7 @@ def loadsim(filename, ap, j, ep):
 
     return(datadict)
 
-def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv):
-    # set for this function
-    mpl.rcParams.update({'font.size': fontsize})
-
+def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv, yfigupper=0.9):
     for i, value in enumerate(argv):
         ax = axes.flatten()[i]
 
@@ -86,20 +81,16 @@ def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv):
         data = value[1]
 
         ax.scatter(teval/tscale, data, s=2, c="k", alpha=0.15)
-        ax.set_xlabel("t [{:0.1e} orbits]".format(tscale))
+        ax.set_xlabel("t [{:0.1e} orbits]".format(tscale), fontsize=fontsize)
         ax.set_xlim((teval[0]/tscale, teval[-1]/tscale))
 
-        ax.set_title(varname)
+        ax.set_title(varname, fontsize=fontsize)
 
-    fig.suptitle(suptitle)
-    fig.tight_layout(rect=[0, 0.03, 1, 0.9])
+    fig.suptitle(suptitle, fontsize=fontsize)
+    fig.tight_layout(rect=[0, 0.03, 1, yfigupper])
 
-    # reset back to 24
-    mpl.rcParams.update({'font.size': 24})
 
 def plotphase(fig, axes, teval, suptitle, tscale, fontsize, *argv):
-    # set for this function
-    mpl.rcParams.update({'font.size': fontsize})
     N = len(argv)
     for i, value in enumerate(argv):
         ax = axes.flatten()[i]
@@ -110,17 +101,15 @@ def plotphase(fig, axes, teval, suptitle, tscale, fontsize, *argv):
         p = value[3]
 
         cs = ax.scatter(p*np.cos(q),p*np.sin(q), c=teval/tscale, s=2)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
+        ax.set_xlabel(xlabel, fontsize=fontsize)
+        ax.set_ylabel(ylabel, fontsize=fontsize)
         if i == N-1:
             box = ax.get_position()
             ax.set_position([box.x0*1.05, box.y0, box.width, box.height])
             # create color bar
             axColor = plt.axes([box.x0*1.05 + box.width * 1.05, box.y0, 0.01, box.height])
-            plt.colorbar(cs, cax = axColor, orientation="vertical", label="t [{:0.1e} orbits]".format(tscale))
+            plt.colorbar(cs, cax = axColor, orientation="vertical", label="t [{:0.1e} orbits]".format(tscale), fontsize=fontsize)
 
-    fig.suptitle(suptitle)
+    fig.suptitle(suptitle, fontsize=fontsize)
     fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
-    # reset back to 24
-    mpl.rcParams.update({'font.size': 24})

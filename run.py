@@ -430,12 +430,14 @@ class comp_mass_intH(resonance):
         ###################
         # Resonant forces #
         ###################
-        l1dot = (1 / alpha1 / sqrt(alpha1)) + mu2 * f1 * e1 * cos(theta1) / (
+        l1dot = ((1 / alpha1 / sqrt(alpha1))
+            + mu2 * f1 * e1 * cos(theta1) / (
             2 * alpha2 * sqrt(alpha1)
-        )
-        l2dot = (1 / alpha2 / sqrt(alpha2)) + self.q * mu2 / (alpha2 * sqrt(alpha2)) * (
+        ))
+        l2dot = ((1 / alpha2 / sqrt(alpha2))
+                 + self.q * mu2 / (alpha2 * sqrt(alpha2)) * (
             2 * f1 * e1 * cos(theta1) + 2.5 * f2 * e2 * cos(theta2)
-        )
+        ))
 
         Ldot_prefactor = (
             self.q * mu2 / alpha2 * (f1 * e1 * sin(theta1) + f2 * e2 * sin(theta2))
@@ -443,7 +445,7 @@ class comp_mass_intH(resonance):
         L1dot = j * Ldot_prefactor
         L2dot = -(j + 1) * Ldot_prefactor
 
-        e1g1dot = -self.q * mu2 * f1 * cos(theta1) / sqrt(alpha1) / alpha2
+        e1g1dot = -mu2 * f1 * cos(theta1) / sqrt(alpha1) / alpha2
         e2g2dot = -self.q * mu2 * f2 * cos(theta2) / sqrt(alpha2) / alpha2
 
         G1dot = -self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
@@ -464,7 +466,7 @@ class comp_mass_intH(resonance):
                      * (2*C*e1*e1+D*e1*e2/2*cos(g1-g2)))
         l2dot_sec = (self.q*mu2/alpha2/sqrt(alpha2)
                      * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
-        G1dot_sec = -mu2*D*e1*e2/alpha2*sin(g1-g2)
+        G1dot_sec = -self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
         G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
 
         e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
@@ -511,24 +513,26 @@ class comp_mass_intH(resonance):
         x2dot = x2dot + cos(g2) * G2dot_dis
         y2dot = y2dot + sin(g2) * G2dot_dis
 
-        print(("alpha1: {:0.2f}    " \
-              "alpha2: {:0.2f}    " \
-              "alpha: {:0.2f}    " \
-              "theta1: {:0.2f}    " \
-              "theta2: {:0.2f}    " \
-              "done%: {:0.2f}" \
-              .format((L1/self.q)**2,
-                      L2**2,
-                      (L1/L2/self.q)**2,
-                      (theta1 % (2*pi)),
-                      (theta2 % (2*pi)),
-                      100.*t/self.T,
-                      )), end="\r")
+        if self.verbose:
+            print(("alpha1: {:0.2f}    " \
+                  "alpha2: {:0.2f}    " \
+                  "alpha: {:0.2f}    " \
+                  "theta1: {:0.2f}    " \
+                  "theta2: {:0.2f}    " \
+                  "done%: {:0.2f}" \
+                  .format((L1/self.q)**2,
+                          L2**2,
+                          (L1/L2/self.q)**2,
+                          (theta1 % (2*pi)),
+                          (theta2 % (2*pi)),
+                          100.*t/self.T,
+                          )), end="\r")
 
         return(np.array([thetadot, L1dot, L2dot, x1dot,
                         y1dot, x2dot, y2dot]))
 
-    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0):
+    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, verbose=False):
+        self.verbose = verbose
         self.T = self.T0*t1
         int_cond = None
 

@@ -11,3 +11,6 @@ scratch
 scripts
 summaries-scratch
 tp_runs
+4dof-pdf
+compmass_runs
+*.png
