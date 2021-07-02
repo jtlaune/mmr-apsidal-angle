@@ -451,6 +451,12 @@ class comp_mass_intH(resonance):
         G1dot = -self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
         G2dot = -self.q * mu2 * f2 * e2 * sin(theta2) / alpha2
 
+        #####################################
+        # TESTING OUT NO ECCENTRICITY CHANGE #
+        #####################################
+        #G1dot = 0.
+        #G2dot = 0.
+
         x1dot = G1dot * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot
         y1dot = G1dot * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot
 
@@ -468,6 +474,11 @@ class comp_mass_intH(resonance):
                      * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
         G1dot_sec = -self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
         G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
+        #####################################
+        # TESTING OUT NO ECCENTRICITY CHANGE #
+        #####################################
+        #G1dot_sec = 0.
+        #G2dot_sec = 0.
 
         e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
         e2g2dot_sec = (-self.q*mu2/alpha2/sqrt(alpha2)*(2*C*e2+D*e1))
@@ -506,6 +517,12 @@ class comp_mass_intH(resonance):
 
         G1dot_dis = (L1dot_dis * G1 / L1) - 2 * G1 / Te1
         G2dot_dis = (L2dot_dis * G2 / L2) - 2 * G2 / Te2
+
+        #####################################
+        # TESTING OUT NO ECCENTRICITY CHANGE #
+        #####################################
+        #G1dot_dis = 0.
+        #G2dot_dis = 0.
 
         x1dot = x1dot + cos(g1) * G1dot_dis
         y1dot = y1dot + sin(g1) * G1dot_dis

@@ -68,7 +68,7 @@ def loadsim(filename, ap, j, ep):
 
     return(datadict)
 
-def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv, yfigupper=0.9):
+def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv, xlabel=True, yfigupper=0.9):
     for i, value in enumerate(argv):
         ax = axes.flatten()[i]
 
@@ -81,8 +81,10 @@ def plotsim(fig, axes, teval, suptitle, tscale, fontsize, *argv, yfigupper=0.9):
         data = value[1]
 
         ax.scatter(teval/tscale, data, s=2, c="k", alpha=0.15)
-        ax.set_xlabel("t [{:0.1e} orbits]".format(tscale), fontsize=fontsize)
+        if xlabel:
+            ax.set_xlabel("t [{:0.1e} orbits]".format(tscale), fontsize=fontsize)
         ax.set_xlim((teval[0]/tscale, teval[-1]/tscale))
+        ax.tick_params(labelsize=fontsize)
 
         ax.set_title(varname, fontsize=fontsize)
 
