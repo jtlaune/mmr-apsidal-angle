@@ -4,10 +4,28 @@ import scipy as sp
 import scipy.integrate
 import LaplaceCoefficients as LC
 import helper
+import os
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from plotting import *
 from helper import *
+import subprocess
 
+class check_ratio_cm:
+    def __init__(self, ratio0, q):
+        self.ratio0 = ratio0
+        self.terminal = True
+        self.q = q
 
-class check_ratio:
+    def __call__(self, t, Y):
+        L1 = Y[1]
+        L2 = Y[2]
+        alpha1 = L1 ** 2 / self.q ** 2
+        alpha2 = L2 ** 2 
+        alpha = alpha1 / alpha2
+        return(alpha - self.ratio0)
+    
+class check_ratio_tp:
     def __init__(self, ratio0):
         self.ratio0 = ratio0
         self.terminal = True
@@ -203,11 +221,11 @@ class tp_intH(resonance):
         int_cond = None
         if Tm > 0:
             self.e_eq = np.sqrt(self.Te / (2 * (self.j + 1) * self.Tm))
-            int_cond = check_ratio(0.8)
+            int_cond = check_ratio_tp(0.8)
             int_cond.terminal = True
         else:
             self.e_eq = np.sqrt(self.Te / (2 * self.j * np.abs(self.Tm)))
-            int_cond = check_ratio(1.25)
+            int_cond = check_ratio_tp(1.25)
             int_cond.terminal = True
 
         self.perturb = False
@@ -451,12 +469,6 @@ class comp_mass_intH(resonance):
         G1dot = -self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
         G2dot = -self.q * mu2 * f2 * e2 * sin(theta2) / alpha2
 
-        #####################################
-        # TESTING OUT NO ECCENTRICITY CHANGE #
-        #####################################
-        #G1dot = 0.
-        #G2dot = 0.
-
         x1dot = G1dot * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot
         y1dot = G1dot * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot
 
@@ -468,26 +480,38 @@ class comp_mass_intH(resonance):
         ##################
         # Secular forces #
         ##################
-        l1dot_sec = (mu2/alpha2/sqrt(alpha1)
-                     * (2*C*e1*e1+D*e1*e2/2*cos(g1-g2)))
-        l2dot_sec = (self.q*mu2/alpha2/sqrt(alpha2)
-                     * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
-        G1dot_sec = -self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
-        G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
-        #####################################
-        # TESTING OUT NO ECCENTRICITY CHANGE #
-        #####################################
-        #G1dot_sec = 0.
-        #G2dot_sec = 0.
+        if self.secular:
+            l1dot_sec = (mu2/alpha2/sqrt(alpha1)
+                         * (2*C*e1*e1+D*e1*e2/2*cos(g1-g2)))
+            l2dot_sec = (self.q*mu2/alpha2/sqrt(alpha2)
+                         * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
+            G1dot_sec = -self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
+            G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
 
-        e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
-        e2g2dot_sec = (-self.q*mu2/alpha2/sqrt(alpha2)*(2*C*e2+D*e1))
+            e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
+            e2g2dot_sec = (-self.q*mu2/alpha2/sqrt(alpha2)*(2*C*e2+D*e1))
 
-        x1dot_sec = G1dot_sec * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot_sec
-        y1dot_sec = G1dot_sec * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot_sec
+            x1dot_sec = G1dot_sec * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot_sec
+            y1dot_sec = G1dot_sec * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot_sec
 
-        x2dot_sec = G2dot_sec * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot_sec
-        y2dot_sec = G2dot_sec * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot_sec
+            x2dot_sec = G2dot_sec * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot_sec
+            y2dot_sec = G2dot_sec * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot_sec
+
+        else:
+            l1dot_sec = 0.
+            l2dot_sec = 0.
+
+            G1dot_sec = 0.
+            G2dot_sec = 0.
+
+            e1g1dot_sec = 0.
+            e2g2dot_sec = 0.
+
+            x1dot_sec = 0.
+            y1dot_sec = 0.
+
+            x2dot_sec = 0.
+            y2dot_sec = 0.
 
         l1dot = l1dot + l1dot_sec
         x1dot = x1dot + x1dot_sec
@@ -496,6 +520,7 @@ class comp_mass_intH(resonance):
         l2dot = l2dot + l2dot_sec
         x2dot = x2dot + x2dot_sec
         y2dot = y2dot + y2dot_sec
+
 
         #############
         # MIGRATION #
@@ -517,12 +542,6 @@ class comp_mass_intH(resonance):
 
         G1dot_dis = (L1dot_dis * G1 / L1) - 2 * G1 / Te1
         G2dot_dis = (L2dot_dis * G2 / L2) - 2 * G2 / Te2
-
-        #####################################
-        # TESTING OUT NO ECCENTRICITY CHANGE #
-        #####################################
-        #G1dot_dis = 0.
-        #G2dot_dis = 0.
 
         x1dot = x1dot + cos(g1) * G1dot_dis
         y1dot = y1dot + sin(g1) * G1dot_dis
@@ -548,10 +567,11 @@ class comp_mass_intH(resonance):
         return(np.array([thetadot, L1dot, L2dot, x1dot,
                         y1dot, x2dot, y2dot]))
 
-    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, verbose=False):
+    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, verbose=False, secular=True):
+        self.secular = secular
         self.verbose = verbose
         self.T = self.T0*t1
-        int_cond = None
+        int_cond = check_ratio_cm(0.9, self.q)
 
         Lambda1_0 = self.q * 1
         Lambda2_0 = sqrt(alpha2_0)
@@ -628,3 +648,133 @@ class comp_mass_intH(resonance):
             x2,
             y2,
         )
+
+
+def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1, Te2, T,
+                 suptitle, dirname, filename, figname, paramsname, verbose=False,
+                 tscale=1e3, secular=True):
+    j = 2
+    sim = comp_mass_intH(j, mu1, q, a0, Tm1, Tm2, Te1, Te2)
+    (teval, theta, a1, a2, e1, e2,
+     g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(T, 1e-9,
+                                                    alpha2_0, e1_0, e2_0,
+                                                    verbose=verbose, secular=secular)
+
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname, exist_ok=True)
+
+    np.savez(
+        os.path.join(dirname, filename),
+        teval=teval,
+        thetap=theta,
+        a1=a1,
+        a2=a2,
+        e1=e1,
+        e2=e2,
+        g1=g1,
+        g2=g2,
+        L1=L1,
+        L2=L2,
+        x1=x1,
+        y1=y1,
+        x2=x2,
+        y2=y2,
+    )
+
+    theta1 = (theta + g1) % (2 * np.pi)
+    theta2 = (theta + g2) % (2 * np.pi)
+    alpha = a1 / a2
+    period_ratio = (alpha) ** (1.5)
+    pnom = j / (j + 1)
+    pdiff = period_ratio - pnom
+
+    f1 = A(alpha, j)
+    f2 = B(alpha, j)
+    barg = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+
+    bartheta = (theta + barg) % (2*np.pi)
+    fig, ax = plt.subplots(4, 2, figsize=(10, 20))
+    fontsize = 12
+
+    # make a quick diagnostic plot
+    plotsim(
+        fig,
+        ax,
+        teval,
+        suptitle,
+        tscale,
+        fontsize,
+        (r"$a_1$", a1),
+        (r"$P_1/P_2$", period_ratio),
+        (r"$e_1$", e1),
+        (r"$e_2$", e2),
+        (r"$\theta_1$", theta1),
+        (r"$\theta_2$", theta2),
+        (r"$\overline{\theta}$", bartheta),
+        (r"$|\varpi_1-\varpi_2|$", np.abs(g1-g2)),
+        yfigupper=0.99,
+    )
+
+    ax[0, 0].scatter(teval / tscale, a2, s=2)
+
+    fig.savefig(os.path.join(dirname, figname))
+
+    commit = subprocess.check_output(
+        ['git', 'rev-parse', '--short', 'HEAD']).decode().strip()
+
+    variables = [j,q,mu1,a0,alpha2_0,Tm1,Tm2,Te1,Te2,T]
+    variable_names = ["j","q","mu1","a0",
+                      "alpha2_0","Tm1","Tm2","Te1","Te2","T"]
+
+    with open(os.path.join(dirname, paramsname), "w+") as f:
+        f.write("".join(["{} = {}\n".format(name, variable) for 
+                         name, variable in zip(variable_names, variables)]))
+        if not secular:
+            f.write("\nSECULAR TERMS OFF\n")
+        f.write("\ncommit {}".format(commit))
+
+    return fig
+
+
+class run_compmass_set:
+    def __init__(self, h, j, a0, T, dirname,
+                 verbose=False, overwrite=False, secular=True):
+        self.h            = h 
+        self.j            = j 
+        self.a0           = a0 
+        self.T            = T
+        self.dirname      = dirname 
+        self.verbose      = verbose
+        self.overwrite    = overwrite
+        self.secular      = secular
+    def __call__(self, params):
+        q = np.float64(params[0])
+        mu1 = np.float64(params[1])
+        Te1 = np.float64(params[2])
+        Te2 = np.float64(params[3])
+        Tm1 = np.float64(params[4])
+        Tm2 = np.float64(params[5])
+        e1_0 = np.float64(params[6])
+        e2_0 = np.float64(params[7])
+        alpha2_0 = np.float64(params[8])
+        name = params[9]
+        filename   = f"{name}.npz"
+        figname    = f"{name}.png"
+        paramsname = f"params-{name}.txt"
+        suptitle = (f"{filename}\nT={self.T:0.1e}\nq={q}\nTm1={Tm1:0.1e} Te1={Te1:0.1e}" \
+                    f"\nTm2={Tm2:0.1e} Te2={Te2:0.1e}")
+        if self.overwrite:
+            run_compmass(self.h, self.j, mu1, q, self.a0,
+                        alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1,
+                         Te2, self.T, suptitle, self.dirname, filename, figname,
+                         paramsname, verbose=self.verbose, secular=self.secular)
+        elif not os.path.exists(os.path.join(self.dirname, filename)):
+            run_compmass(self.h, self.j, mu1, q, self.a0,
+                        alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1,
+                        Te2, self.T, suptitle, self.dirname, filename, figname,
+                        paramsname, verbose=self.verbose, secular=self.secular)
+        else:
+            pass
+        
+
+         

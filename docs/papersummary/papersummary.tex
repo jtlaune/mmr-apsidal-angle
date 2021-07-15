@@ -1,0 +1,591 @@
+\documentclass{article}
+%section standard commands/packages
+\twocolumn
+\usepackage[margin=1.0in]{geometry}
+\usepackage{pdfpages}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tensor}
+\usepackage{amsthm}
+\usepackage{ wasysym }
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{cancel}
+\newcommand{\note}[1]{{\color{red} #1 }}
+\newcommand{\extra}[1]{{}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\edisk}{e_{\rm disk}}
+\newcommand{\omext}{\omega_{\rm ext}}
+\newcommand{\ep}{e_{\rm p}}
+\newcommand{\Te}{T_{\rm e}}
+\newcommand{\Tm}{T_{\rm m}}
+\newcommand{\ebar}{\bar{e}}
+\newcommand{\gammabar}{\bar{\gamma}}
+\newcommand{\T}{\mathcal{T}}
+\renewcommand{\L}{\mathcal{L}}
+\renewcommand{\d}{\partial}
+\renewcommand{\v}[1]{\boldsymbol{ #1 }}
+\renewcommand{\t}[1]{\tilde{ #1 }}
+\newcommand{\tg}{\t{g}}
+\newcommand{\vh}[1]{\hat{\boldsymbol{ #1 }}}
+\newcommand{\bbR}{\mathbb{R}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dd}[2]{\frac{d #1}{d #2}}
+\usepackage{tikz}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+\DeclarePairedDelimiter{\abs}{|}{|}
+\DeclarePairedDelimiter{\p}{(}{)}
+\DeclarePairedDelimiter{\we}{\langle}{\rangle}
+\newtheorem{prob}{Problem}
+\usepackage{tikz,colortbl}
+\usetikzlibrary{calc}
+\usepackage{zref-savepos}
+\newcounter{NoTableEntry}
+\renewcommand*{\theNoTableEntry}{NTE-\the\value{NoTableEntry}}
+%section table shenanigans from stack exchange
+\newcommand*{\notableentry}{%
+  \multicolumn{1}{@{}c@{}|}{%
+    \stepcounter{NoTableEntry}%
+    \vadjust pre{\zsavepos{\theNoTableEntry t}}% top
+    \vadjust{\zsavepos{\theNoTableEntry b}}% bottom
+    \zsavepos{\theNoTableEntry l}% left
+    \hspace{0pt plus 1filll}%
+    \zsavepos{\theNoTableEntry r}% right
+    \tikz[overlay]{%
+      \draw[black]
+        let
+          \n{llx}={\zposx{\theNoTableEntry l}sp-\zposx{\theNoTableEntry r}sp},
+          \n{urx}={0},
+          \n{lly}={\zposy{\theNoTableEntry b}sp-\zposy{\theNoTableEntry r}sp},
+          \n{ury}={\zposy{\theNoTableEntry t}sp-\zposy{\theNoTableEntry r}sp}
+        in
+        (\n{llx}, \n{lly}) -- (\n{urx}, \n{ury})
+        (\n{llx}, \n{ury}) -- (\n{urx}, \n{lly})
+      ;
+    }% 
+  }%
+}
+
+\usepackage{array}
+\usepackage{makecell}
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+\title{Eccentric MMR with Perturber}
+\author{JT Laune}
+\begin{document}
+\maketitle
+\section{Relevant Background}
+%subsection intro
+In this section, we consider a $j:j+1$ MMR between a test particle and
+a planet of mass $\mu_p$.  For the rest of this report, the subscript
+``$p$'' denotes orbital parameters of the massive planet, no subscript
+denotes the test particle, and a subscript ``$\rm{ext}$'' denotes an
+external perturber.  The Hamiltonian is given by
+\begin{align}\label{eq:H}
+  H
+  &= - \frac{1}{2\Lambda^2} \pm \mu_p\left(A
+    \left(\frac{2\Gamma}{\Lambda}\right)^{1/2}\cos\theta + B
+    \ep\cos\theta_p\right) \nonumber\\
+  &- \mu_p \left(C\left(\frac{2\Gamma}{\Lambda}
+      + \ep^2\right) + D\ep
+    \sqrt{\frac{2\Gamma}{\Lambda}}\cos\gamma\right)
+\end{align}
+The ($\pm$) term is ($+$) for an internal resonance, and ($-$) for an
+external resonance.  The period ratio $\alpha$ is defined to be
+$a/a_p$ for an internal resonance, and $a_p/a$ for an outer resonance.
+$A,B,C$ and $D$ are functions of $\alpha$, and their definitions are
+given in \ref{app:coeff} in terms of Laplace coefficients. They are
+different expressions, values, and signs depending on whether or not
+the resonance is internal or external.
+
+\subsection{Disk forces}
+The forces the disk exerts on the test particle are given
+in a parametrized fashion by $\Te$, the eccentricity damping timescale,
+and $\Tm$, the migration timescale:z
+\begin{equation}
+  \label{eq:dota}
+  \frac{\dot{a}}{a} = \pm\frac{1}{\Tm} - \frac{2e^2}{\Te}
+\end{equation}
+The ($\pm$) becomes ($+$) for outward migration, and ($-$) for inward migration. 
+The eccentricity damping force is given by
+\[ \frac{\dot{e}}{e} = -\frac{1}{\Te}. \]
+We note that $\Te>0$ always.
+
+\subsection{Equilibrium eccentricity}
+In the case of a massive planet on a circular orbit ($\ep=0$), a test
+particle in mean motion resonance will reach an equilibrium
+eccentricity depending on the ratio $\sqrt{\Te/\Tm}$.
+
+For an internal resonance, the equilibrium eccentricity is given by
+\[ \edisk = \sqrt{\frac{\Te}{2j \Tm}} \]
+
+For an external resonance, the equilibrium eccentricity is given by
+\[ \edisk = \sqrt{\frac{\Te}{2(j+1) \Tm}} \]
+
+\note{INSERT relating $e_{\rm disk}$ to disk aspect ratio}.
+
+\subsection{Stability}
+For both internal and external resonances, the planet must be massive enough
+to capture the test particle:
+\[\mu_{\rm cap}^{4/3}\gg \frac{1}{T_m}.\]
+
+In the case of an external test particle, the resonance is always stable
+and librations go to zero.
+
+For an internal test particle, stability depends upon the disk parameters
+and planet mass $\mu_p$:
+\begin{align}
+  \label{eq:stability}
+\textbf{Stable, no libration}:&\quad \mu_p > \frac{3j^2}{\alpha_0 A} e_{\rm eq}^3 \nonumber\\
+\textbf{Stable, finite libration}:&\quad \frac{3j^2}{\alpha_0 A} e_{\rm
+ eq}^3 > \mu_p > \frac{3j}{8\alpha_0 A} e_{\rm eq}^3\nonumber\\
+\textbf{Unstable, escape}:&\quad \frac{3j}{8\alpha_0 A} e_{\rm eq}^3 > \mu_p.
+\end{align}
+
+\subsection{Eccentricity of $\mu_p$}
+Through a series of canonical transformations, we may combine the $\ep$
+term of the Hamiltonian with the $e$ term.
+The transormed Hamiltonian for $\ep > 0$ is
+\[ H = \eta R - R^2 - \sqrt{R}\cos\bar{\theta}. \]
+The momentum $R\propto \ebar^2$, where $\ebar$ is
+\[ \ebar^2 = e^2 + \frac{2B}{A}e\ep\cos\gamma + \frac{B^2}{A^2}\ep^2. \]
+The ``shifted'' $\overline{\gamma}$ is given by
+\[ \overline{\gamma} = \tan^{-1}\p*{\frac{e\sin\gamma}{e\cos\gamma + Be_p/A}} \]
+The resonance angle is then given by
+\[ \theta = (j+1)\lambda_p - j\lambda + \overline{\gamma} \]
+for an internal resonance, and
+\[ \theta = (j+1)\lambda - j\lambda_p + \overline{\gamma} \]
+for an external resonance.
+We will only be utilizing $\ebar$ and $\gammabar$ in this report,
+but the full details of this are given in \ref{app:reducedH} for completeness.
+\subsection{External Perturber}\label{sec:extpert}
+A massive external companion induces relative apsidal precession within the MMR pair.
+We use a parametrized approach, by transforming to the rotating frame of $\gamma_p$ and
+then setting $\dot\gamma = -\omext$ with the following Hamiltonian:
+  \begin{align*}
+    H_{\gamma,\rm sec} =& -\Gamma(\omega_{1,\rm ext} - \omega_{p,\rm ext}) \equiv -\Gamma\omext.  \\
+  \end{align*}
+  The units of $\omext$ are in $[n_p]$.
+
+  An external companion will also induce precession in $\lambda$,
+  which we may include with the following Hamiltonian
+  \begin{align*}
+H_{\lambda,\rm sec} =&
+  -\frac{GM}{2a_p} \mu_p b_{1/2}^{(0)}\p*{\frac{a}{a_p}}
+- \frac{GM}{2a_{\rm ext}} \mu_{\rm ext} b_{1/2}^{(0)}\p*{\frac{a}{a_{\rm ext}}}\\
+                      &- \frac{GM}{2a_{\rm ext}} \mu_{\rm ext} b_{1/2}^{(0)}\p*{\frac{a_p}{a_{\rm ext}}}
+  \end{align*}
+
+  We treat $a_{\rm ext}$ as an independent variable, and choose it to be $a_{\rm ext} = 3$
+  throughout this work. Then, we solve for $\mu_{\rm ext}$ with the following formulas:
+  \[ \omega_{1,\rm ext} = \mu_{\rm ext} \p*{\frac{a_p}{a}}^{3/2} \frac{a^2}{4a_{\rm ext}^2}
+    b_{3/2}^{(1)}\p*{\frac{a}{a_{\rm ext}}} \]
+  \[ \omega_{p,\rm ext} = \mu_{\rm ext} \frac{a_p^2}{4a_{\rm ext}^2}
+    b_{3/2}^{(1)}\p*{\frac{a_p}{a_{\rm ext}}}. \]
+
+\subsection{Resonance width}
+The resonance widths in $a$- and $e$-space, in units of $\delta n$, are given by
+  \[ \frac{\delta a}{a} \sim \frac{\delta n}{n} \sim \mu_p^{2/3}\]
+  \[ \frac{\delta e}{e}\sim \mu_p^{1/3}\]
+\note{INSERT derivation or citation}
+\subsection{(WIP) Resonance splitting}
+\note{INSERT discussion of resonance splitting, etc}
+\section{Summary of Results}
+See Table~\ref{tab:runs} for a summary of the integrations carried out in this work.
+See Table~\ref{tab:summary} for a compact summary of the regimes explored in this work,
+as well as our notable results.
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{| l | c | c | c | c | c |}
+    \hline
+   Regime &$\edisk$ &$e_p$ &$\omext$ &\# runs &Figures \\ 
+    \hline
+    \hline
+    \multicolumn{6}{|c|}{\textbf{External}} \\
+    \hline
+    $\gamma$-alignment& [0.01,0.1]&[0.01,0.1] &0 &25 &\ref{fig:examples},\ref{fig:align-external}\\
+    \hline
+    \makecell{external\\ precession}& [0.01,0.1]&[0.01,0.1] &[0.1,10]$\delta n$ &250 &\ref{fig:gcomponents},\ref{fig:gammadot-behaviors},\ref{fig:newres}\\
+    \hline
+    \hline
+    \multicolumn{6}{|c|}{\textbf{Internal}} \\
+    \hline
+    $\gamma$-alignment& [0.01,0.1]&[0.01,0.1] &0 &15 &\ref{fig:align-internal}\\
+    \hline
+  \end{tabular}
+  \caption{Summary of the integrations carried out in this work. N-body simulations are not included, as they are a WIP. The eccentricities are 5 values distributed equally in log space, and the
+  external precession rates are 10 values distributed the same.}
+  \label{tab:runs}
+\end{table*}
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{| l || c || c || c | c | c |}
+    \hline
+    & \textbf{Internal} & \multicolumn{4}{c|}{\textbf{External}} \\
+    \hline\hline
+    &$\omext = 0$ &$\omext = 0$ &$\omext <\delta n$ &$\omext \approx \delta n$ &$\omext > \delta n$ \\ 
+    \hline\hline
+    $e_p = 0$ & \notableentry& \notableentry&\makecell{unchanged\\from $\omext=0$}&\makecell{unchanged\\from $\omext=0$} &\makecell{unchanged\\from $\omext=0$}\\
+    \hline
+    $\edisk < \ep$ & \notableentry& $\gamma$-aligned&\makecell{unchanged\\from $\omext=0$}& \makecell{$\gamma$-anti-aligned\\$e_1$ excited}& \makecell{$\gamma$-anti-aligned\\$e_1$ suppressed}\\
+    \hline
+    $\edisk \approx \ep$ & $\gamma$-aligned& $\gamma$-circulating&\makecell{unchanged\\from $\omext=0$}&chaotic& \makecell{$\gamma$-anti-aligned\\$e_1$ suppressed} \\
+    \hline
+    $\edisk > \ep$ & $\gamma$-circulating& $\gamma$-circulating& \makecell{unchanged\\from $\omext=0$}&\makecell{$\gamma$-anti-aligned\\$e_1$ excited}& unclear trend \\
+    \hline
+  \end{tabular}
+  \caption{Summary of the results from this study for
+    $\gamma$-alignment and eccentricity suppression/excitation. In the
+    case of \textbf{``unclear trend''}, the behavior varies between
+    [$\gamma$-circulating] and [$\gamma$-anti-aligned, $e_1$ excited].
+    \textbf{``Chaotic''} means that, for closely spaced starting
+    locations $a_0$ and holding all other conditions equal, the
+    behaviors of $\gamma_1$ and $e_1$ varied between
+    [$\gamma$-circulating] and [$\gamma$-anti-aligned, $e_1$ excited].
+    The results presented here for $\omext = 0$ are summarizing the
+    plots in Figures~\ref{fig:align-external} and
+    \ref{fig:align-internal}. For $\omext >0$, they are summarizing
+    the plots in Figure~\ref{fig:gammadot-behaviors}. We note that
+    these are a general summary of the results, and sometimes there
+    are exceptions (e.g., for $e_p = \edisk = 0.01$ and
+    $\omext\approx\delta n$, the runs are not [$\gamma$-anti-aligned,
+    $e_1$ excited], see the leftmost plot in
+    Figure~\ref{fig:gammadot-behaviors}).}
+  \label{tab:summary}
+\end{table*}
+
+\section{Unperturbed ($\omext=0$) resonant behavior}
+\subsection{Equilibrium eccentricity}
+For $e_{\rm disk} > e_p >0$, the test particle librates around
+$e_{\rm disk}$, as expected (see the right of
+Figure~\ref{fig:examples}).
+Whenever $\edisk<e_p$, however, the librations of $e_1$ are typically large
+and centered away from $\edisk$.
+\subsection{Apsidal alignment}
+%subsubsection intro
+For the $\edisk\lesssim \ep$ regime, when the disk forces dominate over the eccentricity of $\mu_p$,
+$\dot{\gamma}\approx 0$ and $\abs{\gamma-\gamma_p}\approx 0$, resulting in
+apsidal alignment. In the opposite regime, $\dot{\gamma}\neq 0$ and
+$\abs{\gamma - \gamma_p}$ circulates.
+For $\edisk \sim \ep$ we must turn to numerical
+simulations to find the boundary between $\gamma$-aligned and $\gamma$-circulating systems.
+
+\subsubsection{External}
+
+\begin{figure*}[htb]
+  \centering
+ \includegraphics[width=0.4\textwidth]{../examples/aligned-eq1.78e-02-ep1.00e-01-om0.00e+00.png}
+ \includegraphics[width=0.4\textwidth]{../examples/circulating-eq1.78e-02-ep1.00e-02-om0.00e+00.png}
+  \caption{ }
+  \label{fig:examples}
+\end{figure*}
+
+In Figure~\ref{fig:examples}, we plot our integrations for
+$\edisk = 0.018$ and $e_p = 0.1$ (left, $\gamma$-aligned) and
+$e_p = 0.01$ (right, $\gamma$-circulating).  
+Figure \ref{fig:align-external} summarizes the apsidal alignment
+results for the case of an external resonance.  We have a similar
+trend of apsidal alignment for $\ep \gtrsim e_{\rm eq}$ with $\gamma$
+circulating for the opposite regime. The main difference from the
+internal case is that for the simulations with $\ep = e_{\rm eq}$,
+$\gamma$ is no longer aligned with $\gamma_P$.
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.45\textwidth]{figures/align-external-grid-1e-3.png}
+  \caption{ }
+  \label{fig:align-external}
+\end{figure}
+
+The general behavior of $\gamma$ may be understood from its equation of motion
+in an external resonance (see \ref{app:eom}):
+\[\dot{\gamma} = \mu_p\left(\frac{-A\cos\theta}{\sqrt{2\Gamma\Lambda}}
+    - \frac{2C}{\Lambda} - D\ep\frac{\cos\gamma}{\sqrt{2\Gamma\Lambda}} \right)\]
+where
+\[ \theta = (j+1)\lambda - j\lambda_p + \gamma\]
+is the old resonance angle.
+We have
+\[ -A\cos\theta{\sqrt{2\Gamma\Lambda}}\propto \frac1e \]
+\[- \frac{2C}{\Lambda}\propto \mathcal{O}(1)\]
+\[- D\ep\left(\frac{\cos\gamma}{\sqrt{2\Gamma\Lambda}} \right)\sim \mathcal{O}(1)\]
+and so the first term typically dominates the motion if $\theta \neq \pi/2$
+
+The shifted resonance angle, however, is
+\[ \overline{\theta} = (j+1)\lambda - j\lambda_p + \overline{\gamma}\]
+where
+\[ \overline{\gamma} = \tan^{-1}\left(\frac{e\sin\gamma}{e\cos\gamma + B\ep/A}\right) \]
+
+When $\ep\lesssim e_{\rm eq}$, $\gamma\approx\overline{\gamma}$ and $\theta\to 0$,
+meaning the first term will dominate $\dot{\gamma}$.
+However, when $\ep\gtrsim e_{\rm eq}$, $\theta$ circulates and the first term
+averages to 0, leading to the second two terms governing the equation of motion.
+For these two terms, if $\ep \gtrsim e_{\rm eq}$, an equilibrium
+exists where $\dot{\gamma}\to 0$
+for $\gamma\to 0$.
+
+The behavior of
+$\dot{\gamma}$ and its individual components along with the
+corresponding behavior of $\gamma,\theta,\overline{\theta}$ is plotted
+in Figure \ref{fig:gcomponents}.  From the left column to the right,
+we hold $\edisk = 0.03$ and increase $\ep$ uniformly in log-space
+between 0.01 and 0.1. We can see that between the third and fourth
+columns, at the transition between apsidal circulation and alignment,
+$\theta$ begins to circulate, and vice versa. Note that
+$\overline{\theta}\to\pi$ always, as it should in resonance.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.45\textwidth]{figures/align-internal-grid-relmup.png}
+  \caption{ }
+  \label{fig:align-internal}
+\end{figure}
+
+\begin{figure*}[htb]
+  \centering
+  \includegraphics[width=0.19\textwidth]{{figures/gammacomps0omeff/eq3.16e-02/1.00e-02-0.00e+00}.png}
+  \includegraphics[width=0.19\textwidth]{{figures/gammacomps0omeff/eq3.16e-02/1.78e-02-0.00e+00}.png}
+  \includegraphics[width=0.19\textwidth]{{figures/gammacomps0omeff/eq3.16e-02/3.16e-02-0.00e+00}.png}
+  \includegraphics[width=0.19\textwidth]{{figures/gammacomps0omeff/eq3.16e-02/5.62e-02-0.00e+00}.png}
+  \includegraphics[width=0.19\textwidth]{{figures/gammacomps0omeff/eq3.16e-02/1.00e-01-0.00e+00}.png}
+  \caption{ }
+  \label{fig:gcomponents}
+\end{figure*}
+
+
+\subsubsection{Internal}
+The situation for an internal resonance is similar:
+if $\edisk\sim \ep$, then
+$\abs{\gamma-\gamma_p}$ librates around 0.  If $\edisk>\ep$, then
+$\abs{\gamma-\gamma_p}$ circulates.  If $\edisk< \ep$ (bottom right triangle of
+Figure \ref{fig:align-internal}), the test particle is not captured
+into resonance (i.e., $\bar{\theta}$ circulates) or equation
+(\ref{eq:dota}) breaks down and the particle migrates in the opposite
+direction. This is a limitation of our migration model and is not
+necessarily physical. Our simulation results have been compiled into Figure
+\ref{fig:align-internal}. For these simulations, $\mu_p$ was chosen
+to be $\mu_p = 1.5 \times\mu_{\rm stable}$, where $\mu_{\rm stable}$
+is given in the top line of equations (\ref{eq:stability}).
+
+\subsubsection{Non-chaotic transition}
+In Figure \ref{fig:align-external}, the boundary between the apsidally
+aligned and anti-aligned regions is sharp up to a precision
+of $2\times 10^{-3}$ in eccentricity space.
+
+To test this, we performed simulations with initial conditions
+matching the simulation in the center of the grid ($\ep = 0.032$,
+$\edisk = 0.032$).  From there, we tested simulations moving down on
+the grid (i.e., holding $\edisk$ constant and decreasing $\ep$) and
+moving right on the grid  (i.e., holding $\ep$ constant and $\edisk$).
+These preliminary results have determined the transition happens in
+the following intervals:
+\begin{enumerate}
+\item For $\ep = 0.032$ constant, transition occurs within the interval
+  $\edisk \in (0.054, 0.056)$.
+\item For $\edisk = 0.032$ constant, transition occurs within the interval
+  $\ep \in (0.017, 0.018)$.
+\end{enumerate}
+\subsubsection{(WIP) Comparable mass results}
+\subsubsection{(WIP) N-body results} 
+
+
+\section{Perturbed resonant behavior}
+Note that we have not performed simulations
+of an internal MMR perturbed by a giant companion.
+Thus far, we have observed no disruption of MMR capture due to an
+induced precession $\omext$.
+
+\subsection{Circular case $e_p = 0$}
+For disk conditions ranging between $$\edisk\in [0.01,0.1],$$ and
+external precession frequencies
+$$\omext \in [0.1,10]\times\delta n,$$ we have
+found no change in resonance for $\mu_p = 10^{-4}$
+whenever $e_p = 0$.
+
+\subsection{Eccentric case $e_p > 0$}
+%subsubsection
+For $\omext < \delta n$, the resonance behavior is largely unchanged.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.3\textwidth]{../examples/ext-pert/newres-eq3.16e-02-ep1.00e-01-om1.00e-03.png}
+  \caption{ }
+  \label{fig:newres}
+\end{figure}
+
+However, for $\omext \sim \delta n$, a new behavior is observed:
+$\gamma\to \pi$ and the resonance becomes anti-aligned. In Figure~\ref{fig:newres}, we have
+plotted an integration for $\edisk=0.032$, $e_p=0.1$ to demonstrate
+this behavior.  In addition to this, the average eccentricity $e_1$ is
+excited to higher values.
+
+For $\omext > \delta n$, depending on the relationship between
+$\edisk$ and $\ep$, $e_1$ may be suppressed to small values, while
+$\gamma\to \pi$ and the apsidal anti-alignment remains. For
+$\ep>\edisk$, the values of $e_1$ decrease below $\edisk$ as $\omext$
+increases. For $\ep \lesssim \edisk$, occasionally $e_1$ ``breaks''
+out of the trend to return to $\sim \edisk$.
+
+This can be understood from the equation of motion for $\gamma$ (see \ref{app:eom}),
+where we have added the external precession frequency $\omext$ (see \ref{sec:extpert}).
+In case of $\gamma$ circulating:
+\[ -\mu_p\p*{\frac{A\cos\theta}{\Lambda e} + \frac{2C}{\Lambda} +
+    \frac{De_p\cos\gamma}{\Lambda e} + \frac{\omega_{\rm eff}}{\mu_p}}
+  > 0 \]
+\[\Rightarrow \frac{1}{e\Lambda}\p*{A+De_p\abs{\left<\cos\gamma\right>}} > \frac{2C}{\Lambda} + \frac{\omega_{\rm eff}}{\mu_p} \]
+
+In case of $\gamma$ locked:
+\[ -\mu_p\p*{\frac{A\cos\theta}{\Lambda e} + \frac{2C}{\Lambda} +
+    \frac{De_p\cos\gamma}{\Lambda e} + \frac{\omega_{\rm eff}}{\mu_p}}
+  \approx 0 \]
+\[\Rightarrow \frac{1}{e\Lambda}\p*{A+De_p\abs{\left<\cos\gamma\right>}} \approx \frac{2C}{\Lambda} + \frac{\omega_{\rm eff}}{\mu_p} \]
+These results are summarized by the series of plots in Figure \ref{fig:gammadot-behaviors}.
+
+\begin{figure*}[htb]
+  \centering
+ \includegraphics[width=0.3\textwidth]{../ext-perturber/varyomeff/gammadots-eq1.00e-02/total-gbehaviors.png}
+ \includegraphics[width=0.3\textwidth]{../ext-perturber/varyomeff/gammadots-eq3.16e-02/total-gbehaviors.png}
+ \includegraphics[width=0.3\textwidth]{../ext-perturber/varyomeff/gammadots-eq1.00e-01/total-gbehaviors.png}
+  \caption{ }
+  \label{fig:gammadot-behaviors}
+\end{figure*}
+\subsubsection{(WIP) Phase diagrams}
+See Figure~\ref{fig:phasediags} for preliminary results.
+\begin{figure*}[htb]
+  \centering
+ \includegraphics[width=0.45\textwidth]{{../examples/ext-pert/newres-phasediag-eq3.16e-02-ep1.00e-01-om1.00e-03}.png}
+ \includegraphics[width=0.45\textwidth]{{../examples/ext-pert/newres-phasediag-eq3.16e-02-ep1.00e-01-om1.00e-03}.png}
+  \caption{ }
+  \label{fig:phasediags}
+\end{figure*}
+
+\subsubsection{(WIP) Comparable mass results}
+WIP, code written, not working/tested yet.
+\subsubsection{(WIP) N-body results} 
+See Figure~\ref{fig:nbodynewres} for preliminary results.
+\begin{figure*}[htb]
+  \centering
+ \includegraphics[width=0.45\textwidth]{{../nbody/testsuite/collect/precess-eq1.00e-02-ep1.00e-01-om1.00e-03}.png}
+ \includegraphics[width=0.45\textwidth]{{../ext-perturber/varyomeff/eq1.00e-02/ep1.00e-01/1.00e-02-1.00e-03}.png}
+  \caption{ }
+  \label{fig:nbodynewres}
+\end{figure*}
+
+\clearpage
+\onecolumn
+\appendix
+\section{Appendix}
+\subsection{Resonant coefficients}\label{app:coeff}
+The coefficients for an internal resonance are:
+  \begin{align*}
+    A &=  \frac12[2(j+1)+\alpha D]b_{1/2}^{(j+1)}(\alpha) \approx 2.0 \\
+    B &= -\frac12[-1+2(j+1)+\alpha D]b_{1/2}^{(j)}(\alpha) \approx -2.5\\
+    C &= \frac18[2\alpha D + \alpha^2 D^2]b_{1/2}^{(0)}(\alpha) \approx 1.15\\
+    D &= \frac14[2-2\alpha D - \alpha^2 D^2]b_{1/2}^{(1)}(\alpha)\approx -2.0,
+  \end{align*}
+  where $b_{k}^{(j)}$ are the usual Laplace coefficients (e.g. Murray \& Dermott 2000).
+For an external resonance:
+\begin{align*}
+    A &= \frac12\alpha[-1+2(j+1)+\alpha D]b_{1/2}^{(j)}(\alpha) \approx 1.9\\
+    B &=  -\frac12\alpha[2(j+1)+\alpha D]b_{1/2}^{(j+1)}(\alpha) \approx -1.5 \\
+    C &= \frac18\alpha[2\alpha D + \alpha^2 D^2]b_{1/2}^{(0)}(\alpha) \approx 0.9\\
+    D &= \frac14\alpha[2-2\alpha D - \alpha^2 D^2]b_{1/2}^{(1)}(\alpha)\approx -1.5. 
+  \end{align*}
+\subsection{Equations of Motion}\label{app:eom}
+The full equations of motion, derived from the Hamiltonian in equation \ref{eq:H},
+for an internal resonance, are given by:
+\begin{align*}
+  H
+  &= - \frac{1}{2\Lambda^2} + \mu_p\left(A
+    \left(\frac{2\Gamma}{\Lambda}\right)^{1/2}\cos\theta + B
+    e_p\cos\theta_p\right) \\
+  &- \mu_p \left(C\left(\frac{2\Gamma}{\Lambda}
+      + e_p^2\right) + De_p
+    \sqrt{\frac{2\Gamma}{\Lambda}}\cos\gamma\right)
+\end{align*}
+
+\begin{align*}
+\dot{\lambda}
+  =& \frac{1}{\Lambda^3} + \mu_p\left(-A\sqrt{\frac{\Gamma}{2\Lambda^3}}\cos\theta
+    + C\frac{2\Gamma}{\Lambda^2} + De_p\sqrt{\frac{\Gamma}{2\Lambda^3}}\cos\gamma\right) \\
+\dot{\Lambda} =& -\mu_p \left(Aj\sqrt{\frac{2\Gamma}{\Lambda}}\sin\theta
+      +Bj e_p\sin\theta_p\right) + \frac{\Lambda}{2}\left(\frac{1}{T_m}-\frac{4\Gamma}{\Lambda T_e}\right) \\
+\dot{\gamma} =& \mu_p\left(\frac{A\cos\theta}{\sqrt{2\Gamma\Lambda}}
+    - \frac{2C}{\Lambda} - De_p\frac{\cos\gamma}{\sqrt{2\Gamma\Lambda}} \right) \\
+  \dot{\Gamma} = &\mu_p\left(A\sqrt{\frac{2\Gamma}{\Lambda}}\sin\theta
+    - De_p\sqrt{\frac{2\Gamma}{\Lambda}}\sin \gamma\right)  \\
+&-\frac{\Gamma}{\Lambda}\frac{\Lambda}{2}\left(\frac{1}{T_m}-\frac{4\Gamma}{\Lambda T_e}\right)
+  -\frac{2\Gamma}{T_e}
+\end{align*}
+For an external resonance, are given by:
+\begin{align*}
+  H
+  &= - \frac{1}{2\Lambda^2} - \mu_p\left(A
+    \left(\frac{2\Gamma}{\Lambda}\right)^{1/2}\cos\theta + B
+    e_p\cos\theta_p\right) \\
+  &- \mu_p \left(C\left(\frac{2\Gamma}{\Lambda}
+      + e_p^2\right) + De_p
+    \sqrt{\frac{2\Gamma}{\Lambda}}\cos\gamma\right)
+\end{align*}
+
+\begin{align*}
+\dot{\lambda}
+  =& \frac{1}{\Lambda^3} + \mu_p\left(A\sqrt{\frac{\Gamma}{2\Lambda^3}}\cos\theta
+    + C\frac{2\Gamma}{\Lambda^2} + De_p\sqrt{\frac{\Gamma}{2\Lambda^3}}\cos\gamma\right)\\
+\dot{\Lambda} =& \mu_p \left(Aj\sqrt{\frac{2\Gamma}{\Lambda}}\sin\theta
+      Bj e_p\sin\theta_p\right) + \frac{\Lambda}{2}\left(-\frac{1}{T_m}-\frac{4\Gamma}{\Lambda T_e}\right) \\
+\dot{\gamma} =& \mu_p\left(\frac{-A\cos\theta}{\sqrt{2\Gamma\Lambda}}
+    - \frac{2C}{\Lambda} - De_p\frac{\cos\gamma}{\sqrt{2\Gamma\Lambda}} \right)\\
+  \dot{\Gamma} =& \mu_p\left(-A\sqrt{\frac{2\Gamma}{\Lambda}}\sin\theta
+    - De_p\sqrt{\frac{2\Gamma}{\Lambda}}\sin \gamma\right) \\
+&-\frac{\Gamma}{\Lambda}\frac{\Lambda}{2}\left(-\frac{1}{T_m}-\frac{4\Gamma}{\Lambda T_e}\right)
+  -\frac{2\Gamma}{T_e}
+\end{align*}
+
+
+\subsection{Reduced Hamiltonian}\label{app:reducedH}
+The reduced Hamiltonian for an internal resonance with $\ep>0$ is given by:
+  \[ \overline{\Gamma} = \Gamma + \frac{\sqrt{\Lambda_0}B}{A} e_p\sqrt{2\Gamma}\cos\gamma + \frac{\Lambda_0B^2}{A^2}e_p^2 \]
+\[ \overline{\gamma} = \tan^{-1}\p*{\frac{e\sin\gamma}{e\cos\gamma + Be_p/A}} \]
+\[ \overline{e}^2 = e^2 + \frac{2B}{A} e_p e \cos\gamma + \frac{B^2}{A^2}e_p^2\]
+  \[\overline{\theta} = (j+1)\lambda_p - j\lambda + \overline{\gamma} \]
+\[ \overline{H} = - \frac{(GM)^2}{2\Lambda^2} + \frac{Gm_p}{a_p}A\sqrt{\frac{2\overline{\Gamma}}{\Lambda}}\cos\overline{\theta}, \]
+and in the external case:
+  \[ \overline{\Gamma} = \Gamma + \frac{\sqrt{\Lambda_0}B}{A} e_p\sqrt{2\Gamma}\cos\gamma + \frac{\Lambda_0B^2}{A^2}e_p^2 \]
+\[ \overline{\gamma} = \tan^{-1}\p*{\frac{e\sin\gamma}{e\cos\gamma + Be_p/A}} \]
+\[ \overline{e}^2 = e^2 + \frac{2B}{A} e_p e \cos\gamma + \frac{B^2}{A^2}e_p^2\]
+  \[\overline{\theta} = (j+1)\lambda - j\lambda_p + \overline{\gamma} \]
+\[ \overline{H} = - \frac{(GM)^2}{2\Lambda^2} - \frac{Gm_p}{a_p}\alpha A\sqrt{\frac{2\overline{\Gamma}}{\Lambda}}\cos\overline{\theta} \]
+%section Extra
+\extra{
+For the $\edisk\lesssim \ep$ regime in the $(\ep,\edisk)$ parameter space,
+$\dot{\gamma}\to 0$ and $\abs{\gamma-\gamma_p}\to 0$, resulting in
+apsidal alignment. In the opposite regime, $\dot{\gamma}\neq 0$ and
+$\abs{\gamma - \gamma_p}$ circulates.
+For $\edisk \sim \ep$, the dynamics are complicated, and we turn to numerical
+simulations.
+
+  \begin{equation}
+  \label{eq:gammadot}
+\dot{\gamma} = \mu_p\left(\pm\frac{A\cos\theta}{\sqrt{2\Gamma\Lambda}}
+    - \frac{2C}{\Lambda} -
+    D\ep\frac{\cos\gamma}{\sqrt{2\Gamma\Lambda}}\right).
+\end{equation}
+Since $\theta$ circulates, the first term typically averages out to zero,
+and the $(\pm)$ does not matter. If $\dot{\gamma}\approx 0$,
+then
+\[ \ep \approx 2\abs*{\frac{C}{D}}\edisk\approx \edisk \]
+for both the internal and external resonances.
+Hence, if $\ep\lesssim \edisk$, the middle term in equation (\ref{eq:gammadot})
+dominates and $\dot\gamma$ may go to 0, leading to apsidal alignment.
+If $\ep\gtrsim \edisk$, the last term in equation (\ref{eq:gammadot})
+dominates, and $\dot\gamma \neq 0$ destroying any apsidal alignment.}
+\end{document}

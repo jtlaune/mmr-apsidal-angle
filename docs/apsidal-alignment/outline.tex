@@ -1,0 +1,71 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{cancel}
+\usepackage{titlesec}
+\newcommand{\note}[1]{{\color{red} #1 }}
+\newcommand{\fignote}[1]{{\color{blue} #1 }}
+\renewcommand{\v}[1]{\boldsymbol{ #1 }}
+\renewcommand{\bar}[1]{\overline{ #1 }}
+\newcommand{\vh}[1]{\hat{\boldsymbol{ #1 }}}
+\newcommand{\dd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\ebar}{\overline{e}}
+\newcommand{\gammabar}{\overline{\gamma}}
+\newcommand{\thetabar}{\overline{\theta}}
+\newcommand{\edisk}{e_d}
+\DeclarePairedDelimiter{\abs}{|}{|}
+\DeclarePairedDelimiter{\p}{(}{)}
+\DeclarePairedDelimiter{\we}{\langle}{\rangle}
+
+\title{Apsidal alignment in exoplanet systems}
+
+\begin{document}
+\section{Introduction}
+\begin{itemize}
+\item Migration and MMR capture in disks
+\item Observations of Kepler-88, K2-19 show apsidal alignment
+\item What conditions are necessary for alignment?
+\item \textbf{Goal:} Constrain disk aspect ratio with observations of aligned systems
+\end{itemize}
+\section{Restricted problem}
+%subsection
+\begin{itemize}
+\item Background formalism, Wisdom's Hamiltonian
+\item Summarize shifted resonance and resonant variables ($\gammabar$,
+  $\ebar$, $\thetabar$)
+\end{itemize}
+\subsection{Disk forces}
+\begin{itemize}
+\item Dissipative forces from protoplanetary disk conditions
+\item Connect parameters $T_m$ and $T_e$ to disk aspect ratio and density
+\item Equilibrium eccentricity $\edisk$ for $e_p=0$
+\end{itemize}
+\subsection{External MMR}
+\begin{itemize}
+\item Heuristic explanation with equation of state
+\item \fignote{Plot of gamma components}
+\end{itemize}
+\includegraphics[width=0.6\textwidth]{../../images/external-examples.png}\\
+\includegraphics[width=0.9\textwidth]{../../images/galign-grid.png}\\
+\includegraphics[width=0.6\textwidth]{../../images/external-examples-phasediags.png}
+\subsection{Internal MMR}
+\begin{itemize}
+\item Similar to external
+\item Migration model fails for $e_p<\edisk$
+\end{itemize}
+\section{Two massive planets}
+\begin{itemize}
+\item \note{Work in progress}
+\end{itemize}
+\section{Observations}
+\begin{itemize}
+\item K2-19 b,c have $\delta\varpi\approx 0$, $e_b,e_c\approx 0.2$,
+  but $\theta_b$ and $\theta_c$ both circulate
+\end{itemize}
+\section{Conclusion}
+\end{document}

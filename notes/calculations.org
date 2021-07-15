@@ -1,0 +1,372 @@
+-*- mode:org -*-
+#+TAGS: work
+#+TYP_TODO: TODO(t) WAIT(w) | DONE(d)
+#+STARTUP: latexpreview
+#+TITLE: Calculations
+* Compmass equilibrium eccentricities
+- analytical estimates seem to be underestimating near q~1
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  
+  class solve_eqeccs:
+      def __init__(self, q, totmass, j, Tm1, Tm2, Te1, Te2, secterms=True):
+          # this class returns the equilibrium equations divided by mu2
+          self.q = q
+          self.mu2 = totmass/(1+q)
+          alpha_0 = (j/(j+1))**(2./3.)
+          self.alpha_0 = alpha_0
+          self.alpha_2 = 1./alpha_0
+          # for some reason multiplying by -1 works much better?? figure out this inconsistency
+          self.f1 = -A(alpha_0, j)
+          self.f2 = -B(alpha_0, j)
+          if secterms:
+              self.C = C(alpha_0)
+              self.D = D(alpha_0)
+          else:
+              self.C = 0.
+              self.D = 0.
+          self.Tm1 = Tm1
+          self.Tm2 = Tm2
+          self.Te1 = Te1
+          self.Te2 = Te2
+  
+      def dote1(self, e1, e2, theta1, theta2):
+          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - e1/self.Te1
+          return(deriv)
+      def dote2(self, e1, e2, theta1, theta2):
+          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - e2/self.Te2
+          return(deriv)
+      def dotdpom(self, e1, e2, theta1, theta2):
+          #deriv = self.mu2/self.alpha_2*(self.f1*cos(theta1)/(e1*sqrt(self.alpha_0))
+          #         - self.q*cos(theta2)/e2
+          #         + 2*self.C/sqrt(self.alpha_0)
+          #         + self.D*e2/e1/sqrt(self.alpha_0)
+          #         -self.q*2*self.C/sqrt(self.alpha_2)
+          #         - self.q*self.D*e1/e2/sqrt(self.alpha_2))
+          deriv = (self.f1*e2*cos(theta1)/(sqrt(self.alpha_0))
+                   - self.q*self.f2*cos(theta2)*e1
+                   + 2*self.C/sqrt(self.alpha_0)*e1*e2
+                   + self.D*e2**2/sqrt(self.alpha_0)
+                   -self.q*2*self.C/sqrt(self.alpha_2)*e1*e2
+                   - self.q*self.D*e1**2/sqrt(self.alpha_2))
+          return(deriv)
+      def doteta(self, e1, e2, theta1, theta2):
+          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 + 1))
+                   ,*(1./self.Tm2 - 1./self.Tm1
+                     + 2*e1**2/self.Te1 - 2*e2**2/self.Te2)
+                   - self.q*sqrt(self.alpha_0)*2*e1**2/self.Te1
+                   - 2*e2**2/self.Te2)
+          return(deriv)
+      def __call__(self, vec):
+          (e1, e2, theta1, theta2) = vec[:]
+          e1_deriv = self.dote1(e1, e2, theta1, theta2)
+          e2_deriv = self.dote2(e1, e2, theta1, theta2)
+          dpom_deriv = self.dotdpom(e1, e2, theta1, theta2)
+          eta_deriv =  self.doteta(e1, e2, theta1, theta2)
+          deriv_arr = np.array([e1_deriv,
+                                e2_deriv,
+                                dpom_deriv,
+                                eta_deriv])
+          #print(vec, deriv_arr)
+          return(deriv_arr)
+  
+  def get_eeqs(dir):
+      NQS = 36
+      QS = np.logspace(-3.,0.,NQS)
+      NAMES = np.array([f"q{qit:0.2f}" for qit in QS])
+      FILENAMES   = [os.path.join(dir, f"{name}.npz") for name in NAMES]
+      qscatters = -1*np.ones(NQS)
+      e1eqs = np.zeros(NQS)
+      e2eqs = np.zeros(NQS)
+      dpoms = np.zeros(NQS)
+      for fi, filename in enumerate(FILENAMES):
+          if os.path.exists(filename):
+              data = np.load( filename)
+              teval = data["teval"]
+              theta = data["thetap"]
+              e1    = data["e1"]
+              e2    = data["e2"]
+              g1    = data["g1"]
+              g2    = data["g2"]
+  
+              it = int(0.9*len(teval))
+              e1eqs[fi] = np.average(e1[it:])
+              e2eqs[fi] = np.average(e2[it:])
+              dpoms[fi] = np.average(np.abs(e2[it:]-e1[it:]))
+              qscatters[fi] = QS[fi]
+      return(e1eqs, e2eqs, dpoms, qscatters)
+ #+END_SRC
+
+ #+RESULTS:
+** comparable mass case q in [0.01, 1], normal damping forces
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, secterms=True):
+      e1s = np.zeros(Nqs)
+      e2s = np.zeros(Nqs)
+      theta1s = np.zeros(Nqs)
+      theta2s = np.zeros(Nqs)
+  
+      print(TW0)
+      for iq, q in enumerate(qs):
+  
+          Te2 = TW0*2*np.pi
+          Te1 = Te2/q/alpha_0**0.5
+  
+          Tm1 = Te1/2.7/h**2
+          Tm2 = Te2/2.7/h**2
+  
+          x0 = (h/sqrt(q), h*sqrt(q), pi, 0.)
+          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1, Te2, secterms=secterms)
+          sol = scipy.optimize.root(mfunc, x0, options={"maxfev":int(1e4)})
+          x = sol.x
+          if not sol.success:
+              print(sol.message)
+          e1 = x[0]
+          e2 = x[1]
+          theta1 = x[2]
+          theta2 = x[3]
+          e1s[iq] = e1
+          e2s[iq] = e2
+          theta1s[iq] = theta1
+          theta2s[iq] = theta2
+          #if not np.all(np.isclose(mfunc(x), np.zeros(len(x)))):
+              #print(infodict["nfev"],f"solution didn't converge for q={q}")
+          #print(x, mesg, infodict["nfev"])
+          #print(theta1-theta2)
+      return(e1s, e2s, theta1s, theta2s)
+ #+END_SRC
+
+ #+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
+  h = 0.025
+  Nqs = 1000
+  qs = np.logspace(-3.,0.,Nqs)
+  #qs = [0.01]
+  j = 2
+  alpha_0 = (j/(j+1))**(2./3.)
+  TW0 = 1e2
+  
+  totmass = 1e-3
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, Nqs, qs, j, alpha_0,
+                                         totmass, secterms=True)
+  (e1s_nosec, e2s_nosec,
+   theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
+                                             totmass, secterms=False)
+  e1eqs, e2eqs, dpoms, qscatters = get_eeqs("./Tw0100")
+  e1eqs_nosec, e2eqs_nosec, dpoms_nosec, qscatters_nosec = get_eeqs("./Tw0100nosec")
+  
+  fig, ax = plt.subplots()
+  ax.plot(qs, e1s, label=r"$e_1$ analytical eq")
+  ax.plot(qs, e2s, label=r"$e_2$ analytical eq")
+  ax.plot(qs, e1s_nosec, ls="--", c="blue", label=r"$e_1$ no sec analyt. eq")
+  ax.plot(qs, e2s_nosec, ls="--", c="orange", label=r"$e_2$ no sec analyt. eq")
+  ax.set_xscale("log")
+  ax.set_yscale("log")
+  ax.scatter(qscatters, e1eqs, label=r"$e_1$ numerical eq")
+  ax.scatter(qscatters, e2eqs, label=r"$e_2$ numerical eq")
+  ax.scatter(qscatters_nosec, e1eqs_nosec, marker="x", c="blue",
+             label=r"$e_1$ no sec num. eq")
+  ax.scatter(qscatters_nosec, e2eqs_nosec, marker="x", c="orange",
+             label=r"$e_2$ no sec num. eq")
+  ax.legend()
+  ax.set_xlabel("q")
+  #ax.set_ylim((0.,0.4))
+  ax.set_title(f"{j}:{j+1} MMR "+r"$T_{e,2}=$"+f"{TW0:0.1e} "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
+  fig.tight_layout()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 100.0
+: 100.0
+[[file:./.ob-jupyter/75ba57f4b34bf86abe0fc25a1a8508fad6ca89e2.png]]
+:END:
+* eccentricity excitement 
+*Question:* What value does Te2 take for equilibrium if
+e2 -> e2d is fixed as a parameter
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  
+  class solve_eqeccs:
+      def __init__(self, q, totmass, j, Tm1, Tm2, Te1, e2d, secterms=True):
+          # this class returns the equilibrium equations divided by mu2
+          self.q = q
+          self.mu2 = totmass/(1+q)
+          alpha_0 = (j/(j+1))**(2./3.)
+          self.alpha_0 = alpha_0
+          self.alpha_2 = 1./alpha_0
+          # for some reason multiplying by -1 works much better?? figure out this inconsistency
+          self.f1 = -A(alpha_0, j)
+          self.f2 = -B(alpha_0, j)
+          if secterms:
+              self.C = C(alpha_0)
+              self.D = D(alpha_0)
+          else:
+              self.C = 0.
+              self.D = 0.
+          self.Tm1 = Tm1
+          self.Tm2 = Tm2
+          self.Te1 = Te1
+          self.Te2 = Te2
+  
+      def dote1(self, e1, e2, theta1, theta2):
+          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - e1/self.Te1
+          return(deriv)
+      def dote2(self, e1, e2, theta1, theta2):
+          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - e2/self.Te2
+          return(deriv)
+      def dotdpom(self, e1, e2, theta1, theta2):
+          #deriv = self.mu2/self.alpha_2*(self.f1*cos(theta1)/(e1*sqrt(self.alpha_0))
+          #         - self.q*cos(theta2)/e2
+          #         + 2*self.C/sqrt(self.alpha_0)
+          #         + self.D*e2/e1/sqrt(self.alpha_0)
+          #         -self.q*2*self.C/sqrt(self.alpha_2)
+          #         - self.q*self.D*e1/e2/sqrt(self.alpha_2))
+          deriv = (self.f1*e2*cos(theta1)/(sqrt(self.alpha_0))
+                   - self.q*self.f2*cos(theta2)*e1
+                   + 2*self.C/sqrt(self.alpha_0)*e1*e2
+                   + self.D*e2**2/sqrt(self.alpha_0)
+                   -self.q*2*self.C/sqrt(self.alpha_2)*e1*e2
+                   - self.q*self.D*e1**2/sqrt(self.alpha_2))
+          return(deriv)
+      def doteta(self, e1, e2, theta1, theta2):
+          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 + 1))
+                   ,*(1./self.Tm2 - 1./self.Tm1
+                     + 2*e1**2/self.Te1 - 2*e2**2/self.Te2)
+                   - self.q*sqrt(self.alpha_0)*2*e1**2/self.Te1
+                   - 2*e2**2/self.Te2)
+          return(deriv)
+      def __call__(self, vec):
+          (e1, e2, theta1, theta2) = vec[:]
+          e1_deriv = self.dote1(e1, e2, theta1, theta2)
+          e2_deriv = self.dote2(e1, e2, theta1, theta2)
+          dpom_deriv = self.dotdpom(e1, e2, theta1, theta2)
+          eta_deriv =  self.doteta(e1, e2, theta1, theta2)
+          deriv_arr = np.array([e1_deriv,
+                                e2_deriv,
+                                dpom_deriv,
+                                eta_deriv])
+          #print(vec, deriv_arr)
+          return(deriv_arr)
+  
+  def get_eeqs(dir):
+      NQS = 36
+      QS = np.logspace(-3.,0.,NQS)
+      NAMES = np.array([f"q{qit:0.2f}" for qit in QS])
+      FILENAMES   = [os.path.join(dir, f"{name}.npz") for name in NAMES]
+      qscatters = -1*np.ones(NQS)
+      e1eqs = np.zeros(NQS)
+      e2eqs = np.zeros(NQS)
+      dpoms = np.zeros(NQS)
+      for fi, filename in enumerate(FILENAMES):
+          if os.path.exists(filename):
+              data = np.load( filename)
+              teval = data["teval"]
+              theta = data["thetap"]
+              e1    = data["e1"]
+              e2    = data["e2"]
+              g1    = data["g1"]
+              g2    = data["g2"]
+  
+              it = int(0.9*len(teval))
+              e1eqs[fi] = np.average(e1[it:])
+              e2eqs[fi] = np.average(e2[it:])
+              dpoms[fi] = np.average(np.abs(e2[it:]-e1[it:]))
+              qscatters[fi] = QS[fi]
+      return(e1eqs, e2eqs, dpoms, qscatters)
+ #+END_SRC
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, secterms=True):
+      e1s = np.zeros(Nqs)
+      e2s = np.zeros(Nqs)
+      theta1s = np.zeros(Nqs)
+      theta2s = np.zeros(Nqs)
+  
+      for iq, q in enumerate(qs):
+          Te1 = TW0*2*np.pi
+          Te2 = -10.*Te1
+  
+          Tm1 = -Te1/h**2
+          Tm2 = np.inf
+  
+          x0 = (h/sqrt(q), h*sqrt(q), pi, 0.)
+          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1, Te2, secterms=secterms)
+          sol = scipy.optimize.root(mfunc, x0, options={"maxfev":int(1e4)})
+          x = sol.x
+          #if not sol.success:
+          #    print(sol.message)
+          e1 = x[0]
+          e2 = x[1]
+          theta1 = x[2]
+          theta2 = x[3]
+          e1s[iq] = e1
+          e2s[iq] = e2
+          theta1s[iq] = theta1
+          theta2s[iq] = theta2
+          #print(x, mesg, infodict["nfev"])
+          #print(theta1-theta2)
+      return(e1s, e2s, theta1s, theta2s)
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
+  h = 0.025
+  Nqs = 1000
+  qs = np.logspace(-1.,-3.,Nqs)
+  #qs = [0.01]
+  j = 2
+  alpha_0 = (j/(j+1))**(2./3.)
+  TW0 = 1e2
+  
+  totmass = 1e-3
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, Nqs, qs, j, alpha_0,
+                                         totmass, secterms=True)
+  (e1s_nosec, e2s_nosec,
+   theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
+                                             totmass, secterms=False)
+  
+  fig, ax = plt.subplots(2)
+  ax[0].plot(qs, e1s, label=r"$e_1$ analytical eq")
+  ax[0].plot(qs, e2s, label=r"$e_2$ analytical eq")
+  ax[0].plot(qs, e1s_nosec, ls="--", c="blue", label=r"$e_1$ no sec analyt. eq")
+  ax[0].plot(qs, e2s_nosec, ls="--", c="orange", label=r"$e_2$ no sec analyt. eq")
+  ax[1].plot(qs, theta1s)
+  ax[1].plot(qs, theta2s)
+  ax[0].set_xscale("log")
+  ax[0].set_yscale("log")
+  ax[0].legend()
+  ax[0].set_xlabel("q")
+  #ax.set_ylim((0.,0.4))
+  fig.suptitle(f"{j}:{j+1} MMR "+r"$T_{e,2}=$"+f"{TW0:0.1e} "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
+  fig.tight_layout()
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/80576a4e512307f523ddfd22f1fe361764f1e440.png]]
+
