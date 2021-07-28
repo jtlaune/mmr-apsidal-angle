@@ -1,11 +1,63 @@
 -*- mode:org -*-
-hello
 #+TAGS: work
 #+TYP_TODO: TODO(t) WAIT(w) | DONE(d)
 #+STARTUP: latexpreview
 #+TITLE: Research Notes/TODOs
 * capture 
+** TODO read petigura 2019
+** TODO read ragusa 2018
+** TODO solve analytical eq for e1/2d driving eccs
+** TODO Test different Te1/Te2 ratios for ecc decay
+** TODO write up comparison of theta1/2 resonant timescales and Te1/2 timescales
+** DONE [#A] Solve for Tej (ej?) if Tek = infty algebraic/numerical
+** DONE [#A] Test different tolerance settings & integrators for ecc decay
+- plot avg(sin(theta)) for diff tol/integrators to see if numerical issue
+** DONE [#A] Integrate a reasonable time for orbit evolution of q=0.001 for ecc decay
 * Meetings
+** [2021-07-23 Fri] MEETING
+1. try q ~ 1 for T >> Te2 to see if equilibrium is reached
+2. try runs with the "story" of the capture process:
+   - for alignment must have e_20 > mu_1^2/3 and e_10 > mu_2^2/3 to
+     avoid capture into theta1/2 resonances
+   - must have hat(e) within resonance capture range for hat(theta)
+   - damping stops before theta1/2 equilibrium is reached
+*** Plans for draft of paper
+1. Introduction
+   - K2-19 is puzzling in light of anti-alignment outcome
+2. Summarize q first
+   - example, stable case T to infty
+   - secular term modification "canonical case"
+   - why anti-alignment, small secular effects
+3. TP case (possibly sec1 or in appendix if not relevant)
+*** Plans for research talk
+- K2-19 system
+- Subresonances
+- reproducing TP results with q=1000
+  - analytic equilibrium results, not a true equilibrium
+- Driving eccentricities for q~O(1) cases
+  - reproducing K2-19 alignment
+  - disucssion of Tei physics?
+** [2021-07-16 Fri] MEETING
+1. Solve for Tej if Tek = infty algebraic/numerical
+2. Only drive the larger planet's eccentricity to be nonzero
+3. Look at observations of $\Delta\varpi$. How do they measure it?
+   1. are there any observed aligned cases in the literature?
+   2. If so, this is counter to the strong conclusion that the
+      resonance is resilient to the the Te1/Te2 ratio and that in
+      resonance the planets are always anti-aligned. *This could be the
+      argument for your paper.*
+4. Try comparable mass for e2d->0.1, maybe q=2
+5. Ragusa 2018 eccentricity evolution during planet disk interaction
+   1. Long hydro simulation
+6. *Problem of why q=1000 affects teh larger planet so much!!!!*
+   1. *Integrate a reasonable time for orbit evolution of q=0.001*
+   2. Compare Te1/Te2 reasonable case to crazy large case
+   3. Compare Te2 timescale to theta2 resonance timescale. Is it
+      constant on a reasonable timescale of integration?
+   4. Run for only a few Te of the smaller planet
+   5. Try BS integrator & vary tolerance while plotting
+      avg(sin(theta)) to see if results agree and it's not the code's
+      fault
 ** [2021-07-09 Fri] MEETING
 1. It seems like the secular terms don't matter that much for the
    q~[0.1-1] case for comparable masses
@@ -31,8 +83,8 @@ hello
 *** DONE [#A] Get equilibrium solving code working you idiot
 - look at extreme mass ratios
 - how do secular terms change the behavior?
-*** TODO [#B] Find a good parameter range for q, Te2, etc
-*** TODO [#B] test parameter space with time-dependent numerical runs
+*** DONE [#B] Find a good parameter range for q, Te2, etc
+*** DONE [#B] test parameter space with time-dependent numerical runs
 - in effort to answer #5 above
 ** [2021-07-02 Fri] MEETING
 /I think I am stupid/
@@ -40,7 +92,7 @@ hello
    where equilibrium is, make the same plots
 2. Compare numerical results of equilibrium with secular terms turned
    off to see the difference
-* TODOS
+* Long term objectives
 ** TODO [#A] list of figures and outline [2/3]
 *** TODO apsidal alignment [2/3] 
   - [X] combine internal & external plots
@@ -55,39 +107,39 @@ hello
   - blurred scatter plots
   - pick 0.01,0.1 and 0.1,0.01
 *** DONE phase diagrams
-* WAITS
-** WAIT [#B] phase diagrams [1/3]
+** Waiting on
+*** WAIT [#B] phase diagrams [1/3]
 - [X] semianalytical
 - [ ] n body
 - [ ] describe resonance splitting
-** WAIT [#B] finish summary [2/4]
+*** WAIT [#B] finish summary [2/4]
 - [ ] need to include N-body runs for ext-perturber, non-confirmation or confirmation
 - [X] clarify chaotic nature of e1 excitation for omext >~ dn runs
   - ep and edisk similar magnitude => chaotic based on a0
 - [X] summary table of runs, cross table, # runs, etc
 - [ ] relate eeq to disk properties
-** WAIT [#B] test omext in H integrator 
-** WAIT [#C] fix & shorten reference-pdf
-** WAIT sympy confirmation of sidebyside summary EoMs
-** WAIT organize [2/4]
-*** DONE org research notes
-*** DONE goodnotes research notes
-*** TODO meeting notes
-*** TODO calculation notes
-** WAIT REBOUND
-*** WAIT matter ring potential [0/3]
+*** WAIT [#B] test omext in H integrator 
+*** WAIT [#C] fix & shorten reference-pdf
+*** WAIT sympy confirmation of sidebyside summary EoMs
+*** WAIT organize [2/4]
+**** DONE org research notes
+**** DONE goodnotes research notes
+**** TODO meeting notes
+**** TODO calculation notes
+*** WAIT REBOUND
+**** WAIT matter ring potential [0/3]
 - [ ] implement force in rebound
 - [ ] test implementation
 - [ ] compare to semianalytical
-*** WAIT add interrupt conditions  
-** small todo
-*** TODO [#C] fix rebound mmr Tm signs. simplify
-** WAIT figure out unknown res situation to be able to include internal runs in summary
-* DONES
-** DONE [#A] comparable mass Hamiltonian [3/3]
-*** DONE make git commit w/ test particle test suite
-*** DONE clean up, organize files
-*** DONE write & test comparable mass H code
+**** WAIT add interrupt conditions  
+*** WAIT [#C] fix rebound mmr Tm signs. simplify
+*** WAIT figure out unknown res situation to be able to include internal runs in summary
+** Done
+*** DONE [#A] Change e1, e2 calc in [[file:~/multi-planet-architecture/run.py]] to proper delaunay variables
+*** DONE [#A] comparable mass Hamiltonian [3/3]
+**** DONE make git commit w/ test particle test suite
+**** DONE clean up, organize files
+**** DONE write & test comparable mass H code
 * Equations pdfs
 [[file:~/multi-planet-architecture/docs/4dof-pdf/4dof_diffeqs.pdf]]
 ** coefficients
@@ -106,6 +158,17 @@ hello
 : ['2.03', '-2.48', '1.15', '-2.00']
 
 * Relevant Observed systems                                          :ATTACH:
+** K2-19 b & c; Petigura et al. (2019)
+- M_star = 0.88 Msun
+- Pb = 7.9222d Pc = 11.8993d
+- Mb = 32.4ME Mc = 10.8ME
+- mu1 = 1.11e-4 mu2 = 3.69e-5 q = 3.00
+- e_b = 0.20 e_c = 0.21
+- x_b = sqrt(e_b)*cos(varpi_b) = 0.02
+  x_b = sqrt(e_b)*sin(varpi_b) = -0.44
+- x_c = sqrt(e_c)*cos(varpi_c) = 0.04
+  x_c = sqrt(e_c)*sin(varpi_c) = -0.46
+- Dvarpi_bc = 2+-2 deg ~ 0.
 ** Huang et al. (2016)
 [[file:papers/huang-2016-WJneighbors.pdf]]
 :PROPERTIES:
@@ -146,7 +209,6 @@ b 1.1 Mj
 *** Kepler-117
 b 30 Me
 c 1.8 Mj
-* apsidal alignment figures
 * validating w/ REBOUND [8/8]
 ** DONE plot gammadot components to compare
 ** DONE calculate ring potential
@@ -236,7 +298,6 @@ similar behavior, but the first term is circulating for nbody
 ** DONE think about internal? is it important to include?
 yes, should include internal. explain away the bad parts by saying our
 model fails
-
 
 * semianalytical test cases [1/1]
 [[file:test-cases.py]]

@@ -396,10 +396,9 @@ class tp_intH(resonance):
 
 
 class comp_mass_intH(resonance):
-    # This class will take two comparable mass planets and push the
-    # outer one towards the inner one. We will have T_m,2 and T_e,1
-    # and T_e,2.
-    def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2):
+    # This class will integrate two planets with mass ratio q=m1/m2.
+    # We will have T_m1,2 and T_e1,2 as parameters.
+    def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None, e2d=None):
         self.j = j
         self.mu1 = mu1
         self.q = q
@@ -410,6 +409,8 @@ class comp_mass_intH(resonance):
         self.Tm2 = Tm2
         self.Te1 = Te1
         self.Te2 = Te2
+        self.e1d = e1d
+        self.e2d = e2d
 
     def H4dofsec(self, t, Y):
 
@@ -430,8 +431,8 @@ class comp_mass_intH(resonance):
         j = self.j
         mu2 = self.mu1 / self.q
 
-        e1 = np.sqrt(2 * G1 / L1)
-        e2 = np.sqrt(2 * G2 / L2)
+        e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
+        e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
 
         # the Hamiltonian is -(constants) as the internal TP
         # Hamiltonian, i.e. it matches MD
@@ -530,9 +531,13 @@ class comp_mass_intH(resonance):
         # convert time units
         T0 = self.T0
         Tm1 = self.Tm1 * T0
-        Te1 = self.Te1 * T0
         Tm2 = self.Tm2 * T0
+        Te1 = self.Te1 * T0
         Te2 = self.Te2 * T0
+        if self.e1d:
+            Te1 = self.Te1/(e1-self.e1d)
+        if self.e2d:
+            Te2 = self.Te2/(e2-self.e2d)
 
         L1dot_dis = (L1 / 2) * (1 / Tm1 - 2 * e1*e1 / Te1)
         L2dot_dis = (L2 / 2) * (1 / Tm2 - 2 * e2*e2 / Te2)
@@ -567,7 +572,7 @@ class comp_mass_intH(resonance):
         return(np.array([thetadot, L1dot, L2dot, x1dot,
                         y1dot, x2dot, y2dot]))
 
-    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, verbose=False, secular=True):
+    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, verbose=False, secular=True, method="RK45"):
         self.secular = secular
         self.verbose = verbose
         self.T = self.T0*t1
@@ -585,11 +590,9 @@ class comp_mass_intH(resonance):
         x2_0 = G2_0
         y2_0 = 0
         IV = (0, Lambda1_0, Lambda2_0, x1_0, y1_0, x2_0, y2_0)
-        print(IV)
 
         g1_0 = np.arctan2(y1_0, x1_0)
         g2_0 = np.arctan2(y2_0, x2_0)
-        print(g1_0, g2_0)
 
         RHS = self.H4dofsec
 
@@ -599,7 +602,7 @@ class comp_mass_intH(resonance):
             RHS,
             span,
             IV,
-            method="RK45",
+            method=method,
             events=int_cond,
             t_eval=teval,
             rtol=tol,
@@ -652,34 +655,75 @@ class comp_mass_intH(resonance):
 
 def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1, Te2, T,
                  suptitle, dirname, filename, figname, paramsname, verbose=False,
-                 tscale=1e3, secular=True):
+                 tscale=1e3, secular=True, e1d=None, e2d=None, overwrite=False):
     j = 2
-    sim = comp_mass_intH(j, mu1, q, a0, Tm1, Tm2, Te1, Te2)
-    (teval, theta, a1, a2, e1, e2,
-     g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(T, 1e-9,
-                                                    alpha2_0, e1_0, e2_0,
-                                                    verbose=verbose, secular=secular)
-
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
+    if os.path.exists(os.path.join(dirname, filename)):
+        if overwrite:
+            sim = comp_mass_intH(j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=e1d, e2d=e2d)
+            (teval, theta, a1, a2, e1, e2,
+            g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(T, 1e-9,
+                                                       alpha2_0, e1_0, e2_0,
+                                                       verbose=verbose, secular=secular)
+            np.savez(
+                os.path.join(dirname, filename),
+                teval=teval,
+                thetap=theta,
+                a1=a1,
+                a2=a2,
+                e1=e1,
+                e2=e2,
+                g1=g1,
+                g2=g2,
+                L1=L1,
+                L2=L2,
+                x1=x1,
+                y1=y1,
+                x2=x2,
+                y2=y2,
+            )
+        else:
+            data = np.load(os.path.join(dirname, filename))
+            teval  = data["teval"]
+            theta = data["thetap"]
+            a1     = data["a1"]
+            a2     = data["a2"]
+            e1     = data["e1"]
+            e2     = data["e2"]
+            g1     = data["g1"]
+            g2     = data["g2"]
+            L1     = data["L1"]
+            L2     = data["L2"]
+            x1     = data["x1"]
+            y1     = data["y1"]
+            x2     = data["x2"]
+            y2     = data["y2"]
+            
+    else:
+        sim = comp_mass_intH(j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=e1d, e2d=e2d)
+        (teval, theta, a1, a2, e1, e2,
+        g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(T, 1e-9,
+                                                   alpha2_0, e1_0, e2_0,
+                                                   verbose=verbose, secular=secular)
+        np.savez(
+            os.path.join(dirname, filename),
+            teval=teval,
+            thetap=theta,
+            a1=a1,
+            a2=a2,
+            e1=e1,
+            e2=e2,
+            g1=g1,
+            g2=g2,
+            L1=L1,
+            L2=L2,
+            x1=x1,
+            y1=y1,
+            x2=x2,
+            y2=y2,
+        )
 
-    np.savez(
-        os.path.join(dirname, filename),
-        teval=teval,
-        thetap=theta,
-        a1=a1,
-        a2=a2,
-        e1=e1,
-        e2=e2,
-        g1=g1,
-        g2=g2,
-        L1=L1,
-        L2=L2,
-        x1=x1,
-        y1=y1,
-        x2=x2,
-        y2=y2,
-    )
 
     theta1 = (theta + g1) % (2 * np.pi)
     theta2 = (theta + g2) % (2 * np.pi)
@@ -690,11 +734,18 @@ def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1, Te2, T,
 
     f1 = A(alpha, j)
     f2 = B(alpha, j)
-    barg = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+    barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+    barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
 
-    bartheta = (theta + barg) % (2*np.pi)
-    fig, ax = plt.subplots(4, 2, figsize=(10, 20))
-    fontsize = 12
+    bartheta1 = (theta + barg1) % (2*np.pi)
+    bartheta2 = (theta + barg2) % (2*np.pi)
+    # from the reducing rotation (Henrard et al 1986)
+    hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                          e1*cos(theta1) + f2/f1*e2*cos(theta2))
+    hattheta2 = np.arctan2(e2*sin(theta2) + f1/f2*e1*sin(theta1),
+                           e2*cos(theta2) + f1/f2*e1*cos(theta1))
+    fig, ax = plt.subplots(5, 2, figsize=(10, 22))
+    fontsize = 24
 
     # make a quick diagnostic plot
     plotsim(
@@ -705,17 +756,24 @@ def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1, Te2, T,
         tscale,
         fontsize,
         (r"$a_1$", a1),
-        (r"$P_1/P_2$", period_ratio),
+        (r"$|\varpi_1-\varpi_2|$", np.abs(g1-g2)),
         (r"$e_1$", e1),
         (r"$e_2$", e2),
         (r"$\theta_1$", theta1),
         (r"$\theta_2$", theta2),
-        (r"$\overline{\theta}$", bartheta),
-        (r"$|\varpi_1-\varpi_2|$", np.abs(g1-g2)),
+        (r"$\overline{\theta}_1$", bartheta1),
+        (r"$\overline{\theta}_2$", bartheta2),
+        (r"$\hat{\theta}_1$", hattheta1),
+        (r"$\hat{\theta}_2$", hattheta2),
         yfigupper=0.99,
     )
 
     ax[0, 0].scatter(teval / tscale, a2, s=2)
+    axp = ax[0, 0].twinx()
+    axp.scatter(teval/tscale, period_ratio, s=2, c="r")
+    axp.set_ylabel(r"$P_1/P_2$", fontsize=fontsize)
+    axp.tick_params(labelsize=fontsize)
+    fig.subplots_adjust(wspace=0.6)
 
     fig.savefig(os.path.join(dirname, figname))
 
@@ -737,44 +795,41 @@ def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1, Te2, T,
 
 
 class run_compmass_set:
-    def __init__(self, h, j, a0, T, dirname,
-                 verbose=False, overwrite=False, secular=True):
-        self.h            = h 
-        self.j            = j 
-        self.a0           = a0 
-        self.T            = T
-        self.dirname      = dirname 
+    def __init__(self, verbose=False, overwrite=False, secular=True,
+                 e1d=None, e2d=None):
         self.verbose      = verbose
         self.overwrite    = overwrite
         self.secular      = secular
     def __call__(self, params):
-        q = np.float64(params[0])
-        mu1 = np.float64(params[1])
-        Te1 = np.float64(params[2])
-        Te2 = np.float64(params[3])
-        Tm1 = np.float64(params[4])
-        Tm2 = np.float64(params[5])
-        e1_0 = np.float64(params[6])
-        e2_0 = np.float64(params[7])
-        alpha2_0 = np.float64(params[8])
-        name = params[9]
+        h = np.float64(params[0])
+        j = np.float64(params[1])
+        a0 = np.float64(params[2])
+        q = np.float64(params[3])
+        mu1 = np.float64(params[4])
+        T = np.float64(params[5])
+        Te1 = np.float64(params[6])
+        Te2 = np.float64(params[7])
+        Tm1 = np.float64(params[8])
+        Tm2 = np.float64(params[9])
+        e1_0 = np.float64(params[10])
+        e2_0 = np.float64(params[11])
+        e1d = np.float64(params[12])
+        e2d = np.float64(params[13])
+        alpha2_0 = np.float64(params[14])
+        name = params[15]
+        dirname = params[16]
         filename   = f"{name}.npz"
         figname    = f"{name}.png"
         paramsname = f"params-{name}.txt"
-        suptitle = (f"{filename}\nT={self.T:0.1e}\nq={q}\nTm1={Tm1:0.1e} Te1={Te1:0.1e}" \
-                    f"\nTm2={Tm2:0.1e} Te2={Te2:0.1e}")
-        if self.overwrite:
-            run_compmass(self.h, self.j, mu1, q, self.a0,
-                        alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1,
-                         Te2, self.T, suptitle, self.dirname, filename, figname,
-                         paramsname, verbose=self.verbose, secular=self.secular)
-        elif not os.path.exists(os.path.join(self.dirname, filename)):
-            run_compmass(self.h, self.j, mu1, q, self.a0,
-                        alpha2_0, e1_0, e2_0, Tm1, Tm2, Te1,
-                        Te2, self.T, suptitle, self.dirname, filename, figname,
-                        paramsname, verbose=self.verbose, secular=self.secular)
-        else:
-            pass
-        
-
-         
+        suptitle = (f"{filename}\n" \
+                    f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n" \
+                    f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n" \
+                    f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n" \
+                    r"$e_{1,d}$ = " + f"{e1d:0.3f} " \
+                    r"$e_{2,d}$ = " + f"{e2d:0.3f}")
+        run_compmass(h, j, mu1, q, a0, alpha2_0,
+                     e1_0, e2_0, Tm1, Tm2, Te1, Te2, T,
+                     suptitle, dirname, filename, figname,
+                     paramsname, verbose=self.verbose,
+                     secular=self.secular, e1d=e1d,
+                     e2d=e2d, overwrite=self.overwrite)

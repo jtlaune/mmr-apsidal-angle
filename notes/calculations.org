@@ -3,7 +3,153 @@
 #+TYP_TODO: TODO(t) WAIT(w) | DONE(d)
 #+STARTUP: latexpreview
 #+TITLE: Calculations
-* Compmass equilibrium eccentricities
+* Eccentricity decay at extreme mass ratios
+- e1 = 0.1, Te1,Tm1 = infty
+- e2_disk = 0.01, Tm2=1e5
+- T = 20*Te2
+- Tested RK4(5) and RK8(9) with tolerances between 1e-12 to 1e-5
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/test-eccdecay/")
+#+END_SRC
+
+#+RESULTS:
+** Plotting runs
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def plot(filename):
+      dirname = "."
+      data = np.load(os.path.join(dirname, filename))
+      teval  = data["teval"]
+      theta = data["thetap"]
+      a1     = data["a1"]
+      a2     = data["a2"]
+      e1     = data["e1"]
+      e2     = data["e2"]
+      g1     = data["g1"]
+      g2     = data["g2"]
+      L1     = data["L1"]
+      L2     = data["L2"]
+      x1     = data["x1"]
+      y1     = data["y1"]
+      x2     = data["x2"]
+      y2     = data["y2"]
+  
+      theta1 = (theta + g1) % (2 * np.pi)
+      theta2 = (theta + g2) % (2 * np.pi)
+      alpha = a1 / a2
+      period_ratio = (alpha) ** (1.5)
+      pnom = j / (j + 1)
+      pdiff = period_ratio - pnom
+  
+      f1 = A(alpha, j)
+      f2 = B(alpha, j)
+      barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+      barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+  
+      bartheta1 = (theta + barg1) % (2*np.pi)
+      bartheta2 = (theta + barg2) % (2*np.pi)
+      # from the reducing rotation (Henrard et al 1986)
+      hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                            e1*cos(theta1) + f2/f1*e2*cos(theta2))
+      hattheta2 = np.arctan2(e2*sin(theta2) + f1/f2*e1*sin(theta1),
+                             e2*cos(theta2) + f1/f2*e1*cos(theta1))
+      fig, ax = plt.subplots(5, 2, figsize=(10, 22))
+      fontsize = 24
+  
+      suptitle = ""
+      tscale = 1e3
+      # make a quick diagnostic plot
+      plotsim(
+          fig,
+          ax,
+          teval,
+          suptitle,
+          tscale,
+          fontsize,
+          (r"$a_1$", a1),
+          (r"$|\varpi_1-\varpi_2|$", np.abs(g1-g2)),
+          (r"$e_1$", e1),
+          (r"$e_2$", e2),
+          (r"$\theta_1$", theta1),
+          (r"$\theta_2$", theta2),
+          (r"$\overline{\theta}_1$", bartheta1),
+          (r"$\overline{\theta}_2$", bartheta2),
+          (r"$\hat{\theta}_1$", hattheta1),
+          (r"$\hat{\theta}_2$", hattheta2),
+          yfigupper=0.99,
+         )
+  
+      ax[0, 0].scatter(teval / tscale, a2, s=2)
+      axp = ax[0, 0].twinx()
+      axp.scatter(teval/tscale, period_ratio, s=2, c="r")
+      axp.set_ylabel(r"$P_1/P_2$", fontsize=fontsize)
+      axp.tick_params(labelsize=fontsize)
+      fig.subplots_adjust(wspace=0.6)
+      return(fig, ax)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  tols = 10.**np.linspace(-12,-5, 8)
+  for tol in tols:
+      filename = f"tol-{tol:0.2e}-RK8.npz"
+      fig, ax = plot(filename)
+      fig.savefig(f"tol-{tol:0.2e}-RK8.png")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:./.ob-jupyter/62be2d116cb2f18ceaa84dc495a6287d1b7de052.png]]
+[[file:./.ob-jupyter/62be2d116cb2f18ceaa84dc495a6287d1b7de052.png]]
+[[file:./.ob-jupyter/38ba471ea838b22a3026ef64d4784026174bf3f2.png]]
+[[file:./.ob-jupyter/770e334a1becccd0cd4eb6af6cb3bdd9af8a156f.png]]
+[[file:./.ob-jupyter/638b9fd3327ff8be480457c3d6b3fba46395d49f.png]]
+[[file:./.ob-jupyter/890a24d6b871c174d162b6e37ae37821e2312aaf.png]]
+[[file:./.ob-jupyter/0c2e14a7d44b7f6ff0ee0285dc6d77d05c739ace.png]]
+[[file:./.ob-jupyter/a40570890ce22b0f56818bc6ce75219ff24a59bd.png]]
+:END:
+** Eccentricity decay results
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def gete1(filename):
+      dirname = "."
+      data = np.load(os.path.join(dirname, filename))
+      teval  = data["teval"]
+      e1     = data["e1"]
+      return(teval, e1)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  eeq2 = 0.01
+  Tm2 = 1e5
+  Te2 = eeq2**2*Tm2*2*(j+1)
+  T = 20.*Te2
+  q = 1e3
+  mu1 = 1e-3
+  tols = [1e-5, 1e-12]
+  fig, ax = plt.subplots()
+  for i, tol in enumerate(tols):
+      fnRK4 = f"tol-{tol:0.2e}.npz"
+      fnRK8 = f"tol-{tol:0.2e}-RK8.npz"
+      tevalRK4, e1RK4 = gete1(fnRK4)
+      tevalRK8, e1RK8 = gete1(fnRK8)
+      ax.plot(tevalRK4/Te2, e1RK4, ls="-", c=f"C{i}", label=f"RK4(5); tol={tol:0.1e}")
+      ax.plot(tevalRK8/Te2, e1RK8, ls="--", c=f"C{i}", label=f"RK8(9); tol={tol:0.1e}")
+  ax.legend()
+  ax.set_xlabel(r"time $(T_{e,2})$",fontsize=28)
+  ax.set_ylabel("e1",fontsize=28)
+  ax.tick_params(axis="both", labelsize=28)
+  ax.set_title(f"q={q}; Te2={Te2}; Tm2={Tm2};\nmu1={mu1}; Te1,Tm1=$\\infty$", fontsize=28)
+  fig.savefig("e1s.png", bbox_inches="tight")
+  
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/e5177cf7a38aad285d696cbf4f4a1132bd4e23be.png]]
+
+* Analytic equilibrium eccentricities
+** Comparable mass equilibrium eccentricities
 - analytical estimates seem to be underestimating near q~1
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import numpy as np
@@ -28,7 +174,6 @@
           alpha_0 = (j/(j+1))**(2./3.)
           self.alpha_0 = alpha_0
           self.alpha_2 = 1./alpha_0
-          # for some reason multiplying by -1 works much better?? figure out this inconsistency
           self.f1 = -A(alpha_0, j)
           self.f2 = -B(alpha_0, j)
           if secterms:
@@ -110,85 +255,6 @@
  #+END_SRC
 
  #+RESULTS:
-** comparable mass case q in [0.01, 1], normal damping forces
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, secterms=True):
-      e1s = np.zeros(Nqs)
-      e2s = np.zeros(Nqs)
-      theta1s = np.zeros(Nqs)
-      theta2s = np.zeros(Nqs)
-  
-      print(TW0)
-      for iq, q in enumerate(qs):
-  
-          Te2 = TW0*2*np.pi
-          Te1 = Te2/q/alpha_0**0.5
-  
-          Tm1 = Te1/2.7/h**2
-          Tm2 = Te2/2.7/h**2
-  
-          x0 = (h/sqrt(q), h*sqrt(q), pi, 0.)
-          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1, Te2, secterms=secterms)
-          sol = scipy.optimize.root(mfunc, x0, options={"maxfev":int(1e4)})
-          x = sol.x
-          if not sol.success:
-              print(sol.message)
-          e1 = x[0]
-          e2 = x[1]
-          theta1 = x[2]
-          theta2 = x[3]
-          e1s[iq] = e1
-          e2s[iq] = e2
-          theta1s[iq] = theta1
-          theta2s[iq] = theta2
-          #if not np.all(np.isclose(mfunc(x), np.zeros(len(x)))):
-              #print(infodict["nfev"],f"solution didn't converge for q={q}")
-          #print(x, mesg, infodict["nfev"])
-          #print(theta1-theta2)
-      return(e1s, e2s, theta1s, theta2s)
- #+END_SRC
-
- #+RESULTS:
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
-  h = 0.025
-  Nqs = 1000
-  qs = np.logspace(-3.,0.,Nqs)
-  #qs = [0.01]
-  j = 2
-  alpha_0 = (j/(j+1))**(2./3.)
-  TW0 = 1e2
-  
-  totmass = 1e-3
-  
-  e1s, e2s, theta1s, theta2s = calc_eeqs(h, Nqs, qs, j, alpha_0,
-                                         totmass, secterms=True)
-  (e1s_nosec, e2s_nosec,
-   theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
-                                             totmass, secterms=False)
-  e1eqs, e2eqs, dpoms, qscatters = get_eeqs("./Tw0100")
-  e1eqs_nosec, e2eqs_nosec, dpoms_nosec, qscatters_nosec = get_eeqs("./Tw0100nosec")
-  
-  fig, ax = plt.subplots()
-  ax.plot(qs, e1s, label=r"$e_1$ analytical eq")
-  ax.plot(qs, e2s, label=r"$e_2$ analytical eq")
-  ax.plot(qs, e1s_nosec, ls="--", c="blue", label=r"$e_1$ no sec analyt. eq")
-  ax.plot(qs, e2s_nosec, ls="--", c="orange", label=r"$e_2$ no sec analyt. eq")
-  ax.set_xscale("log")
-  ax.set_yscale("log")
-  ax.scatter(qscatters, e1eqs, label=r"$e_1$ numerical eq")
-  ax.scatter(qscatters, e2eqs, label=r"$e_2$ numerical eq")
-  ax.scatter(qscatters_nosec, e1eqs_nosec, marker="x", c="blue",
-             label=r"$e_1$ no sec num. eq")
-  ax.scatter(qscatters_nosec, e2eqs_nosec, marker="x", c="orange",
-             label=r"$e_2$ no sec num. eq")
-  ax.legend()
-  ax.set_xlabel("q")
-  #ax.set_ylim((0.,0.4))
-  ax.set_title(f"{j}:{j+1} MMR "+r"$T_{e,2}=$"+f"{TW0:0.1e} "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
-  fig.tight_layout()
-#+END_SRC
 
 #+RESULTS:
 :RESULTS:
@@ -196,9 +262,15 @@
 : 100.0
 [[file:./.ob-jupyter/75ba57f4b34bf86abe0fc25a1a8508fad6ca89e2.png]]
 :END:
-* eccentricity excitement 
-*Question:* What value does Te2 take for equilibrium if
-e2 -> e2d is fixed as a parameter
+** eccentricity excitement, Te1d & Te2d 
+*Question:* What value does Te2 take for equilibrium if e2 -> e2d is
+fixed as a parameter?
+- should try this with an eccentricity driving force of $\dot e =
+  -(e-e_d)/T_{e2d}$ but how does $dT_{e,2}/d\tau$ play into this?
+- I think this code leaves out derivatives of Te2 and so maybe it
+  can't be trusted
+- Hacked together a very basic $T_1(e_1)$, $T_2(e_2)$, seems to shift both
+  equilibrium values lower, however?
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import numpy as np
   import os
@@ -215,14 +287,13 @@ e2 -> e2d is fixed as a parameter
   plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
   
   class solve_eqeccs:
-      def __init__(self, q, totmass, j, Tm1, Tm2, Te1, e2d, secterms=True):
+      def __init__(self, q, totmass, j, Tm1, Tm2, Te1d, Te2d, e1d, e2d, secterms=True):
           # this class returns the equilibrium equations divided by mu2
           self.q = q
           self.mu2 = totmass/(1+q)
           alpha_0 = (j/(j+1))**(2./3.)
           self.alpha_0 = alpha_0
           self.alpha_2 = 1./alpha_0
-          # for some reason multiplying by -1 works much better?? figure out this inconsistency
           self.f1 = -A(alpha_0, j)
           self.f2 = -B(alpha_0, j)
           if secterms:
@@ -233,14 +304,29 @@ e2 -> e2d is fixed as a parameter
               self.D = 0.
           self.Tm1 = Tm1
           self.Tm2 = Tm2
-          self.Te1 = Te1
-          self.Te2 = Te2
   
+          # driving force
+          self.e1d = e1d
+          self.Te1d = Te1d
+          self.e2d = e2d
+          self.Te2d = Te2d
+      def Te1(self, e1):
+          # returns the time rather than the derivative
+          if abs(e1-self.e1d) < 1e-9:
+              return(np.inf)
+          else:
+              return(self.Te1d/(e1-self.e1d)*e1)
+      def Te2(self, e2):
+          # returns the time rather than the derivative
+          if abs(e2-self.e2d) < 1e-9:
+              return(np.inf)
+          else:
+              return(self.Te2d/(e2-self.e2d)*e2)
       def dote1(self, e1, e2, theta1, theta2):
-          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - e1/self.Te1
+          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - e1/self.Te1(e1)
           return(deriv)
       def dote2(self, e1, e2, theta1, theta2):
-          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - e2/self.Te2
+          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - e2/self.Te2(e2)
           return(deriv)
       def dotdpom(self, e1, e2, theta1, theta2):
           #deriv = self.mu2/self.alpha_2*(self.f1*cos(theta1)/(e1*sqrt(self.alpha_0))
@@ -257,11 +343,13 @@ e2 -> e2d is fixed as a parameter
                    - self.q*self.D*e1**2/sqrt(self.alpha_2))
           return(deriv)
       def doteta(self, e1, e2, theta1, theta2):
-          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 + 1))
-                   ,*(1./self.Tm2 - 1./self.Tm1
-                     + 2*e1**2/self.Te1 - 2*e2**2/self.Te2)
-                   - self.q*sqrt(self.alpha_0)*2*e1**2/self.Te1
-                   - 2*e2**2/self.Te2)
+          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 +
+                                                 1)) *(1./self.Tm2 -
+                                                       1./self.Tm1 +
+                                                       2*e1**2/self.Te1(e1) -
+                                                       2*e2**2/self.Te2(e2)) -
+                   self.q*sqrt(self.alpha_0)*2*e1**2/self.Te1(e1)
+                   - 2*e2**2/self.Te2(e2))
           return(deriv)
       def __call__(self, vec):
           (e1, e2, theta1, theta2) = vec[:]
@@ -301,23 +389,34 @@ e2 -> e2d is fixed as a parameter
               dpoms[fi] = np.average(np.abs(e2[it:]-e1[it:]))
               qscatters[fi] = QS[fi]
       return(e1eqs, e2eqs, dpoms, qscatters)
- #+END_SRC
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, secterms=True):
+  
+  
+  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, Tm1s, Tm2s, Te1ds, Te2ds, e1d, e2d, secterms=True):
       e1s = np.zeros(Nqs)
       e2s = np.zeros(Nqs)
       theta1s = np.zeros(Nqs)
       theta2s = np.zeros(Nqs)
   
       for iq, q in enumerate(qs):
-          Te1 = TW0*2*np.pi
-          Te2 = -10.*Te1
+          Te1d = 2*pi*Te1ds[iq]
+          Te2d = 2*pi*Te2ds[iq]
+          Tm1 = 2*pi*Tm1s[iq]
+          Tm2 = 2*pi*Tm2s[iq]
+          #if q <= 1:
+          #    Te2d = TW0*2*np.pi
+          #    Te1d = Te2d/q/alpha_0**0.5
   
-          Tm1 = -Te1/h**2
-          Tm2 = np.inf
+          #    Tm1 = Te1d/2.7/h**2
+          #    Tm2 = Te2d/2.7/h**2
+          #else:
+          #    Te1d = TW0*2*np.pi
+          #    Te2d = Te1d*q*alpha_0**0.5
+  
+          #    Tm1 = Te2d/2.7/h**2
+          #    Tm2 = Te1d/2.7/h**2
   
           x0 = (h/sqrt(q), h*sqrt(q), pi, 0.)
-          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1, Te2, secterms=secterms)
+          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1d, Te2d, e1d, e2d, secterms=secterms)
           sol = scipy.optimize.root(mfunc, x0, options={"maxfev":int(1e4)})
           x = sol.x
           #if not sol.success:
@@ -333,40 +432,355 @@ e2 -> e2d is fixed as a parameter
           #print(x, mesg, infodict["nfev"])
           #print(theta1-theta2)
       return(e1s, e2s, theta1s, theta2s)
-  
+ #+END_SRC
+
+ #+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
   h = 0.025
   Nqs = 1000
-  qs = np.logspace(-1.,-3.,Nqs)
+  qs = np.logspace(np.log10(1.5), 2., Nqs)
   #qs = [0.01]
   j = 2
   alpha_0 = (j/(j+1))**(2./3.)
-  TW0 = 1e2
+  e1d = 0.2
+  e2d = 0.2
   
   totmass = 1e-3
+  Nqs = 1000
+  qs = 3.*np.ones(Nqs)
+  Tw0 = 1e4
+  Te1ds = Tw0*np.ones(Nqs)
+  Te2ds = np.logspace(np.log10(Tw0)-2, np.log10(Tw0)+2, Nqs)
+  Tm1s = 1e6*np.ones(Nqs)
+  Tm2s = Tm1s/10.
   
   e1s, e2s, theta1s, theta2s = calc_eeqs(h, Nqs, qs, j, alpha_0,
-                                         totmass, secterms=True)
-  (e1s_nosec, e2s_nosec,
-   theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
-                                             totmass, secterms=False)
+                                         totmass, Tm1s, Tm2s, Te1ds, Te2ds,
+                                         e1d, e2d, secterms=True)
+  #(e1s_e2d0, e2s_e2d0,
+  # theta1s_e2d0, theta2s_e2d0) = calc_eeqs(h, Nqs, qs, j, alpha_0,
+  #                                           totmass, 0., 0., secterms=True)
+  #(e1s_nosec, e2s_nosec,
+  # theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
+  #                                           totmass, e1d, e2d, secterms=False)
   
   fig, ax = plt.subplots(2)
-  ax[0].plot(qs, e1s, label=r"$e_1$ analytical eq")
-  ax[0].plot(qs, e2s, label=r"$e_2$ analytical eq")
-  ax[0].plot(qs, e1s_nosec, ls="--", c="blue", label=r"$e_1$ no sec analyt. eq")
-  ax[0].plot(qs, e2s_nosec, ls="--", c="orange", label=r"$e_2$ no sec analyt. eq")
+  #ax[0].plot(qs, e1s, ls="--", c="blue"  ,   label=(r"$e_1$"))
+  #ax[0].plot(qs, e2s, ls="--", c="orange", label=(r"$e_2$"))
+  ax[0].plot(Te2ds/Te1ds, e1s,   label=(r"$e_1$"))
+  ax[0].plot(Te2ds/Te1ds, e2s, label=(r"$e_2$"))
   ax[1].plot(qs, theta1s)
   ax[1].plot(qs, theta2s)
   ax[0].set_xscale("log")
   ax[0].set_yscale("log")
+  ax[1].set_xscale("log")
+  ax[1].set_yscale("log")
   ax[0].legend()
   ax[0].set_xlabel("q")
   #ax.set_ylim((0.,0.4))
-  fig.suptitle(f"{j}:{j+1} MMR "+r"$T_{e,2}=$"+f"{TW0:0.1e} "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
+  fig.suptitle(f"{j}:{j+1} MMR "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
   fig.tight_layout()
 #+END_SRC
 
 #+RESULTS:
-[[file:./.ob-jupyter/80576a4e512307f523ddfd22f1fe361764f1e440.png]]
+:RESULTS:
+: <ipython-input-85-ef6c77d93f2f>:38: UserWarning: Data has no positive values, and therefore cannot be log-scaled.
+:   ax[0].set_yscale("log")
+[[file:./.ob-jupyter/ab2dfaf7eabc3d92d78b683720ec02493ccd56e4.png]]
+:END:
+
+* Alignment behaviors
+** reproducing tp case
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
+  #################
+  # CONFIGURATION #
+  #################
+  j = 2
+  a0 = 1.0
+  h = 0.025
+  alpha_0 = (j/(j+1))**(2./3.)
+  Nqs = 100
+  q=1000
+  qs = np.ones(Nqs)*q
+  overwrite = True
+  totmass = 1e-3
+  e2d = 0.0
+  e1d = 0.0
+  
+  ######################
+  # Varying parameters #
+  ######################
+  eccs = np.logspace(-2,-1,int(np.sqrt(Nqs)))
+  EEQ_2, E1_0 = np.meshgrid(eccs, eccs)
+  EEQ_2 = EEQ_2.flatten()
+  E1_0 = E1_0.flatten()
+  
+  ####################
+  # THREADING ARRAYS #
+  ####################
+  HS = np.ones(Nqs)*h
+  JS = np.ones(Nqs)*j
+  A0S = np.ones(Nqs)*a0
+  QS = qs
+  MU2 = totmass/(1+QS)
+  MU1 = totmass - MU2
+  TM1 = np.ones(Nqs)*np.infty
+  TE1 = np.ones(Nqs)*np.infty
+  TM2 = -np.ones(Nqs)*1e5
+  ALPHA_0 = alpha_0*np.ones(Nqs)
+  TE2 = 2.*EEQ_2**2*np.abs(TM2)*(QS*np.sqrt(ALPHA_0)+j*(QS/ALPHA_0+1))/QS/np.sqrt(ALPHA_0)
+  TS = 20.*TE2
+  E2_0 = np.ones(Nqs)*0.001
+  E1DS = np.ones(Nqs)*e1d
+  E2DS = np.ones(Nqs)*e2d
+  ALPHA2_0 = (3/2.)**(2./3)*(1+EEQ_2**2+E1_0**2)
+  NAMES = np.array([f"e10-{E1_0[i]:0.2f}-e2eq-{EEQ_2[i]:0.2f}"
+                    for i, qit in enumerate(QS)])
+  
+  ################
+  # WITH SECULAR #
+  ################
+  DIRNAMES = np.array([f"./ext-grid-q{int(QS[i])}" for i
+                          in range(Nqs)])
+  
+  aligned_arr = np.zeros((Nqs, 6))
+  aligned_arr[:,0] = totmass
+  aligned_arr[:,1] = QS
+  aligned_arr[:,2] = E1_0
+  aligned_arr[:,3] = EEQ_2
+  
+  for i, filename in enumerate(NAMES):
+      data = np.load(os.path.join(DIRNAMES[i], filename+".npz"))
+      teval  = data["teval"]
+      theta = data["thetap"]
+      a1     = data["a1"]
+      a2     = data["a2"]
+      e1     = data["e1"]
+      e2     = data["e2"]
+      g1     = data["g1"]
+      g2     = data["g2"]
+      L1     = data["L1"]
+      L2     = data["L2"]
+      x1     = data["x1"]
+      y1     = data["y1"]
+      x2     = data["x2"]
+      y2     = data["y2"]
+  
+      it = int(len(teval)*0.9)
+      align = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi)) < 2.))
+      antialign = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi)-pi) < 1.))
+      aligned_arr[i,4] = align
+      aligned_arr[i,5] = antialign
+  np.savetxt(os.path.join(".", f"behaviors-q{q}.txt"), aligned_arr)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
+  q=1000
+  dirname = f"."
+  params = np.loadtxt(os.path.join(".", f"behaviors-q{q}.txt"))
+  fig, ax = plt.subplots(figsize=(8,6))
+  
+  align_ind = (params[:,4] == 1).astype("bool")
+  antialign_ind =  (params[:,5] == 1).astype("bool")
+  circ_ind = np.logical_and(np.logical_not(align_ind), np.logical_not(antialign_ind))
+  ax.scatter(params[align_ind, 2], params[align_ind, 3],
+             marker="o", c="k", s=120, label=r"$\Delta\varpi\to 0$")
+  ax.scatter(
+      params[circ_ind, 2], params[circ_ind, 3],
+      marker="o",
+      s=120,
+      facecolors="none",
+      edgecolors="k",
+      label=r"$\Delta\varpi$-circulating")
+  ax.scatter(
+      params[antialign_ind, 2], params[antialign_ind, 3],
+      marker="o",
+      s=120,
+      c="r",
+      label=r"$\Delta\varpi\to\pi$")
+  
+  fontsize=32
+  ax.set_xscale("log")
+  ax.set_yscale("log")
+  ax.set_ylabel(r"$e_{2,\rm eq}$",fontsize=fontsize)
+  ax.set_xlabel(r"$e_{1,\rm init}$",fontsize=fontsize)
+  
+  ax.tick_params(axis="both", labelsize=fontsize)
+  ax.set_title(f"q={q}",fontsize=fontsize)
+  ax.legend(bbox_to_anchor=(1.01, 1.03))
+  fig.savefig(os.path.join(dirname, f"align-q{q}.png"), bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/fd864a3d30156244ac1b92862a8389b89ba9e15e.png]]
+
+*** test particle comparison
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/tp/external-grid-1e-3-long/")
+  i = 0
+  mup = 1e-3
+  T = 2e5
+  Tm = -1e6
+  tol = 1e-6
+  galigns = np.loadtxt("behaviors.txt", skiprows=1, delimiter=",")
+  ep = galigns[:, 0]
+  eeq = galigns[:, 1]
+  aligns = galigns[:, 3]
+  mask_circ = aligns > 0
+  mask_align = aligns < 1
+  
+  ep_circ = np.ma.masked_array(ep, mask=mask_circ)
+  ep_align = np.ma.masked_array(ep, mask=mask_align)
+  
+  eeq_circ = np.ma.masked_array(eeq, mask=mask_circ)
+  eeq_align = np.ma.masked_array(eeq, mask=mask_align)
+  
+  fig, ax = plt.subplots(figsize=(8,6))
+  ax.scatter(
+      ep_circ,
+      eeq_circ,
+      marker="o",
+      s=120,
+      facecolors="none",
+      edgecolors="k",
+      label=r"$\Delta\varpi$-circulating",
+  )
+  ax.scatter(ep_align, eeq_align, marker="o", c="k", s=120, label=r"$\Delta\varpi\to0$")
+  ax.set_xscale("log",)
+  ax.set_yscale("log")
+  ax.set_xlabel(r"$e_{1,\rm const}$", fontsize=32)
+  ax.set_ylabel(r"$e_{2, \rm eq}$", fontsize=32)
+  ax.legend(bbox_to_anchor=(1.01, 1.03))
+  ax.set_title(r"$q=\infty$", fontsize=32)
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
+  fig.savefig(f"align-ER3BP.png", bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/e924cc2be0e86021f326b3a5ee8dc3f4339e6a48.png]]
+
+** driving eccentricities
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1")
+  #################
+  # CONFIGURATION #
+  #################
+  j = 2
+  a0 = 1.0
+  h = 0.025
+  alpha_0 = (j/(j+1))**(2./3.)
+  Nqs = 24
+  qs = np.zeros(Nqs)
+  Nqs3 = int(Nqs/3)
+  qs[0:Nqs3] = 10.*np.ones(Nqs3)
+  qs[Nqs3:2*Nqs3] = 100.*np.ones(Nqs3)
+  qs[2*Nqs3:] = 1000.*np.ones(Nqs3)
+  overwrite = False
+  T = 5e4
+  
+  totmass = 1e-3
+  
+  Tw0 = 1e3
+  e1d = 0.1
+  e2d = 0.1
+  
+  ####################
+  # THREADING ARRAYS #
+  ####################
+  QS = qs
+  MU2 = totmass/(1+QS)
+  MU1 = totmass - MU2
+  
+  
+  TM1 = -np.ones(len(QS))*1e6
+  TM2 = TM1/10.
+  
+  #TE1 = np.abs(TM1)*e1disk**2
+  #TE2 = np.abs(TM2)*e2d**2
+  TE1 = np.ones(Nqs)*Tw0
+  TE23 = np.logspace(np.log10(Tw0)-2, np.log10(Tw0)+2, Nqs3)
+  TE2 = np.ones(Nqs)
+  TE2[0:Nqs3] = TE23
+  TE2[Nqs3:2*Nqs3] = TE23
+  TE2[2*Nqs3:] = TE23
+  
+  E1_0 = np.ones(len(QS))*0.001
+  E2_0 = np.ones(len(QS))*0.001
+  ALPHA2_0 = (3/2.)**(2./3)*(1+e1d**2+e2d**2)*np.ones(len(QS))
+  NAMES = np.array([f"q{qit:0.3f}-Te1-{TE1[i]:0.3f}-Te2-{TE2[i]:0.3f}"
+                    for i, qit in enumerate(QS)])
+  RUN_PARAMS = np.column_stack((QS, MU1, TE1, TE2, TM1, TM2, E1_0, E2_0, ALPHA2_0, NAMES))
+  dirname = "/home/jtlaune/Dropbox/multi-planet-architecture/runs/compmass-eq/qles1/varyTe2-e1d0.100-e2d0.010"
+  
+  aligned_arr = np.zeros((Nqs, 7))
+  aligned_arr[:,0] = totmass
+  aligned_arr[:,1] = QS
+  aligned_arr[:,2] = TE1
+  aligned_arr[:,3] = TE2
+  aligned_arr[:,4] = e1d
+  aligned_arr[:,5] = e2d
+  
+  for i, filename in enumerate(NAMES):
+      data = np.load(os.path.join(dirname, filename+".npz"))
+      teval  = data["teval"]
+      theta = data["thetap"]
+      a1     = data["a1"]
+      a2     = data["a2"]
+      e1     = data["e1"]
+      e2     = data["e2"]
+      g1     = data["g1"]
+      g2     = data["g2"]
+      L1     = data["L1"]
+      L2     = data["L2"]
+      x1     = data["x1"]
+      y1     = data["y1"]
+      x2     = data["x2"]
+      y2     = data["y2"]
+  
+      it = int(len(teval)*0.9)
+      align = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi) - pi) > 0.5))
+      aligned_arr[i,6] = align
+  np.savetxt(os.path.join(dirname, "behaviors.txt"), aligned_arr)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  e1d = 0.1
+  e2d = 0.01
+  dirname = f"./varyTe2-e1d{e1d:0.3f}-e2d{e2d:0.3f}"
+  params = np.loadtxt(os.path.join(dirname, "behaviors.txt"))
+  fig, ax = plt.subplots(figsize=(4,3))
+  
+  align_ind = (params[:,6] == 1).astype("bool")
+  circ_ind =  (params[:,6] == 0).astype("bool")
+  print(align_ind)
+  ax.scatter(params[align_ind, 2]/params[align_ind, 3], params[align_ind, 1],
+             marker="o", c="k", s=120, label=r"$\varpi$-aligned")
+  ax.scatter(
+      params[circ_ind, 2]/params[circ_ind, 3], params[circ_ind, 1],
+      marker="o",
+      s=120,
+      facecolors="none",
+      edgecolors="k",
+      label=r"$\Delta\varpi$-circulating")
+  
+  ax.set_xscale("log")
+  ax.set_yscale("log")
+  ax.set_title(r"$e_{1,d}/e_{2,d}$ = " + f"{e1d/e2d}")
+  ax.set_ylabel(r"$q = m_1/m2$")
+  ax.set_xlabel(r"$T_{e,1,d}/T_{e,2,d}$")
+  ax.legend(bbox_to_anchor=(1.01, 1.03))
+  fig.savefig(os.path.join(dirname, "align.png"), bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+: [False False  True  True False False False False  True  True  True  True
+:  False False False False  True  True  True  True False False False False]
 

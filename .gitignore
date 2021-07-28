@@ -9,7 +9,6 @@ scratch
 scripts
 runs
 *.png
-*.pdf
 *.aux
 *.log
 *.synctex.*

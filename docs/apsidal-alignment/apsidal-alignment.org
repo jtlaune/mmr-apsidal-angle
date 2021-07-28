@@ -1,0 +1,88 @@
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [twocolumn]
+#+latex_header: \usepackage[margin=1.0in]{geometry}
+#+latex_header: \usepackage{pdfpages}
+#+latex_header: \usepackage{booktabs}
+#+latex_header: \usepackage{enumitem}
+#+latex_header: \usepackage{graphicx}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{amssymb}
+#+latex_header: \usepackage{tensor}
+#+latex_header: \usepackage{amsthm}
+#+latex_header: \usepackage{ wasysym }
+#+latex_header: \usepackage{amsfonts}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \usepackage{xcolor}
+#+latex_header: \usepackage{cancel}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \renewcommand{\O}{\mathcal{O}}
+#+latex_header: \renewcommand{\d}{\partial}
+#+latex_header: \renewcommand{\v}[1]{\boldsymbol{ #1 }}
+#+latex_header: \renewcommand{\t}[1]{\tilde{ #1 }}
+#+latex_header: \newcommand{\tg}{\t{g}}
+#+latex_header: \newcommand{\vh}[1]{\hat{\boldsymbol{ #1 }}}
+#+latex_header: \newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+#+latex_header: \newcommand{\dd}[2]{\frac{d #1}{d #2}}
+#+latex_header: \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+#+latex_header:             \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+#+latex_header: \DeclarePairedDelimiter{\abs}{|}{|}
+#+latex_header: \DeclarePairedDelimiter{\p}{(}{)}
+#+latex_header: \DeclarePairedDelimiter{\we}{\langle}{\rangle}
+#+latex_header: \title{Architecture of Planetary Systems in Mean Motion Resonance}
+#+latex_header: \author{JT Laune}
+* Introduction
+
+The typical outcome of planet-disk migration is thought to be capture
+into mean motion resonance, after which torques from the gas damp the
+system's angular momentum deficit (AMD) into an equilibrium.  The MMR
+equilibrium is governed by various conditions which are well studied
+in the literature
+(e.g. cite:henrard_second_1983,deck_migration_2015,goldreich_overstable_2014,xu_migration_2018,henrard_second_1983)
+
+* Methods
+** Hamiltonian
+The Hamiltonian of a system with two planets near a first order $j:j+1$ MMR is
+
+#+BEGIN_SRC latex
+  \begin{align}
+  \label{hamiltonian}
+    H =& -\frac{G M m_{1}}{2 a_{1}}-\frac{G M m_{2}}{2 a_{2}}\nonumber\\
+      & -\frac{G m_{1} m_{2}}{a_{2}}
+        \p*{
+        f_{1} e_{1} \cos \theta_{1} 
+        +f_{2} e_{2} \cos \theta_{2}\nonumber\\
+        &+ f_{3} (e_1^2 + e_2^2)
+        +f_4e_1e_2\cos(\varpi_2-\varpi_1)
+        }
+  \end{align}
+#+END_SRC
+
+The first two terms in parentheses are resonant terms of order $\O(e_i^1)$, while the last two terms
+are secular effects of order $\O(e_i^2)$.
+The two resonant angles are given by
+\[ \theta_i = (j+1)\lambda_2 - \lambda_1 - \varpi_i. \]
+
+Following
+cite:wisdom_canonical_1986,henrard86_reduc_trans_apocen_librat, through
+a series of canonical transformations (as outlined in the appendix),
+we may turn eqref:hamiltonian into an integrable system with resonant
+argument $\hat{\theta}$ given by the equation
+#+BEGIN_SRC latex
+  \begin{align}
+    \tan\hat{\theta} = \frac{e_1\sin(\theta_1)
+    + (f_1/f_2)e_2\sin(\theta_2)}{e_1\cos(\theta_1) + (f_1/f_2)e_2\cos(\theta_2)}
+  \end{align}
+#+END_SRC
+
+* Results
+
+** Test particle results
+
+** Case $q \gg 1$
+
+* Discussion
+
+* Conclusion
+
+bibliography:references.bib
+bibliographystyle:apalike
