@@ -9,13 +9,41 @@
 - T = 20*Te2
 - Tested RK4(5) and RK8(9) with tolerances between 1e-12 to 1e-5
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/test-eccdecay/")
 #+END_SRC
 
 #+RESULTS:
+:RESULTS:
+# [goto error]
+: ---------------------------------------------------------------------------
+: ModuleNotFoundError                       Traceback (most recent call last)
+: /tmp/ipykernel_7710/86795197.py in <module>
+:       4 import scipy as sp
+:       5 import scipy.optimize
+: ----> 6 import matplotlib as mpl
+:       7 import matplotlib.pyplot as plt
+:       8 import sys
+: 
+: ModuleNotFoundError: No module named 'matplotlib'
+:END:
 ** Plotting runs
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   def plot(filename):
+      j = 2.
       dirname = "."
       data = np.load(os.path.join(dirname, filename))
       teval  = data["teval"]
@@ -108,6 +136,7 @@
 [[file:./.ob-jupyter/0c2e14a7d44b7f6ff0ee0285dc6d77d05c739ace.png]]
 [[file:./.ob-jupyter/a40570890ce22b0f56818bc6ce75219ff24a59bd.png]]
 :END:
+
 ** Eccentricity decay results
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   def gete1(filename):
@@ -121,6 +150,7 @@
 #+RESULTS:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  j = 2.
   eeq2 = 0.01
   Tm2 = 1e5
   Te2 = eeq2**2*Tm2*2*(j+1)
@@ -254,23 +284,9 @@
       return(e1eqs, e2eqs, dpoms, qscatters)
  #+END_SRC
 
- #+RESULTS:
-
 #+RESULTS:
-:RESULTS:
-: 100.0
-: 100.0
-[[file:./.ob-jupyter/75ba57f4b34bf86abe0fc25a1a8508fad6ca89e2.png]]
-:END:
-** eccentricity excitement, Te1d & Te2d 
-*Question:* What value does Te2 take for equilibrium if e2 -> e2d is
-fixed as a parameter?
-- should try this with an eccentricity driving force of $\dot e =
-  -(e-e_d)/T_{e2d}$ but how does $dT_{e,2}/d\tau$ play into this?
-- I think this code leaves out derivatives of Te2 and so maybe it
-  can't be trusted
-- Hacked together a very basic $T_1(e_1)$, $T_2(e_2)$, seems to shift both
-  equilibrium values lower, however?
+** e2d and e1d calculation
+*** preamble
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import numpy as np
   import os
@@ -287,8 +303,7 @@ fixed as a parameter?
   plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
   
   class solve_eqeccs:
-      def __init__(self, q, totmass, j, Tm1, Tm2, Te1d, Te2d, e1d, e2d, secterms=True):
-          # this class returns the equilibrium equations divided by mu2
+      def __init__(self, q, totmass, j, e1d, e2d, Tm1, Tm2, Te1, Te2, secterms=True):
           self.q = q
           self.mu2 = totmass/(1+q)
           alpha_0 = (j/(j+1))**(2./3.)
@@ -302,31 +317,20 @@ fixed as a parameter?
           else:
               self.C = 0.
               self.D = 0.
+          self.e1d = e1d
+          self.e2d = e2d
           self.Tm1 = Tm1
           self.Tm2 = Tm2
+          self.Te1 = Te1
+          self.Te2 = Te2
   
-          # driving force
-          self.e1d = e1d
-          self.Te1d = Te1d
-          self.e2d = e2d
-          self.Te2d = Te2d
-      def Te1(self, e1):
-          # returns the time rather than the derivative
-          if abs(e1-self.e1d) < 1e-9:
-              return(np.inf)
-          else:
-              return(self.Te1d/(e1-self.e1d)*e1)
-      def Te2(self, e2):
-          # returns the time rather than the derivative
-          if abs(e2-self.e2d) < 1e-9:
-              return(np.inf)
-          else:
-              return(self.Te2d/(e2-self.e2d)*e2)
       def dote1(self, e1, e2, theta1, theta2):
-          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - e1/self.Te1(e1)
+          e1d = self.e1d
+          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - (e1-e1d)/self.Te1
           return(deriv)
       def dote2(self, e1, e2, theta1, theta2):
-          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - e2/self.Te2(e2)
+          e2d = self.e2d
+          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - (e2-e2d)/self.Te2
           return(deriv)
       def dotdpom(self, e1, e2, theta1, theta2):
           #deriv = self.mu2/self.alpha_2*(self.f1*cos(theta1)/(e1*sqrt(self.alpha_0))
@@ -343,13 +347,13 @@ fixed as a parameter?
                    - self.q*self.D*e1**2/sqrt(self.alpha_2))
           return(deriv)
       def doteta(self, e1, e2, theta1, theta2):
-          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 +
-                                                 1)) *(1./self.Tm2 -
-                                                       1./self.Tm1 +
-                                                       2*e1**2/self.Te1(e1) -
-                                                       2*e2**2/self.Te2(e2)) -
-                   self.q*sqrt(self.alpha_0)*2*e1**2/self.Te1(e1)
-                   - 2*e2**2/self.Te2(e2))
+          e1d = self.e1d
+          e2d = self.e2d
+          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 + 1))
+                   ,*(1./self.Tm2 - 1./self.Tm1
+                     + 2*(e1)**2/self.Te1 - 2*(e2)**2/self.Te2)
+                   - self.q*sqrt(self.alpha_0)*2*(e1-e1d)*e1/self.Te1
+                   - 2*(e2-e2d)*e2/self.Te2)
           return(deriv)
       def __call__(self, vec):
           (e1, e2, theta1, theta2) = vec[:]
@@ -364,42 +368,15 @@ fixed as a parameter?
           #print(vec, deriv_arr)
           return(deriv_arr)
   
-  def get_eeqs(dir):
-      NQS = 36
-      QS = np.logspace(-3.,0.,NQS)
-      NAMES = np.array([f"q{qit:0.2f}" for qit in QS])
-      FILENAMES   = [os.path.join(dir, f"{name}.npz") for name in NAMES]
-      qscatters = -1*np.ones(NQS)
-      e1eqs = np.zeros(NQS)
-      e2eqs = np.zeros(NQS)
-      dpoms = np.zeros(NQS)
-      for fi, filename in enumerate(FILENAMES):
-          if os.path.exists(filename):
-              data = np.load( filename)
-              teval = data["teval"]
-              theta = data["thetap"]
-              e1    = data["e1"]
-              e2    = data["e2"]
-              g1    = data["g1"]
-              g2    = data["g2"]
-  
-              it = int(0.9*len(teval))
-              e1eqs[fi] = np.average(e1[it:])
-              e2eqs[fi] = np.average(e2[it:])
-              dpoms[fi] = np.average(np.abs(e2[it:]-e1[it:]))
-              qscatters[fi] = QS[fi]
-      return(e1eqs, e2eqs, dpoms, qscatters)
-  
-  
-  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, Tm1s, Tm2s, Te1ds, Te2ds, e1d, e2d, secterms=True):
+  def calc_eeqs(h, qs, totmass, j, e1d, e2d, Tm1s, Tm2s, Te1s, Te2s, secterms=True):
       e1s = np.zeros(Nqs)
       e2s = np.zeros(Nqs)
       theta1s = np.zeros(Nqs)
       theta2s = np.zeros(Nqs)
   
       for iq, q in enumerate(qs):
-          Te1d = 2*pi*Te1ds[iq]
-          Te2d = 2*pi*Te2ds[iq]
+          Te1 = 2*pi*Te1s[iq]
+          Te2 = 2*pi*Te2s[iq]
           Tm1 = 2*pi*Tm1s[iq]
           Tm2 = 2*pi*Tm2s[iq]
           #if q <= 1:
@@ -415,16 +392,23 @@ fixed as a parameter?
           #    Tm1 = Te2d/2.7/h**2
           #    Tm2 = Te1d/2.7/h**2
   
-          x0 = (h/sqrt(q), h*sqrt(q), pi, 0.)
-          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1d, Te2d, e1d, e2d, secterms=secterms)
-          sol = scipy.optimize.root(mfunc, x0, options={"maxfev":int(1e4)})
+          if q > e1d:
+              x0 = (0.1, h, pi, 0.)
+          elif q > 1.:
+              x0 = (0.01, 0.07, pi, 0.)
+          else:
+              x0 = (0.5, 0.01, pi, 0.)
+          mfunc = solve_eqeccs(q, totmass, j, e1d, e2d, Tm1, Tm2, Te1, Te2, secterms=secterms)
+          sol = scipy.optimize.root(mfunc, x0, options={"diag":np.ones(4)*totmass, "maxfev":int(5e6)})
           x = sol.x
-          #if not sol.success:
-          #    print(sol.message)
           e1 = x[0]
           e2 = x[1]
           theta1 = x[2]
           theta2 = x[3]
+          if not sol.success:
+              print(sol.message)
+              e1 = -1
+              e2 = -1
           e1s[iq] = e1
           e2s[iq] = e2
           theta1s[iq] = theta1
@@ -432,65 +416,159 @@ fixed as a parameter?
           #print(x, mesg, infodict["nfev"])
           #print(theta1-theta2)
       return(e1s, e2s, theta1s, theta2s)
- #+END_SRC
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/notes/")
+#+END_SRC
 
- #+RESULTS:
+#+RESULTS:
 
+*** e1d = 0.1
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
+  totmass = 1e-3
   h = 0.025
-  Nqs = 1000
-  qs = np.logspace(np.log10(1.5), 2., Nqs)
-  #qs = [0.01]
   j = 2
   alpha_0 = (j/(j+1))**(2./3.)
-  e1d = 0.2
-  e2d = 0.2
+  e1d = 0.1
+  e2d = 0.0
   
-  totmass = 1e-3
-  Nqs = 1000
-  qs = 3.*np.ones(Nqs)
-  Tw0 = 1e4
-  Te1ds = Tw0*np.ones(Nqs)
-  Te2ds = np.logspace(np.log10(Tw0)-2, np.log10(Tw0)+2, Nqs)
-  Tm1s = 1e6*np.ones(Nqs)
-  Tm2s = Tm1s/10.
+  Nqs = 500
+  qs = np.logspace(-1., 1., Nqs)
+  #qs = np.ones(Nqs)*0.1
   
-  e1s, e2s, theta1s, theta2s = calc_eeqs(h, Nqs, qs, j, alpha_0,
-                                         totmass, Tm1s, Tm2s, Te1ds, Te2ds,
-                                         e1d, e2d, secterms=True)
-  #(e1s_e2d0, e2s_e2d0,
-  # theta1s_e2d0, theta2s_e2d0) = calc_eeqs(h, Nqs, qs, j, alpha_0,
-  #                                           totmass, 0., 0., secterms=True)
-  #(e1s_nosec, e2s_nosec,
-  # theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
-  #                                           totmass, e1d, e2d, secterms=False)
+  Tw0 = 1e3
+  #TeRatios = np.logspace(-1,1,Nqs)
+  TeRatios = np.ones(Nqs) 
+  Te1s = Tw0*np.ones(Nqs)
+  Te2s = Tw0*np.ones(Nqs)
   
-  fig, ax = plt.subplots(2)
-  #ax[0].plot(qs, e1s, ls="--", c="blue"  ,   label=(r"$e_1$"))
-  #ax[0].plot(qs, e2s, ls="--", c="orange", label=(r"$e_2$"))
-  ax[0].plot(Te2ds/Te1ds, e1s,   label=(r"$e_1$"))
-  ax[0].plot(Te2ds/Te1ds, e2s, label=(r"$e_2$"))
-  ax[1].plot(qs, theta1s)
-  ax[1].plot(qs, theta2s)
-  ax[0].set_xscale("log")
-  ax[0].set_yscale("log")
-  ax[1].set_xscale("log")
-  ax[1].set_yscale("log")
-  ax[0].legend()
-  ax[0].set_xlabel("q")
-  #ax.set_ylim((0.,0.4))
+  Tm1s = Te1s/(2.7*h*h)
+  Tm2s = Tm1s*((qs*np.sqrt(alpha_0))*(qs<1.) + (qs*np.sqrt(alpha_0))**(-1)*(qs>1.))
+  
+  
+  fig, ax = plt.subplots(1)
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, qs, totmass, j, e1d, e2d, Tm1s, Tm2s, Te1s, Te2s, secterms=True)
+  ax.plot(qs, e1s, ls="-", c="blue"  , label=(r"$e_1$"))
+  ax.plot(qs, e2s, ls="-", c="orange", label=(r"$e_2$"))
+  ax.set_xlabel(r"$q$")
+  #ax.plot(Te2s/Te1s, e1s,   label=(r"$e_1$"))
+  #ax.plot(Te2s/Te1s, e2s, label=(r"$e_2$"))
+  #ax.set_xlabel(r"$T_{e1}/T_{e2}$")
+  ax.set_xscale("log")
+  ax.set_yscale("log")
+  ax.legend()
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, qs, totmass, j, e1d, e2d, Tm1s, Tm2s, Te1s, Te2s, secterms=False)
+  #print(e2s)
+  ax.plot(qs, e1s, ls="--", c="blue"  ,   label=(r"$e_1$, w/o sec"))
+  ax.plot(qs, e2s, ls="--", c="orange", label=(r"$e_2$, w/o sec"))
+  #ax.set_xlabel(r"$q$")
+  ##ax.plot(Te2s/Te1s, e1s,   label=(r"$e_1$"))
+  ##ax.plot(Te2s/Te1s, e2s, label=(r"$e_2$"))
+  ##ax.set_xlabel(r"$T_{e1}/T_{e2}$")
+  #ax.set_xscale("log")
+  #ax.set_yscale("log")
+  #ax.legend()
+  
+  
   fig.suptitle(f"{j}:{j+1} MMR "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
   fig.tight_layout()
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/notes/")
+ #+END_SRC
+ 
+ #+RESULTS:
+ [[file:./.ob-jupyter/257577e7e5162ac6e6a30300b46e57a92a2400fb.png]]
+*** e1d=0
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  totmass = 1e-3
+  h = 0.1
+  j = 2
+  alpha_0 = (j/(j+1))**(2./3.)
+  e1d = 0.0
+  e2d = 0.0
+  
+  Nqs = 500
+  qs = np.linspace(0.5,2,Nqs)
+  #qs = np.logspace(-1., 1., Nqs)
+  #qs = np.ones(Nqs)*0.1
+  
+  Tw0 = 1e3
+  #TeRatios = np.logspace(-1,1,Nqs)
+  TeRatios = np.sqrt(qs)
+  Te1s = Tw0*TeRatios
+  Te2s = Tw0/TeRatios
+  
+  #Tm1s = Te1s/(2.7*h*h)
+  #Tm1s = np.infty*np.ones(Nqs)
+  print((1*(qs<1) - 1*(qs>1)))
+  Tm1s = Te1s/3.46/h**2*(1*(qs>1) - 1*(qs<1))
+  Tm2s = Te2s/3.46/h**2*(1*(qs>1) - 1*(qs<1))
+  print(Te1s[0],Te2s[0],Tm1s[0], Tm2s[0])
+  #Tm2s = Tm1s*((qs*np.sqrt(alpha_0))*(qs<1.) + (qs*np.sqrt(alpha_0))**(-1)*(qs>1.))
+  
+  
+  fig, ax = plt.subplots(1)
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, qs, totmass, j, e1d, e2d, Tm1s, Tm2s, Te1s, Te2s, secterms=True)
+  ax.plot(qs, e1s, ls="-", c="blue"  , label=(r"$e_1$"))
+  ax.plot(qs, e2s, ls="-", c="orange", label=(r"$e_2$"))
+  ax.set_xlabel(r"$q$")
+  #ax.plot(Te2s/Te1s, e1s,   label=(r"$e_1$"))
+  #ax.plot(Te2s/Te1s, e2s, label=(r"$e_2$"))
+  #ax.set_xlabel(r"$T_{e1}/T_{e2}$")
+  #ax.set_xscale("log")
+  #ax.set_yscale("log")
+  ax.legend()
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, qs, totmass, j, e1d, e2d, Tm1s, Tm2s, Te1s, Te2s, secterms=False)
+  #print(e2s)
+  ax.plot(qs, e1s, ls="--", c="blue"  ,   label=(r"$e_1$, w/o sec"))
+  ax.plot(qs, e2s, ls="--", c="orange", label=(r"$e_2$, w/o sec"))
+  #ax.set_xlabel(r"$q$")
+  ##ax.plot(Te2s/Te1s, e1s,   label=(r"$e_1$"))
+  ##ax.plot(Te2s/Te1s, e2s, label=(r"$e_2$"))
+  ##ax.set_xlabel(r"$T_{e1}/T_{e2}$")
+  #ax.set_xscale("log")
+  #ax.set_yscale("log")
+  #ax.legend()
+  
+  
+  fig.suptitle(f"{j}:{j+1} MMR "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
+  fig.tight_layout()
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/notes/")
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: <ipython-input-85-ef6c77d93f2f>:38: UserWarning: Data has no positive values, and therefore cannot be log-scaled.
-:   ax[0].set_yscale("log")
-[[file:./.ob-jupyter/ab2dfaf7eabc3d92d78b683720ec02493ccd56e4.png]]
+#+begin_example
+  [ 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+   -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1]
+  707.1067811865476 1414.2135623730949 -20436.612173021604 -40873.2243460432
+#+end_example
+[[file:./.ob-jupyter/34c37b68b4e45af80a9dfdd148c8c18c0fe195f0.png]]
 :END:
-
+ 
 * Alignment behaviors
 ** reproducing tp case
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -784,3 +862,940 @@ fixed as a parameter?
 : [False False  True  True False False False False  True  True  True  True
 :  False False False False  True  True  True  True False False False False]
 
+* Hat theta
+** preamble
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  j = 2
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+** gen behaviortxt
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
+  #################
+  # CONFIGURATION #
+  #################
+  j = 2
+  a0 = 1.0
+  h = 0.025
+  alpha_0 = (j/(j+1))**(2./3.)
+  Nqs = 100
+  qs = np.ones(Nqs)*1
+  overwrite = True
+  totmass = 1e-3
+  #e2d = 0.0
+  #e1d = 0.2
+  Tw0 = 1000
+  
+  ######################
+  # Varying parameters #
+  ######################
+  eccs = np.linspace(0.02, 0.08, int(np.sqrt(Nqs)))
+  E1_0, E2_0 = np.meshgrid(eccs, eccs)
+  E1_0 = np.flip(E1_0.flatten())
+  E2_0 = np.flip(E2_0.flatten())
+  E1DS = E1_0
+  E2DS = E2_0
+  
+  ####################
+  # THREADING ARRAYS #
+  ####################
+  HS = np.ones(Nqs)*h
+  JS = np.ones(Nqs)*j
+  A0S = np.ones(Nqs)*a0
+  QS = qs
+  MU2 = totmass/(1+QS)
+  MU1 = totmass - MU2
+  TM1 = np.ones(Nqs)*np.infty
+  TM2 = -np.ones(Nqs)*1e5
+  ALPHA_0 = alpha_0*np.ones(Nqs)
+  #TE2 = 2.*EEQ_2**2*np.abs(TM2)*(QS*np.sqrt(ALPHA_0)+j*(QS/ALPHA_0+1))/QS/np.sqrt(ALPHA_0)
+  TE0 = np.ones(Nqs)*Tw0
+  TE1 = TE0
+  TE2 = TE0
+  TS = 20.*TE2
+  cutoff_frac = 0.5
+  CUTOFFS = TS*cutoff_frac
+  ALPHA2_0 = (3/2.)**(2./3)*(1+E2_0**2+E1_0**2)
+  NAMES = np.array([f"e1d-{E1_0[i]:0.3f}-e2d-{E2_0[i]:0.3f}"
+                     for i, qit in enumerate(QS)])
+  
+  ################
+  # WITH SECULAR #
+  ################
+  DIRNAMES = np.array([f"./hatR-phasegrid-q{int(QS[i])}-TE1{TE1[0]}-TE2{TE2[0]}" for i
+                          in range(Nqs)])
+  RUN_PARAMS = np.column_stack((HS, JS, A0S, QS, MU1, TS, TE1, TE2, TM1,
+                                 TM2, E1_0, E2_0, E1DS, E2DS, ALPHA2_0,
+                                 NAMES, DIRNAMES, CUTOFFS))
+  
+  aligned_arr = np.zeros((Nqs, 6))
+  aligned_arr[:,0] = totmass
+  aligned_arr[:,1] = QS
+  aligned_arr[:,2] = E1DS
+  aligned_arr[:,3] = E2DS
+  
+  for i, filename in enumerate(NAMES):
+      data = np.load(os.path.join(DIRNAMES[i], filename+".npz"))
+      teval  = data["teval"]
+      theta = data["thetap"]
+      a1     = data["a1"]
+      a2     = data["a2"]
+      e1     = data["e1"]
+      e2     = data["e2"]
+      g1     = data["g1"]
+      g2     = data["g2"]
+      L1     = data["L1"]
+      L2     = data["L2"]
+      x1     = data["x1"]
+      y1     = data["y1"]
+      x2     = data["x2"]
+      y2     = data["y2"]
+  
+      it = int(len(teval)*0.9)
+      align = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi)-pi) > 0.5))
+      antialign = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi)-pi) < 1.))
+      aligned_arr[i,4] = align
+      aligned_arr[i,5] = antialign
+  np.savetxt(os.path.join(".", f"behaviors-Rhat-q{q}-TE1{TE1[0]}-TE2{TE2[0]}.txt"), aligned_arr)
+#+END_SRC
+
+#+RESULTS:
+
+** plotting analytic 
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  alpha_0 = (j/(j+1))**(2./3.)
+  f1 = -A(alpha_0, j)
+  f2 = -B(alpha_0, j)
+  
+  alpha = np.arctan2(-f1, f2)
+  
+  def hattheta1(e1, e2, theta1, theta2):
+      return(np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2)))
+  def hattheta2(e1, e2, theta1, theta2):
+      return(np.arctan2(e2*sin(theta2) + f1/f2*e1*sin(theta1),
+                        e2*cos(theta2) + f1/f2*e1*cos(theta1)))
+  
+  Necc = 100
+  Ntheta = 100
+  
+  eccs = np.linspace(0, 0.1, Necc) 
+  e1s, e2s = np.meshgrid(eccs, eccs)
+  
+  import scipy.stats as stats
+  
+  lower, upper = 0., 2*pi
+  mu, sigma = pi, 1.
+  theta1_dist = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+  lower, upper = -pi, pi
+  mu, sigma = 0., 1.
+  theta2_dist = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+  
+  theta1 = theta1_dist.rvs(Ntheta)
+  theta2 = theta2_dist.rvs(Ntheta)
+  
+  avg_hatRs = np.zeros(len(e1s.flatten()))
+  Phip1s = np.zeros(len(e1s.flatten()))
+  Phip2s = np.zeros(len(e2s.flatten()))
+  
+  q = 1
+  mutot = 1e-4
+  mu2 = mutot/(1+q)
+  mu1 = q*mu2
+  
+  for i in range(len(e1s.flatten())):
+      e1 = e1s.flatten()[i]
+      e2 = e2s.flatten()[i]
+  
+      hattheta1_grid = hattheta1(e1, e2, theta1, theta2)
+      W2_grid = -e1*cos(theta1)*sin(alpha) + e2*cos(theta2)*cos(alpha)
+      Rhat_grid = 0.125*(f2*W2_grid/cos(alpha)/cos(hattheta1_grid)/mutot**(1./3))**2
+      avg_hatRs[i] = np.average(Rhat_grid) 
+      Phip1s[i] = 0.5*(3.75*(j+1)/mu1)**(2./3)*e1**2
+      Phip2s[i] = 0.5*(3.75*(j+1)/mu2)**(2./3)*e2**2
+  
+  avg_hatRs_grid = avg_hatRs.reshape((Necc, Necc))
+  Phip1s_grid = Phip1s.reshape((Necc, Necc))
+  Phip2s_grid = Phip2s.reshape((Necc, Necc))
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
+  Tw0 = 500
+  TE0 = np.ones(Nqs)*Tw0
+  TE1 = TE0
+  TE2 = TE0
+  
+  dirname = f"."
+  params = np.loadtxt(os.path.join(".", f"behaviors-Rhat-q{q}-TE1{TE1[0]}-TE2{TE2[0]}.txt"))
+  fig, ax = plt.subplots(figsize=(12,8))
+  
+  align_ind = (params[:,4] == 1).astype("bool")
+  antialign_ind =  (params[:,5] == 1).astype("bool")
+  circ_ind = np.logical_and(np.logical_not(align_ind), np.logical_not(antialign_ind))
+  
+  fontsize=36
+  
+  #######################
+  # Analytical Contours #
+  #######################
+  cs = ax.pcolormesh(e1s, e2s, avg_hatRs_grid)
+  ax.contour(e1s, e2s, Phip1s_grid, colors=["red"], linestyles="dashed", levels=[2.])
+  ax.contour(e1s, e2s, Phip2s_grid, colors=["red"], linestyles="dashed", levels=[2.])
+  ax.contour(e1s, e2s, avg_hatRs_grid, colors=["black"], linestyles="dashed", levels=[2.])
+  
+  cb = fig.colorbar(cs, ax=ax)
+  cb.ax.tick_params(labelsize=fontsize)
+  cb.set_label(r"$\hat{R}$", rotation=270, fontsize=fontsize, labelpad=60)
+  
+  ax.scatter(params[align_ind, 2], params[align_ind, 3],
+             marker="o", c="k", s=120, label=r"$\Delta\varpi\to 0$")
+  ax.scatter(
+      params[circ_ind, 2], params[circ_ind, 3],
+      marker="o",
+      s=120,
+      facecolors="none",
+      edgecolors="k",
+      label=r"$\Delta\varpi$-circulating")
+  #ax.scatter(
+  #    params[antialign_ind, 2], params[antialign_ind, 3],
+  #    marker="o",
+  #    s=120,
+  #    c="r",
+  #    label=r"$\Delta\varpi\to\pi$")
+  
+  
+  ax.set_xlabel(r"$e_{1,\rm d}$",fontsize=fontsize)
+  ax.set_ylabel(r"$e_{2,\rm d}$",fontsize=fontsize)
+  ax.tick_params(axis="both", labelsize=fontsize)
+  ax.set_title(f"q={q} Te1={TE1[0]} Te2={TE2[0]}",fontsize=fontsize)
+  
+  handles, labels = ax.get_legend_handles_labels()
+  line1 = mpl.lines.Line2D([0], [0], label=r'$\hat{R}\sim 2$', color='k', linestyle="dashed")
+  line2 = mpl.lines.Line2D([0], [0], label=r'CR3BP: $R\sim 2$', color='r', linestyle="dashed")
+  handles.extend([line1, line2])
+  
+  ax.legend(bbox_to_anchor=(1.2, 1.03), fontsize=fontsize, handles=handles)
+  fig.savefig(os.path.join(dirname, f"align-Rhat-q{q}-TE1{TE1[0]}-TE2{TE2[0]}.png"), bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+: <ipython-input-121-e247b60919ee>:20: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs = ax.pcolormesh(e1s, e2s, avg_hatRs_grid)
+
+* stability tests
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/compmass-onlyDrag/")
+  filename = "driveTe-h-0.10-Tw0-1000-mutot-1.0e-04/e1d-0.250-e2d-0.000.npz"
+  filename = "driveTe-h-0.10-Tw0-1000/e1d-0.300-e2d-0.000.npz"
+  #filename = "e0large-h-0.10-Tw0-10000-cut-0.30/e10-0.300-e20-0.300.npz"
+  data = np.load(filename)
+  teval  = data["teval"]
+  theta = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  
+  j = 2
+  theta = (theta) % (2 * np.pi)
+  theta1 = (theta + g1) % (2 * np.pi)
+  theta2 = (theta + g2) % (2 * np.pi)
+  alpha = a1 / a2
+  period_ratio = (alpha) ** (1.5)
+  pnom = j / (j + 1)
+  pdiff = period_ratio - pnom
+  
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+  
+  bartheta1 = (theta + barg1) % (2*np.pi)
+  bartheta2 = (theta + barg2) % (2*np.pi)
+  # from the reducing rotation (Henrard et al 1986)
+  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hattheta2 = np.arctan2(e2*sin(theta2) + f1/f2*e1*sin(theta1),
+                         e2*cos(theta2) + f1/f2*e1*cos(theta1))
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+
+#+RESULTS:
+  
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig, ax = plt.subplots(1,4,figsize=(20,5))
+  ax[0].plot(teval, a2*(1-e2))
+  ax[0].plot(teval, a1*(1-e1))
+  ax[1].plot(teval, a2)
+  ax[1].plot(teval, a1)
+  ax[2].plot(teval, e2)
+  ax[2].plot(teval, e1)
+  ax[3].plot(teval, theta)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x7ff0f2084a60> |
+[[file:./.ob-jupyter/7e8834c69dae5050d57ac9b3e6a57d2ea115de16.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig, ax = plt.subplots()
+  alpha = np.linspace(0.5,1,1000)
+  q = np.logspace(-1,1,1000)
+  AA, QQ = np.meshgrid(alpha, q)
+  MUcrit = (1+QQ)*((1-AA)/(AA+QQ**(1./3)))**3.
+  levels = np.array([1e-5, 1e-4, 1e-3, 1e-2, 1e-1])
+  cs = ax.contourf(AA,QQ,MUcrit,levels=levels,norm=mpl.colors.LogNorm())
+  ax.set_yscale("log")
+  plt.colorbar(cs)
+  js = np.arange(1,6)
+  a0s = (js/(js+1))**(2./3)
+  for a0 in a0s:
+      ax.axvline(x=a0, ls="--", c="k")
+  ax.set_xlabel(r"$\alpha$")
+  ax.set_ylabel(r"$q$")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: /tmp/ipykernel_7710/1432895569.py:7: UserWarning: Log scale: values of z <= 0 have been masked
+:   cs = ax.contourf(AA,QQ,MUcrit,levels=levels,norm=mpl.colors.LogNorm())
+: Text(0, 0.5, '$q$')
+[[file:./.ob-jupyter/ac0c32aeaea5ebfef2648a2a0fd0761b95acd4d3.png]]
+:END:
+
+* weak Te
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/")
+  #filename = "compmass-Rhat/driveTe-h-0.10-Tw0-1000-mutot-1.0e-04/e1d-0.250-e2d-0.000.npz"
+  #filename = "compmass-Rhat/e0large-h-0.10-Tw0-10000-cut-0.30/e10-0.300-e20-0.300.npz"
+  
+  #filename = "testing-weakTe/weakTe-Te-1.00e+05-mutot-1.0e-04/e10-0.001-e20-0.001.npz"
+  
+  q = 2.
+  j = 2.
+  alpha_0 = (j/(j+1))**(2./3)
+  
+  data = np.load(filename)
+  teval  = data["teval"]
+  theta = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  
+  j = 2
+  theta = (theta) % (2 * np.pi)
+  theta1 = (theta + g1) % (2 * np.pi)
+  theta2 = (theta + g2) % (2 * np.pi)
+  alpha = a1 / a2
+  period_ratio = (alpha) ** (1.5)
+  pnom = j / (j + 1)
+  pdiff = period_ratio - pnom
+  
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+  
+  bartheta1 = (theta + barg1) % (2*np.pi)
+  bartheta2 = (theta + barg2) % (2*np.pi)
+  # from the reducing rotation (Henrard et al 1986)
+  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hattheta2 = np.arctan2(e2*sin(theta2) + f1/f2*e1*sin(theta1),
+                         e2*cos(theta2) + f1/f2*e1*cos(theta1))
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+  
+** adiabatic invariants
+*** kick gammas
+- try kicking gamma just like kicking e
+  - is resonance more sensitive to R or theta ?
+- look up results of scattering
+- look up chaos in goldstein to analytically assess the situation
+- scattering
+  - look at goldstein ch 3.10
+- runge lenz vector dynamics for intuitive understanding
+  - look at goldstein ch 3.9
+*** kick eccentricities
+- take a look at the evolution of eta for the weakTe case & the
+  driveTe case
+  - for weakTe, the eta1 & eta2 quantities are smoothly varying
+  - for driveTe, the eta1 & eta2 are broken
+  - could be an adiabatic variance thing?
+ 
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/")
+  filename = "compmass-Rhat/driveTe-h-0.10-Tw0-1000-mutot-1.0e-04/e1d-0.250-e2d-0.000.npz"
+  #filename = "compmass-Rhat/e0large-h-0.10-Tw0-10000-cut-0.30/e10-0.300-e20-0.300.npz"
+  
+  #figname = "weak-Te.png"
+  #filename = "testing-weakTe/weakTe-Te-1.00e+05-mutot-1.0e-04/e10-0.001-e20-0.001.npz"
+  
+  #figname = "kick-e.png"
+  #filename = "/home/jtlaune/Dropbox/multi-planet-architecture/runs/testing-weakTe/edepTe-h-1.00e-01-mutot-1.0e-04/e10-0.001-e20-0.001.npz"
+  
+  q = 2.
+  j = 2.
+  alpha_0 = (j/(j+1))**(2./3)
+  
+  data = np.load(filename)
+  teval  = data["teval"]
+  theta = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  
+  j = 2
+  theta = (theta) % (2 * np.pi)
+  theta1 = (theta + g1) % (2 * np.pi)
+  theta2 = (theta + g2) % (2 * np.pi)
+  alpha = a1 / a2
+  period_ratio = (alpha) ** (1.5)
+  pnom = j / (j + 1)
+  pdiff = period_ratio - pnom
+  
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+  
+  bartheta1 = (theta + barg1) % (2*np.pi)
+  bartheta2 = (theta + barg2) % (2*np.pi)
+  # from the reducing rotation (Henrard et al 1986)
+  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hattheta2 = np.arctan2(e2*sin(theta2) + f1/f2*e1*sin(theta1),
+                         e2*cos(theta2) + f1/f2*e1*cos(theta1))
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+  
+  fig, ax = plt.subplots(2,figsize=(8,8))
+  etahat = -q*(alpha-alpha_0)/(j*sqrt(alpha_0)*(q/alpha_0+1)) + q*sqrt(alpha_0)*e1**2 + e2**2
+  eta1 = alpha**1.5*(1+j*e1**2)**1.5
+  eta2 = alpha**1.5*(1+(j+1)*e2**2)**1.5
+  ax[0].scatter(teval, etahat, s=2, label=r"$\hat\eta$")
+  ax[1].scatter(teval, eta1, zorder=1, s=2, label=r"$\eta_1$")
+  ax[1].scatter(teval, eta2, zorder=0, s=2, label=r"$\eta_2$")
+  ax[0].legend()
+  ax[1].legend()
+  ax[1].set_xlabel("t [yrs]")
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/testing-weakTe/")
+  #fig.savefig(figname, bbox_inches="tight")
+  
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/240f99d2dd4cda5b7330ff1a342d2e916acfab70.png]]
+
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  class Te_kick:
+      def __init__(self, Twave, Tkick, a, w):
+          self.Twave = Twave
+          self.Tkick = Tkick
+          self.a = a
+          self.w = w
+      def __call__(self, e, t):
+          if np.abs(t-self.Tkick) < 0.5*self.w:
+              return(self.a)
+          else:
+              return(self.Twave)
+  
+  Te1 = Te_kick(5e4, 7e4, 10, 1000)
+  teval = np.linspace(0,1.5e5, int(1e4))
+  Te1_eval = np.zeros(len(teval))
+  for i, ti in enumerate(teval):
+      Te1_eval[i] = Te1(0, ti)
+  plt.plot(teval, Te1_eval)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x7f19441d0070> |
+[[file:./.ob-jupyter/0c81e85ac8153fe4c0a762b24a917c265f55ecb2.png]]
+:END:
+
+** nonlinear Te from Cresswell & Nelson 08
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  class Te_edep:
+      def __init__(self, H_r, twave):
+          self.H_r = H_r
+          self.twave = twave
+      def __call__(self, e):
+          return(self.twave/0.78*(1-0.14*(e/self.H_r)**2 + 0.06*(e/self.H_r)**3))
+  
+  twave = 1000
+  H_r = 0.03
+  
+  Te_func = Te_edep(H_r, twave)
+  eccs = np.linspace(0,1.,1000)
+  plt.plot(eccs, Te_func(eccs))
+  plt.yscale("log")
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/3e783b162beab8914832fffda009f6904d918349.png]]
+
+* why e_i -> 0 at Te ratio = 1
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def Q1(j, q, sgn):
+      alpha0 = (j/(j+1))**(2./3)
+      f1 = -A(alpha0, j)
+      f2 = -B(alpha0, j)
+      return(sgn*(j*(q/alpha0+1)-1))
+  
+  def Q2(j, q, sgn):
+      alpha0 = (j/(j+1))**(2./3)
+      f1 = -A(alpha0, j)
+      f2 = -B(alpha0, j)
+      prefac = q*sqrt(alpha0)*f2**2/f1**2
+      return(sgn*prefac*(q*sqrt(alpha0)+j*(q/alpha0+1)))
+  
+  j = 2
+  alpha0 = (j/(j+1))**(2./3)
+  qs = np.logspace(np.log(0.5),np.log(2),1000)
+  tau = np.logspace(-1,1,1000)
+  TAUS, QS = np.meshgrid(tau, qs)
+  Te1 = 1000
+  Tm = 1e5
+  E1S_SQ_branch1 = Te1/2/Q1(j, QS, 1)/Tm/(1+TAUS*Q2(j,QS,-1)/Q1(j,QS,1))
+  E1S_SQ_branch2 = Te1/2/Q1(j, QS, -1)/Tm/(1+TAUS*Q2(j,QS,1)/Q1(j,QS,-1))
+  
+  
+  E1S_branch1 = sqrt(E1S_SQ_branch1)
+  E1S_branch2 = sqrt(E1S_SQ_branch2)
+  
+  E2S_branch1 = sqrt(alpha0)*QS*np.abs(f2/f1)*E1S_branch1
+  E2S_branch2 = sqrt(alpha0)*QS*np.abs(f2/f1)*E1S_branch2
+  
+  fig, ax = plt.subplots(1,2,figsize=(10,5))
+  
+  cs1 = ax[0].pcolormesh(TAUS,QS,E1S_branch2, norm=mpl.colors.LogNorm())
+  plt.colorbar(cs1, ax=ax[0])
+  ax[0].set_xlim((0.5,2))
+  ax[0].set_ylim((0.5,2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: /tmp/ipykernel_20631/3986406627.py:25: RuntimeWarning: invalid value encountered in sqrt
+:   E1S_branch1 = sqrt(E1S_SQ_branch1)*1
+: /tmp/ipykernel_20631/3986406627.py:26: RuntimeWarning: invalid value encountered in sqrt
+:   E1S_branch2 = sqrt(E1S_SQ_branch2)*1
+: /tmp/ipykernel_20631/3986406627.py:33: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs1 = ax[0].pcolormesh(TAUS,QS,E1S_branch2, norm=mpl.colors.LogNorm())
+| 0.5 | 2.0 |
+[[file:./.ob-jupyter/2598140a21c09e3a90a12fcfe3151d8acf4eb001.png]]
+:END:
+
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  Dgams = np.linspace(-2*np.pi,2*np.pi,1000)
+  theta1s = np.linspace(0,4*np.pi,1000)
+  eps = np.logspace(-1, 1, 10)
+  THETA1S, DGAMS = np.meshgrid(theta1s, Dgams) 
+  
+  alpha0 = (2./3)**(2./3)
+  f1 = -A(alpha0, 2)
+  f2 = -B(alpha0, 2)
+  def thetahat(theta1, ep, Dgam):
+      return(
+          np.arctan2(
+              f1*sin(theta1) + ep*f2*sin(theta1-Dgam),
+              f1*cos(theta1) + ep*f2*cos(theta1-Dgam)) % (2*np.pi)
+      )
+  fig, ax = plt.subplots(2,5,figsize=(20,8))
+  for i, ep in enumerate(eps):
+      j = 0
+      if i > 4:
+          i = i % 5
+          j = 1
+      cs = ax[j][i].pcolormesh(THETA1S, DGAMS, cos(thetahat(THETA1S, ep, DGAMS)),cmap="bwr")
+      #cbar = plt.colorbar(cs, ax=ax)
+      ax[j][i].set_title(r"$e_1/e_2=$"+f"{ep:0.2f}")
+      ax[j][i].set_xlabel(r"$\theta_1$")
+      ax[j][i].set_ylabel(r"$\Delta\gamma$")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: <ipython-input-43-cdc9f4cd640e>:21: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs = ax[j][i].pcolormesh(THETA1S, DGAMS, cos(thetahat(THETA1S, ep, DGAMS)),cmap="bwr")
+[[file:./.ob-jupyter/9fcaf9da6dbc7f69ba051007d96be8e881c08316.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  class sqr_e2_TeTm:
+      def __init__(self, j, Te, Tm, f1, f2):
+          # Tm is effective migration rate
+          # Te = Te1 = Te2
+          self.j = j
+          self.Te = Te
+          self.Tm = Tm
+          self.f1 = f1
+          self.f2 = f2
+          self.alpha_0 = (j/(j+1))**(2./3)
+      def __call__(self, q):
+          sqr_e2 = (0.5*self.Te/self.Tm/(1 -
+                     self.j*(q/self.alpha_0+1)
+                     /q/sqrt(self.alpha_0)
+                     + (1-self.j*(q/self.alpha_0+1))
+                     ,*self.f2**2/self.f1**2/self.alpha_0/q**2
+                    ))
+          return(sqr_e2)
+  j = 2
+  alpha_0 = (j/(j+1))**(2./3)
+  f1 = -A(alpha_0, j)
+  f2 = -B(alpha_0, j)
+  sqr_e2_func = sqr_e2_TeTm(j, 1e3, 1e5,  f1, f2)
+  qs = np.logspace(-1, 1, 1000)
+  plt.plot(qs, sqr_e2_func(qs))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x7f54c05ebee0> |
+[[file:./.ob-jupyter/a6d58e5d2559a1e1277fb41b6142cf90b0ea4a9d.png]]
+:END:
+
+* OLD
+** eccentricity excitement, Te1d & Te2d 
+*Question:* What value does Te2 take for equilibrium if e2 -> e2d is
+fixed as a parameter?
+- should try this with an eccentricity driving force of $\dot e =
+  -(e-e_d)/T_{e2d}$ but how does $dT_{e,2}/d\tau$ play into this?
+- I think this code leaves out derivatives of Te2 and so maybe it
+  can't be trusted
+- Hacked together a very basic $T_1(e_1)$, $T_2(e_2)$, seems to shift both
+  equilibrium values lower, however?
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  import importlib
+  import os
+  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  
+  class solve_eqeccs:
+      def __init__(self, q, totmass, j, Tm1, Tm2, Te1d, Te2d, e1d, e2d, secterms=True):
+          # this class returns the equilibrium equations divided by mu2
+          self.q = q
+          self.mu2 = totmass/(1+q)
+          alpha_0 = (j/(j+1))**(2./3.)
+          self.alpha_0 = alpha_0
+          self.alpha_2 = 1./alpha_0
+          self.f1 = -A(alpha_0, j)
+          self.f2 = -B(alpha_0, j)
+          if secterms:
+              self.C = C(alpha_0)
+              self.D = D(alpha_0)
+          else:
+              self.C = 0.
+              self.D = 0.
+          self.Tm1 = Tm1
+          self.Tm2 = Tm2
+  
+          # driving force
+          self.e1d = e1d
+          self.Te1d = Te1d
+          self.e2d = e2d
+          self.Te2d = Te2d
+      def Te1(self, e1):
+          # returns the time rather than the derivative
+          if abs(e1-self.e1d) < 1e-9:
+              return(np.inf)
+          else:
+              return(self.Te1d/(e1-self.e1d)*e1)
+      def Te2(self, e2):
+          # returns the time rather than the derivative
+          if abs(e2-self.e2d) < 1e-9:
+              return(np.inf)
+          else:
+              return(self.Te2d/(e2-self.e2d)*e2)
+      def dote1(self, e1, e2, theta1, theta2):
+          deriv = -self.mu2/self.alpha_2*(self.f1*sin(theta1) + self.D*e2*sin(theta1-theta2)) - e1/self.Te1(e1)
+          return(deriv)
+      def dote2(self, e1, e2, theta1, theta2):
+          deriv = -self.mu2/self.alpha_2*self.q*(self.f2*sin(theta2) + self.D*e1*sin(theta2-theta1)) - e2/self.Te2(e2)
+          return(deriv)
+      def dotdpom(self, e1, e2, theta1, theta2):
+          #deriv = self.mu2/self.alpha_2*(self.f1*cos(theta1)/(e1*sqrt(self.alpha_0))
+          #         - self.q*cos(theta2)/e2
+          #         + 2*self.C/sqrt(self.alpha_0)
+          #         + self.D*e2/e1/sqrt(self.alpha_0)
+          #         -self.q*2*self.C/sqrt(self.alpha_2)
+          #         - self.q*self.D*e1/e2/sqrt(self.alpha_2))
+          deriv = (self.f1*e2*cos(theta1)/(sqrt(self.alpha_0))
+                   - self.q*self.f2*cos(theta2)*e1
+                   + 2*self.C/sqrt(self.alpha_0)*e1*e2
+                   + self.D*e2**2/sqrt(self.alpha_0)
+                   -self.q*2*self.C/sqrt(self.alpha_2)*e1*e2
+                   - self.q*self.D*e1**2/sqrt(self.alpha_2))
+          return(deriv)
+      def doteta(self, e1, e2, theta1, theta2):
+          deriv = (self.q*sqrt(self.alpha_0)/(j*(self.q/self.alpha_0 +
+                                                 1)) *(1./self.Tm2 -
+                                                       1./self.Tm1 +
+                                                       2*e1**2/self.Te1(e1) -
+                                                       2*e2**2/self.Te2(e2)) -
+                   self.q*sqrt(self.alpha_0)*2*e1**2/self.Te1(e1)
+                   - 2*e2**2/self.Te2(e2))
+          return(deriv)
+      def __call__(self, vec):
+          (e1, e2, theta1, theta2) = vec[:]
+          e1_deriv = self.dote1(e1, e2, theta1, theta2)
+          e2_deriv = self.dote2(e1, e2, theta1, theta2)
+          dpom_deriv = self.dotdpom(e1, e2, theta1, theta2)
+          eta_deriv =  self.doteta(e1, e2, theta1, theta2)
+          deriv_arr = np.array([e1_deriv,
+                                e2_deriv,
+                                dpom_deriv,
+                                eta_deriv])
+          #print(vec, deriv_arr)
+          return(deriv_arr)
+  
+  def get_eeqs(dir):
+      NQS = 36
+      QS = np.logspace(-3.,0.,NQS)
+      NAMES = np.array([f"q{qit:0.2f}" for qit in QS])
+      FILENAMES   = [os.path.join(dir, f"{name}.npz") for name in NAMES]
+      qscatters = -1*np.ones(NQS)
+      e1eqs = np.zeros(NQS)
+      e2eqs = np.zeros(NQS)
+      dpoms = np.zeros(NQS)
+      for fi, filename in enumerate(FILENAMES):
+          if os.path.exists(filename):
+              data = np.load( filename)
+              teval = data["teval"]
+              theta = data["thetap"]
+              e1    = data["e1"]
+              e2    = data["e2"]
+              g1    = data["g1"]
+              g2    = data["g2"]
+  
+              it = int(0.9*len(teval))
+              e1eqs[fi] = np.average(e1[it:])
+              e2eqs[fi] = np.average(e2[it:])
+              dpoms[fi] = np.average(np.abs(e2[it:]-e1[it:]))
+              qscatters[fi] = QS[fi]
+      return(e1eqs, e2eqs, dpoms, qscatters)
+  
+  
+  def calc_eeqs(h, Nqs, qs, j, alpha_0, totmass, Tm1s, Tm2s, Te1ds, Te2ds, e1d, e2d, secterms=True):
+      e1s = np.zeros(Nqs)
+      e2s = np.zeros(Nqs)
+      theta1s = np.zeros(Nqs)
+      theta2s = np.zeros(Nqs)
+  
+      for iq, q in enumerate(qs):
+          Te1d = 2*pi*Te1ds[iq]
+          Te2d = 2*pi*Te2ds[iq]
+          Tm1 = 2*pi*Tm1s[iq]
+          Tm2 = 2*pi*Tm2s[iq]
+          #if q <= 1:
+          #    Te2d = TW0*2*np.pi
+          #    Te1d = Te2d/q/alpha_0**0.5
+  
+          #    Tm1 = Te1d/2.7/h**2
+          #    Tm2 = Te2d/2.7/h**2
+          #else:
+          #    Te1d = TW0*2*np.pi
+          #    Te2d = Te1d*q*alpha_0**0.5
+  
+          #    Tm1 = Te2d/2.7/h**2
+          #    Tm2 = Te1d/2.7/h**2
+  
+          x0 = (h/sqrt(q), h*sqrt(q), pi, 0.)
+          mfunc = solve_eqeccs(q, totmass, j, Tm1, Tm2, Te1d, Te2d, e1d, e2d, secterms=secterms)
+          sol = scipy.optimize.root(mfunc, x0, options={"maxfev":int(1e4)})
+          x = sol.x
+          #if not sol.success:
+          #    print(sol.message)
+          e1 = x[0]
+          e2 = x[1]
+          theta1 = x[2]
+          theta2 = x[3]
+          e1s[iq] = e1
+          e2s[iq] = e2
+          theta1s[iq] = theta1
+          theta2s[iq] = theta2
+          #print(x, mesg, infodict["nfev"])
+          #print(theta1-theta2)
+      return(e1s, e2s, theta1s, theta2s)
+ #+END_SRC
+
+ #+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
+  h = 0.025
+  Nqs = 1000
+  qs = np.logspace(np.log10(1.5), 2., Nqs)
+  #qs = [0.01]
+  j = 2
+  alpha_0 = (j/(j+1))**(2./3.)
+  e1d = 0.2
+  e2d = 0.2
+  
+  totmass = 1e-3
+  Nqs = 1000
+  qs = 3.*np.ones(Nqs)
+  Tw0 = 1e4
+  Te1ds = Tw0*np.ones(Nqs)
+  Te2ds = np.logspace(np.log10(Tw0)-2, np.log10(Tw0)+2, Nqs)
+  Tm1s = 1e6*np.ones(Nqs)
+  Tm2s = Tm1s/10.
+  
+  e1s, e2s, theta1s, theta2s = calc_eeqs(h, Nqs, qs, j, alpha_0,
+                                         totmass, Tm1s, Tm2s, Te1ds, Te2ds,
+                                         e1d, e2d, secterms=True)
+  #(e1s_e2d0, e2s_e2d0,
+  # theta1s_e2d0, theta2s_e2d0) = calc_eeqs(h, Nqs, qs, j, alpha_0,
+  #                                           totmass, 0., 0., secterms=True)
+  #(e1s_nosec, e2s_nosec,
+  # theta1s_nosec, theta2s_nosec) = calc_eeqs(h, Nqs, qs, j, alpha_0,
+  #                                           totmass, e1d, e2d, secterms=False)
+  
+  fig, ax = plt.subplots(2)
+  #ax[0].plot(qs, e1s, ls="--", c="blue"  ,   label=(r"$e_1$"))
+  #ax[0].plot(qs, e2s, ls="--", c="orange", label=(r"$e_2$"))
+  ax[0].plot(Te2ds/Te1ds, e1s,   label=(r"$e_1$"))
+  ax[0].plot(Te2ds/Te1ds, e2s, label=(r"$e_2$"))
+  ax[1].plot(qs, theta1s)
+  ax[1].plot(qs, theta2s)
+  ax[0].set_xscale("log")
+  ax[0].set_yscale("log")
+  ax[1].set_xscale("log")
+  ax[1].set_yscale("log")
+  ax[0].legend()
+  ax[0].set_xlabel("q")
+  #ax.set_ylim((0.,0.4))
+  fig.suptitle(f"{j}:{j+1} MMR "+r"$h=$"+f"{h:0.1e} "+r"$\mu_{\rm tot}=$"+f"{totmass:0.1e}")
+  fig.tight_layout()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+# [goto error]
+: ---------------------------------------------------------------------------
+: FileNotFoundError                         Traceback (most recent call last)
+: <ipython-input-4-ef6c77d93f2f> in <module>
+: ----> 1 os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/")
+:       2 h = 0.025
+:       3 Nqs = 1000
+:       4 qs = np.logspace(np.log10(1.5), 2., Nqs)
+:       5 #qs = [0.01]
+: 
+: FileNotFoundError: [Errno 2] No such file or directory: '/home/jtlaune/multi-planet-architecture/runs/compmass-eq/qles1/'
+:END:
