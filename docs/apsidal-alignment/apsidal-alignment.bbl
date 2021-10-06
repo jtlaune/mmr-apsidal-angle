@@ -1,0 +1,63 @@
+\begin{thebibliography}{}
+
+\bibitem[Cresswell and Nelson, 2008]{cresswell_three-dimensional_2008}
+Cresswell, P. and Nelson, R.~P. (2008).
+\newblock Three-dimensional simulations of multiple protoplanets embedded in a
+  protostellar disc.
+\newblock {\em Astronomy \& Astrophysics}, 482(2):677--690.
+
+\bibitem[Deck and Batygin, 2015]{deck_migration_2015}
+Deck, K.~M. and Batygin, K. (2015).
+\newblock Migration of two massive planets into (and out of) first order mean
+  motion resonances.
+\newblock {\em The Astrophysical Journal}, 810(2):119.
+\newblock arXiv: 1506.01382.
+
+\bibitem[Goldreich and Schlichting, 2014]{goldreich_overstable_2014}
+Goldreich, P. and Schlichting, H.~E. (2014).
+\newblock Overstable {Librations} can {Account} for the {Paucity} of {Mean}
+  {Motion} {Resonances} among {Exoplanet} {Pairs}.
+\newblock {\em The Astronomical Journal}, 147:32.
+
+\bibitem[Goldstein et~al., 2000]{goldstein_classical_2000}
+Goldstein, Poole, and Sako (2000).
+\newblock {\em Classical {Mechanics}}.
+\newblock 3rd edition.
+
+\bibitem[Henrard and Lemaitre, 1983]{henrard_second_1983}
+Henrard, J. and Lemaitre, A. (1983).
+\newblock A second fundamental model for resonance.
+\newblock {\em Celestial mechanics}, 30(2):197--218.
+
+\bibitem[Henrard et~al., 1986]{henrard86_reduc_trans_apocen_librat}
+Henrard, J., Lemaitre, A., Milani, A., and Murray, C.~D. (1986).
+\newblock The reducing transformation and apocentric librators.
+\newblock {\em Celestial Mechanics}, 38(4):335--344.
+
+\bibitem[Murray and Dermott, 2000]{murray_solar_2000}
+Murray, C.~D. and Dermott, S.~F. (2000).
+\newblock {\em Solar {System} {Dynamics}}.
+\newblock Cambridge University Press, Cambridge.
+
+\bibitem[Tanaka and Ward, 2004]{tanaka_three-dimensional_2004}
+Tanaka, H. and Ward, W.~R. (2004).
+\newblock Three-dimensional {Interaction} between a {Planet} and an
+  {Isothermal} {Gaseous} {Disk}. {II}. {Eccentricity} {Waves} and {Bending}
+  {Waves}.
+\newblock {\em The Astrophysical Journal}, 602(1):388.
+
+\bibitem[Wisdom, 1986]{wisdom_canonical_1986}
+Wisdom, J. (1986).
+\newblock Canonical solution of the two critical argument problem.
+\newblock {\em Celestial Mechanics}, 38:175--180.
+
+\bibitem[Xu et~al., 2018]{xu_migration_2018}
+Xu, W., Lai, D., and Morbidelli, A. (2018).
+\newblock Migration of {Planets} {Into} and {Out} of {Mean} {Motion}
+  {Resonances} in {Protoplanetary} {Discs}: {Overstability} of {Capture} and
+  {Nonlinear} {Eccentricity} {Damping}.
+\newblock {\em Monthly Notices of the Royal Astronomical Society},
+  481(2):1538--1549.
+\newblock arXiv: 1805.07501.
+
+\end{thebibliography}

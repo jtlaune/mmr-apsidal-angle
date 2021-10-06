@@ -1,0 +1,105 @@
+% Created 2021-08-12 Thu 14:52
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tensor}
+\usepackage{amsthm}
+\usepackage{ wasysym }
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{cancel}
+\usepackage{tikz}
+\renewcommand{\O}{\mathcal{O}}
+\renewcommand{\d}{\partial}
+\renewcommand{\v}[1]{\boldsymbol{ #1 }}
+\renewcommand{\t}[1]{\tilde{ #1 }}
+\newcommand{\tg}{\t{g}}
+\newcommand{\vh}[1]{\hat{\boldsymbol{ #1 }}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dd}[2]{\frac{d #1}{d #2}}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+\node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+\DeclarePairedDelimiter{\abs}{|}{|}
+\DeclarePairedDelimiter{\p}{(}{)}
+\DeclarePairedDelimiter{\we}{\langle}{\rangle}
+\title{Architecture of Planetary Systems in Mean Motion Resonance}
+\author{JT Laune}
+\author{JT Laune}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={JT Laune},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:org11a7547}
+\section{Planet Migration}
+\label{sec:orgd49e02d}
+\subsection{MMR}
+\label{sec:orgcc023d9}
+
+\subsection{Equilibrium}
+\label{sec:org9b76f1b}
+q=2\\
+\includegraphics[width=0.75\textwidth]{{./standard-example-Tm2-81746-Tw0-1000}.png}\\
+
+\includegraphics[width=0.25\textwidth]{{./standard-eeqs-Tm2-81746-Tw0-1000}.png}\\
+\includegraphics[width=0.25\textwidth]{{./standard-pomega-Tm2-81746-Tw0-1000}.png}
+
+\subsection{Eccentricity damping timescales}
+\label{sec:org4c9eca9}
+\includegraphics[width=0.25\textwidth]{{./eeqs-Tm2-50000-Tw0-1000}.png}
+
+\includegraphics[width=0.25\textwidth]{{./epsilon-Tm2-50000-Tw0-1000}.png}
+
+\includegraphics[width=0.4\textwidth]{{./pomega-Tm2-50000-Tw0-1000}.png}
+\section{Apsidal Alignment}
+\label{sec:orgeedb71a}
+\subsection{Large initial eccentricities}
+\label{sec:org589dbf6}
+q=1\\
+\includegraphics[width=0.75\textwidth]{{e0large-example-Tm2-50000-Tw0-1000}.png}
+
+\subsection{Eccentricity driving forces}
+\label{sec:org47bc03f}
+q=100\\
+\includegraphics[width=0.75\textwidth]{{driving-example-Tm2-50000-Tw0-1000}.png}
+
+\section{Conclusion}
+\label{sec:org7fe134a}
+
+\section{Appendix}
+\label{sec:org6be96f4}
+\subsection{Elliptic restricted 3 body problem}
+\label{sec:org26e4130}
+\end{document}

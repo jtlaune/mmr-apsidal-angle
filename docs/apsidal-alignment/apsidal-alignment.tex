@@ -1,0 +1,660 @@
+% Created 2021-09-13 Mon 20:24
+% Intended LaTeX compiler: pdflatex
+\documentclass{mnras}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{tensor}
+\usepackage{ wasysym }
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{cancel}
+\newcommand{\note}[1]{{\color{red} \large #1 }}
+\renewcommand{\O}{\mathcal{O}}
+\renewcommand{\d}{\partial}
+\renewcommand{\v}[1]{\boldsymbol{ #1 }}
+\renewcommand{\t}[1]{\tilde{ #1 }}
+\newcommand{\tg}{\t{g}}
+\newcommand{\vh}[1]{\hat{\boldsymbol{ #1 }}}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dd}[2]{\frac{d #1}{d #2}}
+\DeclarePairedDelimiter{\abs}{|}{|}
+\DeclarePairedDelimiter{\norm}{||}{||}
+\DeclarePairedDelimiter{\p}{(}{)}
+\DeclarePairedDelimiter{\we}{\langle}{\rangle}
+
+\author[Laune et al.]{
+JT Laune,$^{1}$
+Laetitia Rodet,$^{1}$
+and Dong Lai$^{1}$
+\\
+$^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
+\date{\today}
+\date{}
+\title{}
+\hypersetup{
+ pdfauthor={Jordan Laune},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\title[MMR Architecture]{Architecture of Planetary Systems in Mean Motion Resonance}
+\author[Laune et al.]{
+JT Laune,$^{1}$
+Laetitia Rodet,$^{1}$
+and Dong Lai$^{1}$
+\\
+$^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
+\maketitle
+
+\section{Introduction}
+\label{sec:orgc0fd10a}
+The typical outcome of planet-disk migration is thought to be capture
+into mean motion resonance, after which torques from the gas damp the
+system's angular momentum deficit (AMD) into equilibrium.  The MMR
+equilibrium is governed by various conditions which are well studied
+in the literature
+(e.g. \cite{henrard_second_1983,deck_migration_2015,goldreich_overstable_2014,xu_migration_2018,henrard_second_1983})
+
+\section{Planet Migration}
+\label{sec:org4fb28d4}
+Planets embedded within a protoplanetary disk interact gravitationally
+with the gas and lose angular momentum, leading to inward migration
+towards the central star.  Disk torques vary with planet mass as well
+as across semimajor axis; large outer planets lose angular momentum
+quickly and sweep up inner planets into MMRs
+\cite{tanaka_three-dimensional_2004,xu_migration_2018}.  In some
+cases, the planet can gain angular momentum and migrate away from the
+primary.
+
+In this paper, we will ignore the detailed physics of
+planet-disk interactions and instead implement dissipative forces
+parametrized by the eccentricity damping and migration timescales,
+denoted by \(T_{e,i}\) and \(T_{m,i}\) for \(i=1,2\). The accelerations are
+then given by:
+\begin{align}\label{eq:disforce}
+  \frac{\dot{e}_i}{e_i} &= -\frac{1}{T_{e,i}} \\
+  \frac{\dot{a}_i}{a_i} &= -\frac{1}{T_{m,i}} -\frac{2e_i^2}{T_{e,i}}.
+\end{align}
+
+In our notation, \(T_{m,i}>0\) \((<0)\) denotes inward (outward)
+migration.  For typical, flat disk profiles, we have
+\cite{tanaka_three-dimensional_2004,cresswell_three-dimensional_2008,xu_migration_2018}
+\begin{align}
+  \frac{T_{e,1}}{T_{e,2}}&= \frac1q\\
+  T_{e,i}&=3.46 h^2 T_{m,i}.
+\end{align}
+
+To scale the dissipation times in the integrations, we choose
+a parameter \(T_{e,0}\) and set
+\begin{align}
+  T_{e,1}&=T_{e,0}\sqrt{q}\\
+  T_{e,2}&= T_{e,0}/\sqrt{q}.
+\end{align}
+
+We must have \(1/T_{m,1} - 1/T_{m,2} > 0\) for convergent
+(i.e. \(\abs{a_1-a_2}\) is shrinking) inward migration, and vice versa
+for outward migration. Hence, for \(q>1\), we set \(T_{m,i}< 0\); for
+\(q<1\), we set \(T_{m,i}>0\).  Unless noted otherwise, we choose \(h=0.1\)
+and \(T_{e,0}=1000~\rm{years}\) .  We'll refer to these relationships as
+the "standard picture" of planet migration.
+
+\subsection{MMR}
+\label{sec:org0df2e63}
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
+  \caption{Standard MMR capture process for $h=0.1$ and $q=2$. The
+    outer planet $m_2$ starts wide of resonance and is captured near
+    $t=2000$ yrs, after which the two angles $\theta_1\to180^\circ$
+    and $\theta_2\to 0^\circ$.  While in resonance, the $e_i$ values
+    are driven to equilibrium and the periapses are antialigned.}
+  \label{fig:standardex}
+\end{figure*}
+When two planets have commensurate period ratios, \(p:q\) where \(p,q\)
+are integers, their gravitational interactions may lock them into a
+mean motion resonance (MMR).  As young planets migrate within their
+disk, if the migration is convergent (i.e. \(P_2/P_1\) decreasing), they
+cross MMR period ratios and may be captured. In our paper, we will be
+considering only first order MMRs, denoted by \(j:j+1\), which occur
+where \(n_2/n_1 = j/j+1\), where \(n_1,n_2\) denote the inner and outer
+planet, respectively.
+
+The Hamiltonian of a system with two planets near a first order MMR is
+\cite{murray_solar_2000}:
+\begin{align}
+\label{hamiltonian}
+  H_{\rm kep} = & -\frac{G M m_{1}}{2 a_{1}}-\frac{G M m_{2}}{2 a_{2}}\nonumber\\
+  H_{\rm res} = & -\frac{G m_{1} m_{2}}{a_{2}}
+                  \left[
+                  f_{1} e_{1} \cos \theta_{1} 
+                  +f_{2} e_{2} \cos \theta_{2}\right]\nonumber\\
+  H_{\rm sec} = &-\frac{G m_{1} m_{2}}{a_{2}}\left[f_{3} (e_1^2 + e_2^2)
+                  +f_4e_1e_2\cos(\varpi_2-\varpi_1)
+                  \right] \nonumber\\
+  H = &~ H_{\rm kep} + H_{\rm res}+ H_{\rm sec}. 
+\end{align}
+
+\(H_{\rm kep}\) is the standard Keplerian Hamiltonian; \(H_{\rm res}\)
+the resonant interactions between the planets of order
+\(\O(e_i)\); and \(H_{\rm sec}\) the secular interactions.
+The two angles are given by
+\begin{align}
+\label{circangles}
+ \theta_i = (j+1)\lambda_2 - \lambda_1 - \varpi_i.
+\end{align}
+
+Equation \eqref{hamiltonian} admits eight coupled ODES (\(\dot a_i, \dot
+e_i, \dot\theta_i, \dot\varpi_i\)), which we may integrate together
+with the effects of dissipation to simulate MMR capture.  An example
+of MMR capture is given in Figure \ref{fig:standardex}.  The period
+ratio \(P_2/P_1\) initially starts wide of the nominal resonance value
+of \(1.5\).  After around \(2~\rm{kyr}\) of convergent migration, the
+planets are caught into MMR, indicated by the stabilization of
+\(\theta_1\) to \(180^\circ\) and \(\theta_2\) to \(0^\circ\).  The planets'
+eccentricities level off at around \(4~\rm{kyr}\) near \(e_1\approx 0.02\)
+and \(e_2\approx0.04\), and the planets become apsidally anti-aligned
+with \(\varpi_1-\varpi_2\approx 180^\circ\).
+
+In this paper, we will use the term "resonance" loosely to mean the
+libration of an angle such as \(\theta_1\), \(\theta_2\), and later on
+\(\hat\theta\).  We'll also use the angle itself to refer to the
+resonance, i.e. the planets \(m_1\) and \(m_2\) in Figure
+\ref{fig:standardex} are caught into both \(\theta_1\) and \(\theta_2\),
+respectively, since those angles are librating.
+
+During the migration phase, planets typically retain small
+eccentricities. Indeed, the standard circular MMRs (angles \(\theta_1\)
+and \(\theta_2\)) have finite resonance widths in \(e\), and so small
+eccentricities are necessary for capture.  Most studies consider only
+the resonant terms for this reason, since they are first order in
+eccentricity.  However, if eccentricities are excited, secular terms
+play an important role, and so we keep them.
+
+\subsection{Equilibrium}
+\label{sec:orga160e82}
+\begin{figure}
+  \centering
+  \begin{subfigure}[t]{0.225\textwidth}
+  \includegraphics[width=1\textwidth]{{standard-eeqs-Tm2-20436-Tw0-1000}.png}
+  \caption{ }
+  \label{fig:standardeqecc}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.225\textwidth}
+  \includegraphics[width=1\textwidth]{{standard-pomega-Tm2-20436-Tw0-1000}.png}
+  \caption{ }
+  \label{fig:standardDpom}
+  \end{subfigure}
+  \caption{\emph{(a)} Analytical equilibrium values are plotted
+    as dashed lines for various values of $q$. The points
+    indicate time averaged numerical results from integrating the
+    time-dependent equations of motion.  Error bars indicate the
+    standard deviation of the eccentricities; most fall within
+    the marker for eccentricity.  Simulations without secular
+    effects showed only negligible differences, and so they were
+    not included.  \emph{(b)} Same as \emph{(a)}, but for
+    $\Delta\varpi$. Simulations without secular effects did show
+    significant differences, and so they have been included.}
+\label{fig:standard}
+\end{figure}
+The MMR capture in Figure \ref{fig:standardex} reaches an equilibrium
+state in period ratio, resonant angles, eccentricities, and
+\(\Delta\varpi\).  Indeed, the Hamiltonian in equation
+\eqref{hamiltonian}, including the dissipative terms, admits the
+following three equations for equilibrium values of
+\((e_1,e_2,\theta_1,\theta_2)\):
+\begin{equation}
+\label{dote1}
+  \dot e_1 = \frac{\mu_2}{\alpha_2} [f_1\sin(\theta_1) - De_2 \sin(\gamma_2-\gamma_1)] - \frac{e_1}{T_{e,1}}=0
+\end{equation}
+
+\begin{equation}
+\label{dote2}
+  \dot e_2 = \frac{q\mu_2}{\alpha_2} [f_2\sin(\theta_2) - De_1 \sin(\gamma_1-\gamma_2)]- \frac{e_2}{T_{e,2}}=0
+\end{equation}
+
+\begin{align}
+\label{dotdpom}
+  \frac{d}{dt}\Delta\varpi \equiv \dot\varpi_1-\dot\varpi_2
+  &= \frac{\mu_2}{\alpha_2} \left[ \frac{f_1\cos\theta_1}{\alpha_1^{1/2} e_1}
+     - \frac{qf_2\cos\theta_2}{\alpha_2^{1/2}e_2}\right.\nonumber \\
+  &\quad+ \left.\frac{2C}{\alpha_1^{1/2}} + \frac{De_2}{\alpha_1^{1/2} e_1}
+    - \frac{2qC}{\alpha_2^{1/2}} - \frac{qDe_1}{ \alpha_2^{1/2}e_2}\right]=0
+\end{align}
+
+where we have combined \(\Delta\varpi = \theta_2 - \theta_1 =
+\varpi_1-\varpi_2\) in the last equation.
+
+We must find a fourth equation to complete this system of equations.
+Absent any dissipative forces, the following quantities are conserved:
+\begin{align}
+  J &= \Lambda_1\sqrt{1-e_1^2} + \Lambda_2\sqrt{1-e_2^2}\\
+  G &= \frac{j+1}{j} \Lambda_1 + \Lambda_2.
+\end{align}
+
+The quantity \(J\) is the angular momentum of the system, and \(G\) is
+an integral of motion for equation \eqref{hamiltonian}.
+
+Define \(\eta\) to be a clever combination of \(J\) and \(G\),
+\begin{align}
+  \eta(\alpha, e_1, e_2) &\equiv - 2(q/\alpha_0+1)\p*{\frac{J}{G}-\left.\frac{J}{G}\right|_{0}}, \\
+\end{align}
+
+where \(\alpha_0 = (j/(j+1))^{3/2}\) and \(\left(J/G\right|_{0}\) is
+evaluated at \(e_i=0\) and \(\alpha=\alpha_0\).
+Thus, we have \(\eta(\alpha_0, 0, 0)=0\) and the corresponding Taylor expansion yields
+\begin{align}
+  \eta \approx -\frac{q(\alpha-\alpha_0)}{j\sqrt{\alpha_0}(q/\alpha_0+1)} + q\sqrt{\alpha_0}e_1^2 + e_2^2
+\end{align}
+
+The equation of motion for \(\eta\) is then given by
+\begin{align}
+\label{doteta}
+  \dot\eta = \frac{q\alpha_0^{1/2}}{j(q\alpha_0^{-1}+1)}&\left[ \frac{1}{T_{m2}} - \frac{1}{T_{m1}}
+      + \frac{2e_1^2}{T_{e1}}- \frac{2e_2^2}{T_{e2}} \right] \nonumber\\
+    &- q\alpha_0^{1/2}\frac{2e_1^2}{T_{e1}} - \frac{2e_2^2}{T_{e2}}=0.
+\end{align}
+
+We note that the only contribution to \(\dot{\eta}\) is from dissipative effects.
+
+By solving the four equations \eqref{dote1} -- \eqref{dotdpom} and
+\eqref{doteta} , we may arrive at equilibrium values for the system.  In
+the standard picture and neglecting secular terms (i.e., for small
+\(e_i\)), equations \eqref{dote1} and \eqref{dote2} show
+\(\sin(\theta_i)\approx 0\).  Equation \eqref{dotdpom} then gives us
+\(\theta_1\approx \pi\) and \(\theta_2\approx 0\).  Since
+\(\theta_1-\theta_2 = \varpi_2-\varpi_1\), we therefore see that
+convergent migration produces anti-aligned periapses.  We confirm this
+in the time-dependent integration in Figure \ref{fig:standardex}.
+The equilibrium \(e_i\)'s and \(\Delta\varpi\)'s for comparable mass
+planets \((q\in[0.5,2])\) are given in Figures \ref{fig:standardeqecc} and
+\ref{fig:standardDpom}.  Analytical results are plotted as dashed lines.
+Here we also integrate the time-dependent differential equations from
+Hamiltonian \eqref{hamiltonian} and plot the average \(e_1\), \(e_2\), and
+\(\Delta\varpi\) over the last 10$\backslash$% of the timespan.  These results are
+calculated with outward migration for \(q>1\) and inward migration for
+\(q<1\).
+
+As we can see, the final averaged eccentricities for \(m_1\) and \(m_2\)
+go approximately as \(e_1/e_2 \sim q\). As expected, the \(\Delta\varpi\)
+average values are all very close to \(\pi\). The numerical
+and analytical results largely agree.
+
+In the next two sections, we will explore slightly modified models
+by varying the ratio \(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\). 
+
+\subsection{Eccentricity damping timescales}
+\label{sec:orged665e7}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
+  \caption{ Equilibrium eccentricity values for a range of
+    $T_{e,1}/T_{e,2}\in[0.2,10]$ are plotted for three
+    different values of $q=0.5,1.0,$ and $2.0$. The points and
+    errorbars are calculated in the same way as
+    \ref{fig:standard}.  The dashed lines indicate analytical
+    estimates for $e_i$.}
+  \label{fig:eqecc}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{{./varyTe-pomega-h-0.1-Tw0-1000}.png}
+  \caption{Same as \ref{fig:eqecc} but for $\Delta\varpi$.}
+  \label{fig:eqDpom}
+\end{figure}
+Up until now, we have strictly been considering the standard picture
+of planet migration-- with \(T_{e,1}/T_{e,2} = 1/q\) and
+\$T\textsubscript{e,i}=3.46h\textsuperscript{2T}\textsubscript{e,i}\$-- which always gives rise to apsidal
+anti-alignment for reasonable values of \(h\).  This simple parametrized
+model will always fail to capture all of the complicated
+hydrodynamics of real astrophysical disks. We can therefore
+easily expect a difference in the ratio \(T_{e,1}/T_{e,2}\)
+over an order of magnitude, and perhaps this modfication
+could produce \(\Delta\varpi\approx0^\circ\) without
+adding new parameters to the system.
+
+We explore this possibility in Figures \ref{fig:eqecc} and
+\ref{fig:eqDpom}. The ratio \(T_{e,1}/T_{e,2}\) varies freely between
+\(0.2\) and \(10\), regardless of the mass ratio.  Initially, we attempted
+to extend this range to \(T_{e,1}/T_{e,2}=0.1\), but the system
+eventually escapes resonance for all \$q=0.5,\$ \(1\), and \(2\) and no
+equilibrium is reached.  The migration timescales are set to
+\(\abs{T_{m,i}}=T_{e,i}/3.46 h^2\).  For \(T_{e,1}<T_{e,2}\), then, we set
+\(T_{m,i}>0\), corresponding to outward migration, and vice versa for
+\(T_{e,1}>T_{e,2}\).
+
+For comparable mass planets with \(q=0.5\), \(1\), and \(2\), varying the
+ratio \(T_{e,1}/T_{e,2}\) around \(1/q\) modifies the final equilibrium
+eccentricities by a roughly similar factor, as seen in Figure
+\ref{fig:eqecc}. The eccentricity ratio \(e_1/e_2\) is largely unchanged,
+yet the magnitudes \(e_1\) and \(e_2\) are larger for more extreme values
+of \(T_{e,1}/T_{e,2}\).  The dashed lines plot the analytic results from
+solving equations \eqref{dote1} -- \eqref{doteta}; these findings
+reproduce the numerical results.
+
+The corresponding values for \(\Delta\varpi\) are shown in
+\ref{fig:eqDpom}; variations in the eccentricity damping ratio cannot
+account for apsidal alignment.  In all cases, the analytic equilibrium
+equations predict \(\Delta\varpi\approx 180^\circ\), and the numerical
+integrations agree.
+
+\section{Apsidal Alignment}
+\label{sec:org3a94303}
+As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
+always leads to \(\Delta\varpi=180^\circ\) due to their equilibrium
+values being \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
+anti-aligned K2-19 system therefore poses a problem for our standard
+model.  In order to match this observation, either \(\theta_1\),
+\(\theta_2\), or both angles must cease to be in resonance.
+
+\subsection{Eccentricity driving forces}
+\label{sec:org768a610}
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.7\textwidth]{{driving-example-h-0.1-Tw0-1000}.png}
+  \caption{Here we have set $e_{2,d}=0.3$ with $h=0.1$ and $q=2$.  After
+    about 10~kyr, the system escapes the circular resonances and becomes
+    apsidally aligned.}
+  \label{fig:drivingex}
+\end{figure*}
+One way of escaping the circular \(\theta_i\) resonances is to
+artificially drive the eccentricity of the system to larger values,
+where \(\theta_i\) will cease to act.  We modify the eccentricity
+damping for \(m_2\) in \eqref{eq:disforce} to be
+\begin{equation}
+  \frac{\dot e_2}{e_2} = -\frac{(e_2-e_{2,d})}{T_{e,2d}}.
+\end{equation}
+
+Hence, planet \(m_2\) is exponentially driven to \(e_{2,d}\) with a
+timescale of \(T_{e,2}\). In principle, this could be done for both
+\(e_1\) and \(e_2\), but we restrict our study to \(e_2\) for simplicity.
+
+In Figure \ref{fig:drivingex}, we demonstrate the feasibility of this
+approach, where we have added in the driving force with \(e_{2,d}=0.3\)
+by hand and set \(q=2\).  We initalize the system close to resonance,
+where it stays for around 8,000 years. Between \(t=8,000\) and \(10,000\)
+years, \(e_1\) and \(e_2\) grow and the system subsequently breaks out of
+both the \(\theta_1\) and \(\theta_2\) resonances.  At this point, both
+planets' ecentricities are excited to about \(e_i\approx 0.2\) and the
+planets become apsidally aligned as \(\Delta\varpi\) librates around
+\(0^\circ\) with an amplitde of around \(100^\circ\).
+\subsection{Large initial eccentricities}
+\label{sec:org9763b3f}
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.7\textwidth]{{e0large-h-0.10-Tw0-10000-cut-0.30}.png}
+\caption{Here we again have an example with $h=0.1$, $q=2$, but set
+  the initial eccentricities to $e_{i,0}=0.3$ and
+  $T_{e,0}=10$~kyr. The system misses the circular resonances
+  altogether and remains apsidally aligned throughout.}
+  \label{fig:e0large}
+\end{figure*}
+Another way of avoiding capture into the circular \(\theta_i\)
+resonances altogether is to have a large initial eccentricity when the
+periods \(P_2/P_1\) reach the nominal resonance value of \(1.5\).  In
+Figure \ref{fig:e0large} , we demonstrate the feasibility of MMR
+apsidal-alignment when the planets \(m_1\) and \(m_2\) are given large
+initial eccentricities of \(e_1=e_2=0.2\) by hand at the start of the
+integration.
+
+One weakness of this scenario is that the dissipative forces must be
+shut off at some point after the system is captured into resonance but
+before it evolves to a true equilibrium. If the disk forces were left
+on for the entire simulation, the planets would reach the standard
+equilibrium and "forget" their initial conditions.  Because of this,
+we chose to set \(T_{w,0}=10\) kyr rather than the standard 1 kyr. This
+requires some fine tuning, but it is within the realm of possibility
+as the protoplanetary disk does indeed dissipate over time. Depending
+on other system parameters, the disk could indeed disappear before the
+system reaches equilibrium, at which point the resonance would cease
+to evolve.
+
+\subsection{Reducing the Hamiltonian}
+\label{sec:org36cd1e4}
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.7\textwidth]{{./phasediag}.png}
+  \caption{\emph{Left}: Equilibrium points for the Hamiltonian in
+    equation (\ref{hhat}) for various values of $\delta$ are
+    plotted in black.  The green lines indicate the $\delta$ values
+    used for the right two phase diagrams, along with their
+    associated equilibria.  The resonance zone for $\delta>0$ is
+    shaded in red.  \emph{Middle}: Phase diagram for
+    $\delta=-0.5$. There is only a single equilibrium and resonance
+    zone to the right of the origin.  \emph{Right}: Phase diagram
+    for $\delta= 1$. There are three equilibria; the separatrix
+    passes through the leftmost equilibrium point, which is a
+    saddle point in phase space. The small lobe of the separatrix
+    encloses a circulation zone with a stable equilibrium near the
+    origin. The leftmost equilibrium point is located within the
+    resonance zone in between the two lobes of the separatrix.}
+  \label{fig:phasediag}
+\end{figure*}
+A detailed analysis of the MMR Hamiltonian \eqref{hamiltonian}
+illustrates the underlying dynamics behind the capture processes in
+Figures \ref{fig:e0large} and \ref{fig:phasediagsex} which lead to apsidal
+alignment.
+
+Following \cite{henrard86_reduc_trans_apocen_librat} (or equivalently
+\cite{wisdom_canonical_1986}), we may transform the Hamiltonian \(H_{\rm
+Kep} + H_{\rm res}\) in equation \eqref{hamiltonian} into the form
+\begin{equation}
+  \label{hhat}
+  \hat H(R,\hat\theta) = -3(\delta+1) R + R^2 - 2\sqrt{2 R} \cos(\hat\theta)
+\end{equation}
+
+through a series of rotations in phase space.  Consider the phase
+space configuration \(\v\xi=(\theta_1, \theta_2, \Gamma_1, \Gamma_2)\),
+where the \(\Gamma_i\) are the \(\text{Poincair\'e}\) momenta
+\(\Gamma_i=\Lambda_i(1-\sqrt{1-e_i^2})\).
+Let \(\v X\) be the cartesian
+formulation
+\begin{align}
+  \v X &= (x_1, x_2, X_1, X_2)\nonumber\\
+  &= (\sqrt{2\Gamma_1}\cos\theta_1, \sqrt{2\Gamma_2}\cos\theta_2,
+    \sqrt{2\Gamma_1}\sin\theta_1, \sqrt{2\Gamma_2}\sin\theta_2)
+\end{align}
+
+The resonant Hamiltonian becomes
+\[ H_{\rm res} \propto f_1 x_1 + f_2 x_2 \]
+
+Let \(\v \Psi\) be the
+counter-clockwise rotation by angle \(\psi\) defined by \(\tan\psi=
+f_1/f_2\):
+\begin{align}
+  \v \Psi = \frac{1}{f_2\sqrt{f_1^2+f_2^2}} 
+  \begin{pmatrix}
+    f_2 & f_1 \\
+    -f_1 & f_2 
+  \end{pmatrix}.
+\end{align}
+
+The block matrix
+\begin{align}
+  \v M =
+  \begin{pmatrix}
+    \v \Psi & \v 0 \\
+    \v 0 & \v \Psi
+  \end{pmatrix}
+\end{align}
+
+is symplectic \cite{goldstein_classical_2000}.  The Laplace coefficients
+\(f_i\) depend weakly on the semimajor axis ratio \(\alpha\), and so \(\v
+M\) only represents a canonical transformation if \(\alpha\) is
+stationary or varying adiabatically, which is a good approximation
+for the systems considered in this paper.
+
+Define the coordinates
+\begin{align}
+  \v W = \v M \v X.
+\end{align}
+
+Somewhat 
+
+The canonical coordinate \(\hat{\theta}\) is given by the equation
+\begin{align}
+\label{hattheta}
+  \tan\p*{\pi-\hat{\theta}} = \frac{e_1\sin(\theta_1)
+  + (f_2/f_1)e_2\sin(\theta_2)}{e_1\cos(\theta_1) + (f_2/f_1)e_2\cos(\theta_2)},
+\end{align}
+
+where we have included a shift by \(\pi\) so that \(\hat{\theta}\) has an
+equilibrium value at \(0\) rather than \(\pi\).
+
+We define \(\v{\hat e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2\) so that
+the conjugate momentum \(R\) is
+\begin{equation}
+  R \propto \norm{\v{\hat e}}^2  = f_1^2e_1^2 - 2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + f_2^2e_2^2
+\end{equation}
+
+where \(\v e_i\) is the Runge-Lenz vector, i.e. the vector with
+magnitude \(e_i\) in the direction of perihelion. The true value
+includes total scaling factors such as \(\mu_{\rm tot}\). For our
+purposes, \(\v{\hat e}\) will suffice.
+
+For the case \(e_1=0\) and \(\mu_2\ll\mu_1\), the system's conjugate
+momentum takes the form \(R\sim e_1^2\) with coordinate \(\hat \theta =
+\theta_1\), and vice versa for \(e_2=0\), \(\mu_1\ll\mu_2\).  These parameters
+describe the standard scenario of a test particle near an MMR with a
+massive planet on a circular orbit, the derivation of which may be
+found in \cite{murray_solar_2000}. The parameter \(\delta\) describes the
+system's depth into resonance.
+
+Since the canonical momenta of the circular angles \(\theta_i\) have
+\(R_i\propto e_i^2\), resonance capture widths \(\delta a_i\) are
+functions of \(e_i\) as well. Hence, for large eccentricities near the
+resonance location, \(m_1\) and \(m_2\) may not be captured into
+resonance. However, if we consider the Hamiltonian system \(H_{\rm
+Kep} + H_{\rm res}\) in \eqref{hamiltonian} as a whole, i.e. considering
+\(m_1\) and \(m_2\) simultaneously, there is one resonance angle
+\(\hat\theta\) that describes the system's dynamics which may operate
+separately from \(\theta_1\) and \(\theta_2\).
+
+
+The resonant equation of motion for \(R\) is
+\begin{equation}
+  \dot R_{\rm res} = -\frac{\d \hat H}{\d \hat\theta} = -2\sqrt{2R}\sin(\hat\theta) = 0
+\end{equation}
+
+in resonance.  Hence, only dissipative and secular forces are at play
+if \(\hat\theta\) is operating.  The integrations in Figures
+\ref{fig:drivingex} and \ref{fig:e0large} do not show qualitative
+differences if the secular terms are turned off, and so the apsidal
+alignment must be due to dissipation. If we assume the semimajor axis
+ratio is constant and consider only the dissipative effects on \(R\), we
+arrive at the following relation for equilibrium in \(R\):
+\begin{equation}
+  \label{eq:diseqR}
+  \cos\Delta\varpi \sim \frac{e_1^2 T_{e,2} + e_2^2 T_{e,1}}{e_1e_2(T_{e,1}+T_{e,2})}.
+\end{equation}
+
+For reasonable disk parameters ( \(h\sim 0.1\), \(T_{e,i}\sim h^2
+T_{m,i}\) ), the right hand side of equation \eqref{eq:diseqR}
+is order unity, and so we see that \(\Delta\varpi\approx 0\).
+
+
+The Hamiltonian in \eqref{hhat} is known as ``the second fundamental
+model of resonance''. Its phase space is well studied in the
+literature, so we will only review it briefly, following the approach
+in \cite{henrard_second_1983}.  The choice of polar coordinates in
+equation \eqref{hattheta} introduces a virtual singularity at \(R=0\)
+\cite{henrard_second_1983}.  If we switch to the canonical Cartesian
+coordinates \(\xi = \sqrt{R}\cos\theta\) and \(\nu = \sqrt{R}\cos\theta\),
+\(\hat H\) becomes
+
+\begin{equation}
+  \hat H(\xi,\nu) = -3(\delta+1)(\xi^2+\nu^2) + (\xi^2+\nu^2)^2 -2\sqrt2
+  \xi
+\end{equation}
+
+In equilibrium, \(\dot R = \d\hat H/\d\theta \propto \sin\theta= 0\),
+and so we see that equilibria must lie along the line \(\nu=0\) in phase
+space.  The left panel of Figure \ref{fig:phasediag} displays the
+results of solving the equation \(\hat H(\xi, 0) = 0\) for \(\xi\)
+numerically for various values of \(\delta\).  For \(\delta<0\), there is
+one equilibrium point to the right of the origin; for \(\delta \geq 0\),
+a separatrix appears which divides the phase space into 3 regions:
+outer circulation (outside the separatrix), inner circulation (within
+the inner lobe of the separatrix), and the resonance zone (between the
+inner and outer lobe of the separatrix).  The resonance zone is
+indicated in red in the left panel of Figure \ref{fig:phasediag}.  The
+right two panels of Figure \ref{fig:phasediag} display the phase space
+for choices of positive and negative \(\delta\).
+
+\subsection{Phase space paths}
+\label{sec:org3ca33d5}
+\begin{figure*}
+  \centering
+  \includegraphics[width=0.7\textwidth]{{./phasediagsex}.png}
+  \caption{ Here we have plotted each example runs' path through
+    phase space. On the top row, we plot only the
+    $e_2\longleftrightarrow\theta_2$ resonance to save space; the
+    $e_1\longleftrightarrow\theta_1$ resonance is similar.  Time is
+    indicated by color, with purple near $t=0$ and yellow near the
+    end of the simulation. All times are scaled to the beginning
+    and end times of the integration for comparison, not physical
+    time.  \emph{Left:} The standard example. Here we see both the
+    $\theta_2$ and $\hat\theta$ resonances are
+    acting. \emph{Middle:} The case with eccentricity driving
+    forces.  The system starts near the origin in $(e_2,\theta_2)$
+    space, and moves outwards to the circulation zone due to the
+    driving forces.  \emph{Right:} Similar to the driving force
+    case, but this time the system starts well outside of the
+    resonance zone in $(e_2,\theta_2)$ space and then gets trapped
+    into the circulation zone due to dissipative forces.  }
+  \label{fig:phasediagsex}
+\end{figure*}
+In \ref{fig:phasediagsex}, we display the phase spaces from all three
+integrations plotted in the previous sections.
+The top row displays the \((\theta_2, \propto e_2)\) conjugate pair.
+The standard setup enters a tight resonance quickly and stays there (indicated by the small yellow region).
+Driving \(e_2\) to a value \(e_{2,d}=0.3\) leads to an early libration, indicated by the blue-green inner lobe.
+The planet \(m_2\) then enters the outer circulation region and reaches equilibrium.
+On the contrary, the simulation with both \(e_1 = e_2 = 0.2\) starts well outside the separatrix (purple).
+Dissipative forces push the system closer to the separatrix; then, the disk forces cease
+and the system remains in the circulation region. This way, the system never enters the \(\theta_2\)
+resonance. The \(\theta_1\) resonance is similar.
+
+On the other hand, the bottom row of \ref{fig:phasediagsex} displays the
+phase space for \((\hat\theta,\propto \hat e)\).
+All three systems end up in resonance. The standard picture is a very tight resonance, while the
+\(e_2\) -driving and large \(e_0\) systems enter stable libration in the resonance zone.
+The two apsidally aligned cases therefore end up in analagous phase space configurations, but
+through different dynamical paths.
+
+\section{Conclusion}
+\label{sec:orge9344c9}
+
+\clearpage
+
+\section{Appendix}
+\label{sec:orgf849ecc}
+\subsection{Elliptic restricted 3 body problem}
+\label{sec:org1d960d2}
+
+\bibliography{references}
+\bibliographystyle{apalike}
+\end{document}

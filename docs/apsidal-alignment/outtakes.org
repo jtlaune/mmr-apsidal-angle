@@ -1,0 +1,53 @@
+#+BEGIN_SRC latex
+  \begin{figure*}[htb]
+    \centering
+    \includegraphics[width=0.95\textwidth]{{./Teratio-eeqs-Tm2-50000-Tw0-1000}.png}
+    \label{eqecc}
+    \caption{ }
+  \end{figure*}
+#+END_SRC
+
+#+BEGIN_SRC latex
+  \begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.3\textwidth]{{./Teratio-pomega-Tm2-50000-Tw0-1000}.png}
+    \label{eqecc}
+    \caption{ }
+  \end{figure}
+#+END_SRC
+
+###
+
+In this treatment, we also compare the effects of secular
+terms by turning them off for identical initial conditions.  As it
+turns out, for $q$ near unity, the secular terms are largely
+unimportant for the equilibrium state.  At more extreme mass ratios,
+i.e. $\abs{\log q}\approx 2-3$, equilibrium eccentricities are larger
+and so secular contributions can alter the equilibrium state.
+
+###
+
+This behavior can be understood from equation [[eqref:doteta]]. If we
+adopt the fiducial value $T_{m,1}=\infty$ and assume
+$\dot{\eta}\approx 0$, we can solve for $\epsilon=e_1/e_2$ as
+
+\[\epsilon^2(\beta) \approx \frac{\beta}{\delta-1}\left(
+\frac12\frac{(T_{e,2}/T_{m,2})}{e_2^2} +\frac\delta\gamma -1\right),\]
+
+where $\beta=T_{e,1}/T_{e,2}$, $\gamma=q\sqrt{\alpha_0}$, and
+$\delta = j(q/\alpha_0+1)$.
+
+###
+
+After a canonical rotation $\theta\to\theta+180^\circ$, the phase
+spaces are identical; this corresponds to flipping the sign of the
+third term in the equation eqref:hhat.  Hence, we'll focus on the
+solution along the line $\theta=0^\circ$.
+
+###
+
+###
+
+###
+
+###
