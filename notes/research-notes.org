@@ -4,6 +4,11 @@
 #+STARTUP: latexpreview
 #+TITLE: Research Notes/TODOs
 * capture 
+** notes
+- ryan miranda
+** notes
+- for interpretation cite:papaloizou01_orbit_eccen_growt_throug_disc
+  look at last part of abstract
 ** TODO [#A] fix ei->0 calculation, in calculations.org, so close
 - some negative sign somewhere. the etadot equation in the paper may
   have a negative sign wrong in one of the terms. so close
@@ -33,6 +38,12 @@
 *** DONE read petigura 2019
 *** DONE read ragusa 2018
 * Meetings
+** [2021-10-08 Fri] MEETING
+- homework problem: 2 planets inside cavity, free inner disk edge,
+  calculate tork from OLR
+- disk cavity leads to eccentricity driving ansatz? could be
+- polish up sections 1 & 2 and send to laetitia before you finish the
+  rest of the paper
 ** [2021-10-01 Fri] MEETING
 1. Forced eccentricity Dpom -> 0, free eccentricity damped
    - imprinted in secular phase?

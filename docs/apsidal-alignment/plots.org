@@ -605,7 +605,7 @@
 : q2.00
 : standard-example-h-0.1-Tw0-1000.png
 : -40873.22434604321 -20436.6121730216 1414.213562373095 707.1067811865474 2.0
-[[file:./.ob-jupyter/e9d2cbbbb1538f14d37fbb8e4f6461e286a7cc7e.png]]
+[[file:./.ob-jupyter/6753f049c49b1e3867ca7e78b380a4a237192bc0.png]]
 :END:
 
 * MMR Hamiltonian
@@ -1398,6 +1398,7 @@
   QS = qs
   MU2 = totmass/(1+QS)
   MU1 = totmass - MU2
+  
   TE1 = Tw0*TeRatios
   TE2 = Tw0/TeRatios
   TM1 = TE1/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))

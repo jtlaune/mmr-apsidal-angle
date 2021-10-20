@@ -1,4 +1,4 @@
-% Created 2021-09-13 Mon 20:24
+% Created 2021-10-14 Thu 16:05
 % Intended LaTeX compiler: pdflatex
 \documentclass{mnras}
 \usepackage[utf8]{inputenc}
@@ -39,27 +39,6 @@
 \DeclarePairedDelimiter{\norm}{||}{||}
 \DeclarePairedDelimiter{\p}{(}{)}
 \DeclarePairedDelimiter{\we}{\langle}{\rangle}
-
-\author[Laune et al.]{
-JT Laune,$^{1}$
-Laetitia Rodet,$^{1}$
-and Dong Lai$^{1}$
-\\
-$^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
-\date{\today}
-\date{}
-\title{}
-\hypersetup{
- pdfauthor={Jordan Laune},
- pdftitle={},
- pdfkeywords={},
- pdfsubject={},
- pdfcreator={Emacs 27.2 (Org mode 9.4.6)}, 
- pdflang={English}}
-\begin{document}
-
-\tableofcontents
-
 \title[MMR Architecture]{Architecture of Planetary Systems in Mean Motion Resonance}
 \author[Laune et al.]{
 JT Laune,$^{1}$
@@ -67,19 +46,103 @@ Laetitia Rodet,$^{1}$
 and Dong Lai$^{1}$
 \\
 $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
+\date{}
+\title{Architecture of Planetary Systems in Mean Motion Resonance}
+\hypersetup{
+ pdfauthor={Jordan Laune},
+ pdftitle={Architecture of Planetary Systems in Mean Motion Resonance},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
 \maketitle
 
 \section{Introduction}
-\label{sec:orgc0fd10a}
-The typical outcome of planet-disk migration is thought to be capture
-into mean motion resonance, after which torques from the gas damp the
+\label{sec:orgd3d05be}
+
+Early in a planetary system’s life, the orbits of newly formed planets
+are likely constantly changing.  Interactions with the gaseous and
+dusty protoplanetary disks (PPDs) exert a negative torque on the
+embedded planet, which leads to angular momentum loss and subsequent
+contraction of the planet’s semimajor axis
+\cite{nelson_planetary_2018}. This process is collectively known as
+planetary migration.
+
+When two planets' periods are related by an integer fraction \(p\):\(q\)
+(e.g. 2:1, 3:2), mutual gravitational interactions can lock orbits
+into mean motion resonances (MMRs).
+If the integers \(p,q\) differ by one, i.e. \(j\):\(j+1\) for some \(j\),
+the gravitational interactions are first order in eccentricity
+and inclination.
+The resonance angles for first order MMRs are given by
+\begin{align}
+\label{circangles}
+ \theta_1 &= (j+1)\lambda_2 - \lambda_1 - \varpi_1 \\
+ \theta_2 &= (j+1)\lambda_2 - \lambda_1 - \varpi_2.
+\end{align}
+
+The mean longitudes of the inner and outer planets are denoted by
+\(\lambda_1\) and \(\lambda_2\), respectively, and \(\varpi_1\) and
+\(\varpi_2\) denote their longitudes of perihelion.  If the angles
+\(\theta_1\) and \(\theta_2\) librate around \(\pi\) and \(0\), respectively,
+the system is said to be in resonance.  As a planet migrates, its
+resonance locations sweep across the disk along with it and capture
+planets into resonant pairs and chains.
+While in resonance, torques from the gas damp the
 system's angular momentum deficit (AMD) into equilibrium.  The MMR
 equilibrium is governed by various conditions which are well studied
 in the literature
-(e.g. \cite{henrard_second_1983,deck_migration_2015,goldreich_overstable_2014,xu_migration_2018,henrard_second_1983})
+\cite{henrard_second_1983,deck_migration_2015,goldreich_overstable_2014,xu_migration_2018,henrard_second_1983}.
+The resonant pair's path across the disk determines the final orbital
+architecture for the system
+\cite{cresswell_evolution_2006,cresswell_three-dimensional_2008}.
+
+In recent years, thousands of exoplanet systems have been discovered,
+and, although many resonant systems have been found, the proportion of
+such systems is low compared to theoretical expectations based on disk
+migration \cite{fabrycky_architecture_2014}.  In addition to the paucity
+of planets in MMRs, there also seems to be an overabundance of planets
+just outside of mean motion resonances, with period ratios slightly
+larger than 2 or 3/2
+\cite{fabrycky_architecture_2014,choksi_sub-neptune_2020}.
+A system's orbital architecture can reveal details about its history.
+Commensurate period ratios may indicate past resonant interactions
+within the planetary system, but the present state of the resonance
+can only be determined by analyzing the behavior of the angles in
+equation \eqref{circangles}.  Furthermore, since these angles are
+related by \(\theta_2-\theta_1=\gamma_1-\gamma_2\), this implies that a
+resonant pair of planets will be apsidally anti-aligned.
+
+NASA's \emph{K2} mission initially discovered the planets K2-19b and c
+near a 3:2 period ratio (\(P_b=7.9\) d, \(P_c=11.9\) d), and later on
+planet K2-19d at \(P_d=2.5\) d
+\cite{howell14_k2_mission,armstrong15_one_closes_exopl_pairs_to,sinukoff16_eleven_multip_system_fromk_masses}.
+Both planets had moderate eccentricities \(e_b\approx e_c\approx 0.2\).
+Further observations revealed K2-19b and c to be \emph{aligned}, with
+\(\Delta\varpi\equiv \varpi_c-\varpi_b \approx 2\pm 2\)
+\cite{petigura_k2-19b_2020}.  Hence, the K2-19 system poses a problem
+for the conventional understanding of planet migration and resonance
+capture.
+
+Understanding the genesis of extrasolar orbital configurations, and
+their corresponding observational implications, offers us an insight
+into the history of the system.  In this paper, we review the
+analytically simple migration model commonly used in the literature.
+In Section \ref{sec:org0976d26}, we modify the model slightly and explore
+a wider parameter space for the coupling between the resonant
+eccentricities and the protoplanetary disk. We fail to find any disk
+conditions which robustly lead to apsidal alignment.  In Section
+\ref{sec:org20e9b9a}, we design a toy model for driving eccentricity and
+explain how it may explain the apsidal alignment between K2-19b and
+c. We demonstrate that the orbital architecture of K2-19 can be
+explained by an external force which pumps the eccentricities beyond
+their equilibrium values.
 
 \section{Planet Migration}
-\label{sec:org4fb28d4}
+\label{sec:org0976d26}
 Planets embedded within a protoplanetary disk interact gravitationally
 with the gas and lose angular momentum, leading to inward migration
 towards the central star.  Disk torques vary with planet mass as well
@@ -100,7 +163,7 @@ then given by:
 \end{align}
 
 In our notation, \(T_{m,i}>0\) \((<0)\) denotes inward (outward)
-migration.  For typical, flat disk profiles, we have
+migration.  For typical, thin disk profiles, we have
 \cite{tanaka_three-dimensional_2004,cresswell_three-dimensional_2008,xu_migration_2018}
 \begin{align}
   \frac{T_{e,1}}{T_{e,2}}&= \frac1q\\
@@ -118,11 +181,13 @@ We must have \(1/T_{m,1} - 1/T_{m,2} > 0\) for convergent
 (i.e. \(\abs{a_1-a_2}\) is shrinking) inward migration, and vice versa
 for outward migration. Hence, for \(q>1\), we set \(T_{m,i}< 0\); for
 \(q<1\), we set \(T_{m,i}>0\).  Unless noted otherwise, we choose \(h=0.1\)
-and \(T_{e,0}=1000~\rm{years}\) .  We'll refer to these relationships as
-the "standard picture" of planet migration.
+and \(T_{e,0}=1000~\rm{years}\).  We'll refer to these relationships as
+the "standard picture" of planet migration. Similar models are
+commonly used in the literature
+\cite{deck_migration_2015,xu_migration_2018,goldreich_overstable_2014}.
 
 \subsection{MMR}
-\label{sec:org0df2e63}
+\label{sec:org226f5e4}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
@@ -133,12 +198,12 @@ the "standard picture" of planet migration.
     are driven to equilibrium and the periapses are antialigned.}
   \label{fig:standardex}
 \end{figure*}
-When two planets have commensurate period ratios, \(p:q\) where \(p,q\)
+When two planets have commensurate period ratios, \(p\):\(q\) where \(p,q\)
 are integers, their gravitational interactions may lock them into a
 mean motion resonance (MMR).  As young planets migrate within their
-disk, if the migration is convergent (i.e. \(P_2/P_1\) decreasing), they
+disk, if the migration is convergent, they
 cross MMR period ratios and may be captured. In our paper, we will be
-considering only first order MMRs, denoted by \(j:j+1\), which occur
+considering only first order MMRs, denoted by \(j\):\(j+1\), which occur
 where \(n_2/n_1 = j/j+1\), where \(n_1,n_2\) denote the inner and outer
 planet, respectively.
 
@@ -160,11 +225,7 @@ The Hamiltonian of a system with two planets near a first order MMR is
 \(H_{\rm kep}\) is the standard Keplerian Hamiltonian; \(H_{\rm res}\)
 the resonant interactions between the planets of order
 \(\O(e_i)\); and \(H_{\rm sec}\) the secular interactions.
-The two angles are given by
-\begin{align}
-\label{circangles}
- \theta_i = (j+1)\lambda_2 - \lambda_1 - \varpi_i.
-\end{align}
+The two angles are given as in \eqref{circangles}.
 
 Equation \eqref{hamiltonian} admits eight coupled ODES (\(\dot a_i, \dot
 e_i, \dot\theta_i, \dot\varpi_i\)), which we may integrate together
@@ -194,7 +255,7 @@ eccentricity.  However, if eccentricities are excited, secular terms
 play an important role, and so we keep them.
 
 \subsection{Equilibrium}
-\label{sec:orga160e82}
+\label{sec:org4ec2877}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
@@ -248,18 +309,18 @@ where we have combined \(\Delta\varpi = \theta_2 - \theta_1 =
 \varpi_1-\varpi_2\) in the last equation.
 
 We must find a fourth equation to complete this system of equations.
-Absent any dissipative forces, the following quantities are conserved:
+Absent any dissipative or secular forces, the following quantities are
+conserved:
 \begin{align}
   J &= \Lambda_1\sqrt{1-e_1^2} + \Lambda_2\sqrt{1-e_2^2}\\
   G &= \frac{j+1}{j} \Lambda_1 + \Lambda_2.
 \end{align}
 
-The quantity \(J\) is the angular momentum of the system, and \(G\) is
-an integral of motion for equation \eqref{hamiltonian}.
-
-Define \(\eta\) to be a clever combination of \(J\) and \(G\),
+The quantity \(J\) is the angular momentum of the system, and \(G\) is an
+integral of motion for the the Hamiltonian \(H_{\rm kep}+H_{\rm res}\)
+in equation \eqref{hamiltonian}.  Define \(\eta\) to be the ratio of \(J\) and \(G\),
 \begin{align}
-  \eta(\alpha, e_1, e_2) &\equiv - 2(q/\alpha_0+1)\p*{\frac{J}{G}-\left.\frac{J}{G}\right|_{0}}, \\
+  \eta(\alpha, e_1, e_2) &\equiv - 2(q/\alpha_0+1)\p*{\frac{J}{G}-\left.\frac{J}{G}\right|_{0}},
 \end{align}
 
 where \(\alpha_0 = (j/(j+1))^{3/2}\) and \(\left(J/G\right|_{0}\) is
@@ -290,23 +351,23 @@ convergent migration produces anti-aligned periapses.  We confirm this
 in the time-dependent integration in Figure \ref{fig:standardex}.
 The equilibrium \(e_i\)'s and \(\Delta\varpi\)'s for comparable mass
 planets \((q\in[0.5,2])\) are given in Figures \ref{fig:standardeqecc} and
-\ref{fig:standardDpom}.  Analytical results are plotted as dashed lines.
-Here we also integrate the time-dependent differential equations from
-Hamiltonian \eqref{hamiltonian} and plot the average \(e_1\), \(e_2\), and
-\(\Delta\varpi\) over the last 10$\backslash$% of the timespan.  These results are
+\ref{fig:standardDpom}.  Analytical solutions to the equilibrium
+equations are plotted as dashed lines.  Here we also integrate the
+time-dependent differential equations from Hamiltonian
+\eqref{hamiltonian} and plot the average \(e_1\), \(e_2\), and
+\(\Delta\varpi\) over the last 10\% of the timespan.  These results are
 calculated with outward migration for \(q>1\) and inward migration for
 \(q<1\).
 
 As we can see, the final averaged eccentricities for \(m_1\) and \(m_2\)
 go approximately as \(e_1/e_2 \sim q\). As expected, the \(\Delta\varpi\)
-average values are all very close to \(\pi\). The numerical
-and analytical results largely agree.
-
-In the next two sections, we will explore slightly modified models
-by varying the ratio \(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\). 
+average values are all very close to \(\pi\). The numerical and
+analytical results largely agree.  In the next two sections, we will
+explore slightly modified models by varying the ratio
+\(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\).
 
 \subsection{Eccentricity damping timescales}
-\label{sec:orged665e7}
+\label{sec:orgb0d2843}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
@@ -326,21 +387,21 @@ by varying the ratio \(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\).
   \label{fig:eqDpom}
 \end{figure}
 Up until now, we have strictly been considering the standard picture
-of planet migration-- with \(T_{e,1}/T_{e,2} = 1/q\) and
-\$T\textsubscript{e,i}=3.46h\textsuperscript{2T}\textsubscript{e,i}\$-- which always gives rise to apsidal
-anti-alignment for reasonable values of \(h\).  This simple parametrized
-model will always fail to capture all of the complicated
-hydrodynamics of real astrophysical disks. We can therefore
-easily expect a difference in the ratio \(T_{e,1}/T_{e,2}\)
-over an order of magnitude, and perhaps this modfication
-could produce \(\Delta\varpi\approx0^\circ\) without
-adding new parameters to the system.
+of planet migration -- with \(T_{e,1}/T_{e,2} = 1/q\) and
+\(T_{e,i}=3.46h^2T_{e,i}\) -- which always gives rise to apsidal
+anti-alignment for reasonable disk conditions.  This simple
+parametrized model will always fail to capture all of the complicated
+hydrodynamics of real astrophysical disks. We can therefore easily
+expect a difference in the ratio \(T_{e,1}/T_{e,2}\) over an order of
+magnitude, and perhaps this modfication could produce
+\(\Delta\varpi\approx0^\circ\) without adding new parameters to the
+model.
 
 We explore this possibility in Figures \ref{fig:eqecc} and
 \ref{fig:eqDpom}. The ratio \(T_{e,1}/T_{e,2}\) varies freely between
 \(0.2\) and \(10\), regardless of the mass ratio.  Initially, we attempted
 to extend this range to \(T_{e,1}/T_{e,2}=0.1\), but the system
-eventually escapes resonance for all \$q=0.5,\$ \(1\), and \(2\) and no
+eventually escapes resonance for all \(q=0.5\), \(1\), and \(2\) and no
 equilibrium is reached.  The migration timescales are set to
 \(\abs{T_{m,i}}=T_{e,i}/3.46 h^2\).  For \(T_{e,1}<T_{e,2}\), then, we set
 \(T_{m,i}>0\), corresponding to outward migration, and vice versa for
@@ -356,13 +417,17 @@ solving equations \eqref{dote1} -- \eqref{doteta}; these findings
 reproduce the numerical results.
 
 The corresponding values for \(\Delta\varpi\) are shown in
-\ref{fig:eqDpom}; variations in the eccentricity damping ratio cannot
+\ref{fig:eqDpom}. Variations in the eccentricity damping ratio cannot
 account for apsidal alignment.  In all cases, the analytic equilibrium
 equations predict \(\Delta\varpi\approx 180^\circ\), and the numerical
-integrations agree.
+integrations agree.  We note that the equilibrium solutions given in
+Figures \ref{fig:standard} - \ref{fig:eqDpom} are not continuous across
+the line \(T_{e,1}/T_{e_2} = 1\) (i.e. \(q=1\) in \ref{fig:standard}), which
+is where we reverse the migration direction to ensure it is
+convergent.
 
 \section{Apsidal Alignment}
-\label{sec:org3a94303}
+\label{sec:org20e9b9a}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi=180^\circ\) due to their equilibrium
 values being \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
@@ -371,7 +436,7 @@ model.  In order to match this observation, either \(\theta_1\),
 \(\theta_2\), or both angles must cease to be in resonance.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org768a610}
+\label{sec:org8c6173e}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{driving-example-h-0.1-Tw0-1000}.png}
@@ -385,55 +450,22 @@ artificially drive the eccentricity of the system to larger values,
 where \(\theta_i\) will cease to act.  We modify the eccentricity
 damping for \(m_2\) in \eqref{eq:disforce} to be
 \begin{equation}
-  \frac{\dot e_2}{e_2} = -\frac{(e_2-e_{2,d})}{T_{e,2d}}.
+  \frac{\dot e_2}{e_2} = -\frac{(e_2-e_{2,d})}{T_{e,2}}.
 \end{equation}
 
 Hence, planet \(m_2\) is exponentially driven to \(e_{2,d}\) with a
-timescale of \(T_{e,2}\). In principle, this could be done for both
-\(e_1\) and \(e_2\), but we restrict our study to \(e_2\) for simplicity.
-
-In Figure \ref{fig:drivingex}, we demonstrate the feasibility of this
-approach, where we have added in the driving force with \(e_{2,d}=0.3\)
-by hand and set \(q=2\).  We initalize the system close to resonance,
-where it stays for around 8,000 years. Between \(t=8,000\) and \(10,000\)
-years, \(e_1\) and \(e_2\) grow and the system subsequently breaks out of
-both the \(\theta_1\) and \(\theta_2\) resonances.  At this point, both
-planets' ecentricities are excited to about \(e_i\approx 0.2\) and the
-planets become apsidally aligned as \(\Delta\varpi\) librates around
-\(0^\circ\) with an amplitde of around \(100^\circ\).
-\subsection{Large initial eccentricities}
-\label{sec:org9763b3f}
-\begin{figure*}
-  \centering
-  \includegraphics[width=0.7\textwidth]{{e0large-h-0.10-Tw0-10000-cut-0.30}.png}
-\caption{Here we again have an example with $h=0.1$, $q=2$, but set
-  the initial eccentricities to $e_{i,0}=0.3$ and
-  $T_{e,0}=10$~kyr. The system misses the circular resonances
-  altogether and remains apsidally aligned throughout.}
-  \label{fig:e0large}
-\end{figure*}
-Another way of avoiding capture into the circular \(\theta_i\)
-resonances altogether is to have a large initial eccentricity when the
-periods \(P_2/P_1\) reach the nominal resonance value of \(1.5\).  In
-Figure \ref{fig:e0large} , we demonstrate the feasibility of MMR
-apsidal-alignment when the planets \(m_1\) and \(m_2\) are given large
-initial eccentricities of \(e_1=e_2=0.2\) by hand at the start of the
-integration.
-
-One weakness of this scenario is that the dissipative forces must be
-shut off at some point after the system is captured into resonance but
-before it evolves to a true equilibrium. If the disk forces were left
-on for the entire simulation, the planets would reach the standard
-equilibrium and "forget" their initial conditions.  Because of this,
-we chose to set \(T_{w,0}=10\) kyr rather than the standard 1 kyr. This
-requires some fine tuning, but it is within the realm of possibility
-as the protoplanetary disk does indeed dissipate over time. Depending
-on other system parameters, the disk could indeed disappear before the
-system reaches equilibrium, at which point the resonance would cease
-to evolve.
-
+timescale of \(T_{e,2}\).  In Figure \ref{fig:drivingex}, we demonstrate
+the feasibility of this approach, where we have added in the driving
+force with \(e_{2,d}=0.3\) by hand and set \(q=2\).  We initalize the
+system close to resonance, where it stays for around 8,000
+years. Between \(t=8,000\) and \(10,000\) years, \(e_1\) and \(e_2\) grow and
+the system subsequently breaks out of both the \(\theta_1\) and
+\(\theta_2\) resonances.  At this point, both planets' ecentricities are
+excited to about \(e_i\approx 0.2\) and the planets become apsidally
+aligned as \(\Delta\varpi\) librates around \(0^\circ\) with an amplitde
+of around \(100^\circ\).
 \subsection{Reducing the Hamiltonian}
-\label{sec:org36cd1e4}
+\label{sec:orga2f0470}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./phasediag}.png}
@@ -455,10 +487,8 @@ to evolve.
 \end{figure*}
 A detailed analysis of the MMR Hamiltonian \eqref{hamiltonian}
 illustrates the underlying dynamics behind the capture processes in
-Figures \ref{fig:e0large} and \ref{fig:phasediagsex} which lead to apsidal
-alignment.
-
-Following \cite{henrard86_reduc_trans_apocen_librat} (or equivalently
+Figure \ref{fig:drivingex} which lead to apsidal alignment.  Following
+\cite{henrard86_reduc_trans_apocen_librat} (or equivalently
 \cite{wisdom_canonical_1986}), we may transform the Hamiltonian \(H_{\rm
 Kep} + H_{\rm res}\) in equation \eqref{hamiltonian} into the form
 \begin{equation}
@@ -605,7 +635,7 @@ right two panels of Figure \ref{fig:phasediag} display the phase space
 for choices of positive and negative \(\delta\).
 
 \subsection{Phase space paths}
-\label{sec:org3ca33d5}
+\label{sec:orge445196}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./phasediagsex}.png}
@@ -646,14 +676,14 @@ The two apsidally aligned cases therefore end up in analagous phase space config
 through different dynamical paths.
 
 \section{Conclusion}
-\label{sec:orge9344c9}
+\label{sec:org25c9174}
 
 \clearpage
 
 \section{Appendix}
-\label{sec:orgf849ecc}
+\label{sec:org89953c7}
 \subsection{Elliptic restricted 3 body problem}
-\label{sec:org1d960d2}
+\label{sec:orgd4a83f6}
 
 \bibliography{references}
 \bibliographystyle{apalike}

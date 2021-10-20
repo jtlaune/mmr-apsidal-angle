@@ -870,6 +870,8 @@
   from numpy import sqrt, cos, sin, pi, abs
   import scipy as sp
   import scipy.optimize
+  import scipy.signal
+  import scipy.ndimage
   import matplotlib as mpl
   import matplotlib.pyplot as plt
   import sys
@@ -882,33 +884,50 @@
   plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
 #+END_SRC
+
+#+RESULTS:
+
 ** gen behaviortxt
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
   #################
   # CONFIGURATION #
   #################
+  h = sqrt(0.001)
   j = 2
-  a0 = 1.0
-  h = 0.025
-  alpha_0 = (j/(j+1))**(2./3.)
-  Nqs = 100
-  qs = np.ones(Nqs)*1
+  a0 = 0.1
+  qRun = 16
+  Nqs = 16*2
+  qs = np.ones(Nqs)
+  qs[:qRun] = qs[:qRun]*2
+  qs[qRun:] = qs[qRun:]*0.5
   overwrite = True
-  totmass = 1e-3
-  #e2d = 0.0
-  #e1d = 0.2
+  totmass = 1.0e-4
   Tw0 = 1000
+  TeRatios = sqrt(qs)
   
   ######################
   # Varying parameters #
   ######################
-  eccs = np.linspace(0.02, 0.08, int(np.sqrt(Nqs)))
-  E1_0, E2_0 = np.meshgrid(eccs, eccs)
-  E1_0 = np.flip(E1_0.flatten())
-  E2_0 = np.flip(E2_0.flatten())
-  E1DS = E1_0
-  E2DS = E2_0
+  E1_0 = np.ones(Nqs)*0.001
+  E2_0 = np.ones(Nqs)*0.001
+  
+  e1ds = np.linspace(0,0.3,4)
+  e2ds = np.linspace(0,0.3,4)
+  
+  E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
+  E1DS_single = E1DS_single.flatten()
+  E2DS_single = E2DS_single.flatten()
+  
+  E1DS = np.array([])
+  E2DS = np.array([])
+  for i in range(2):
+      E1DS = np.append(E1DS, E1DS_single)
+      E2DS = np.append(E2DS, E2DS_single)
+  print(len(E1DS))
+  
+  G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+  G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
   
   ####################
   # THREADING ARRAYS #
@@ -919,30 +938,28 @@
   QS = qs
   MU2 = totmass/(1+QS)
   MU1 = totmass - MU2
-  TM1 = np.ones(Nqs)*np.infty
-  TM2 = -np.ones(Nqs)*1e5
-  ALPHA_0 = alpha_0*np.ones(Nqs)
-  #TE2 = 2.*EEQ_2**2*np.abs(TM2)*(QS*np.sqrt(ALPHA_0)+j*(QS/ALPHA_0+1))/QS/np.sqrt(ALPHA_0)
-  TE0 = np.ones(Nqs)*Tw0
-  TE1 = TE0
-  TE2 = TE0
-  TS = 20.*TE2
-  cutoff_frac = 0.5
+  
+  TE_FUNCS = np.zeros(Nqs)
+  TE1 = Tw0*TeRatios
+  TE2 = Tw0/TeRatios
+  TM1 = TE1/3.46/HS**2*(1*(QS<1) - 1*(QS>=1))
+  TM2 = TE2/3.46/HS**2*(1*(QS<1) - 1*(QS>=1))
+  TS = 30.*np.maximum(TE1, TE2)
+  #############################################################
+  # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+  # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+  #############################################################
+  cutoff_frac = 1.0
   CUTOFFS = TS*cutoff_frac
-  ALPHA2_0 = (3/2.)**(2./3)*(1+E2_0**2+E1_0**2)
-  NAMES = np.array([f"e1d-{E1_0[i]:0.3f}-e2d-{E2_0[i]:0.3f}"
-                     for i, qit in enumerate(QS)])
+  ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
+  NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+                    for i, qit in enumerate(QS)])
   
-  ################
-  # WITH SECULAR #
-  ################
-  DIRNAMES = np.array([f"./hatR-phasegrid-q{int(QS[i])}-TE1{TE1[0]}-TE2{TE2[0]}" for i
+  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
                           in range(Nqs)])
-  RUN_PARAMS = np.column_stack((HS, JS, A0S, QS, MU1, TS, TE1, TE2, TM1,
-                                 TM2, E1_0, E2_0, E1DS, E2DS, ALPHA2_0,
-                                 NAMES, DIRNAMES, CUTOFFS))
+  DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
-  aligned_arr = np.zeros((Nqs, 6))
+  aligned_arr = np.zeros((Nqs, 13))
   aligned_arr[:,0] = totmass
   aligned_arr[:,1] = QS
   aligned_arr[:,2] = E1DS
@@ -966,14 +983,110 @@
       y2     = data["y2"]
   
       it = int(len(teval)*0.9)
-      align = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi)-pi) > 0.5))
-      antialign = 1*np.all((np.abs((g1[it:]-g2[it:])%(2*pi)-pi) < 1.))
-      aligned_arr[i,4] = align
-      aligned_arr[i,5] = antialign
-  np.savetxt(os.path.join(".", f"behaviors-Rhat-q{q}-TE1{TE1[0]}-TE2{TE2[0]}.txt"), aligned_arr)
+      #xi_avg = np.average(x1[it:]-x2[it:])
+      #yi_avg = np.average(y1[it:]-y2[it:])
+      Dpoms = g1[it:]-g2[it:]
+      Dpom_avg = np.arctan2(np.sum(np.sin(Dpoms)), np.sum(np.cos(Dpoms)))
+      Dpom_std = np.sqrt(np.sum(Dpoms-Dpom_avg)**2)/len(Dpoms)
+  
+      f1 = A(a1/a2, j)
+      f2 = B(a1/a2, j)
+      theta1 = theta + g1
+      theta2 = theta + g2
+      hattheta1s = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                            e1*cos(theta1) + f2/f1*e2*cos(theta2))
+      hattheta1s = hattheta1s[it:]
+      hattheta1_avg = np.arctan2(np.sum(np.sin(hattheta1s)), np.sum(np.cos(hattheta1s)))
+      hattheta1_std = np.sqrt(np.sum(hattheta1s-hattheta1_avg)**2)/len(hattheta1s)
+  
+      inres = np.all(np.abs(hattheta1s) > 1.)
+  
+      aligned_arr[i,4] = np.average(e1[it:])
+      aligned_arr[i,5] = np.std(e1[it:])
+      aligned_arr[i,6] = np.average(e2[it:])
+      aligned_arr[i,7] = np.std(e2[it:])
+      aligned_arr[i,8] = Dpom_avg
+      aligned_arr[i,9] = Dpom_std
+      aligned_arr[i,10] = hattheta1_avg
+      aligned_arr[i,11] = hattheta1_std
+      aligned_arr[i,12] = inres
+  np.savetxt(os.path.join(".", f"behaviors-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}.txt"), aligned_arr)
 #+END_SRC
 
 #+RESULTS:
+: 32
+  
+** plotting numerical
+- why is q=0.5 so different from q=2?
+- look at diagonal runs for q=0.5. weird dynamics. maybe pluto-neptune
+  pi/2?
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
+  filename = "behaviors-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000.txt"
+  qs = [2,0.5]
+  qRun = 16
+  fig, ax = plt.subplots(len(qs),2,figsize=(10,5*len(qs)))
+  for i, qit in enumerate(qs):
+      params = np.loadtxt(os.path.join(".", filename))[i*qRun:(i+1)*qRun]
+  
+      fontsize=24
+  
+      inres = params[:,12].astype("bool")
+      #hattheta1s = params[:,10]
+      #hattheta1s_std = params[:,11]
+      #inres = np.logical_and(hattheta1s_std < 1.0, np.abs(np.sin(hattheta1s)) < 0.5)
+  
+      totmass = params[:,0][inres]
+      qs = params[:,1][inres]
+      e1ds = params[:,2][inres]
+      e2ds = params[:,3][inres]
+  
+      e1s = params[:,4][inres]
+      e1s_std = params[:,5][inres]
+      e2s = params[:,6][inres]
+      e2s_std = params[:,7][inres]
+      Dpoms = params[:,8][inres]
+      print(Dpoms)
+      Dpoms_std = params[:,9][inres]
+      hattheta1s = params[:,10][inres]
+      hattheta1s_std = params[:,11][inres]
+  
+      aligned = np.abs(Dpoms) < 1.0
+      antialigned = np.logical_not(aligned)
+  
+      cs = ax[i,0].scatter(e1ds[aligned], e2ds[aligned],  s=75, facecolors='k', edgecolors='k')
+      cs = ax[i,0].scatter(e1ds[antialigned], e2ds[antialigned],  s=75, facecolors='none', edgecolors='k')
+  
+      cs = ax[i,1].errorbar(e1s[aligned], e2s[aligned], xerr=e1s_std[aligned], yerr=e2s_std[aligned], fmt='o', ms=7.5, markerfacecolor='k', markeredgecolor='k')
+      cs = ax[i,1].errorbar(e1s[antialigned], e2s[antialigned], xerr=e1s_std[antialigned], yerr=e2s_std[antialigned], ms=7.5, fmt='o', markerfacecolor='none', markeredgecolor='k')
+      #cb = fig.colorbar(cs, ax=ax[i,1])
+  
+      #cb.ax.tick_params(labelsize=fontsize)
+      #cb.set_label(r"$\hat{R}$", rotation=270, fontsize=fontsize, labelpad=60)
+  
+      ax[i,0].set_xlabel(r"$e_{1,d}$",fontsize=fontsize)
+      ax[i,0].set_ylabel(r"$e_{2,d}$",fontsize=fontsize)
+  
+      xlin = np.linspace(0,0.5,100)
+      ax[i,1].plot(xlin, qit*xlin, "k--", label=r"$y=qx$")
+      ax[i,1].plot(xlin, xlin, "r--", label=r"$y=x$")
+      #ax[i,1].set_xlim(0,0.6)
+      #ax[i,1].set_ylim(0,0.3)
+  
+      fig.savefig(os.path.join(".",
+                  f"Rhat-grid-q{qs[0]}.png"),
+                  bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: [ 3.12922633  3.10104789  0.17191099  0.34569414  3.08369475  2.90966647
+:   0.21697875 -2.48770463 -3.11638133  2.86118063 -0.01763371 -2.51308898
+:  -2.81970058  3.02375341]
+: [-3.12435012  2.99496591  2.64762693 -3.08795248 -1.64168489 -3.06843773
+:  -1.22638697 -0.91641346]
+[[file:./.ob-jupyter/940654f953999e20b5f24eaac1216659a538b38b.png]]
+:END:
 
 ** plotting analytic 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -1031,48 +1144,19 @@
   avg_hatRs_grid = avg_hatRs.reshape((Necc, Necc))
   Phip1s_grid = Phip1s.reshape((Necc, Necc))
   Phip2s_grid = Phip2s.reshape((Necc, Necc))
+  
 #+END_SRC
-
-#+RESULTS:
-
+  
+** extras
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/multi-planet-architecture/runs/compmass/")
-  Tw0 = 500
-  TE0 = np.ones(Nqs)*Tw0
-  TE1 = TE0
-  TE2 = TE0
-  
-  dirname = f"."
-  params = np.loadtxt(os.path.join(".", f"behaviors-Rhat-q{q}-TE1{TE1[0]}-TE2{TE2[0]}.txt"))
-  fig, ax = plt.subplots(figsize=(12,8))
-  
-  align_ind = (params[:,4] == 1).astype("bool")
-  antialign_ind =  (params[:,5] == 1).astype("bool")
-  circ_ind = np.logical_and(np.logical_not(align_ind), np.logical_not(antialign_ind))
-  
-  fontsize=36
-  
   #######################
   # Analytical Contours #
   #######################
-  cs = ax.pcolormesh(e1s, e2s, avg_hatRs_grid)
-  ax.contour(e1s, e2s, Phip1s_grid, colors=["red"], linestyles="dashed", levels=[2.])
-  ax.contour(e1s, e2s, Phip2s_grid, colors=["red"], linestyles="dashed", levels=[2.])
-  ax.contour(e1s, e2s, avg_hatRs_grid, colors=["black"], linestyles="dashed", levels=[2.])
+  #cs = ax.pcolormesh(e1s, e2s, avg_hatRs_grid)
+  #ax.contour(e1s, e2s, Phip1s_grid, colors=["red"], linestyles="dashed", levels=[2.])
+  #ax.contour(e1s, e2s, Phip2s_grid, colors=["red"], linestyles="dashed", levels=[2.])
+  #ax.contour(e1s, e2s, avg_hatRs_grid, colors=["black"], linestyles="dashed", levels=[2.])
   
-  cb = fig.colorbar(cs, ax=ax)
-  cb.ax.tick_params(labelsize=fontsize)
-  cb.set_label(r"$\hat{R}$", rotation=270, fontsize=fontsize, labelpad=60)
-  
-  ax.scatter(params[align_ind, 2], params[align_ind, 3],
-             marker="o", c="k", s=120, label=r"$\Delta\varpi\to 0$")
-  ax.scatter(
-      params[circ_ind, 2], params[circ_ind, 3],
-      marker="o",
-      s=120,
-      facecolors="none",
-      edgecolors="k",
-      label=r"$\Delta\varpi$-circulating")
   #ax.scatter(
   #    params[antialign_ind, 2], params[antialign_ind, 3],
   #    marker="o",
@@ -1080,24 +1164,18 @@
   #    c="r",
   #    label=r"$\Delta\varpi\to\pi$")
   
+  #ax.tick_params(axis="both", labelsize=fontsize)
+  #ax.set_title(f"q={q} Te1={TE1[0]} Te2={TE2[0]}",fontsize=fontsize)
   
-  ax.set_xlabel(r"$e_{1,\rm d}$",fontsize=fontsize)
-  ax.set_ylabel(r"$e_{2,\rm d}$",fontsize=fontsize)
-  ax.tick_params(axis="both", labelsize=fontsize)
-  ax.set_title(f"q={q} Te1={TE1[0]} Te2={TE2[0]}",fontsize=fontsize)
-  
-  handles, labels = ax.get_legend_handles_labels()
-  line1 = mpl.lines.Line2D([0], [0], label=r'$\hat{R}\sim 2$', color='k', linestyle="dashed")
-  line2 = mpl.lines.Line2D([0], [0], label=r'CR3BP: $R\sim 2$', color='r', linestyle="dashed")
-  handles.extend([line1, line2])
-  
-  ax.legend(bbox_to_anchor=(1.2, 1.03), fontsize=fontsize, handles=handles)
-  fig.savefig(os.path.join(dirname, f"align-Rhat-q{q}-TE1{TE1[0]}-TE2{TE2[0]}.png"), bbox_inches="tight")
+  #handles, labels = ax.get_legend_handles_labels()
+  #line1 = mpl.lines.Line2D([0], [0], label=r'$\hat{R}\sim 2$', color='k', linestyle="dashed")
+  #line2 = mpl.lines.Line2D([0], [0], label=r'CR3BP: $R\sim 2$', color='r', linestyle="dashed")
+  #handles.extend([line1, line2])
+  #
+  #ax.legend(bbox_to_anchor=(1.2, 1.03), fontsize=fontsize, handles=handles)
 #+END_SRC
 
 #+RESULTS:
-: <ipython-input-121-e247b60919ee>:20: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
-:   cs = ax.pcolormesh(e1s, e2s, avg_hatRs_grid)
 
 * stability tests
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -1442,18 +1520,20 @@
 #+RESULTS:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  def Q1(j, q, sgn):
+  # one of the signs has to be different for Q1 & Q2, see if you can
+  # find the -1 sign error in your arithmetic
+  def Q1(j, q):
       alpha0 = (j/(j+1))**(2./3)
       f1 = -A(alpha0, j)
       f2 = -B(alpha0, j)
-      return(sgn*(j*(q/alpha0+1)-1))
+      return(-(j*(q/alpha0+1)-1))
   
-  def Q2(j, q, sgn):
+  def Q2(j, q):
       alpha0 = (j/(j+1))**(2./3)
       f1 = -A(alpha0, j)
       f2 = -B(alpha0, j)
       prefac = q*sqrt(alpha0)*f2**2/f1**2
-      return(sgn*prefac*(q*sqrt(alpha0)+j*(q/alpha0+1)))
+      return(prefac*(q*sqrt(alpha0)+j*(q/alpha0+1)))
   
   j = 2
   alpha0 = (j/(j+1))**(2./3)
@@ -1462,34 +1542,50 @@
   TAUS, QS = np.meshgrid(tau, qs)
   Te1 = 1000
   Tm = 1e5
-  E1S_SQ_branch1 = Te1/2/Q1(j, QS, 1)/Tm/(1+TAUS*Q2(j,QS,-1)/Q1(j,QS,1))
-  E1S_SQ_branch2 = Te1/2/Q1(j, QS, -1)/Tm/(1+TAUS*Q2(j,QS,1)/Q1(j,QS,-1))
+  
+  f1 = -A(alpha0, j)
+  f2 = -B(alpha0, j)
+  
+  E1S_SQ_branch1 = Te1/2/Q1(j, QS)/Tm/(1+TAUS*Q2(j,QS)/Q1(j,QS))
+  E1S_SQ_branch2 = -Te1/2/Q1(j, QS)/Tm/(1+TAUS*Q2(j,QS)/Q1(j,QS))
   
   
-  E1S_branch1 = sqrt(E1S_SQ_branch1)
-  E1S_branch2 = sqrt(E1S_SQ_branch2)
+  E2S_SQ_branch1 = alpha0*QS**2*np.abs(f2/f1)**2*E1S_SQ_branch1
+  E2S_SQ_branch2 = alpha0*QS**2*np.abs(f2/f1)**2*E1S_SQ_branch2
   
-  E2S_branch1 = sqrt(alpha0)*QS*np.abs(f2/f1)*E1S_branch1
-  E2S_branch2 = sqrt(alpha0)*QS*np.abs(f2/f1)*E1S_branch2
   
-  fig, ax = plt.subplots(1,2,figsize=(10,5))
+  fig, ax = plt.subplots(2,2,figsize=(10,10))
   
-  cs1 = ax[0].pcolormesh(TAUS,QS,E1S_branch2, norm=mpl.colors.LogNorm())
-  plt.colorbar(cs1, ax=ax[0])
+  cs1 = ax[0,0].pcolormesh(TAUS,QS,1*(E1S_SQ_branch1>0))
+  cs2 = ax[0,1].pcolormesh(TAUS,QS,1*(E1S_SQ_branch2>0))
+  cs1 = ax[1,0].pcolormesh(TAUS,QS,1*(E2S_SQ_branch1>0))
+  cs2 = ax[1,1].pcolormesh(TAUS,QS,1*(E2S_SQ_branch2>0))
+  
   ax[0].set_xlim((0.5,2))
   ax[0].set_ylim((0.5,2))
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: /tmp/ipykernel_20631/3986406627.py:25: RuntimeWarning: invalid value encountered in sqrt
-:   E1S_branch1 = sqrt(E1S_SQ_branch1)*1
-: /tmp/ipykernel_20631/3986406627.py:26: RuntimeWarning: invalid value encountered in sqrt
-:   E1S_branch2 = sqrt(E1S_SQ_branch2)*1
-: /tmp/ipykernel_20631/3986406627.py:33: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
-:   cs1 = ax[0].pcolormesh(TAUS,QS,E1S_branch2, norm=mpl.colors.LogNorm())
-| 0.5 | 2.0 |
-[[file:./.ob-jupyter/2598140a21c09e3a90a12fcfe3151d8acf4eb001.png]]
+: /tmp/ipykernel_2155/1347791429.py:35: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs1 = ax[0,0].pcolormesh(TAUS,QS,1*(E1S_SQ_branch1>0))
+: /tmp/ipykernel_2155/1347791429.py:36: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs2 = ax[0,1].pcolormesh(TAUS,QS,1*(E1S_SQ_branch2>0))
+: /tmp/ipykernel_2155/1347791429.py:37: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs1 = ax[1,0].pcolormesh(TAUS,QS,1*(E2S_SQ_branch1>0))
+: /tmp/ipykernel_2155/1347791429.py:38: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   cs2 = ax[1,1].pcolormesh(TAUS,QS,1*(E2S_SQ_branch2>0))
+# [goto error]
+: ---------------------------------------------------------------------------
+: AttributeError                            Traceback (most recent call last)
+: /tmp/ipykernel_2155/1347791429.py in <module>
+:      38 cs2 = ax[1,1].pcolormesh(TAUS,QS,1*(E2S_SQ_branch2>0))
+:      39 
+: ---> 40 ax[0].set_xlim((0.5,2))
+:      41 ax[0].set_ylim((0.5,2))
+: 
+: AttributeError: 'numpy.ndarray' object has no attribute 'set_xlim'
+[[file:./.ob-jupyter/afee4262b1ba34dff96535c34acdb3fbccdfa4e3.png]]
 :END:
 
 
@@ -1560,6 +1656,241 @@
 :RESULTS:
 | <matplotlib.lines.Line2D | at | 0x7f54c05ebee0> |
 [[file:./.ob-jupyter/a6d58e5d2559a1e1277fb41b6142cf90b0ea4a9d.png]]
+:END:
+
+* gamma hat
+** regular
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  readme = "totmass q Te1 Te2 e1 e2 |g1-g2| \n " \
+      "averages taken from 0.9xT; T = 20.xTe0; Te0=1000"
+  #################
+  # CONFIGURATION #
+  #################
+  j = 2
+  a0 = 1.0
+  alpha_0 = (j/(j+1))**(2./3.)
+  #Nqs = 25
+  #qs = np.logspace(-2, 2, Nqs)
+  #Nqs = 10
+  #qs = np.linspace(0.5,2,Nqs)
+  qs = np.array([0.5, 0.75, 0.9, 1.1,1.5, 2.])
+  Nqs = len(qs)
+  overwrite = True
+  totmass = 1e-3
+  e0 = 0.001
+  
+  ######################
+  # Varying parameters #
+  ######################
+  Tw0 = 1000.
+  TeRatios = np.sqrt(qs)
+  
+  ####################
+  # THREADING ARRAYS #
+  ####################
+  HS = np.ones(Nqs)*0.1
+  JS = np.ones(Nqs)*j
+  A0S = np.ones(Nqs)*a0
+  QS = np.array(qs)
+  MU2 = totmass/(1+QS)
+  MU1 = totmass - MU2
+  ALPHA_0 = alpha_0*np.ones(Nqs)
+  TE1 = Tw0*TeRatios
+  TE2 = Tw0/TeRatios
+  #TM1 = np.infty*np.ones(Nqs)
+  TM1 = TE1/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))
+  TM2 = TE2/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))
+  TS = 40.*np.maximum(TE1, TE2)
+  print(TS)
+  #E1_0 = np.minimum(0.1/sqrt(QS), 0.1*np.ones(Nqs))
+  #E2_0 = np.minimum(0.1*sqrt(QS), 0.1*np.ones(Nqs))
+  E1_0 = np.ones(Nqs)*e0
+  E2_0 = np.ones(Nqs)*e0
+  print(E1_0,E2_0)
+  E1DS = np.zeros(Nqs)
+  E2DS = np.zeros(Nqs)
+  CUTOFFS = TS
+  #ALPHA2_0 = (3/2.)**(2./3)*(1+E2_0**2+E1_0**2)
+  ALPHA2_0 = (1.7)**(2./3)*np.ones(Nqs)
+  
+  NAMES = np.array([f"q{QS[i]:0.2f}" for i in range(Nqs)])
+  
+  DIRNAMES = np.array([f"standard-h-{HS[i]:0.2f}-Tw0-{int(Tw0)}"
+                       for i in range(len(QS))])
+  DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"-nosec" for i in range(Nqs)])
+  
+  i = -1
+  name = NAMES[i]
+  print(name)
+  data = np.load(os.path.join(DIRNAMES[i], name+".npz"))
+  teval  = data["teval"]
+  theta  = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+#+END_SRC
+
+#+RESULTS:
+: [56568.54249492 46188.02153517 42163.70213558 41952.35392681
+:  48989.79485566 56568.54249492]
+: [0.001 0.001 0.001 0.001 0.001 0.001] [0.001 0.001 0.001 0.001 0.001 0.001]
+: q2.00
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fontsize=24
+  fig, ax = plt.subplots(2, figsize=(6,12))
+  tscale = 1.
+  
+  
+  iplt0 = np.where(teval > 1e2)[0][0]
+  teval = teval[iplt0:]
+  
+  iplt = np.where(teval > 1e4)[0][0]
+  
+  hattheta1s = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hatg1 = np.arctan2(e1*sin(g1) + f2/f1*e2*sin(g2),
+                        e1*cos(g1) + f2/f1*e2*cos(g2))
+  
+  filter_size = 1
+  plt_skip = 1
+  hatg1_sm = sp.ndimage.uniform_filter1d(hatg1, filter_size)
+  hattheta1s_sm = sp.ndimage.uniform_filter1d(hattheta1s, filter_size)
+  
+  ax[0].scatter(teval[:iplt:plt_skip]/tscale, hatg1_sm[:iplt:plt_skip], s=2, alpha=0.8, c="k")
+  ax[1].scatter(teval[:iplt:plt_skip]/tscale, g1[:iplt:plt_skip], s=2, alpha=0.8, c="k")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: <matplotlib.collections.PathCollection at 0x7fe4c543b070>
+[[file:./.ob-jupyter/deb4b5c18069d0bfd585c652ac8f61fe1ce7d601.png]]
+:END:
+
+** driven
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/compmass-Rhat/")
+  #################
+  # CONFIGURATION #
+  #################
+  j = 2
+  a0 = 1.0
+  h = 0.1
+  alpha_0 = (j/(j+1))**(2./3.)
+  Nqs = 1
+  qs = np.ones(Nqs)*2
+  overwrite = True
+  totmass = 1e-3
+  Tw0 = 1000
+  TeRatios = sqrt(qs)
+  
+  ######################
+  # Varying parameters #
+  ######################
+  E1_0 = np.ones(Nqs)*0.001
+  E2_0 = np.ones(Nqs)*0.001
+  E1DS = np.ones(Nqs)*0.3
+  E2DS = np.ones(Nqs)*0.0
+  
+  
+  #eccs = np.array([0.1])
+  #E1_0, E2_0 = np.meshgrid(eccs, eccs)
+  #E1_0 = np.flip(E1_0.flatten())
+  #E2_0 = np.flip(E2_0.flatten())
+  
+  ####################
+  # THREADING ARRAYS #
+  ####################
+  HS = np.ones(Nqs)*h
+  JS = np.ones(Nqs)*j
+  A0S = np.ones(Nqs)*a0
+  QS = qs
+  MU2 = totmass/(1+QS)
+  MU1 = totmass - MU2
+  
+  TE1 = Tw0*TeRatios
+  TE2 = Tw0/TeRatios
+  TM1 = TE1/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))
+  TM2 = TE2/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))
+  TS = 15.*np.maximum(TE1, TE2)
+  ALPHA_0 = alpha_0*np.ones(Nqs)
+  #############################################################
+  # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+  # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+  #############################################################
+  cutoff_frac = 1.0
+  CUTOFFS = TS*cutoff_frac
+  ALPHA2_0 = (3/2.)**(2./3)*1.
+  NAMES = np.array([f"e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
+                    for i, qit in enumerate(QS)])
+  
+  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-Tw0-{Tw0}" for i
+                          in range(Nqs)])
+  DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
+  
+  i = 0
+  dirname = DIRNAMES[i]
+  name = NAMES[i]+".npz"
+  print(name)
+  data = np.load(os.path.join(dirname, name))
+  teval  = data["teval"]
+  theta  = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+ #+END_SRC 
+
+ #+RESULTS:
+ : e1d-0.300-e2d-0.000.npz
+ 
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fontsize=24
+  fig, ax = plt.subplots(2, figsize=(6,12))
+  tscale = 1.
+  
+  
+  iplt0 = np.where(teval > 1e2)[0][0]
+  teval = teval[iplt0:]
+  
+  iplt = np.where(teval > 1e4)[0][0]
+  
+  hattheta1s = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hatg1 = np.arctan2(e1*sin(g1) + f2/f1*e2*sin(g2),
+                        e1*cos(g1) + f2/f1*e2*cos(g2))
+  
+  filter_size = 1
+  plt_skip = 1
+  hatg1_sm = sp.ndimage.uniform_filter1d(hatg1, filter_size)
+  hattheta1s_sm = sp.ndimage.uniform_filter1d(hattheta1s, filter_size)
+  
+  ax[0].scatter(teval[:iplt:plt_skip]/tscale, hatg1_sm[:iplt:plt_skip], s=2, alpha=0.8, c="k")
+  ax[1].scatter(teval[:iplt:plt_skip]/tscale, g1[:iplt:plt_skip], s=2, alpha=0.8, c="k")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: <matplotlib.collections.PathCollection at 0x7fe4c5506790>
+[[file:./.ob-jupyter/1590be8583b1a086417385a73acc90e4817931de.png]]
 :END:
 
 * OLD

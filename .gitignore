@@ -8,11 +8,13 @@ ltximg
 scratch
 scripts
 runs
+*.pdf
 *.png
 *.aux
+*.xcp
+*.bbl
 *.log
 *.synctex.*
 *.odp
-docs/*.py
-docs/*/*.py
+docs/**/*.py
 auto
