@@ -1,4 +1,4 @@
-% Created 2021-10-14 Thu 16:05
+% Created 2021-10-22 Fri 16:45
 % Intended LaTeX compiler: pdflatex
 \documentclass{mnras}
 \usepackage[utf8]{inputenc}
@@ -61,7 +61,7 @@ $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 \maketitle
 
 \section{Introduction}
-\label{sec:orgd3d05be}
+\label{sec:org7f69f9b}
 
 Early in a planetary system’s life, the orbits of newly formed planets
 are likely constantly changing.  Interactions with the gaseous and
@@ -131,18 +131,18 @@ Understanding the genesis of extrasolar orbital configurations, and
 their corresponding observational implications, offers us an insight
 into the history of the system.  In this paper, we review the
 analytically simple migration model commonly used in the literature.
-In Section \ref{sec:org0976d26}, we modify the model slightly and explore
+In Section \ref{sec:orgfdffa6d}, we modify the model slightly and explore
 a wider parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
 conditions which robustly lead to apsidal alignment.  In Section
-\ref{sec:org20e9b9a}, we design a toy model for driving eccentricity and
+\ref{sec:orgf2452c0}, we design a toy model for driving eccentricity and
 explain how it may explain the apsidal alignment between K2-19b and
 c. We demonstrate that the orbital architecture of K2-19 can be
 explained by an external force which pumps the eccentricities beyond
 their equilibrium values.
 
 \section{Planet Migration}
-\label{sec:org0976d26}
+\label{sec:orgfdffa6d}
 Planets embedded within a protoplanetary disk interact gravitationally
 with the gas and lose angular momentum, leading to inward migration
 towards the central star.  Disk torques vary with planet mass as well
@@ -187,7 +187,7 @@ commonly used in the literature
 \cite{deck_migration_2015,xu_migration_2018,goldreich_overstable_2014}.
 
 \subsection{MMR}
-\label{sec:org226f5e4}
+\label{sec:org0ec27f0}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
@@ -255,16 +255,16 @@ eccentricity.  However, if eccentricities are excited, secular terms
 play an important role, and so we keep them.
 
 \subsection{Equilibrium}
-\label{sec:org4ec2877}
+\label{sec:org2e697f5}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
-  \includegraphics[width=1\textwidth]{{standard-eeqs-Tm2-20436-Tw0-1000}.png}
+  \includegraphics[width=1\textwidth]{{standard-eeqs-Tm2--40873-Tw0-1000}.png}
   \caption{ }
   \label{fig:standardeqecc}
   \end{subfigure}
   \begin{subfigure}[t]{0.225\textwidth}
-  \includegraphics[width=1\textwidth]{{standard-pomega-Tm2-20436-Tw0-1000}.png}
+  \includegraphics[width=1\textwidth]{{standard-pomega-Tm2--40873-Tw0-1000}.png}
   \caption{ }
   \label{fig:standardDpom}
   \end{subfigure}
@@ -367,7 +367,7 @@ explore slightly modified models by varying the ratio
 \(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\).
 
 \subsection{Eccentricity damping timescales}
-\label{sec:orgb0d2843}
+\label{sec:org5f05c72}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
@@ -427,7 +427,7 @@ is where we reverse the migration direction to ensure it is
 convergent.
 
 \section{Apsidal Alignment}
-\label{sec:org20e9b9a}
+\label{sec:orgf2452c0}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi=180^\circ\) due to their equilibrium
 values being \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
@@ -436,10 +436,10 @@ model.  In order to match this observation, either \(\theta_1\),
 \(\theta_2\), or both angles must cease to be in resonance.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org8c6173e}
+\label{sec:org53b0e11}
 \begin{figure*}
   \centering
-  \includegraphics[width=0.7\textwidth]{{driving-example-h-0.1-Tw0-1000}.png}
+  \includegraphics[width=0.7\textwidth]{{driving-example-h-0.03-Tw0-1000}.png}
   \caption{Here we have set $e_{2,d}=0.3$ with $h=0.1$ and $q=2$.  After
     about 10~kyr, the system escapes the circular resonances and becomes
     apsidally aligned.}
@@ -465,7 +465,7 @@ excited to about \(e_i\approx 0.2\) and the planets become apsidally
 aligned as \(\Delta\varpi\) librates around \(0^\circ\) with an amplitde
 of around \(100^\circ\).
 \subsection{Reducing the Hamiltonian}
-\label{sec:orga2f0470}
+\label{sec:orge151357}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./phasediag}.png}
@@ -485,6 +485,14 @@ of around \(100^\circ\).
     resonance zone in between the two lobes of the separatrix.}
   \label{fig:phasediag}
 \end{figure*}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{{./Rhat-grid}.png}
+    \caption{\emph{Left:} 
+\emph{Right:}}
+    \label{fig:Rhat-grid}
+  \end{figure}
 A detailed analysis of the MMR Hamiltonian \eqref{hamiltonian}
 illustrates the underlying dynamics behind the capture processes in
 Figure \ref{fig:drivingex} which lead to apsidal alignment.  Following
@@ -635,27 +643,12 @@ right two panels of Figure \ref{fig:phasediag} display the phase space
 for choices of positive and negative \(\delta\).
 
 \subsection{Phase space paths}
-\label{sec:orge445196}
+\label{sec:org7013bae}
 \begin{figure*}
   \centering
-  \includegraphics[width=0.7\textwidth]{{./phasediagsex}.png}
-  \caption{ Here we have plotted each example runs' path through
-    phase space. On the top row, we plot only the
-    $e_2\longleftrightarrow\theta_2$ resonance to save space; the
-    $e_1\longleftrightarrow\theta_1$ resonance is similar.  Time is
-    indicated by color, with purple near $t=0$ and yellow near the
-    end of the simulation. All times are scaled to the beginning
-    and end times of the integration for comparison, not physical
-    time.  \emph{Left:} The standard example. Here we see both the
-    $\theta_2$ and $\hat\theta$ resonances are
-    acting. \emph{Middle:} The case with eccentricity driving
-    forces.  The system starts near the origin in $(e_2,\theta_2)$
-    space, and moves outwards to the circulation zone due to the
-    driving forces.  \emph{Right:} Similar to the driving force
-    case, but this time the system starts well outside of the
-    resonance zone in $(e_2,\theta_2)$ space and then gets trapped
-    into the circulation zone due to dissipative forces.  }
-  \label{fig:phasediagsex}
+  \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
+  \caption{ }
+  \label{fig:relgeom}
 \end{figure*}
 In \ref{fig:phasediagsex}, we display the phase spaces from all three
 integrations plotted in the previous sections.
@@ -676,14 +669,14 @@ The two apsidally aligned cases therefore end up in analagous phase space config
 through different dynamical paths.
 
 \section{Conclusion}
-\label{sec:org25c9174}
+\label{sec:org4ac5572}
 
 \clearpage
 
 \section{Appendix}
-\label{sec:org89953c7}
+\label{sec:orgaf1ec38}
 \subsection{Elliptic restricted 3 body problem}
-\label{sec:orgd4a83f6}
+\label{sec:orgf2bbf4a}
 
 \bibliography{references}
 \bibliographystyle{apalike}

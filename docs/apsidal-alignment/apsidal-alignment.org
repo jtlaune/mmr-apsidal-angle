@@ -248,12 +248,12 @@ play an important role, and so we keep them.
   \begin{figure}
     \centering
     \begin{subfigure}[t]{0.225\textwidth}
-    \includegraphics[width=1\textwidth]{{standard-eeqs-Tm2-20436-Tw0-1000}.png}
+    \includegraphics[width=1\textwidth]{{standard-eeqs-Tm2--40873-Tw0-1000}.png}
     \caption{ }
     \label{fig:standardeqecc}
     \end{subfigure}
     \begin{subfigure}[t]{0.225\textwidth}
-    \includegraphics[width=1\textwidth]{{standard-pomega-Tm2-20436-Tw0-1000}.png}
+    \includegraphics[width=1\textwidth]{{standard-pomega-Tm2--40873-Tw0-1000}.png}
     \caption{ }
     \label{fig:standardDpom}
     \end{subfigure}
@@ -444,7 +444,7 @@ $\theta_2$, or both angles must cease to be in resonance.
 #+BEGIN_SRC latex
   \begin{figure*}
     \centering
-    \includegraphics[width=0.7\textwidth]{{driving-example-h-0.1-Tw0-1000}.png}
+    \includegraphics[width=0.7\textwidth]{{driving-example-h-0.03-Tw0-1000}.png}
     \caption{Here we have set $e_{2,d}=0.3$ with $h=0.1$ and $q=2$.  After
       about 10~kyr, the system escapes the circular resonances and becomes
       apsidally aligned.}
@@ -494,6 +494,15 @@ of around $100^\circ$.
       resonance zone in between the two lobes of the separatrix.}
     \label{fig:phasediag}
   \end{figure*}
+#+END_SRC
+#+BEGIN_SRC latex
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.4\textwidth]{{./Rhat-grid}.png}
+      \caption{\emph{Left:} 
+  \emph{Right:}}
+      \label{fig:Rhat-grid}
+    \end{figure}
 #+END_SRC
 *** Hhat                                                           :ignore:
 A detailed analysis of the MMR Hamiltonian eqref:hamiltonian
@@ -662,24 +671,9 @@ for choices of positive and negative $\delta$.
 #+BEGIN_SRC latex
       \begin{figure*}
         \centering
-        \includegraphics[width=0.7\textwidth]{{./phasediagsex}.png}
-        \caption{ Here we have plotted each example runs' path through
-          phase space. On the top row, we plot only the
-          $e_2\longleftrightarrow\theta_2$ resonance to save space; the
-          $e_1\longleftrightarrow\theta_1$ resonance is similar.  Time is
-          indicated by color, with purple near $t=0$ and yellow near the
-          end of the simulation. All times are scaled to the beginning
-          and end times of the integration for comparison, not physical
-          time.  \emph{Left:} The standard example. Here we see both the
-          $\theta_2$ and $\hat\theta$ resonances are
-          acting. \emph{Middle:} The case with eccentricity driving
-          forces.  The system starts near the origin in $(e_2,\theta_2)$
-          space, and moves outwards to the circulation zone due to the
-          driving forces.  \emph{Right:} Similar to the driving force
-          case, but this time the system starts well outside of the
-          resonance zone in $(e_2,\theta_2)$ space and then gets trapped
-          into the circulation zone due to dissipative forces.  }
-        \label{fig:phasediagsex}
+        \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
+        \caption{ }
+        \label{fig:relgeom}
       \end{figure*}
 #+END_SRC
 *** phase space                                                    :ignore:

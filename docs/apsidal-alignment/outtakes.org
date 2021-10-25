@@ -1,4 +1,28 @@
 #+BEGIN_SRC latex
+      \begin{figure*}
+        \centering
+        \includegraphics[width=0.7\textwidth]{{./phasediagsex}.png}
+        \caption{ Here we have plotted each example runs' path through
+          phase space. On the top row, we plot only the
+          $e_2\longleftrightarrow\theta_2$ resonance to save space; the
+          $e_1\longleftrightarrow\theta_1$ resonance is similar.  Time is
+          indicated by color, with purple near $t=0$ and yellow near the
+          end of the simulation. All times are scaled to the beginning
+          and end times of the integration for comparison, not physical
+          time.  \emph{Left:} The standard example. Here we see both the
+          $\theta_2$ and $\hat\theta$ resonances are
+          acting. \emph{Middle:} The case with eccentricity driving
+          forces.  The system starts near the origin in $(e_2,\theta_2)$
+          space, and moves outwards to the circulation zone due to the
+          driving forces.  \emph{Right:} Similar to the driving force
+          case, but this time the system starts well outside of the
+          resonance zone in $(e_2,\theta_2)$ space and then gets trapped
+          into the circulation zone due to dissipative forces.  }
+        \label{fig:phasediagsex}
+      \end{figure*}
+#+END_SRC
+
+#+BEGIN_SRC latex
   \begin{figure*}[htb]
     \centering
     \includegraphics[width=0.95\textwidth]{{./Teratio-eeqs-Tm2-50000-Tw0-1000}.png}
@@ -51,3 +75,37 @@ solution along the line $\theta=0^\circ$.
 ###
 
 ###
+
+** Large initial eccentricities
+*** figures                                                        :ignore:
+#+BEGIN_SRC latex
+  \begin{figure*}
+    \centering
+    \includegraphics[width=0.7\textwidth]{{e0large-h-0.10-Tw0-10000-cut-0.30}.png}
+  \caption{Here we again have an example with $h=0.1$, $q=2$, but set
+    the initial eccentricities to $e_{i,0}=0.3$ and
+    $T_{e,0}=10$~kyr. The system misses the circular resonances
+    altogether and remains apsidally aligned throughout.}
+    \label{fig:e0large}
+  \end{figure*}
+#+END_SRC
+*** e init                                                         :ignore:
+Another way of avoiding capture into the circular $\theta_i$
+resonances altogether is to have a large initial eccentricity when the
+periods $P_2/P_1$ reach the nominal resonance value of $1.5$.  In
+Figure ref:fig:e0large , we demonstrate the feasibility of MMR
+apsidal-alignment when the planets $m_1$ and $m_2$ are given large
+initial eccentricities of $e_1=e_2=0.2$ by hand at the start of the
+integration.
+
+One weakness of this scenario is that the dissipative forces must be
+shut off at some point after the system is captured into resonance but
+before it evolves to a true equilibrium. If the disk forces were left
+on for the entire simulation, the planets would reach the standard
+equilibrium and "forget" their initial conditions.  Because of this,
+we chose to set $T_{w,0}=10$ kyr rather than the standard 1 kyr. This
+requires some fine tuning, but it is within the realm of possibility
+as the protoplanetary disk does indeed dissipate over time. Depending
+on other system parameters, the disk could indeed disappear before the
+system reaches equilibrium, at which point the resonance would cease
+to evolve.
