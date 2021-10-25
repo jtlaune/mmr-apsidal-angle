@@ -1,4 +1,4 @@
-% Created 2021-10-22 Fri 16:45
+% Created 2021-10-25 Mon 16:33
 % Intended LaTeX compiler: pdflatex
 \documentclass{mnras}
 \usepackage[utf8]{inputenc}
@@ -61,43 +61,45 @@ $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 \maketitle
 
 \section{Introduction}
-\label{sec:org7f69f9b}
+\label{sec:org79f21bb}
 
-Early in a planetary system’s life, the orbits of newly formed planets
-are likely constantly changing.  Interactions with the gaseous and
-dusty protoplanetary disks (PPDs) exert a negative torque on the
-embedded planet, which leads to angular momentum loss and subsequent
-contraction of the planet’s semimajor axis
-\cite{nelson_planetary_2018}. This process is collectively known as
-planetary migration.
+Even before the first detection of an exoplanetary system, planets
+were predicted to migrate from their initial position due to
+interactions with their natal protoplanetary disk
+\cite{lin79_tidal_torques_accret_discs_binar,goldreich_excitation_1979,goldreich_disk-satellite_1980-1}.
+The associated angular momentum and energy exchange acts to reshape
+the orbital architecture during the first million years of a system's
+life, in particular the planets' semimajor axes and eccentricities.
+This process is collectively known as planetary migration
+\cite{nelson_planetary_2018}.
 
 When two planets' periods are related by an integer fraction \(p\):\(q\)
 (e.g. 2:1, 3:2), mutual gravitational interactions can lock orbits
-into mean motion resonances (MMRs).
-If the integers \(p,q\) differ by one, i.e. \(j\):\(j+1\) for some \(j\),
-the gravitational interactions are first order in eccentricity
-and inclination.
-The resonance angles for first order MMRs are given by
+into mean motion resonances (MMRs).  MMRs are characterized by the
+libration of two angles specific to the values of \(p\) and \(q\).  If the
+integers differ by one, i.e. \(j\):\(j+1\) for some \(j\), the gravitational
+interactions are first order in eccentricity and inclination.  The
+resonance angles for first order MMRs are given by
 \begin{align}
-\label{circangles}
+\label{circangles1}
  \theta_1 &= (j+1)\lambda_2 - \lambda_1 - \varpi_1 \\
+\label{circangles2}
  \theta_2 &= (j+1)\lambda_2 - \lambda_1 - \varpi_2.
 \end{align}
 
-The mean longitudes of the inner and outer planets are denoted by
-\(\lambda_1\) and \(\lambda_2\), respectively, and \(\varpi_1\) and
-\(\varpi_2\) denote their longitudes of perihelion.  If the angles
-\(\theta_1\) and \(\theta_2\) librate around \(\pi\) and \(0\), respectively,
-the system is said to be in resonance.  As a planet migrates, its
-resonance locations sweep across the disk along with it and capture
-planets into resonant pairs and chains.
-While in resonance, torques from the gas damp the
-system's angular momentum deficit (AMD) into equilibrium.  The MMR
-equilibrium is governed by various conditions which are well studied
-in the literature
+\noindent The mean longitudes of the inner and outer planets
+are denoted by \(\lambda_1\) and \(\lambda_2\), respectively, and
+\(\varpi_1\) and \(\varpi_2\) denote their longitudes of perihelion.  If
+the angles \(\theta_1\) and \(\theta_2\) librate around \(\pi\) and \(0\),
+respectively, the system is said to be in resonance.  As a planet
+migrates, its resonance locations sweep across the disk and capture
+planets into resonant pairs and chains.  The MMR equilibrium is
+governed by various conditions which are well studied in the
+literature
 \cite{henrard_second_1983,deck_migration_2015,goldreich_overstable_2014,xu_migration_2018,henrard_second_1983}.
-The resonant pair's path across the disk determines the final orbital
-architecture for the system
+The resonant pair's path across the disk, characterized by the
+direction, distance traveled, and migration and eccentricity damping
+timescales, determines the final orbital architecture for the system
 \cite{cresswell_evolution_2006,cresswell_three-dimensional_2008}.
 
 In recent years, thousands of exoplanet systems have been discovered,
@@ -112,9 +114,10 @@ A system's orbital architecture can reveal details about its history.
 Commensurate period ratios may indicate past resonant interactions
 within the planetary system, but the present state of the resonance
 can only be determined by analyzing the behavior of the angles in
-equation \eqref{circangles}.  Furthermore, since these angles are
-related by \(\theta_2-\theta_1=\gamma_1-\gamma_2\), this implies that a
-resonant pair of planets will be apsidally anti-aligned.
+equations \eqref{circangles1} and \eqref{circangles2}.  Furthermore, since these angles are
+related by \(\theta_2-\theta_1=\varpi_1-\varpi_2\), this implies that a
+resonant pair of planets will be apsidally anti-aligned, i.e.
+\(\Delta\varpi\equiv \varpi_1-\varpi_2\approx \pi\).
 
 NASA's \emph{K2} mission initially discovered the planets K2-19b and c
 near a 3:2 period ratio (\(P_b=7.9\) d, \(P_c=11.9\) d), and later on
@@ -131,18 +134,18 @@ Understanding the genesis of extrasolar orbital configurations, and
 their corresponding observational implications, offers us an insight
 into the history of the system.  In this paper, we review the
 analytically simple migration model commonly used in the literature.
-In Section \ref{sec:orgfdffa6d}, we modify the model slightly and explore
+In Section \ref{sec:orgd579a74}, we modify the model slightly and explore
 a wider parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
 conditions which robustly lead to apsidal alignment.  In Section
-\ref{sec:orgf2452c0}, we design a toy model for driving eccentricity and
+\ref{sec:org2f3d719}, we design a toy model for driving eccentricity and
 explain how it may explain the apsidal alignment between K2-19b and
 c. We demonstrate that the orbital architecture of K2-19 can be
 explained by an external force which pumps the eccentricities beyond
 their equilibrium values.
 
 \section{Planet Migration}
-\label{sec:orgfdffa6d}
+\label{sec:orgd579a74}
 Planets embedded within a protoplanetary disk interact gravitationally
 with the gas and lose angular momentum, leading to inward migration
 towards the central star.  Disk torques vary with planet mass as well
@@ -187,7 +190,7 @@ commonly used in the literature
 \cite{deck_migration_2015,xu_migration_2018,goldreich_overstable_2014}.
 
 \subsection{MMR}
-\label{sec:org0ec27f0}
+\label{sec:org681a8f9}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
@@ -255,7 +258,7 @@ eccentricity.  However, if eccentricities are excited, secular terms
 play an important role, and so we keep them.
 
 \subsection{Equilibrium}
-\label{sec:org2e697f5}
+\label{sec:org2e83ec1}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
@@ -367,7 +370,7 @@ explore slightly modified models by varying the ratio
 \(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\).
 
 \subsection{Eccentricity damping timescales}
-\label{sec:org5f05c72}
+\label{sec:org52e865f}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
@@ -427,7 +430,7 @@ is where we reverse the migration direction to ensure it is
 convergent.
 
 \section{Apsidal Alignment}
-\label{sec:orgf2452c0}
+\label{sec:org2f3d719}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi=180^\circ\) due to their equilibrium
 values being \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
@@ -436,7 +439,7 @@ model.  In order to match this observation, either \(\theta_1\),
 \(\theta_2\), or both angles must cease to be in resonance.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org53b0e11}
+\label{sec:org8b364ab}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{driving-example-h-0.03-Tw0-1000}.png}
@@ -465,7 +468,7 @@ excited to about \(e_i\approx 0.2\) and the planets become apsidally
 aligned as \(\Delta\varpi\) librates around \(0^\circ\) with an amplitde
 of around \(100^\circ\).
 \subsection{Reducing the Hamiltonian}
-\label{sec:orge151357}
+\label{sec:orgbf11247}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./phasediag}.png}
@@ -643,7 +646,7 @@ right two panels of Figure \ref{fig:phasediag} display the phase space
 for choices of positive and negative \(\delta\).
 
 \subsection{Phase space paths}
-\label{sec:org7013bae}
+\label{sec:org39cf48a}
 \begin{figure*}
   \centering
   \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
@@ -669,14 +672,14 @@ The two apsidally aligned cases therefore end up in analagous phase space config
 through different dynamical paths.
 
 \section{Conclusion}
-\label{sec:org4ac5572}
+\label{sec:org763bf87}
 
 \clearpage
 
 \section{Appendix}
-\label{sec:orgaf1ec38}
+\label{sec:org0d352e2}
 \subsection{Elliptic restricted 3 body problem}
-\label{sec:orgf2bbf4a}
+\label{sec:org330f0ee}
 
 \bibliography{references}
 \bibliographystyle{apalike}
