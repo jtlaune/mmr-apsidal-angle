@@ -1,4 +1,4 @@
-% Created 2021-10-25 Mon 16:33
+% Created 2021-10-25 Mon 23:34
 % Intended LaTeX compiler: pdflatex
 \documentclass{mnras}
 \usepackage[utf8]{inputenc}
@@ -61,7 +61,7 @@ $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 \maketitle
 
 \section{Introduction}
-\label{sec:org79f21bb}
+\label{sec:orgf78e8b1}
 
 Even before the first detection of an exoplanetary system, planets
 were predicted to migrate from their initial position due to
@@ -102,50 +102,65 @@ direction, distance traveled, and migration and eccentricity damping
 timescales, determines the final orbital architecture for the system
 \cite{cresswell_evolution_2006,cresswell_three-dimensional_2008}.
 
-In recent years, thousands of exoplanet systems have been discovered,
-and, although many resonant systems have been found, the proportion of
-such systems is low compared to theoretical expectations based on disk
+In the past 40 years, exoplanet surveys have given us a wealth of
+systems to test our understanding of disk migration and resonant
+dynamics.  Thousands of exoplanet systems have been discovered, and,
+although many resonant systems have been found, the proportion of such
+systems is low compared to theoretical expectations based on disk
 migration \cite{fabrycky_architecture_2014}.  In addition to the paucity
 of planets in MMRs, there also seems to be an overabundance of planets
 just outside of mean motion resonances, with period ratios slightly
 larger than 2 or 3/2
-\cite{fabrycky_architecture_2014,choksi_sub-neptune_2020}.
-A system's orbital architecture can reveal details about its history.
+\cite{fabrycky_architecture_2014,choksi_sub-neptune_2020}.  A system's
+orbital architecture can reveal details about its history.
 Commensurate period ratios may indicate past resonant interactions
 within the planetary system, but the present state of the resonance
 can only be determined by analyzing the behavior of the angles in
-equations \eqref{circangles1} and \eqref{circangles2}.  Furthermore, since these angles are
-related by \(\theta_2-\theta_1=\varpi_1-\varpi_2\), this implies that a
-resonant pair of planets will be apsidally anti-aligned, i.e.
+equations \eqref{circangles1} and \eqref{circangles2}.  Furthermore, since
+these angles are related by \(\theta_2-\theta_1=\varpi_1-\varpi_2\),
+this implies that a resonant pair of planets will have
 \(\Delta\varpi\equiv \varpi_1-\varpi_2\approx \pi\).
+
+NASA's \emph{Kepler} mission observed several planet pairs near a
+first-order resonance with constraints on \(\Delta\varpi\), such as
+Kepler-88 \cite{weiss_discovery_2020} and Kepler-24
+\cite{antoniadou_exploiting_2020}. Both of these systems are apsidally
+anti-aligned (\(\Delta\varpi\approx180^\circ\)).  Kepler-9b and
+Kepler-9c are near to the 2:1 resonace and apsidally anti-aligned, but
+their angles \(\theta_1\) and \(\theta_2\) likely circulate.  However, a
+puzzling resonant architecture has been discovered recently in the
+system K2-19.
 
 NASA's \emph{K2} mission initially discovered the planets K2-19b and c
 near a 3:2 period ratio (\(P_b=7.9\) d, \(P_c=11.9\) d), and later on
 planet K2-19d at \(P_d=2.5\) d
 \cite{howell14_k2_mission,armstrong15_one_closes_exopl_pairs_to,sinukoff16_eleven_multip_system_fromk_masses}.
-Both planets had moderate eccentricities \(e_b\approx e_c\approx 0.2\).
+K2-19 is a solar-type star (\(M_*=0.88M_\odot\)), planet b has
+\(M_{b}=10.8 M_{\oplus}\), and c has \(M_{c}<10M_{\oplus}\).  Both outer
+planets had moderate eccentricities \(e_b\approx e_c\approx 0.2\).
 Further observations revealed K2-19b and c to be \emph{aligned}, with
-\(\Delta\varpi\equiv \varpi_c-\varpi_b \approx 2\pm 2\)
+\(\Delta\varpi\equiv \varpi_c-\varpi_b \approx 2\pm 2^\circ\)
 \cite{petigura_k2-19b_2020}.  Hence, the K2-19 system poses a problem
 for the conventional understanding of planet migration and resonance
 capture.
 
-Understanding the genesis of extrasolar orbital configurations, and
-their corresponding observational implications, offers us an insight
-into the history of the system.  In this paper, we review the
-analytically simple migration model commonly used in the literature.
-In Section \ref{sec:orgd579a74}, we modify the model slightly and explore
-a wider parameter space for the coupling between the resonant
+Investigating how K2-19 could have formed with \(\Delta\varpi=0\)
+through resonance capture will offer us an insight into its dynamical
+history as well as a better understanding of the genesis of extrasolar
+orbital configurations.  In this paper, we review the analytically
+simple migration model commonly used in the literature.  In Section
+\ref{sec:org82784c3}, we present the classical picture of resonant capture
+and explore the parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
 conditions which robustly lead to apsidal alignment.  In Section
-\ref{sec:org2f3d719}, we design a toy model for driving eccentricity and
-explain how it may explain the apsidal alignment between K2-19b and
-c. We demonstrate that the orbital architecture of K2-19 can be
-explained by an external force which pumps the eccentricities beyond
-their equilibrium values.
+\ref{sec:org3f3ad04}, we design a toy model which relies on eccentricity
+diriving to a finite, non-zero value and argue that it can reproduce
+the apsidal alignment between K2-19b and c. We demonstrate that the
+orbital architecture of K2-19 can be explained by an external force
+which pumps the eccentricities beyond their equilibrium values.
 
 \section{Planet Migration}
-\label{sec:orgd579a74}
+\label{sec:org82784c3}
 Planets embedded within a protoplanetary disk interact gravitationally
 with the gas and lose angular momentum, leading to inward migration
 towards the central star.  Disk torques vary with planet mass as well
@@ -190,7 +205,7 @@ commonly used in the literature
 \cite{deck_migration_2015,xu_migration_2018,goldreich_overstable_2014}.
 
 \subsection{MMR}
-\label{sec:org681a8f9}
+\label{sec:org12e42db}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
@@ -258,7 +273,7 @@ eccentricity.  However, if eccentricities are excited, secular terms
 play an important role, and so we keep them.
 
 \subsection{Equilibrium}
-\label{sec:org2e83ec1}
+\label{sec:orgb9f1c1a}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
@@ -370,7 +385,7 @@ explore slightly modified models by varying the ratio
 \(T_{e,1}/T_{e,2}\) within \([0.1q, 10q]\).
 
 \subsection{Eccentricity damping timescales}
-\label{sec:org52e865f}
+\label{sec:org463daf4}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
@@ -430,7 +445,7 @@ is where we reverse the migration direction to ensure it is
 convergent.
 
 \section{Apsidal Alignment}
-\label{sec:org2f3d719}
+\label{sec:org3f3ad04}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi=180^\circ\) due to their equilibrium
 values being \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
@@ -439,7 +454,7 @@ model.  In order to match this observation, either \(\theta_1\),
 \(\theta_2\), or both angles must cease to be in resonance.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org8b364ab}
+\label{sec:orgf991414}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{driving-example-h-0.03-Tw0-1000}.png}
@@ -468,7 +483,7 @@ excited to about \(e_i\approx 0.2\) and the planets become apsidally
 aligned as \(\Delta\varpi\) librates around \(0^\circ\) with an amplitde
 of around \(100^\circ\).
 \subsection{Reducing the Hamiltonian}
-\label{sec:orgbf11247}
+\label{sec:org90228d0}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./phasediag}.png}
@@ -646,7 +661,7 @@ right two panels of Figure \ref{fig:phasediag} display the phase space
 for choices of positive and negative \(\delta\).
 
 \subsection{Phase space paths}
-\label{sec:org39cf48a}
+\label{sec:orga7d9d09}
 \begin{figure*}
   \centering
   \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
@@ -672,14 +687,14 @@ The two apsidally aligned cases therefore end up in analagous phase space config
 through different dynamical paths.
 
 \section{Conclusion}
-\label{sec:org763bf87}
+\label{sec:orgb572adf}
 
 \clearpage
 
 \section{Appendix}
-\label{sec:org0d352e2}
+\label{sec:orga031258}
 \subsection{Elliptic restricted 3 body problem}
-\label{sec:org330f0ee}
+\label{sec:org064f05f}
 
 \bibliography{references}
 \bibliographystyle{apalike}
