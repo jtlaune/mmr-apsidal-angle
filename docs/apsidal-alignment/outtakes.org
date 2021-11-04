@@ -109,3 +109,99 @@ as the protoplanetary disk does indeed dissipate over time. Depending
 on other system parameters, the disk could indeed disappear before the
 system reaches equilibrium, at which point the resonance would cease
 to evolve.
+* resonant eom
+The resonant equation of motion for $R$ is
+#+begin_src latex
+  \begin{equation}
+    \dot R_{\rm res} = -\frac{\d \hat H}{\d \hat\theta} = -2\sqrt{2R}\sin(\hat\theta) = 0
+  \end{equation}
+#+end_src
+in resonance.  Hence, only dissipative and secular forces are at play
+if $\hat\theta$ is operating.  The integrations in Figures
+ref:fig:drivingex and ref:fig:e0large do not show qualitative
+differences if the secular terms are turned off, and so the apsidal
+alignment must be due to dissipation. If we assume the semimajor axis
+ratio is constant and consider only the dissipative effects on $R$, we
+arrive at the following relation for equilibrium in $R$:
+#+begin_src latex
+  \begin{equation}
+    \label{eq:diseqR}
+    \cos\Delta\varpi \sim \frac{e_1^2 T_{e,2} + e_2^2 T_{e,1}}{e_1e_2(T_{e,1}+T_{e,2})}.
+  \end{equation}
+#+end_src
+For reasonable disk parameters ( $h\sim 0.1$, $T_{e,i}\sim h^2
+T_{m,i}$ ), the right hand side of equation eqref:eq:diseqR
+is order unity, and so we see that $\Delta\varpi\approx 0$.
+
+* second fundamental model of resonance
+#+BEGIN_SRC latex
+  \begin{figure*}
+    \centering
+    \includegraphics[width=0.7\textwidth]{{./phasediag}.png}
+    \caption{\emph{Left}: Equilibrium points for the Hamiltonian in
+      equation (\ref{hhat}) for various values of $\delta$ are
+      plotted in black.  The green lines indicate the $\delta$ values
+      used for the right two phase diagrams, along with their
+      associated equilibria.  The resonance zone for $\delta>0$ is
+      shaded in red.  \emph{Middle}: Phase diagram for
+      $\delta=-0.5$. There is only a single equilibrium and resonance
+      zone to the right of the origin.  \emph{Right}: Phase diagram
+      for $\delta= 1$. There are three equilibria; the separatrix
+      passes through the leftmost equilibrium point, which is a
+      saddle point in phase space. The small lobe of the separatrix
+      encloses a circulation zone with a stable equilibrium near the
+      origin. The leftmost equilibrium point is located within the
+      resonance zone in between the two lobes of the separatrix.}
+    \label{fig:phasediag}
+  \end{figure*}
+#+END_SRC
+The Hamiltonian in [[eqref:hhat]] is known as ``the second fundamental
+model of resonance''. Its phase space is well studied in the
+literature, so we will only review it briefly, following the approach
+in cite:henrard_second_1983.  The choice of polar coordinates in
+equation [[eqref:hattheta]] introduces a virtual singularity at $R=0$
+cite:henrard_second_1983.  If we switch to the canonical Cartesian
+coordinates $\xi = \sqrt{R}\cos\theta$ and $\nu = \sqrt{R}\cos\theta$,
+$\hat H$ becomes
+
+#+begin_src latex
+  \begin{equation}
+    \hat H(\xi,\nu) = -3(\delta+1)(\xi^2+\nu^2) + (\xi^2+\nu^2)^2 -2\sqrt2
+    \xi
+  \end{equation}
+#+end_src
+
+In equilibrium, $\dot R = \d\hat H/\d\theta \propto \sin\theta= 0$,
+and so we see that equilibria must lie along the line $\nu=0$ in phase
+space.  The left panel of Figure ref:fig:phasediag displays the
+results of solving the equation $\hat H(\xi, 0) = 0$ for $\xi$
+numerically for various values of $\delta$.  For $\delta<0$, there is
+one equilibrium point to the right of the origin; for $\delta \geq 0$,
+a separatrix appears which divides the phase space into 3 regions:
+outer circulation (outside the separatrix), inner circulation (within
+the inner lobe of the separatrix), and the resonance zone (between the
+inner and outer lobe of the separatrix).  The resonance zone is
+indicated in red in the left panel of Figure ref:fig:phasediag.  The
+right two panels of Figure ref:fig:phasediag display the phase space
+for choices of positive and negative $\delta$.
+
+* theta stuff
+
+For the case $e_1=0$ and $\mu_2\ll\mu_1$, the system's conjugate
+momentum takes the form $R\sim e_1^2$ with coordinate $\hat \theta =
+\theta_1$, and vice versa for $e_2=0$, $\mu_1\ll\mu_2$.  These parameters
+describe the standard scenario of a test particle near an MMR with a
+massive planet on a circular orbit, the derivation of which may be
+found in cite:murray_solar_2000. The parameter $\delta$ describes the
+system's depth into resonance.
+
+
+Since the canonical momenta of the circular angles $\theta_i$ have
+$R_i\propto e_i^2$, resonance capture widths $\delta a_i$ are
+functions of $e_i$ as well. Hence, for large eccentricities near the
+resonance location, $m_1$ and $m_2$ may not be captured into
+resonance. However, if we consider the Hamiltonian system $H_{\rm
+Kep} + H_{\rm res}$ in eqref:hamiltonian as a whole, i.e. considering
+$m_1$ and $m_2$ simultaneously, there is one resonance angle
+$\hat\theta$ that describes the system's dynamics which may operate
+separately from $\theta_1$ and $\theta_2$.

@@ -1719,8 +1719,9 @@
       aligned = np.abs(Dpoms) < 1.0
       antialigned = np.logical_not(aligned)
   
-      cs = ax[i,0].scatter(e1ds[aligned], e2ds[aligned],  s=75, facecolors='k', edgecolors='k')
-      cs = ax[i,0].scatter(e1ds[antialigned], e2ds[antialigned],  s=75, facecolors='none', edgecolors='k')
+      cs = ax[i,0].scatter(e1ds[aligned], e2ds[aligned],  s=75, facecolors='k', edgecolors='k', label=r"$\varpi$-aligned")
+      cs = ax[i,0].scatter(e1ds[antialigned], e2ds[antialigned],  s=75, facecolors='none', edgecolors='k', label=r"$\varpi$-anti-aligned")
+      ax[i,0].legend(bbox_to_anchor=(2., 1.25), fancybox=True, shadow=True,ncol=2)
   
       cs = ax[i,1].errorbar(e1s[aligned], e2s[aligned], xerr=e1s_std[aligned], yerr=e2s_std[aligned], fmt='o', ms=7.5, markerfacecolor='k', markeredgecolor='k', c="k")
       cs = ax[i,1].errorbar(e1s[antialigned], e2s[antialigned], xerr=e1s_std[antialigned], yerr=e2s_std[antialigned], ms=7.5, fmt='o', markerfacecolor='none', markeredgecolor='k',c="k")
@@ -1767,7 +1768,7 @@
 : [-3.12127726  0.10886437  0.23641767  0.28378325  2.99980532  0.02076678
 :   0.22173402 -1.49893254 -3.08953736  2.38227561 -0.02686384 -1.53963981
 :  -2.51670634  2.91886473]
-[[file:./.ob-jupyter/f71036fdf6922bc2be788e2eaede9f37cd889192.png]]
+[[file:./.ob-jupyter/c41a8a08eaeb91cc1341da0e80da9020ace189e9.png]]
 :END:
 
 ** e vectors
@@ -1879,14 +1880,34 @@
           Rhat = np.abs(f1*e1**2+f2*e2**2+f1*f2*e1*e2*cos(Dpoms))
           ehat = np.sqrt(Rhat)
   
+          #if cut_iter == cuts[0]:
+          #    ax.scatter(e1*sqrt(2)*cos(pi),e1*sqrt(2)*sin(pi),
+          #               c="k",label=r"$\mathbf{e_1}$",zorder=2)
+          #    ax.scatter(e2/sqrt(2)*cos(pi+Dpoms),e2/sqrt(2)*sin(pi+Dpoms),
+          #               c="r",label=r"$\mathbf{e_2}$",zorder=1)
+          #    ax.scatter(ehat*cos(pi+hatgamma1),ehat*sin(pi+hatgamma1),
+          #               c="g",label=r"$\mathbf{\hat\theta}$",zorder=0)
+          #else:
+          #    ax.scatter(e1*sqrt(2)*cos(pi),e1*sqrt(2)*sin(pi),
+          #               c="k",zorder=2)
+          #    ax.scatter(e2/sqrt(2)*cos(pi+Dpoms),e2/sqrt(2)*sin(pi+Dpoms),
+          #               c="r",zorder=1)
+          #    ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
+          #               c="g",zorder=0)
           if cut_iter == cuts[0]:
-              ax.scatter(e1*sqrt(2)*cos(pi),e1*sqrt(2)*sin(pi), c="k",label=r"$\mathbf{e_1}$",zorder=2)
-              ax.scatter(e2/sqrt(2)*cos(pi+Dpoms),e2/sqrt(2)*sin(pi+Dpoms), c="r",label=r"$\mathbf{e_2}$",zorder=1)
-              ax.scatter(ehat*cos(pi+hatgamma1),ehat*sin(pi+hatgamma1), c="g",label=r"$\mathbf{\hat\theta}$",zorder=0)
+              ax.scatter(e1*(-f1)*cos(pi),e1*(-f1)*sin(pi),
+                         c="k",label=r"$\mathbf{e_1}$",zorder=2)
+              ax.scatter(e2*f2*cos(pi+Dpoms),e2*f2*sin(pi+Dpoms),
+                         c="r",label=r"$\mathbf{e_2}$",zorder=1)
+              ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
+                         c="g",label=r"$\mathbf{\hat\theta}$",zorder=0)
           else:
-              ax.scatter(e1*sqrt(2)*cos(pi),e1*sqrt(2)*sin(pi), c="k",zorder=2)
-              ax.scatter(e2/sqrt(2)*cos(pi+Dpoms),e2/sqrt(2)*sin(pi+Dpoms), c="r",zorder=1)
-              ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1), c="g",zorder=0)
+              ax.scatter(e1*(-f1)*cos(pi),e1*(-f1)*sin(pi),
+                         c="k",zorder=2)
+              ax.scatter(e2*f2*cos(pi+Dpoms),e2*f2*sin(pi+Dpoms),
+                         c="r",zorder=1)
+              ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
+                         c="g",zorder=0)
   
           #lambdas = np.linspace(0,2*np.pi,1000)
           #radii1 = a1*(1-e1**2)/(1-e1*cos(lambdas))
@@ -1973,7 +1994,7 @@
   ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
   33941.2386344164 38183.89346371845
 #+end_example
-[[file:./.ob-jupyter/18ae869b500b6bfac621302b47eb4921be05a468.png]]
+[[file:./.ob-jupyter/b7a655b929d4cef8c44689291d872f2eac611779.png]]
 :END:
 * apsidal alignment explanation
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research

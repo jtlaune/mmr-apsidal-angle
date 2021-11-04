@@ -1,0 +1,13 @@
+* TODO update the run parameters in the text
+* TODO address differences in eq ecc for standard setup (fig 2)
+* TODO write up paragraph describing numerical setup
+* TODO write up equations in appendix section
+* TODO figure captions
+** TODO 1
+** TODO 2
+** TODO 3
+** TODO 4
+** TODO 5
+** TODO 6
+** TODO 7
+** TODO 8
