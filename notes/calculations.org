@@ -881,7 +881,20 @@
   import importlib
   import os
   j = 2
-  plt.rcParams.update({"font.size": 20, "figure.facecolor": "white", "figure.figsize": (10,10)})
+  plt.rcParams.update({"font.size": 20,
+                       "figure.facecolor": "white",
+                       "figure.figsize": (6,6),
+                       #'font.family': 'serif',
+                       #"font.serif": ["DejaVu Serif"],
+                       #"text.usetex": False,
+                       "axes.linewidth": 3,
+                       'font.family': 'lmodern',
+                       'text.usetex': True,
+                       'text.latex.preamble': (            # LaTeX preamble
+                           r'\usepackage{lmodern}'
+                           # ... more packages if needed
+                       )
+                       })
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
 #+END_SRC
 
@@ -1387,47 +1400,93 @@
       theta2 = (theta + g2) % (2*np.pi)
       hattheta1s = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
                             e1*cos(theta1) + f2/f1*e2*cos(theta2))
-      hattheta1s = hattheta1s
+      hattheta1s = hattheta1s %(2*np.pi)
       hattheta1_avg = np.arctan2(np.sum(np.sin(hattheta1s)), np.sum(np.cos(hattheta1s)))
       hattheta1_std = np.sqrt(np.sum(hattheta1s-hattheta1_avg)**2)/len(hattheta1s)
   
-      Rhat = np.abs(f1*e1**2+f2*e2**2+f1*f2*e1*e2*cos(Dpoms))
+      Rhat = np.abs(f1**2*e1**2+f2**2*e2**2+f1*f2*e1*e2*cos(Dpoms))
       ehat = np.sqrt(Rhat)
-      fig, ax = plt.subplots(3) 
-      ax[0].scatter(teval, e1, s=0.5, label="e1")
-      ax[0].scatter(teval, e2, s=0.5, label="e2")
-      ax[0].scatter(teval, ehat, s=0.5, label="Rhat")
-      ax[0].legend()
-      ax[1].scatter(teval, Dpoms*180/pi, s=0.5, alpha=0.2)
-      ax[2].scatter(teval, theta1*180/pi, s=0.5, alpha=0.2)
-      ax[2].scatter(teval, theta2*180/pi, s=0.5, alpha=0.2)
-      ax[2].scatter(teval, hattheta1s*180/pi, s=0.5, alpha=0.2)
+      fig, ax = plt.subplots(3, figsize=(10,10)) 
+      ax[0].scatter(teval, e1, s=0.5, label="e1", c="k")
+      ax[0].scatter(teval, e2, s=0.5, label="e2", c="r")
+      ax[0].scatter(teval, ehat, s=0.5, label="Rhat",c="g")
+  
+      C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+                            markersize=5, label=r'$e_1$')
+      C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+                            markersize=5, label=r'$e_2$')
+      C2 = mpl.lines.Line2D([], [], color='g', marker="o", linestyle='None',
+                            markersize=5, label=r'$\hat e$')
+  
+      ax[0].legend(handles=[C0, C1, C2], loc="lower right", ncol=1, framealpha=1)
+  
+  
+      ax[1].scatter(teval, Dpoms*180/pi, s=0.5, alpha=0.2, c="k")
+      ax[2].scatter(teval, theta1*180/pi, s=0.5, alpha=0.2, c="k")
+      ax[2].scatter(teval, theta2*180/pi, s=0.5, alpha=0.2, c="r")
+      ax[2].scatter(teval, hattheta1s*180/pi, s=0.5, alpha=0.2, c="g")
+  
+      C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+                            markersize=5, label=r'$\theta_1$')
+      C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+                            markersize=5, label=r'$\theta_2$')
+      C2 = mpl.lines.Line2D([], [], color='g', marker="o", linestyle='None',
+                            markersize=5, label=r'$\hat \theta$')
+  
+      ax[2].legend(handles=[C0, C1, C2], loc="upper right", ncol=1, framealpha=1)
+  
+      for axi in ax.flatten():
+          axi.tick_params(which="major", width=3, length=8,
+                          bottom=True, top=True, left=True, right=True,
+                          direction="in", pad=10)
+          axi.tick_params(which="minor", width=3, length=4,
+                          bottom=True, top=True, left=True, right=True,
+                          direction="in", pad=10)
+          axi.set_xlim((teval[0], teval[-1]))
+          #axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+          #axi.yaxis.set_major_locator(MaxNLocator(4))
+          #axi.set_xscale("log")
+      ax[0].tick_params(labelbottom=False)
+      ax[1].tick_params(labelbottom=False)
+      #ax[1].set_ylim((-180,180))
+      ax[2].set_ylim((0,360))
+      ax[0].set_ylabel(r"$e$")
+      ax[1].set_ylabel(r"$\Delta\varpi$")
+      ax[2].set_ylabel(r"$\theta$")
+      ax[2].set_xlabel(r"$t [yrs]$")
+  
+      fig.subplots_adjust(hspace=0)
+      return(fig, ax)
 #+END_SRC
 
 #+RESULTS:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   leng = 300000
-  plotanal(0,cut_iter=[int(0.8*leng),int(0.81*leng)])
-#+END_SRC
-
-#+RESULTS:
-:RESULTS:
-: 16
-: ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.0.npz
-[[file:./.ob-jupyter/bbdf11228552005a7343f1f2354a6ccdab9c8417.png]]
-:END:
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  leng = 300000
-  plotanal(1,cut_iter=[int(0.8*leng),int(0.81*leng)])
+  plotanal(1,cut_iter=[int(0.1*leng),int(0.11*leng)])
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 : 16
 : ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.1-e2d-0.0.npz
-[[file:./.ob-jupyter/40b90a5d1fa732da1b335565592ddd8b785e08ed.png]]
+| <Figure | size | 720x720 | with | 3 | Axes> | array | ((<AxesSubplot:ylabel= $e$ > <AxesSubplot:ylabel= $\Delta\varpi$ > <AxesSubplot:xlabel= $t [yrs]$ ylabel= $\theta$ >) dtype=object) |
+[[file:./.ob-jupyter/8137ae45bd0e192f520c218d4b6973b856bd8266.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  leng = 300000
+  fig, ax = plotanal(1,cut_iter=[int(0.8*leng),int(0.9*leng)])
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/notes/")
+  fig.savefig("resmode.png")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 16
+: ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.1-e2d-0.0.npz
+[[file:./.ob-jupyter/aff72d3bc0a27762a62a91f24997cad8e78176a3.png]]
 :END:
 
 ** e vectors
@@ -1664,6 +1723,91 @@
 #+END_SRC
 
 #+RESULTS:
+
+* resonance centers
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import scipy.signal
+  import scipy.ndimage
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  j = 2
+  plt.rcParams.update({"font.size": 20,
+                       "figure.facecolor": "white",
+                       "figure.figsize": (6,6),
+                       #'font.family': 'serif',
+                       #"font.serif": ["DejaVu Serif"],
+                       #"text.usetex": False,
+                       "axes.linewidth": 3,
+                       'font.family': 'lmodern',
+                       'text.usetex': True,
+                       'text.latex.preamble': (            # LaTeX preamble
+                           r'\usepackage{lmodern}'
+                           # ... more packages if needed
+                       )
+                       })
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/notes/")
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  e1d = 0.1
+  f1 = -2.
+  f2 = 2.5
+  Dpom = np.pi
+  qs = np.logspace(np.log10(0.5), np.log10(2), 1000)
+  R1 = e1d**2*np.ones(len(qs))
+  R2 = R1*1.42*qs**(4./3)
+  Rhat = R1*(1/(qs+1))**(2./3)*(f1**2+f2**2*qs**2-2*np.abs(f1*f2)*qs*cos(Dpom))
+  fig, ax = plt.subplots(1,2,figsize=(10,5))
+  ax[0].plot(-sqrt(R1), qs, c="k")
+  ax[0].plot(sqrt(R2), qs, c="r")
+  ax[0].plot(-sqrt(Rhat), qs, c="g")
+  ax[0].plot(-sqrt(R1)-sqrt(R2), qs, c="g", ls="--")
+  ax[0].axvline(x=0, c="k", ls="--")
+  ax[1].plot(qs, Rhat - (sqrt(R1)-sqrt(R2)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x7f97e33a04f0> |
+[[file:./.ob-jupyter/42d6f2c5744773ce78de2459147a877ba353643f.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  e1d = 0.1
+  f1 = -2.
+  f2 = 2.5
+  Dpom = 0
+  qs = np.logspace(np.log10(0.5), np.log10(2), 1000)
+  R1 = e1d**2*np.ones(len(qs))
+  R2 = R1*1.42
+  Rhat = R1*(1/(qs+1))**(2./3)*(f1**2+f2**2-2*np.abs(f1*f2)*cos(Dpom))
+  fig, ax = plt.subplots(1,2,figsize=(10,5))
+  ax[0].plot(-sqrt(R1), qs, c="k")
+  ax[0].plot(sqrt(R2), qs, c="r")
+  ax[0].plot(-sqrt(Rhat), qs, c="g")
+  ax[0].plot(sqrt(R1)-sqrt(R2), qs, c="g", ls="--")
+  ax[0].axvline(x=0, c="k", ls="--")
+  ax[1].plot(qs, Rhat - (sqrt(R1)-sqrt(R2)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x7f97e320f520> |
+[[file:./.ob-jupyter/ab2ca85434ca564c66adba38d65df4f6332361d6.png]]
+:END:
 
 * stability tests
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research

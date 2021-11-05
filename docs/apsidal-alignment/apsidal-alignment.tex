@@ -1,4 +1,4 @@
-% Created 2021-11-04 Thu 13:18
+% Created 2021-11-05 Fri 14:23
 % Intended LaTeX compiler: pdflatex
 \documentclass[usenatbib]{mnras}
 \usepackage[utf8]{inputenc}
@@ -61,7 +61,7 @@ $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 \maketitle
 
 \section{Introduction}
-\label{sec:org461c668}
+\label{sec:org9e93fef}
 
 Even before the first detection of an exoplanetary system, planets
 were predicted to migrate from their initial position due to
@@ -149,18 +149,18 @@ through resonance capture will offer us an insight into its dynamical
 history as well as a better understanding of the genesis of extrasolar
 orbital configurations.  In this paper, we review the analytically
 simple migration model commonly used in the literature.  In Section
-\ref{sec:orgfcf1233}, we present the classical picture of resonant capture
+\ref{sec:org627aea3}, we present the classical picture of resonant capture
 and explore the parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
 conditions which robustly lead to apsidal alignment.  In Section
-\ref{sec:org76d63cc}, we design a toy model which relies on eccentricity
+\ref{sec:org4532f5f}, we design a toy model which relies on eccentricity
 diriving to a finite, non-zero value and argue that it can reproduce
 the apsidal alignment between K2-19b and c. We demonstrate that the
 orbital architecture of K2-19 can be explained by an external force
 which pumps the eccentricities beyond their equilibrium values.
 
 \section{Standard Picture of Resonance Capture}
-\label{sec:orgfcf1233}
+\label{sec:org627aea3}
 Planets embedded within a protoplanetary disk interact gravitationally
 with the gas and lose angular momentum, leading to inward migration
 towards the central star.  Disk torques vary with planet mass as well
@@ -213,7 +213,7 @@ for outward migration. Hence, for \(q>1\), we set \(T_{m,i}> 0\); for
 and \(T_{e,0}=1000~\rm{years}\).
 
 \subsection{Resonant Hamiltonian}
-\label{sec:org1eb2718}
+\label{sec:orge6a1426}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
@@ -297,7 +297,7 @@ secular terms play an important role, and so we include them in our
 analysis.
 
 \subsection{Equilibrium}
-\label{sec:org27db7c6}
+\label{sec:org063a080}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
@@ -416,7 +416,7 @@ ratio \(T_{e,1}/T_{e,2}\) to test whether they can
 produce apsidal alignment.
 
 \subsection{Eccentricity damping timescales}
-\label{sec:org6038872}
+\label{sec:orgf14be5f}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
@@ -477,7 +477,7 @@ convergent. Variations in the eccentricity damping ratio cannot
 account for apsidal alignment.  
 
 \section{Apsidal Alignment}
-\label{sec:org76d63cc}
+\label{sec:org4532f5f}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi\approx 180^\circ\) due to their equilibrium
 values being close to \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
@@ -486,7 +486,7 @@ model.  In order to match this observation, either \(\theta_1\),
 \(\theta_2\), or both angles must circulate.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org77f69f2}
+\label{sec:org059c1bd}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{driving-example-h-0.03-Tw0-1000}.png}
@@ -522,7 +522,7 @@ system appears to be caught in a different type of resonance which we
 will study in the following subsection.
 
 \subsection{Reducing the Hamiltonian}
-\label{sec:org1f95063}
+\label{sec:org6c63bdb}
 \begin{figure}
     \centering
     \includegraphics[width=0.4\textwidth]{{./Rhat-grid}.png}
@@ -552,90 +552,7 @@ do not include \(H_{\rm sec}\) in this analysis because it is second
 order in eccentricities.  Consider the phase space configuration
 \(\v\xi=(\theta_1, \theta_2, \Gamma_1, \Gamma_2)\), where the \(\Gamma_i\)
 are the \(\text{Poincair\'e}\) momenta
-\(\Gamma_i=\Lambda_i(1-\sqrt{1-e_i^2})\).  It can be shown
-\cite[e.g.][]{murray_solar_2000} that \(\theta_i\) and \(\Gamma_i\) form
-a conjugate pair.  Let \(\v X\) be the cartesian formulation
-\begin{align}
-  \v X &= (x_1, x_2, X_1, X_2)\nonumber\\
-  &= (\sqrt{\Gamma_1}\cos\theta_1, \sqrt{\Gamma_2}\cos\theta_2,
-    \sqrt{\Gamma_1}\sin\theta_1, \sqrt{\Gamma_2}\sin\theta_2)
-\end{align}
-
-\noindent 
-Define
-\begin{align}
-    g_1 &= f_1\sqrt{\frac{2}{\Lambda_1}} \\
-    g_2 &= f_2\sqrt{\frac{2}{\Lambda_2}} \\
-\end{align}
-
-\noindent and
-\begin{align}
-  \mathcal{A} = \frac{1}{g_1\sqrt{g_1^2+g_2^2}}.
-\end{align}
-
-\noindent The resonant Hamiltonian becomes
-\begin{align}
-  H_{\rm res} \propto g_1 x_1 + g_2 x_2
-\end{align}
-
-Let \(\v \Psi\) be the
-counter-clockwise rotation by angle \(\psi\) defined by \(\tan\psi=
-f_2/f_1\):
-\begin{align}
-  \v \Psi =  \mathcal{A}
-  \begin{pmatrix}
-    f_1 & f_2 \\
-    -f_2 & f_1 
-  \end{pmatrix}.
-\end{align}
-
-\noindent The block matrix
-\begin{align}
-  \v M =
-  \begin{pmatrix}
-    \v \Psi & \v 0 \\
-    \v 0 & \v \Psi
-  \end{pmatrix}
-\end{align}
-
-\noindent is symplectic \cite{goldstein_classical_2000}.  The
-coefficients \(g_i\) depend weakly on the semimajor axis ratio \(\alpha\),
-and so \(\v M\) only represents a canonical transformation if \(\alpha\)
-is stationary or varying slowly, which is a good approximation for the
-systems considered in this paper.
-
-Define the coordinates
-\begin{align}
-   \v W = (w_1, w_2, W_1, W_2) \equiv \v M \v X.
-\end{align}
-
-\noindent so that \(w_1 = (g_1 x_1 + g_2 x_2)\).
-Hence, \(H_{\rm res}\propto w_1\) only, and so \(W_2\) is
-constant and the system is integrable.
-
-Finally, we revert the \(\v W\) set back to polar coordinates. The new
-resonance angle is
-\begin{align}
-\label{hattheta}
-  \tan\hat{\theta} = \frac{f_1 e_1\sin(\theta_1)
-  + f_2e_2\sin(\theta_2)}{f_1e_1\cos(\theta_1) + f_2e_2\cos(\theta_2)}.
-\end{align}
-
-\noindent
-It can be shown that
-\begin{equation}
-  \hat{\theta} = (j+1)\lambda_2-j\lambda_1
-  - \hat\varpi,
-\end{equation}
-
-\noindent
-where
-\begin{equation}
-\hat\varpi = \frac{\abs{f_1} e_1\sin(\varpi_1) -
-  \abs{f_2}e_2\sin(\varpi_2)} {\abs{f_1}e_1\cos(\varpi_1) -
-  \abs{f_2}e_2\cos(\varpi_2)}
-\end{equation}
-
+\(\Gamma_i=\Lambda_i(1-\sqrt{1-e_i^2})\).
 \noindent Define \(\v{\hat e} = \abs{f_1}\v e_1 - \abs{f_2}\v
 e_2\), where \(\v e_i\) is the Runge-Lenz vector, i.e. the vector with
 magnitude \(e_i\) in the direction of perihelion.  The conjugate
@@ -654,7 +571,7 @@ momentum \(\hat\Gamma\) is
 \end{align}
 
 \subsection{Phase space paths}
-\label{sec:org281882f}
+\label{sec:orga46b971}
 \begin{figure*}
   \centering
   \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
@@ -680,19 +597,21 @@ The two apsidally aligned cases therefore end up in analagous phase space config
 through different dynamical paths.
 
 \section{Conclusion}
-\label{sec:org1b1d6cb}
+\label{sec:orge6def69}
 
 \clearpage
 
-\section{Appendix}
-\label{sec:org054391e}
-\subsection{Hamiltonian}
-\label{sec:orge004f4e}
+\onecolumn
+\appendix
+\section{Reducing the Hamiltonian to a single degree of freedom}
+\label{sec:org4e752d9}
+\subsection{Scaling the Hamiltonian}
+\label{sec:org383f86b}
 The Hamiltonian for two comparable mass planets near a first order \(j:j+1\)
 resonance is
 \begin{align}
-  H = & -\frac{G M m_{1}}{2 a_{1}}-\frac{G M m_{2}}{2 a_{2}}\nonumber\\
-                & -\frac{G m_{1} m_{2}}{a_{2}}
+  H = -\frac{G M m_{1}}{2 a_{1}}-\frac{G M m_{2}}{2 a_{2}}
+                 -\frac{G m_{1} m_{2}}{a_{2}}
                   \left[
                   f_{1} e_{1} \cos \theta_{1} 
                   +f_{2} e_{2} \cos \theta_{2}\right].
@@ -706,9 +625,9 @@ tot} \sqrt{GMa_0}\).  The dimensionless Hamiltonian \(\mathcal{H}\) is
 then
 \begin{align}
   \mathcal{H} \equiv \frac{H}{H_0}
-  &= -\frac{m_1/m_{\rm tot}}{2a_1/a_0}
-    -\frac{m_2/m_{\rm tot}}{2a_2/a_0}\nonumber\\
-  &-\frac{\tilde m}{M (a_2/a_0)}\left[
+  = -\frac{m_1/m_{\rm tot}}{2a_1/a_0}
+    -\frac{m_2/m_{\rm tot}}{2a_2/a_0}
+  -\frac{\tilde m}{M (a_2/a_0)}\left[
     f_1e_1\cos\theta_1+f_2e_2\cos\theta_2
     \right],
 \end{align}
@@ -730,9 +649,9 @@ Restoring \(\mathcal{H}\) with these momenta, we have
 \begin{align}
 \label{eq:H_1}
   \mathcal{H}
-  &= -\frac{q^3}{2(1+q)^3 \Lambda_1^2}
-    - \frac{1}{2(1+q)^3\Lambda_2^2} \nonumber\\
-  & - \frac{\tilde\mu}{(1+q)^2 \Lambda_2^2}\left[
+  = -\frac{q^3}{2(1+q)^3 \Lambda_1^2}
+    - \frac{1}{2(1+q)^3\Lambda_2^2}
+   - \frac{\tilde\mu}{(1+q)^2 \Lambda_2^2}\left[
     f_1\sqrt{\frac{2\Gamma_1}{\Lambda_1}}\cos\theta_1
     +f_2\sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos\theta_2
     \right],
@@ -744,7 +663,8 @@ written, the \(\theta_i\) are not conjugate to \(\Lambda_i\) or
 \(\Gamma_i\).  For the limiting cases of \(q\to \infty\) (\(m_2=0\)) or
 \(q\to 0\) (\(m_1=0\)), \(\mathcal{H}\) reduces to the standard test
 particle Hamiltonian found in \citet{murray_solar_2000}.
-
+\subsection{Reducing rotation}
+\label{sec:org6882673}
 Now, we would like to find the momenta conjugate to the fast
 coordinates \(\lambda_i\) while keeping the slowly varying \(\theta_i\).
 A canonical transformation preserves the form
@@ -785,8 +705,8 @@ where
 \begin{align}
   \label{eq:H01}
   \mathcal{H}_0(\Gamma_1+\Gamma_2; J_1, J_2, q)
-  =& -\frac{q^3}{2(1+q)^3(J_1-j(\Gamma_1+\Gamma_2))^2}\nonumber\\
-  &-\frac{1}{2(1+q)^3(J_2+(j+1)(\Gamma_1+\Gamma_2))^2} 
+  = -\frac{q^3}{2(1+q)^3(J_1-j(\Gamma_1+\Gamma_2))^2}
+  -\frac{1}{2(1+q)^3(J_2+(j+1)(\Gamma_1+\Gamma_2))^2} 
 \end{align}
 
 \noindent
@@ -794,10 +714,10 @@ and
 \begin{align}
   \label{eq:Hpert1}
   \mathcal{H}_{\rm pert}(\Gamma_1,\Gamma_2; J_1, J_2, q)
-  &= -\frac{\tilde\mu}{(1+q)^2(J_2+(j+1)(\Gamma_1+\Gamma_2))^2}\nonumber\\
-  &\times\left[
-    f_1\sqrt{\frac{2\Gamma_1}{J_1 - j(\Gamma_1+\Gamma_2)}}\cos\theta_1\right.\nonumber\\
-  &\quad\quad\left.+f_2\sqrt{\frac{2\Gamma_2}{J_2 + (j+1)(\Gamma_1+\Gamma_2)}}\cos\theta_2
+  = -\frac{\tilde\mu}{(1+q)^2(J_2+(j+1)(\Gamma_1+\Gamma_2))^2}
+  \left[
+    f_1\sqrt{\frac{2\Gamma_1}{J_1 - j(\Gamma_1+\Gamma_2)}}\cos\theta_1
+  +f_2\sqrt{\frac{2\Gamma_2}{J_2 + (j+1)(\Gamma_1+\Gamma_2)}}\cos\theta_2
     \right].
 \end{align}
 
@@ -807,12 +727,12 @@ eccentricities.  Under this assumption, we may drop terms smaller than
 \begin{align}
   \label{eq:H02}
   \mathcal{H}_0
-  =& -\frac{1}{(1+q)^3}\left[
-     \frac{q^3}{2\Lambda_1^2} + \frac{1}{2\Lambda_2^2}\right. \nonumber\\
-   &+ 2\left(
+  = -\frac{1}{(1+q)^3}\left[
+     \frac{q^3}{2\Lambda_1^2} + \frac{1}{2\Lambda_2^2}
+   + 2\left(
      \frac{jq^3}{\Lambda_1^3} - \frac{(j+1)}{\Lambda_2^3}
-     \right)(\Gamma_1+\Gamma_2)\nonumber\\
-   &-\frac32\left.\left( 
+     \right)(\Gamma_1+\Gamma_2)
+   -\frac32\left( 
      \frac{jq^3}{\Lambda_1^4} - \frac{(j+1)}{\Lambda_2^4}\right)
      (\Gamma_1+\Gamma_2)^2
      \right]
@@ -824,10 +744,10 @@ and equation \eqref{eq:Hpert1} reduces to its original form
 \label{eq:H_3}
   \mathcal{H}_{\rm pert}
   =-\frac{\tilde\mu}{(1+q)^2\Lambda_2^2}
-    &\left[
-    f_1\sqrt{\frac{2\Gamma_1}{\Lambda_1}}\cos\theta_1\right.\nonumber\\
-  &+\left.f_2\sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos\theta_2
-    \right].
+  \left[
+  f_1\sqrt{\frac{2\Gamma_1}{\Lambda_1}}\cos\theta_1
+  +f_2\sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos\theta_2
+  \right].
 \end{align}
 
 \noindent Absent any dissipation, \(\Lambda_1\) and
@@ -837,29 +757,192 @@ leaving only the terms which include factors of \((\Gamma_1+\Gamma_2)\):
 \begin{align}
   \label{eq:H03}
   \mathcal{H}_0
-  =& -\frac{1}{(1+q)^3}\left[
+  = -\frac{1}{(1+q)^3}\left[
    2\left(
      \frac{jq^3}{\Lambda_1^3} - \frac{(j+1)}{\Lambda_2^3}
-     \right)(\Gamma_1+\Gamma_2)\nonumber\\
-   &-\frac32\left.\left( 
+     \right)(\Gamma_1+\Gamma_2)
+   -\frac32\left( 
      \frac{jq^3}{\Lambda_1^4} - \frac{(j+1)}{\Lambda_2^4}\right)
      (\Gamma_1+\Gamma_2)^2
-     \right]
+     \right].
 \end{align}
 
-\note{
-Now write out reducing rotation of $\mathcal H_{\rm pert}$
-to turn into $\hat\theta\longleftrightarrow\hat\Gamma$ 1 dof
-}
+Let \(\v X\) be the cartesian formulation
+\begin{align}
+  \v X &= (x_1, x_2, X_1, X_2)\nonumber\\
+  &= (\sqrt{\Gamma_1}\cos\theta_1, \sqrt{\Gamma_2}\cos\theta_2,
+    \sqrt{\Gamma_1}\sin\theta_1, \sqrt{\Gamma_2}\sin\theta_2)
+\end{align}
+
+\noindent 
+Define
+\begin{align}
+    g_1 &= f_1\sqrt{\frac{2}{\Lambda_1}} \\
+    g_2 &= f_2\sqrt{\frac{2}{\Lambda_2}} \\
+\end{align}
+
+\noindent and
+\begin{align}
+  \mathcal{A} = \frac{1}{g_1\sqrt{g_1^2+g_2^2}}.
+\end{align}
+
+\noindent The perturbation Hamiltonian \(\mathcal H_{\rm
+pert}\) becomes
+\begin{align}
+  \mathcal H_{\rm pert} \propto g_1 x_1 + g_2 x_2
+\end{align}
+
+\noindent
+Let \(\v \Psi\) be the
+counter-clockwise rotation by angle \(\psi\) defined by \(\tan\psi=
+g_2/g_1\):
+\begin{align}
+  \v \Psi =  \mathcal{A}
+  \begin{pmatrix}
+    g_1 & g_2 \\
+    -g_2 & g_1 
+  \end{pmatrix}.
+\end{align}
+
+\noindent The block matrix
+\begin{align}
+  \v M =
+  \begin{pmatrix}
+    \v \Psi & \v 0 \\
+    \v 0 & \v \Psi
+  \end{pmatrix}
+\end{align}
+
+\noindent is symplectic \citep{goldstein_classical_2000}.
+The coefficients \(g_i\) depend weakly on the semimajor axis ratio
+\(\alpha\), and so \(\v M\) only represents a canonical transformation if
+\(\alpha\) is stationary or varying slowly, which is a good
+approximation for the systems considered in this paper.
+
+Define the coordinates
+\begin{align}
+   \v W = (w_1, w_2, W_1, W_2) \equiv \v M \v X.
+\end{align}
+
+\noindent so that \(w_1 = (g_1 x_1 + g_2 x_2)\).  Hence,
+\(\mathcal H_{\rm pert}\propto w_1\) only.  Finally, we revert the \(\v
+W\) set back to polar coordinates
+\((\hat\theta_1,\hat\theta_2,S_1,S_2)\). The new resonance angle is
+given by the equation
+\begin{align}
+\label{hattheta}
+  \tan\hat{\theta}_1 = \frac{W_1}{w_1} = \frac{f_1 e_1\sin(\theta_1)
+  + f_2e_2\sin(\theta_2)}{f_1e_1\cos(\theta_1) + f_2e_2\cos(\theta_2)}.
+\end{align}
+
+\noindent
+and is conjugate to the momentum
+\begin{align}
+  S_1 = w_1^2 + W_1^2 = f_1^2e_1^2
+  + 2f_1f_2\cos(\varpi_1 - \varpi_2) + f_2^2e_2^2.
+\end{align}
+
+\noindent
+It can be shown that
+\begin{equation}
+  \hat{\theta}_1 = (j+1)\lambda_2-j\lambda_1
+  - \hat\varpi,
+\end{equation}
+
+\noindent
+where
+\begin{equation}
+\hat\varpi = \frac{\abs{f_1} e_1\sin(\varpi_1) -
+  \abs{f_2}e_2\sin(\varpi_2)} {\abs{f_1}e_1\cos(\varpi_1) -
+  \abs{f_2}e_2\cos(\varpi_2)}
+\end{equation}
+
+\noindent
+We note that the other angle, \(\hat\theta_2\),
+is cyclic, and so its conjugate momentum \(S_2\) is constant:
+\begin{align}
+  S_2 = w_2^2 + W_2^2 = q\sqrt{\alpha}f_2^2e_1^2
+-2f_1f_2e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2
+,
+\end{align}
+
+\noindent
+where \(\alpha=a_1/a_2\) is the ratio of semimajor axes.
+The sum
+\begin{align}
+  \Gamma_1 +\Gamma_2 = x_1^2+x_2^2 + X_1^2 + X_2^2
+  = w_1^2+w_2^2 + W_1^2 + W_2^2 = S_1 + S_2
+\end{align}
+
+\noindent
+is preserved, and so the form of \(\mathcal H_0(\Gamma_1+\Gamma_2)\)
+is preserved as well.
+
+From here on out, we will denote \(\hat\theta_1\) and \(S_1\) as
+\(\hat\theta\) and \(\hat S\) to indicate that they are the single pair of
+dynamical variables.  We could just as well have carried out this
+analysis with \(\hat\theta_2\) and \(S_2\), but \(\hat S\) has the following
+geometric interpretation:
+\begin{align}
+  \hat S = \left\lvert \abs{f_1}\mathbf{e}_1 - \abs{f_2}\mathbf{e}_2\right\rvert^2,
+\end{align}
+
+\noindent
+where the \(\mathbf{e}_i\) are the Runge-Lenz vectors with magnitude
+\(e_i\) in the direction of \(\varpi_i\).  
+
+Altogether, we arrive at the following Hamiltonian after
+dropping constant terms:
+\begin{align}
+  \label{eq:HShat}\mathcal H(\hat \theta, \hat S) &= \mathcal H_0(\hat S) + \mathcal H_{\rm pert}(\hat \theta, \hat S) \\
+  \mathcal H_0
+  &= \left( 3\mathcal NS_2 -2\mathcal M\right) \hat S
+    + \frac32 \mathcal N \hat S^2 \\
+  \mathcal H_{\rm pert}
+  &= - q\tilde\mu\mathcal K\sqrt{\hat S}\cos\hat\theta
+\end{align}
+
+\noindent This form is valid for \(q\in (0,\infty)\), and is
+naturally extended to the case of an outer test particle by taking the
+limit \(q\to\infty\).  The extra factor of \(q\) in front of \(\mathcal K\)
+is so \(q\tilde\mu\) reduces to \(q\tilde\mu\to q\mu_2 \to \mu_1\) in the
+\(m_2=0\) test particle limit.  The coefficients in this case are given
+by
+\begin{align}
+  \mathcal M
+  &= \frac{q^3}{(1+q)^3}\frac{j-(j+1)\alpha^{3/2}}{\Lambda_1^3}\\
+  \mathcal N
+  &= \frac{q^3}{(1+q)^3}\left(
+    \frac{j}{\Lambda_1} - \frac{(j+1)\alpha^{3/2}}{\Lambda_2}
+    \right)\frac{1}{\Lambda_1^3}\\
+  \mathcal K
+  &= \frac{q^2}{(1+q)^2}
+    \frac{\alpha^{3/2}\Lambda_2}{f_1^2\sqrt{1+\alpha^{1/2}f_1^2/f_2^2}\Lambda_1^{5/2}}.\\
+\end{align}
+
+A similar representation of \(\mathcal H, \mathcal M\), \(\mathcal N\),
+and \(\mathcal{K}\) also exists for which the limit \(q\to 0\) converges
+to the case of an inner test particle by exchanging the necessary
+factors of \(q\) for \(\Lambda_1/\Lambda_2 = q\sqrt\alpha\).
+
+
+\subsection{Second fundamnetal model of resonance}
+\label{sec:orgefbe099}
+Now, all that is left to do is to rescale equation \eqref{eq:HShat}
+into what is referred to as
+the "second fundamental model of resonance" \citep{henrard_second_1983}.
+
+
 
 \note{
 Now transform into $\hat R$
 }
 
 
-\subsection{Elliptic restricted 3 body problem}
-\label{sec:org23ac44d}
+\section{Elliptic restricted 3 body problem}
+\label{sec:org6e53fa0}
 
+\twocolumn
 \bibliography{references}
 \bibliographystyle{mnras}
 \end{document}

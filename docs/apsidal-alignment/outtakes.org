@@ -205,3 +205,19 @@ Kep} + H_{\rm res}$ in eqref:hamiltonian as a whole, i.e. considering
 $m_1$ and $m_2$ simultaneously, there is one resonance angle
 $\hat\theta$ that describes the system's dynamics which may operate
 separately from $\theta_1$ and $\theta_2$.
+
+* coefficients
+#+BEGIN_SRC latex
+  \begin{align}
+    \mathcal M
+    &= \frac{1}{(1+q)^3}\left(
+      \frac{jq^3}{\Lambda_1^3} - \frac{(j+1)}{\Lambda_2^3}
+      \right)\\
+    \mathcal N
+    &= \frac{1}{(1+q)^3}\left(
+      \frac{jq^3}{\Lambda_1^4} - \frac{(j+1)}{\Lambda_2^4}
+      \right).\\
+    \mathcal K
+    &= \frac{1}{(1+q)^2\Lambda_2^2}\sqrt{\frac{\Lambda_1}{2}}\frac{1}{f_1\sqrt{f_1^2+\alpha^{1/2}f_2^2}}
+  \end{align}
+#+END_SRC
