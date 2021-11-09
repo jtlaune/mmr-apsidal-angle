@@ -1780,6 +1780,7 @@
 :END:
 
 ** e vectors
+*** in e1 ref frame
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   def plotorbit(plot_iter, cuts, fig, ax):
       os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
@@ -1895,34 +1896,22 @@
           mu1 = MU1[0]
           mu2 = MU2[0]
           mutilde = mu1*mu2/(mu1+mu2)
-          e2 = e2/q**(1./3)
-          ehat = ehat*(mu2/mutilde/q)**(1./3)
+          e1 = e1/mu2**(1./3)
+          e2 = e2/mu1**(1./3)
+          #ehat = ehat*(mu2/mutilde/q)**(1./3)
+          ehat = ehat/(q*mutilde)**(1./3)
   
-          #if cut_iter == cuts[0]:
-          #    ax.scatter(e1*(-f1)*cos(pi),e1*(-f1)*sin(pi),
-          #               c="k",label=r"$\mathbf{e_1}$",zorder=2)
-          #    ax.scatter(e2*f2*cos(pi+Dpoms),e2*f2*sin(pi+Dpoms),
-          #               c="r",label=r"$\mathbf{e_2}$",zorder=1)
-          #    ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
-          #               c="g",label=r"$\mathbf{\hat\theta}$",zorder=0)
-          #else:
-          #    ax.scatter(e1*(-f1)*cos(pi),e1*(-f1)*sin(pi),
-          #               c="k",zorder=2)
-          #    ax.scatter(e2*f2*cos(pi+Dpoms),e2*f2*sin(pi+Dpoms),
-          #               c="r",zorder=1)
-          #    ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
-          #               c="g",zorder=0)
           if cut_iter == cuts[0]:
-              ax.scatter(e1*(-f1)*cos(pi),e1*(-f1)*sin(pi),
+              ax.scatter(e1*cos(pi),e1*sin(pi),
                          c="k",label=r"$\mathbf{e_1}$",zorder=2)
-              ax.scatter(e2*f2*cos(pi+Dpoms),e2*f2*sin(pi+Dpoms),
+              ax.scatter(e2*cos(pi+Dpoms),e2*sin(pi+Dpoms),
                          c="r",label=r"$\mathbf{e_2}$",zorder=1)
               ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
-                         c="g",label=r"$\mathbf{\hat\theta}$",zorder=0)
+                         c="g",label=r"$\mathbf{\hat e}$",zorder=0)
           else:
-              ax.scatter(e1*(-f1)*cos(pi),e1*(-f1)*sin(pi),
+              ax.scatter(e1*cos(pi),e1*sin(pi),
                          c="k",zorder=2)
-              ax.scatter(e2*f2*cos(pi+Dpoms),e2*f2*sin(pi+Dpoms),
+              ax.scatter(e2*cos(pi+Dpoms),e2*sin(pi+Dpoms),
                          c="r",zorder=1)
               ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
                          c="g",zorder=0)
@@ -1981,8 +1970,8 @@
   ax[0,0].legend(loc="upper left")
   fig.suptitle(r"$\mathbf{e}$ vectors in $\mathbf{e_1}$ rest frame")
   
-  ax[1,0].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--")
-  ax[1,1].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--")
+  ax[1,0].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
+  ax[1,1].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
   #ax[2,0].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
   #ax[2,1].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
   
@@ -2012,7 +2001,244 @@
   ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
   33941.2386344164 38183.89346371845
 #+end_example
-[[file:./.ob-jupyter/0a5a3ee863cf706b65cdf76167ce145b01c0f240.png]]
+[[file:./.ob-jupyter/4fd580ac7879eb85694cda62b80ee1afd6779953.png]]
+:END:
+*** in e hat ref frame
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def plotorbit(plot_iter, cuts, fig, ax):
+      os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
+      #################
+      # CONFIGURATION #
+      #################
+      h = 0.03
+      j = 2
+      a0 = 0.7
+      qRun = 16
+      Nqs = 16
+      qs = np.ones(Nqs)*2.
+      overwrite = True
+      totmass = 1.0e-4
+      Tw0 = 1000
+      TeRatios = sqrt(qs)
+  
+      ######################
+      # Varying parameters #
+      ######################
+      E1_0 = np.ones(Nqs)*0.001
+      E2_0 = np.ones(Nqs)*0.001
+  
+      e1ds = np.linspace(0,0.3,4)
+      e2ds = np.linspace(0,0.3,4)
+  
+      E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
+      E1DS_single = E1DS_single.flatten()
+      E2DS_single = E2DS_single.flatten()
+  
+      E1DS = np.array([])
+      E2DS = np.array([])
+      for i in range(int(Nqs/qRun)):
+          E1DS = np.append(E1DS, E1DS_single)
+          E2DS = np.append(E2DS, E2DS_single)
+      print(len(E1DS))
+  
+      G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+      G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+  
+      ####################
+      # THREADING ARRAYS #
+      ####################
+      HS = np.ones(Nqs)*h
+      JS = np.ones(Nqs)*j
+      A0S = np.ones(Nqs)*a0
+      QS = qs
+      MU2 = totmass/(1+QS)
+      MU1 = totmass - MU2
+  
+      TE_FUNCS = np.zeros(Nqs)
+      TE1 = Tw0/TeRatios
+      TE2 = Tw0*TeRatios
+      #TM1 = np.infty*np.ones(Nqs)
+      TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+      TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+      TS = 30.*np.maximum(TE1, TE2)
+      #############################################################
+      # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+      # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+      #############################################################
+      cutoff_frac = 1.0
+      CUTOFFS = TS*cutoff_frac
+      ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
+      NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+                        for i, qit in enumerate(QS)])
+  
+      DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+                              in range(Nqs)])
+      DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
+  
+      fname = os.path.join(DIRNAMES[plot_iter], NAMES[plot_iter]+".npz")
+      e1d = E1DS[plot_iter]
+      e2d = E2DS[plot_iter]
+      print(fname)
+      data = np.load(fname)
+      teval  = data["teval"]
+      print(teval[cuts[0]], teval[cuts[-1]])
+      for cut_iter in cuts:
+          data = np.load(fname)
+          teval  = data["teval"][cut_iter]
+          theta = data["thetap"][cut_iter]
+          a1     = data["a1"][cut_iter]
+          a2     = data["a2"][cut_iter]
+          e1     = data["e1"][cut_iter]
+          e2     = data["e2"][cut_iter]
+          g1     = data["g1"][cut_iter]
+          g2     = data["g2"][cut_iter]
+          L1     = data["L1"][cut_iter]
+          L2     = data["L2"][cut_iter]
+          x1     = data["x1"][cut_iter]
+          y1     = data["y1"][cut_iter]
+          x2     = data["x2"][cut_iter]
+          y2     = data["y2"][cut_iter]
+  
+          #xi_avg = np.average(x1[it:]-x2[it:])
+          #yi_avg = np.average(y1[it:]-y2[it:])
+          Dpoms = g1-g2
+  
+          f1 = A(a1/a2, j)
+          f2 = B(a1/a2, j)
+          theta1 = (theta + g1) % (2*np.pi)
+          theta2 = (theta + g2) % (2*np.pi)
+          hattheta1s = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                                e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  
+          hatgamma1 = hattheta1s-theta
+          Rhat = np.abs(f1*e1**2+f2*e2**2+f1*f2*e1*e2*cos(Dpoms))
+          ehat = np.sqrt(Rhat)
+  
+          ######################
+          # scaling relations? #
+          #####################
+          #q = QS[0]
+          #mu1 = MU1[0]
+          #mu2 = MU2[0]
+          #mutilde = mu1*mu2/(mu1+mu2)
+          #e2 = e2/q**(1./3)
+          ##ehat = ehat*(mu2/mutilde/q)**(1./3)
+          #ehat = ehat*(mu2/mutilde)**(1./3)
+  
+          if cut_iter == cuts[0]:
+              ax.scatter(e1*cos(g1-hatgamma1),e1*sin(g1-hatgamma1),
+                         c="k",label=r"$\mathbf{e_1}$",zorder=3)
+              ax.scatter(e2*cos(g2-hatgamma1),e2*sin(g2-hatgamma1),
+                         c="r",label=r"$\mathbf{e_2}$",zorder=2)
+              ax.scatter(ehat*cos(0),ehat*sin(0),
+                         c="g",label=r"$\mathbf{\hat e}$",zorder=1)
+              if e1d > 0:
+                  ax.scatter(e1d*cos(g1-hatgamma1),e1d*sin(g1-hatgamma1),
+                             c="b", zorder=3)
+              if e2d > 0:
+                  ax.scatter(e2d*cos(g2-hatgamma1),e2d*sin(g2-hatgamma1),
+                             c="orange",zorder=3)
+          else:
+              ax.scatter(e1*cos(g1-hatgamma1),e1*sin(g1-hatgamma1),
+                         c="k",zorder=3)
+              ax.scatter(e1d*cos(g1-hatgamma1),e1d*sin(g1-hatgamma1),
+                         c="b",zorder=3)
+              ax.scatter(e2*cos(g2-hatgamma1),e2*sin(g2-hatgamma1),
+                         c="r",zorder=2)
+              ax.scatter(ehat*cos(0),ehat*sin(0),
+                         c="g",zorder=1)
+              if e1d > 0:
+                  ax.scatter(e1d*cos(g1-hatgamma1),e1d*sin(g1-hatgamma1),
+                             c="b", zorder=3)
+              if e2d > 0:
+                  ax.scatter(e2d*cos(g2-hatgamma1),e2d*sin(g2-hatgamma1),
+                             c="orange",zorder=3)
+  
+          #lambdas = np.linspace(0,2*np.pi,1000)
+          #radii1 = a1*(1-e1**2)/(1-e1*cos(lambdas))
+          #print(e1,e2)
+          #radii2 = a2*(1-e2**2)/(1-e2*cos(lambdas-Dpoms))
+          #ax.scatter(radii1*cos(lambdas), radii1*sin(lambdas), s=0.01, c="r")
+          #ax.scatter(radii2*cos(lambdas), radii2*sin(lambdas), s=0.01, c="k")
+      #ax.set_xlim(-1.5,1.5)
+      #ax.set_ylim(-1.5,1.5)
+      ax.axhline(y=0,ls="--",c="k")
+      ax.axvline(x=0,ls="--",c="k")
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig, ax = plt.subplots(3,2,figsize=(10,15))
+  snaps = np.linspace(0.0,0.003,100)
+  lengs = (snaps*300000).astype(int)
+  plotorbit(0,lengs, fig, ax[0,0])
+  snaps = np.linspace(0.8,0.9,100)
+  lengs = (snaps*300000).astype(int)
+  plotorbit(0,lengs, fig, ax[0,1])
+  
+  snaps = np.linspace(0.0,0.003,100)
+  lengs = (snaps*300000).astype(int)
+  plotorbit(1,lengs, fig, ax[1,0])
+  snaps = np.linspace(0.8,0.9,100)
+  lengs = (snaps*300000).astype(int)
+  plotorbit(1,lengs, fig, ax[1,1])
+  
+  snaps = np.linspace(0.0,0.003,100)
+  lengs = (snaps*300000).astype(int)
+  plotorbit(8,lengs, fig, ax[2,0])
+  snaps = np.linspace(0.8,0.9,100)
+  lengs = (snaps*300000).astype(int)
+  plotorbit(8,lengs, fig, ax[2,1])
+  
+  
+  for axi in ax.flatten():
+      axi.set_xlim(-0.2,0.2)
+      axi.set_ylim(-0.2,0.2)
+      axi.set_ylabel(r"$e\sin\gamma$")
+      axi.set_xlabel(r"$e\cos\gamma$")
+  fig.subplots_adjust(wspace=0.3,hspace=0.4)
+  ax[0,0].text(0.01,0.15,r"$e_{1d}=e_{2d}=0$")
+  ax[1,0].text(0.01,0.1,r"$e_{1d}=0.1$"+"\n"+ r"$e_{2d}=0$")
+  ax[2,0].text(0.01,0.1,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.1$")
+  
+  ax[0,0].text(-0.17,-.17,r"$t=0-127$ orbits",c="r")
+  ax[0,1].text(-0.17,-.17,r"$t=34-38,000$ orbits",c="r")
+  
+  ax[0,0].legend(loc="upper left")
+  fig.suptitle(r"$\mathbf{e}$ vectors in $\mathbf{e_1}$ rest frame")
+  
+  #ax[1,0].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True,zorder=0)
+  #ax[1,1].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True,zorder=0)
+  #ax[2,0].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
+  #ax[2,1].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+begin_example
+  16
+  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.0.npz
+  0.0 127.2796448790615
+  16
+  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.0.npz
+  33941.2386344164 38183.89346371845
+  16
+  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.1-e2d-0.0.npz
+  0.0 127.2796448790615
+  16
+  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.1-e2d-0.0.npz
+  33941.2386344164 38183.89346371845
+  16
+  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
+  0.0 127.2796448790615
+  16
+  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
+  33941.2386344164 38183.89346371845
+#+end_example
+[[file:./.ob-jupyter/0388510eaf416678549044beec3a9f0207ad3dcf.png]]
 :END:
 * apsidal alignment explanation
 ** S2 conserved quantity
@@ -2086,7 +2312,7 @@
                           in range(Nqs)])
   DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
-  i = 5
+  i = 1
   dirname = DIRNAMES[i]
   name = NAMES[i]+".npz"
   print(name)
@@ -2118,19 +2344,39 @@
   hattheta1 = hattheta1+2*pi*(hattheta1<0.)
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
   
-  q = 2
+  q = QS[i]
+  Dpom = g2-g1
   S2 = f1**2*e1**2*q*sqrt(alpha) - 2*f1*f2*e1*e2*cos(g1-g2) + f2**2*e2**2/q/sqrt(alpha)
-  fig, ax = plt.subplots(2)
-  ax[0].scatter(teval, S2)
-  ax[1].scatter(teval, )
+  fig, ax = plt.subplots(4)
+  cosDpom = ((1/q/sqrt(alpha) - q*sqrt(alpha)*np.abs(f2/f1))
+             / (1-np.abs(f2/f1)))
+  e1d = E1DS[i]
+  e2d = E2DS[i]
+  Te1 = TE1[i]
+  Te2 = TE2[i]
+  coeffe1 = e1**2*(e1-e1d)/Te1
+  coeffe2 = e2**2*(e2-e2d)/Te2
+  arg1 = (q**2*alpha*np.abs(f2/f1)+e2/e1*q*sqrt(alpha)*cos(Dpom))
+  arg2 = (np.abs(f2/f1)*q*sqrt(alpha)*e1/e2*cos(Dpom)+1)
+  S2dot1 = coeffe1*arg1
+  S2dot2 = coeffe2*arg2
+  ax[0].plot(teval, arg1)
+  ax[0].plot(teval, arg2)
+  ax[0].set_ylim((-10,10))
+  ax[1].plot(teval, coeffe1)
+  ax[1].plot(teval, coeffe2)
+  ax[2].plot(teval, S2dot1)
+  ax[2].plot(teval, S2dot2)
+  ax[3].plot(teval, S2dot1+S2dot2)
+  ax[3].axhline(y=0, ls="--", c="k")
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 : 16
-: e1d-0.1-e2d-0.1.npz
-: <matplotlib.collections.PathCollection at 0x7f0a4fc43c70>
-[[file:./.ob-jupyter/9cb3fff79fac56145c6ed08a3befc11423f08545.png]]
+: e1d-0.1-e2d-0.0.npz
+: <matplotlib.lines.Line2D at 0x7f0a47e4ef10>
+[[file:./.ob-jupyter/536ae8b5e67cefd220c7156afa1d2da0dd395ab0.png]]
 :END:
 
 ** Rhat resonance EOM

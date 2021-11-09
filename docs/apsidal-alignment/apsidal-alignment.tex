@@ -1,4 +1,4 @@
-% Created 2021-11-05 Fri 14:23
+% Created 2021-11-08 Mon 17:39
 % Intended LaTeX compiler: pdflatex
 \documentclass[usenatbib]{mnras}
 \usepackage[utf8]{inputenc}
@@ -61,7 +61,7 @@ $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 \maketitle
 
 \section{Introduction}
-\label{sec:org9e93fef}
+\label{sec:orgaa48864}
 
 Even before the first detection of an exoplanetary system, planets
 were predicted to migrate from their initial position due to
@@ -149,18 +149,18 @@ through resonance capture will offer us an insight into its dynamical
 history as well as a better understanding of the genesis of extrasolar
 orbital configurations.  In this paper, we review the analytically
 simple migration model commonly used in the literature.  In Section
-\ref{sec:org627aea3}, we present the classical picture of resonant capture
+\ref{sec:orgc84e769}, we present the classical picture of resonant capture
 and explore the parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
 conditions which robustly lead to apsidal alignment.  In Section
-\ref{sec:org4532f5f}, we design a toy model which relies on eccentricity
+\ref{sec:orge3bf902}, we design a toy model which relies on eccentricity
 diriving to a finite, non-zero value and argue that it can reproduce
 the apsidal alignment between K2-19b and c. We demonstrate that the
 orbital architecture of K2-19 can be explained by an external force
 which pumps the eccentricities beyond their equilibrium values.
 
 \section{Standard Picture of Resonance Capture}
-\label{sec:org627aea3}
+\label{sec:orgc84e769}
 Planets embedded within a protoplanetary disk interact gravitationally
 with the gas and lose angular momentum, leading to inward migration
 towards the central star.  Disk torques vary with planet mass as well
@@ -213,7 +213,7 @@ for outward migration. Hence, for \(q>1\), we set \(T_{m,i}> 0\); for
 and \(T_{e,0}=1000~\rm{years}\).
 
 \subsection{Resonant Hamiltonian}
-\label{sec:orge6a1426}
+\label{sec:org2308b79}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.1-Tw0-1000}.png}
@@ -297,7 +297,7 @@ secular terms play an important role, and so we include them in our
 analysis.
 
 \subsection{Equilibrium}
-\label{sec:org063a080}
+\label{sec:org0531673}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
@@ -416,7 +416,7 @@ ratio \(T_{e,1}/T_{e,2}\) to test whether they can
 produce apsidal alignment.
 
 \subsection{Eccentricity damping timescales}
-\label{sec:orgf14be5f}
+\label{sec:org55bc868}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.1-Tw0-1000}.png}
@@ -477,7 +477,7 @@ convergent. Variations in the eccentricity damping ratio cannot
 account for apsidal alignment.  
 
 \section{Apsidal Alignment}
-\label{sec:org4532f5f}
+\label{sec:orge3bf902}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi\approx 180^\circ\) due to their equilibrium
 values being close to \(180^\circ\) and \(0^\circ\), respectively.  The apsidally
@@ -486,7 +486,7 @@ model.  In order to match this observation, either \(\theta_1\),
 \(\theta_2\), or both angles must circulate.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org059c1bd}
+\label{sec:org8fb1bd3}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{driving-example-h-0.03-Tw0-1000}.png}
@@ -522,7 +522,7 @@ system appears to be caught in a different type of resonance which we
 will study in the following subsection.
 
 \subsection{Reducing the Hamiltonian}
-\label{sec:org6c63bdb}
+\label{sec:org6ab6dd5}
 \begin{figure}
     \centering
     \includegraphics[width=0.4\textwidth]{{./Rhat-grid}.png}
@@ -538,8 +538,9 @@ resonance \(\hat\theta\) which arises after transforming the system's
 Hamiltonian so that it has only a single degree of freedom.  This
 treatment naturally explains why \(P_2/P_1\) is locked near \(1.5\).
 
-Following \cite{henrard86_reduc_trans_apocen_librat} (or equivalently
-\cite{wisdom_canonical_1986}), we may transform the resonant Hamiltonian
+
+If we assume that the semimajor axis ratio \(\alpha\) is stationary or
+varying adiabatically, we may transform the resonant Hamiltonian
 \(H_{\rm Kep} + H_{\rm res}\) in equation \eqref{hamiltonian} into the
 form
 \begin{equation}
@@ -547,66 +548,91 @@ form
   \hat H(\hat R,\hat\theta) = -3(\delta+1) \hat R + \hat R^2 - 2\sqrt{2\hat R} \cos(\hat\theta)
 \end{equation}
 
-\noindent through a series of rotations in phase space.  We
-do not include \(H_{\rm sec}\) in this analysis because it is second
-order in eccentricities.  Consider the phase space configuration
-\(\v\xi=(\theta_1, \theta_2, \Gamma_1, \Gamma_2)\), where the \(\Gamma_i\)
-are the \(\text{Poincair\'e}\) momenta
-\(\Gamma_i=\Lambda_i(1-\sqrt{1-e_i^2})\).
-\noindent Define \(\v{\hat e} = \abs{f_1}\v e_1 - \abs{f_2}\v
-e_2\), where \(\v e_i\) is the Runge-Lenz vector, i.e. the vector with
-magnitude \(e_i\) in the direction of perihelion.  The conjugate
-momentum \(\hat\Gamma\) is
-\begin{align*}
-\hat\Gamma &= \frac{1}{\mathcal{A}} \norm{\v{\hat e}}\\
-           &= \frac{1}{\mathcal{A}} \sqrt{f_1^2e_1^2 - 2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + f_2^2e_2^2}.
-\end{align*}
+\noindent through a series of rotations in phase space.  For
+the details of these transformations, see Appendix \ref{sec:orge5b2fe8}.  The parameter \(\delta\)
+quantifies the system's depth into resonance.  We do not include
+\(H_{\rm sec}\) in this analysis because it is second order in
+eccentricities and does not qualitatively change the outcome of our
+numerical integrations.
 
-\noindent In the new coordinates,
+Define \(\v{\hat e} = \abs{f_1}\v e_1 -
+\abs{f_2}\v e_2\), where \(\v e_i\) is the Runge-Lenz vector, i.e. the
+vector with magnitude \(e_i\) in the direction of perihelion.  In the
+outer test particle limit where \(e_1\) and \(m_2\) approach 0 and \(q\)
+approaches infinity, the momentum \(\hat R\) is proportional to
 \begin{align}
-  H_{\rm res} = & -\frac{G m_{1} m_{2}}{a_{2}}
-                  \left[
-\hat e \cos \hat\theta
-                  \right]
+\label{eq:R1limit}
+  \hat R \propto \frac{\hat e^2}{q^{2/3}\hat\mu^{2/3}}
+  ;\quad R_2 \equiv \lim_{m_2 \to 0} \hat R
+  \propto  \frac{e_2^2}{\mu_1^{2/3}} .
+\end{align}
+
+\noindent The quantity \(R_1\) is the standard action for the
+circular restricted three-body problem (CR3BP) and is conjugate to the
+angle \(\theta_1\).  In the opposite limit for an inner test particle,
+the action becomes
+\begin{align}
+\label{eq:R2limit}
+  \hat R \propto \frac{q^{2/3}\hat e^2}{\hat\mu^{2/3}}
+  ;\quad R_1 \equiv \lim_{m_1\to 0} \hat R
+  \propto \frac{e_1^2}{\mu_2^{2/3}}.
+\end{align}
+
+\noindent Similarly, \(R_2\) is conjugate to the angle
+\(\theta_2\) in the external CR3BP.
+In our treatment, we will use equation \eqref{eq:R1limit}
+for \(q>1\) and equation \eqref{eq:R2limit} for the
+case \(q<1\) in order to preserve the continuity of the
+action in the appropriate CR3BP limit.
+
+\subsubsection{Conserved quantity}
+\label{sec:org9dfffcc}
+Under the assumption that the semimajor axes are stationary (or slowly
+varying), the Hamiltonian in equation \eqref{hamiltonian} has two
+degrees of freedom (dof): the angles \(\theta_1\) and \(\theta_2\).  By
+transforming this Hamiltonian into the single dof form of equation
+\eqref{hhat} the resonance admits the following conserved quantity:
+\begin{align}
+  \label{eq:s2}
+  S_2 = q\sqrt{\alpha}f_2^2e_1^2
++2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2.
+\end{align}
+
+By enforcing \(dS_2/dt = 0\) with \(d\alpha/dt \approx 0\),
+we arrive at the following equilibrium condition:
+\begin{align}
+  e_1^2&\left(\frac{e_1-e_{1\rm d}}{T_{e,1}}\right)
+  \left[
+  q^2\alpha\abs*{\frac{f_2}{f_1}}
+  + \frac{e_2}{e_1}q\sqrt{\alpha}\cos(\varpi_1-\varpi_2)
+  \right]\nonumber\\
+  &+ e_2^2\left(\frac{e_2-e_{2\rm d}}{T_{e,2}}\right)
+  \left[
+  \abs*{\frac{f_2}{f_1}} q\sqrt{\alpha}
+  \frac{e_1}{e_2}\cos(\varpi_1-\varpi_2) + 1
+  \right] = 0.
 \end{align}
 
 \subsection{Phase space paths}
-\label{sec:orga46b971}
+\label{sec:org3dd6a4e}
 \begin{figure*}
   \centering
   \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
   \caption{ }
   \label{fig:relgeom}
 \end{figure*}
-In \ref{fig:phasediagsex}, we display the phase spaces from all three
-integrations plotted in the previous sections.
-The top row displays the \((\theta_2, \propto e_2)\) conjugate pair.
-The standard setup enters a tight resonance quickly and stays there (indicated by the small yellow region).
-Driving \(e_2\) to a value \(e_{2,d}=0.3\) leads to an early libration, indicated by the blue-green inner lobe.
-The planet \(m_2\) then enters the outer circulation region and reaches equilibrium.
-On the contrary, the simulation with both \(e_1 = e_2 = 0.2\) starts well outside the separatrix (purple).
-Dissipative forces push the system closer to the separatrix; then, the disk forces cease
-and the system remains in the circulation region. This way, the system never enters the \(\theta_2\)
-resonance. The \(\theta_1\) resonance is similar.
-
-On the other hand, the bottom row of \ref{fig:phasediagsex} displays the
-phase space for \((\hat\theta,\propto \hat e)\).
-All three systems end up in resonance. The standard picture is a very tight resonance, while the
-\(e_2\) -driving and large \(e_0\) systems enter stable libration in the resonance zone.
-The two apsidally aligned cases therefore end up in analagous phase space configurations, but
-through different dynamical paths.
 
 \section{Conclusion}
-\label{sec:orge6def69}
+\label{sec:orgde96322}
 
 \clearpage
 
 \onecolumn
 \appendix
 \section{Reducing the Hamiltonian to a single degree of freedom}
-\label{sec:org4e752d9}
+\label{sec:orge5b2fe8}
 \subsection{Scaling the Hamiltonian}
-\label{sec:org383f86b}
+\label{sec:orgc2f617b}
 The Hamiltonian for two comparable mass planets near a first order \(j:j+1\)
 resonance is
 \begin{align}
@@ -664,7 +690,7 @@ written, the \(\theta_i\) are not conjugate to \(\Lambda_i\) or
 \(q\to 0\) (\(m_1=0\)), \(\mathcal{H}\) reduces to the standard test
 particle Hamiltonian found in \citet{murray_solar_2000}.
 \subsection{Reducing rotation}
-\label{sec:org6882673}
+\label{sec:org6932680}
 Now, we would like to find the momenta conjugate to the fast
 coordinates \(\lambda_i\) while keeping the slowly varying \(\theta_i\).
 A canonical transformation preserves the form
@@ -767,7 +793,9 @@ leaving only the terms which include factors of \((\Gamma_1+\Gamma_2)\):
      \right].
 \end{align}
 
-Let \(\v X\) be the cartesian formulation
+Following \cite{henrard86_reduc_trans_apocen_librat}
+\citep[or equivalently][]{wisdom_canonical_1986}, let \(\v X\) be the
+cartesian formulation
 \begin{align}
   \v X &= (x_1, x_2, X_1, X_2)\nonumber\\
   &= (\sqrt{\Gamma_1}\cos\theta_1, \sqrt{\Gamma_2}\cos\theta_2,
@@ -927,7 +955,7 @@ factors of \(q\) for \(\Lambda_1/\Lambda_2 = q\sqrt\alpha\).
 
 
 \subsection{Second fundamnetal model of resonance}
-\label{sec:orgefbe099}
+\label{sec:orgba27ed2}
 Now, all that is left to do is to rescale equation \eqref{eq:HShat}
 into what is referred to as
 the "second fundamental model of resonance" \citep{henrard_second_1983}.
@@ -940,7 +968,7 @@ Now transform into $\hat R$
 
 
 \section{Elliptic restricted 3 body problem}
-\label{sec:org6e53fa0}
+\label{sec:org33f8d64}
 
 \twocolumn
 \bibliography{references}

@@ -221,3 +221,22 @@ separately from $\theta_1$ and $\theta_2$.
     &= \frac{1}{(1+q)^2\Lambda_2^2}\sqrt{\frac{\Lambda_1}{2}}\frac{1}{f_1\sqrt{f_1^2+\alpha^{1/2}f_2^2}}
   \end{align}
 #+END_SRC
+
+
+In ref:fig:phasediagsex, we display the phase spaces from all three
+integrations plotted in the previous sections.
+The top row displays the $(\theta_2, \propto e_2)$ conjugate pair.
+The standard setup enters a tight resonance quickly and stays there (indicated by the small yellow region).
+Driving $e_2$ to a value $e_{2,d}=0.3$ leads to an early libration, indicated by the blue-green inner lobe.
+The planet $m_2$ then enters the outer circulation region and reaches equilibrium.
+On the contrary, the simulation with both $e_1 = e_2 = 0.2$ starts well outside the separatrix (purple).
+Dissipative forces push the system closer to the separatrix; then, the disk forces cease
+and the system remains in the circulation region. This way, the system never enters the $\theta_2$
+resonance. The $\theta_1$ resonance is similar.
+
+On the other hand, the bottom row of ref:fig:phasediagsex displays the
+phase space for $(\hat\theta,\propto \hat e)$.
+All three systems end up in resonance. The standard picture is a very tight resonance, while the
+$e_2$ -driving and large $e_0$ systems enter stable libration in the resonance zone.
+The two apsidally aligned cases therefore end up in analagous phase space configurations, but
+through different dynamical paths.
