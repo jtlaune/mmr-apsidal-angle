@@ -1290,13 +1290,22 @@
 
 #+RESULTS:
 :RESULTS:
-: /tmp/ipykernel_23770/1765676941.py:9: UserWarning: No contour levels were found within the data range.
+: /tmp/ipykernel_30952/1765676941.py:9: UserWarning: No contour levels were found within the data range.
 :   cs1 = ax.contour(Q, H, hcond, levels=0., inline=True)
-: /tmp/ipykernel_23770/1765676941.py:9: UserWarning: The following kwargs were not used by contour: 'inline'
+: /tmp/ipykernel_30952/1765676941.py:9: UserWarning: The following kwargs were not used by contour: 'inline'
 :   cs1 = ax.contour(Q, H, hcond, levels=0., inline=True)
-: <matplotlib.collections.PathCollection at 0x7f0e3b27ddf0>
-#+attr_org: :width 452
-[[file:./.ob-jupyter/65e20ac5c850ebc064282b011bc5ddaba7ee798b.png]]
+# [goto error]
+: ---------------------------------------------------------------------------
+: NameError                                 Traceback (most recent call last)
+: /tmp/ipykernel_30952/1765676941.py in <module>
+:       8     hcond = np.abs(np.abs(e1d-H*sqrt(Q))-H) < Delta
+:       9     cs1 = ax.contour(Q, H, hcond, levels=0., inline=True)
+: ---> 10     labelAtEdge(cs1.levels, cs1, ax, f"{e1d:0.2f}", side='right', pad=0.2)
+:      11 ax.set_ylabel("h")
+:      12 ax.set_xlabel("q")
+: 
+: NameError: name 'labelAtEdge' is not defined
+[[file:./.ob-jupyter/68c1454c7345795e36c7fa0d2aa3cd7d43148629.png]]
 :END:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -1692,7 +1701,6 @@
 : <matplotlib.patches.FancyArrow at 0x7f331dc3d0d0>
 [[file:./.ob-jupyter/161cc2adedcce3182cfaaca8b0ba0ab1d91d4c9d.png]]
 :END:
-
 
 ** extras
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research

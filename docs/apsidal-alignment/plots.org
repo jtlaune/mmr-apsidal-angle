@@ -7,6 +7,7 @@
   import matplotlib as mpl
   import matplotlib.pyplot as plt
   from matplotlib.ticker import MaxNLocator
+  from matplotlib.ticker import ScalarFormatter
   import sys
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
   from helper import *
@@ -1439,7 +1440,190 @@
                           in range(Nqs)])
   DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
-  i = 2
+  i = 1
+  dirname = DIRNAMES[i]
+  name = NAMES[i]+".npz"
+  print(name)
+  data = np.load(os.path.join(dirname, name))
+  teval  = data["teval"]
+  theta  = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  
+  alpha = a1/a2
+  theta1 = (theta+g1)%(2*np.pi)
+  theta2 = (theta+g2)%(2*np.pi)
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hattheta1 = hattheta1+2*pi*(hattheta1<0.)
+  
+  fontsize=24
+  fig, ax = plt.subplots(4,2, figsize=(18,16))
+  tscale = 1.
+  
+  iplt0 = np.where(teval > 9e2)[0][0]
+  teval = teval[iplt0:]
+  
+  #iplt = np.where(teval > 5e3)[0][0]
+  iplt = len(teval)
+  
+  ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
+  ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
+  ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
+  ax[0,0].set_ylim((0.6, 1.3))
+  C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+                        markersize=10, label=r'$a_1$')
+  C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+                        markersize=10, label=r'$a_2$')
+  ax[0,0].legend(handles=[C0, C1], loc="upper right", ncol=2)
+  
+  ax[0,1].scatter(teval[:iplt]/tscale, (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05, c="k")
+  ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
+  ax[0,1].patch.set_visible(False)
+  #ax[0,1].set_ylim((1.5,1.75))
+  
+  ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
+  ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
+  
+  ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
+  ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
+  
+  ax[2,0].scatter(teval[:iplt]/tscale,e1[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
+  ax[2,0].set_ylabel(r"$e_1$", fontsize=fontsize)
+  ax[2,0].set_ylim(0, 0.12)
+  
+  ax[2,1].scatter(teval[:iplt]/tscale, e2[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
+  ax[2,1].set_ylabel(r"$e_2$", fontsize=fontsize)
+  ax[2,1].set_ylim(0, 0.12)
+  
+  ax[3,0].scatter(teval[:iplt]/tscale, deg_conv*hattheta1[:iplt], s=2, alpha=0.05,c="k")
+  ax[3,0].set_ylim((0., 360.))
+  ax[3,0].set_ylabel(r"$\hat\theta$", fontsize=fontsize)
+  
+  
+  Dpom = (g2[:iplt]-g1[:iplt])%(2*pi)
+  Dpom = Dpom - 2*pi*(Dpom>pi)
+  ax[3,1].scatter(teval[:iplt]/tscale, Dpom*deg_conv, s=2, alpha=0.05, c="k")
+  ax[3,1].set_ylabel(r"$\varpi_1-\varpi_2$", fontsize=fontsize)
+  ax[3,1].set_ylim((-180., 180.))
+  ax[3,1].axhline(y=0., c="r", ls="--", lw=3, label="$180^\circ$")
+  #ax[3,1].legend()
+  
+  fig.subplots_adjust(hspace=0.4, wspace=0.2)
+  
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.set_xlim((teval[:iplt][0]/tscale, teval[:iplt][-1]/tscale))
+      axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+      axi.yaxis.set_major_locator(MaxNLocator(4))
+      axi.set_xscale("log")
+  
+  
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+  print(f"driving-example-h-{h}-Tw0-{int(Tw0)}.png")
+  fig.savefig(f"driving-example-h-{h}-Tw0-{int(Tw0)}.png", bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 16
+: e1d-0.1-e2d-0.0.npz
+: driving-example-h-0.03-Tw0-1000.png
+[[file:./.ob-jupyter/78d7fcf3b94bda9fed42392ebbb18872de41145b.png]]
+:END:
+** perp example
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+  #################
+  # CONFIGURATION #
+  #################
+  h = 0.03
+  j = 2
+  a0 = 0.7
+  qRun = 16
+  Nqs = 16
+  qs = np.ones(Nqs)*2
+  overwrite = True
+  totmass = 1.0e-4
+  Tw0 = 1000
+  TeRatios = sqrt(qs)
+  
+  ######################
+  # Varying parameters #
+  ######################
+  E1_0 = np.ones(Nqs)*0.001
+  E2_0 = np.ones(Nqs)*0.001
+  
+  e1ds = np.linspace(0,0.3,4)
+  e2ds = np.linspace(0,0.3,4)
+  
+  E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
+  E1DS_single = E1DS_single.flatten()
+  E2DS_single = E2DS_single.flatten()
+  
+  E1DS = np.array([])
+  E2DS = np.array([])
+  for i in range(int(Nqs/qRun)):
+      E1DS = np.append(E1DS, E1DS_single)
+      E2DS = np.append(E2DS, E2DS_single)
+  print(len(E1DS))
+  
+  G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+  G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+  
+  ####################
+  # THREADING ARRAYS #
+  ####################
+  HS = np.ones(Nqs)*h
+  JS = np.ones(Nqs)*j
+  A0S = np.ones(Nqs)*a0
+  QS = qs
+  MU2 = totmass/(1+QS)
+  MU1 = totmass - MU2
+  
+  TE_FUNCS = np.zeros(Nqs)
+  TE1 = Tw0/TeRatios
+  TE2 = Tw0*TeRatios
+  #TM1 = np.infty*np.ones(Nqs)
+  TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+  TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+  TS = 30.*np.maximum(TE1, TE2)
+  #############################################################
+  # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+  # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+  #############################################################
+  cutoff_frac = 1.0
+  CUTOFFS = TS*cutoff_frac
+  ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
+  NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+                    for i, qit in enumerate(QS)])
+  
+  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+                          in range(Nqs)])
+  DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
+  
+  i = 8
   dirname = DIRNAMES[i]
   name = NAMES[i]+".npz"
   print(name)
@@ -1521,7 +1705,7 @@
   ax[3,1].scatter(teval[:iplt]/tscale, Dpom*deg_conv, s=2, alpha=0.05, c="k")
   ax[3,1].set_ylabel(r"$\varpi_1-\varpi_2$", fontsize=fontsize)
   ax[3,1].set_ylim((-180., 180.))
-  ax[3,1].axhline(y=0., c="r", ls="--", lw=3, label="$180^\circ$")
+  ax[3,1].axhline(y=90., c="r", ls="--", lw=3, label="$180^\circ$")
   #ax[3,1].legend()
   
   fig.subplots_adjust(hspace=0.4, wspace=0.2)
@@ -1540,16 +1724,17 @@
   
   
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
-  print(f"driving-example-h-{h}-Tw0-{int(Tw0)}.png")
-  fig.savefig(f"driving-example-h-{h}-Tw0-{int(Tw0)}.png", bbox_inches="tight")
+  filename = f"driving-perpendicular-example-h-{h}-Tw0-{int(Tw0)}.png"
+  fig.savefig(filename, bbox_inches="tight")
+  print(filename)
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 : 16
-: e1d-0.2-e2d-0.0.npz
-: driving-example-h-0.03-Tw0-1000.png
-[[file:./.ob-jupyter/f7e21dae4ed6c36559c8346ff364aa274dba4fb0.png]]
+: e1d-0.0-e2d-0.2.npz
+: driving-perpendicular-example-h-0.03-Tw0-1000.png
+[[file:./.ob-jupyter/ad0d5b00dc3816b9b8b7c33a6903e020dee4352a.png]]
 :END:
 ** grid
 *** gen behaviortxt
@@ -1876,7 +2061,7 @@
   
           #xi_avg = np.average(x1[it:]-x2[it:])
           #yi_avg = np.average(y1[it:]-y2[it:])
-          Dpoms = g1-g2
+          Dpoms = g2-g1
   
           f1 = A(a1/a2, j)
           f2 = B(a1/a2, j)
@@ -1903,17 +2088,17 @@
   
           if cut_iter == cuts[0]:
               ax.scatter(e1*cos(pi),e1*sin(pi),
-                         c="k",label=r"$\mathbf{e_1}$",zorder=2)
-              ax.scatter(e2*cos(pi+Dpoms),e2*sin(pi+Dpoms),
-                         c="r",label=r"$\mathbf{e_2}$",zorder=1)
-              ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
-                         c="g",label=r"$\mathbf{\hat e}$",zorder=0)
+                         c="k",label=r"$\propto\mathbf{e_1}$",zorder=2)
+              ax.scatter(e2*cos(pi-Dpoms),e2*sin(pi-Dpoms),
+                         c="r",label=r"$\propto\mathbf{e_2}$",zorder=1)
+              ax.scatter(ehat*cos(pi-(g1-hatgamma1)),ehat*sin(pi-(g1-hatgamma1)),
+                         c="g",label=r"$\propto\mathbf{\hat e}$",zorder=0)
           else:
               ax.scatter(e1*cos(pi),e1*sin(pi),
                          c="k",zorder=2)
-              ax.scatter(e2*cos(pi+Dpoms),e2*sin(pi+Dpoms),
+              ax.scatter(e2*cos(pi-Dpoms),e2*sin(pi-Dpoms),
                          c="r",zorder=1)
-              ax.scatter(ehat*cos(pi+hatgamma1-g1),ehat*sin(pi+hatgamma1-g1),
+              ax.scatter(ehat*cos(pi-(g1-hatgamma1)),ehat*sin(pi-(g1-hatgamma1)),
                          c="g",zorder=0)
   
           #lambdas = np.linspace(0,2*np.pi,1000)
@@ -1955,23 +2140,23 @@
   
   
   for axi in ax.flatten():
-      axi.set_xlim(-0.2,0.2)
-      axi.set_ylim(-0.2,0.2)
-      axi.set_ylabel(r"$e\sin\gamma$")
-      axi.set_xlabel(r"$e\cos\gamma$")
+      axi.set_xlim(-6,4)
+      axi.set_ylim(-4,6)
+      axi.set_ylabel(r"$\propto\sqrt R\sin\gamma$")
+      axi.set_xlabel(r"$\propto\sqrt R\cos\gamma$")
   fig.subplots_adjust(wspace=0.3,hspace=0.4)
-  ax[0,0].text(0.01,0.15,r"$e_{1d}=e_{2d}=0$")
-  ax[1,0].text(0.01,0.1,r"$e_{1d}=0.1$"+"\n"+ r"$e_{2d}=0$")
-  ax[2,0].text(0.01,0.1,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.1$")
+  ax[0,0].text(0.5,4,r"$e_{1d}=0$"+"\n"+r"$e_{2d}=0$")
+  ax[1,0].text(0.5,4,r"$e_{1d}=0.1$"+"\n"+ r"$e_{2d}=0$")
+  ax[2,0].text(0.5,4,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.1$")
   
-  ax[0,0].text(-0.17,-.17,r"$t=0-127$ orbits",c="r")
-  ax[0,1].text(-0.17,-.17,r"$t=34-38,000$ orbits",c="r")
+  ax[0,0].text(-5,-3,r"$t=0-127$ orbits",c="r")
+  ax[0,1].text(-5,-3,r"$t=34-38,000$ orbits",c="r")
   
   ax[0,0].legend(loc="upper left")
   fig.suptitle(r"$\mathbf{e}$ vectors in $\mathbf{e_1}$ rest frame")
   
-  ax[1,0].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
-  ax[1,1].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
+  #ax[1,0].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
+  #ax[1,1].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
   #ax[2,0].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
   #ax[2,1].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
   
@@ -2001,7 +2186,7 @@
   ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
   33941.2386344164 38183.89346371845
 #+end_example
-[[file:./.ob-jupyter/4fd580ac7879eb85694cda62b80ee1afd6779953.png]]
+[[file:./.ob-jupyter/339f74a9050960f7e6b916602826f06ea9944d0b.png]]
 :END:
 *** in e hat ref frame
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -2241,142 +2426,367 @@
 [[file:./.ob-jupyter/0388510eaf416678549044beec3a9f0207ad3dcf.png]]
 :END:
 * apsidal alignment explanation
+** S2 combined plot
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  def plot_sS1S2(iplot, ax1, ax2):
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+      #################
+      # CONFIGURATION #
+      #################
+      h = 0.03
+      j = 2
+      a0 = 0.7
+      qRun = 16
+      Nqs = 16
+      qs = np.ones(Nqs)*2
+      overwrite = True
+      totmass = 1.0e-4
+      Tw0 = 1000
+      TeRatios = sqrt(qs)
+  
+      ######################
+      # Varying parameters #
+      ######################
+      E1_0 = np.ones(Nqs)*0.001
+      E2_0 = np.ones(Nqs)*0.001
+  
+      e1ds = np.linspace(0,0.3,4)
+      e2ds = np.linspace(0,0.3,4)
+  
+      E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
+      E1DS_single = E1DS_single.flatten()
+      E2DS_single = E2DS_single.flatten()
+  
+      E1DS = np.array([])
+      E2DS = np.array([])
+      for i in range(int(Nqs/qRun)):
+          E1DS = np.append(E1DS, E1DS_single)
+          E2DS = np.append(E2DS, E2DS_single)
+      print(len(E1DS))
+  
+      G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+      G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+  
+      ####################
+      # THREADING ARRAYS #
+      ####################
+      HS = np.ones(Nqs)*h
+      JS = np.ones(Nqs)*j
+      A0S = np.ones(Nqs)*a0
+      QS = qs
+      MU2 = totmass/(1+QS)
+      MU1 = totmass - MU2
+  
+      TE_FUNCS = np.zeros(Nqs)
+      TE1 = Tw0/TeRatios
+      TE2 = Tw0*TeRatios
+      #TM1 = np.infty*np.ones(Nqs)
+      TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+      TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+      TS = 30.*np.maximum(TE1, TE2)
+      #############################################################
+      # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+      # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+      #############################################################
+      cutoff_frac = 1.0
+      CUTOFFS = TS*cutoff_frac
+      ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
+      NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+                        for i, qit in enumerate(QS)])
+  
+      DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+                              in range(Nqs)])
+      DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
+  
+      dirname = DIRNAMES[iplot]
+      name = NAMES[iplot]+".npz"
+      print(name)
+      data = np.load(os.path.join(dirname, name))
+      teval  = data["teval"]
+      theta  = data["thetap"]
+      a1     = data["a1"]
+      a2     = data["a2"]
+      e1     = data["e1"]
+      e2     = data["e2"]
+      g1     = data["g1"]
+      g2     = data["g2"]
+      L1     = data["L1"]
+      L2     = data["L2"]
+      x1     = data["x1"]
+      y1     = data["y1"]
+      x2     = data["x2"]
+      y2     = data["y2"]
+  
+      alpha = a1/a2
+      theta1 = (theta+g1)%(2*np.pi)
+      theta2 = (theta+g2)%(2*np.pi)
+      f1 = A(alpha, j)
+      f2 = B(alpha, j)
+      barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+      barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+      hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                            e1*cos(theta1) + f2/f1*e2*cos(theta2))
+      hattheta1 = hattheta1+2*pi*(hattheta1<0.)
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+  
+      q = QS[iplot]
+      Dpom = g2-g1
+      S2 = f1**2*e1**2*q*sqrt(alpha) - 2*f1*f2*e1*e2*cos(g1-g2) + f2**2*e2**2/q/sqrt(alpha)
+      cosDpom = ((1/q/sqrt(alpha) - q*sqrt(alpha)*np.abs(f2/f1))
+                 / (1-np.abs(f2/f1)))
+      e1d = E1DS[iplot]
+      e2d = E2DS[iplot]
+      Te1 = TE1[iplot]
+      Te2 = TE2[iplot]
+      coeffe1 = e1**2*(e1-e1d)/Te1
+      coeffe2 = e2**2*(e2-e2d)/Te2
+      arg1 = (q**2*alpha*np.abs(f2/f1)+e2/e1*q*sqrt(alpha)*cos(Dpom))
+      arg2 = (np.abs(f2/f1)*q*sqrt(alpha)*e1/e2*cos(Dpom)+1)
+      S2dot1 = coeffe1*arg1
+      S2dot2 = coeffe2*arg2
+      #ax[0].set_title(r"parentheses")
+      #ax[1].set_title(r"coefficients")
+      #ax[2].set_title(r"derivatives of individual terms")
+      #ax[3].set_title(r"derivative of S2")
+      tscale = 1e3 # kyr
+      ax1.scatter(teval/tscale, arg1, c="k", s=2, alpha=0.05)
+      ax1.scatter(teval/tscale, arg2, c="r", s=2, alpha=0.05)
+      #ax2.scatter(teval/tscale, (S2dot1+S2dot2)/S2, c="k", s=2, alpha=0.05)
+      ax2.scatter(teval/tscale, S2, c="k", s=2, alpha=0.05)
+      ax1.set_xlim((teval[0]/tscale, teval[-1]/tscale))
+      ax2.set_xlim((teval[0]/tscale, teval[-1]/tscale))
+  
+      for axi in [ax1, ax2]: axi.axhline(y=0, c="k", ls="--")
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fontsize=24
+  fig, ax = plt.subplots(3,2,figsize=(16,12))
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.set_xlabel(r"$t$ [kyr]", fontsize=fontsize)
+      axi.yaxis.set_major_locator(MaxNLocator(4))
+  
+  plot_sS1S2(0, ax[0,0], ax[0,1])
+  plot_sS1S2(1, ax[1,0], ax[1,1])
+  plot_sS1S2(8, ax[2,0], ax[2,1])
+  
+  ax[1,0].set_ylim((-10,10))
+  ax[0,0].set_ylim((-1,1))
+  ax[2,0].set_ylim((-10,10))
+  
+  ax[0,1].set_ylim((0,0.0005))
+  ax[1,1].set_ylim((0,.1))
+  ax[2,1].set_ylim((0,.2))
+  #ax[1,1].set_ylim((-1e-6,1e-6))
+  #ax[0,1].set_ylim((-1.5e-10,1.5e-10))
+  
+  fig.subplots_adjust(wspace=0.3, hspace=0.5)
+  C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+                        markersize=10, label=r"$\mathcal{S}_1$")
+  C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+                        markersize=10, label=r"$\mathcal{S}_2$")
+  ax[0,0].legend(bbox_to_anchor=(0.21, 1.2),ncol=2,loc="center left", fancybox=True, shadow=True, handles=[C0, C1])
+  ax[0,1].set_title(r"$S_2$", fontsize=fontsize, pad=20)
+  
+  for i, eds in enumerate([(0,0),(0.1,0),(0,0.2)]):
+      ax[i,0].text(0.5, 0.1, r"$e_{1d}=$ "+f"{eds[0]}, " + r"$e_{2d}=$ " +f"{eds[1]}", fontsize=fontsize, transform=ax[i,0].transAxes)
+  
+  os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
+  fig.savefig("S2-conserved.png",bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 16
+: e1d-0.0-e2d-0.0.npz
+: 16
+: e1d-0.1-e2d-0.0.npz
+: 16
+: e1d-0.0-e2d-0.2.npz
+[[file:./.ob-jupyter/d96935beedea18f86f1f2638ac114ba147f98618.png]]
+:END:
+
 ** S2 conserved quantity
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
-  #################
-  # CONFIGURATION #
-  #################
-  h = 0.03
-  j = 2
-  a0 = 0.7
-  qRun = 16
-  Nqs = 16
-  qs = np.ones(Nqs)*2
-  overwrite = True
-  totmass = 1.0e-4
-  Tw0 = 1000
-  TeRatios = sqrt(qs)
+  def plot_S2comps(iplot):
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+      #################
+      # CONFIGURATION #
+      #################
+      h = 0.03
+      j = 2
+      a0 = 0.7
+      qRun = 16
+      Nqs = 16
+      qs = np.ones(Nqs)*2
+      overwrite = True
+      totmass = 1.0e-4
+      Tw0 = 1000
+      TeRatios = sqrt(qs)
   
-  ######################
-  # Varying parameters #
-  ######################
-  E1_0 = np.ones(Nqs)*0.001
-  E2_0 = np.ones(Nqs)*0.001
+      ######################
+      # Varying parameters #
+      ######################
+      E1_0 = np.ones(Nqs)*0.001
+      E2_0 = np.ones(Nqs)*0.001
   
-  e1ds = np.linspace(0,0.3,4)
-  e2ds = np.linspace(0,0.3,4)
+      e1ds = np.linspace(0,0.3,4)
+      e2ds = np.linspace(0,0.3,4)
   
-  E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
-  E1DS_single = E1DS_single.flatten()
-  E2DS_single = E2DS_single.flatten()
+      E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
+      E1DS_single = E1DS_single.flatten()
+      E2DS_single = E2DS_single.flatten()
   
-  E1DS = np.array([])
-  E2DS = np.array([])
-  for i in range(int(Nqs/qRun)):
-      E1DS = np.append(E1DS, E1DS_single)
-      E2DS = np.append(E2DS, E2DS_single)
-  print(len(E1DS))
+      E1DS = np.array([])
+      E2DS = np.array([])
+      for i in range(int(Nqs/qRun)):
+          E1DS = np.append(E1DS, E1DS_single)
+          E2DS = np.append(E2DS, E2DS_single)
+      print(len(E1DS))
   
-  G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
-  G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+      G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
+      G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
   
-  ####################
-  # THREADING ARRAYS #
-  ####################
-  HS = np.ones(Nqs)*h
-  JS = np.ones(Nqs)*j
-  A0S = np.ones(Nqs)*a0
-  QS = qs
-  MU2 = totmass/(1+QS)
-  MU1 = totmass - MU2
+      ####################
+      # THREADING ARRAYS #
+      ####################
+      HS = np.ones(Nqs)*h
+      JS = np.ones(Nqs)*j
+      A0S = np.ones(Nqs)*a0
+      QS = qs
+      MU2 = totmass/(1+QS)
+      MU1 = totmass - MU2
   
-  TE_FUNCS = np.zeros(Nqs)
-  TE1 = Tw0/TeRatios
-  TE2 = Tw0*TeRatios
-  #TM1 = np.infty*np.ones(Nqs)
-  TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
-  TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
-  TS = 30.*np.maximum(TE1, TE2)
-  #############################################################
-  # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
-  # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
-  #############################################################
-  cutoff_frac = 1.0
-  CUTOFFS = TS*cutoff_frac
-  ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
-  NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
-                    for i, qit in enumerate(QS)])
+      TE_FUNCS = np.zeros(Nqs)
+      TE1 = Tw0/TeRatios
+      TE2 = Tw0*TeRatios
+      #TM1 = np.infty*np.ones(Nqs)
+      TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+      TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+      TS = 30.*np.maximum(TE1, TE2)
+      #############################################################
+      # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+      # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+      #############################################################
+      cutoff_frac = 1.0
+      CUTOFFS = TS*cutoff_frac
+      ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
+      NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+                        for i, qit in enumerate(QS)])
   
-  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
-                          in range(Nqs)])
-  DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
+      DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+                              in range(Nqs)])
+      DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
-  i = 1
-  dirname = DIRNAMES[i]
-  name = NAMES[i]+".npz"
-  print(name)
-  data = np.load(os.path.join(dirname, name))
-  teval  = data["teval"]
-  theta  = data["thetap"]
-  a1     = data["a1"]
-  a2     = data["a2"]
-  e1     = data["e1"]
-  e2     = data["e2"]
-  g1     = data["g1"]
-  g2     = data["g2"]
-  L1     = data["L1"]
-  L2     = data["L2"]
-  x1     = data["x1"]
-  y1     = data["y1"]
-  x2     = data["x2"]
-  y2     = data["y2"]
+      dirname = DIRNAMES[iplot]
+      name = NAMES[iplot]+".npz"
+      print(name)
+      data = np.load(os.path.join(dirname, name))
+      teval  = data["teval"]
+      theta  = data["thetap"]
+      a1     = data["a1"]
+      a2     = data["a2"]
+      e1     = data["e1"]
+      e2     = data["e2"]
+      g1     = data["g1"]
+      g2     = data["g2"]
+      L1     = data["L1"]
+      L2     = data["L2"]
+      x1     = data["x1"]
+      y1     = data["y1"]
+      x2     = data["x2"]
+      y2     = data["y2"]
   
-  alpha = a1/a2
-  theta1 = (theta+g1)%(2*np.pi)
-  theta2 = (theta+g2)%(2*np.pi)
-  f1 = A(alpha, j)
-  f2 = B(alpha, j)
-  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
-  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
-  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
-                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
-  hattheta1 = hattheta1+2*pi*(hattheta1<0.)
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+      alpha = a1/a2
+      theta1 = (theta+g1)%(2*np.pi)
+      theta2 = (theta+g2)%(2*np.pi)
+      f1 = A(alpha, j)
+      f2 = B(alpha, j)
+      barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+      barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+      hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                            e1*cos(theta1) + f2/f1*e2*cos(theta2))
+      hattheta1 = hattheta1+2*pi*(hattheta1<0.)
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
   
-  q = QS[i]
-  Dpom = g2-g1
-  S2 = f1**2*e1**2*q*sqrt(alpha) - 2*f1*f2*e1*e2*cos(g1-g2) + f2**2*e2**2/q/sqrt(alpha)
-  fig, ax = plt.subplots(4)
-  cosDpom = ((1/q/sqrt(alpha) - q*sqrt(alpha)*np.abs(f2/f1))
-             / (1-np.abs(f2/f1)))
-  e1d = E1DS[i]
-  e2d = E2DS[i]
-  Te1 = TE1[i]
-  Te2 = TE2[i]
-  coeffe1 = e1**2*(e1-e1d)/Te1
-  coeffe2 = e2**2*(e2-e2d)/Te2
-  arg1 = (q**2*alpha*np.abs(f2/f1)+e2/e1*q*sqrt(alpha)*cos(Dpom))
-  arg2 = (np.abs(f2/f1)*q*sqrt(alpha)*e1/e2*cos(Dpom)+1)
-  S2dot1 = coeffe1*arg1
-  S2dot2 = coeffe2*arg2
-  ax[0].plot(teval, arg1)
-  ax[0].plot(teval, arg2)
-  ax[0].set_ylim((-10,10))
-  ax[1].plot(teval, coeffe1)
-  ax[1].plot(teval, coeffe2)
-  ax[2].plot(teval, S2dot1)
-  ax[2].plot(teval, S2dot2)
-  ax[3].plot(teval, S2dot1+S2dot2)
-  ax[3].axhline(y=0, ls="--", c="k")
+      q = QS[iplot]
+      Dpom = g2-g1
+      S2 = f1**2*e1**2*q*sqrt(alpha) - 2*f1*f2*e1*e2*cos(g1-g2) + f2**2*e2**2/q/sqrt(alpha)
+      fig, ax = plt.subplots(4, figsize=(12,12))
+      cosDpom = ((1/q/sqrt(alpha) - q*sqrt(alpha)*np.abs(f2/f1))
+                 / (1-np.abs(f2/f1)))
+      e1d = E1DS[iplot]
+      e2d = E2DS[iplot]
+      Te1 = TE1[iplot]
+      Te2 = TE2[iplot]
+      coeffe1 = e1**2*(e1-e1d)/Te1
+      coeffe2 = e2**2*(e2-e2d)/Te2
+      arg1 = (q**2*alpha*np.abs(f2/f1)+e2/e1*q*sqrt(alpha)*cos(Dpom))
+      arg2 = (np.abs(f2/f1)*q*sqrt(alpha)*e1/e2*cos(Dpom)+1)
+      S2dot1 = coeffe1*arg1
+      S2dot2 = coeffe2*arg2
+      ax[0].set_title(r"parentheses")
+      ax[1].set_title(r"coefficients")
+      ax[2].set_title(r"derivatives of individual terms")
+      ax[3].set_title(r"derivative of S2")
+      ax[0].plot(teval, arg1)
+      ax[0].plot(teval, arg2)
+      ax[0].set_ylim((-5,5))
+      ax[1].plot(teval, coeffe1)
+      ax[1].plot(teval, coeffe2)
+      ax[2].plot(teval, S2dot1)
+      ax[2].plot(teval, S2dot2)
+      ax[3].plot(teval, S2)
+      ax[3].axhline(y=0, ls="--", c="k")
+      for axi in ax: axi.axhline(y=0, c="k", ls="--")
+      fig.subplots_adjust(hspace=1)
+#+END_SRC
+
+#+RESULTS:
+
+*** aligned
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  plot_S2comps(1)
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 : 16
 : e1d-0.1-e2d-0.0.npz
-: <matplotlib.lines.Line2D at 0x7f0a47e4ef10>
-[[file:./.ob-jupyter/536ae8b5e67cefd220c7156afa1d2da0dd395ab0.png]]
+[[file:./.ob-jupyter/f040a6b135750e17e8e2ae9b364ff8472526a9e0.png]]
+:END:
+
+*** anti-aligned
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  plot_S2comps(0)
+  #plot_S2comps(5)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 16
+: e1d-0.0-e2d-0.0.npz
+[[file:./.ob-jupyter/964818c9ec35d6cfb9109f07336ef0d7e4a1d6b3.png]]
+:END:
+
+*** perpendicular
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  plot_S2comps(8)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 16
+: e1d-0.0-e2d-0.2.npz
+[[file:./.ob-jupyter/c528e62ffb35f31614e79aa33eb228bf2549a8d5.png]]
 :END:
 
 ** Rhat resonance EOM

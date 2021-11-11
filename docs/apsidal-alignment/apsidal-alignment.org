@@ -503,6 +503,8 @@ $\theta_2$, or both angles must circulate.
   \end{figure*}
 #+END_SRC
 *** forces                                                         :ignore:
+The planets K2-19b and c are moderately eccentric, with
+$e_{b}\approx e_c\approx 0.2$ [[citep:&petigura_k2-19b_2020]].
 One way of escaping the circular $\theta_i$ resonances is to
 artificially drive the eccentricity of the system to larger values,
 where equation eqref:dotdpom may be broken.  We modify the
@@ -527,11 +529,36 @@ point, both planets' ecentricities are excited to about $e_i\approx
 librates around $0^\circ$ with a large amplitude.  Despite the
 circulation of both resonance angles, the period ratio remains locked
 very close to the nominal resonance location ($P_2/P_1= 1.5$). The
-system appears to be caught in a different type of resonance which we
-will study in the following subsection.
+system is caught in a different type of resonance which we will study
+in the following subsection.
 
 ** Reducing the Hamiltonian
 *** figures                                                        :ignore:
+*** figures (for the next section)                                 :ignore:
+#+BEGIN_SRC latex
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{{./S2-conserved}.png}
+    \caption{ }
+    \label{fig:S2cons}
+  \end{figure}
+#+END_SRC
+#+BEGIN_SRC latex
+  \begin{figure*}
+    \centering
+    \includegraphics[width=0.7\textwidth]{{driving-perpendicular-example-h-0.03-Tw0-1000}.png}
+    \caption{}
+    \label{fig:perpex}
+  \end{figure*}
+#+END_SRC
+#+BEGIN_SRC latex
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{{./relative-geometry}.png}
+    \caption{ }
+    \label{fig:relgeom}
+  \end{figure}
+#+END_SRC
 *** Hhat                                                           :ignore:
 A detailed analysis of the MMR Hamiltonian eqref:hamiltonian
 illustrates the underlying dynamics behind the capture processes in
@@ -564,13 +591,11 @@ First order MMRs are typically treated as the circular restricted
 three body problem (CR3BP), where one of the planets is a test
 particle and the other is on a circular orbit. These are limiting
 cases of the Hamiltonian given in equation eqref:hamiltonian for
-comparable mass planets (c.f. [[Reducing the Hamiltonian to a single
-degree of freedom]]). For an inner (outer) test particle, $m_1=0$
+comparable mass planets. For an inner (outer) test particle, $m_1=0$
 ($m_2=0$), $m_2$ ($m_1$) is finite, and $q$ approaches infinity
 (zero).  In the CR3BP limit, the action angles are $\theta_1$ and
 $\theta_2$ in equations eqref:circangles1, eqref:circangles2, and
 eqref:hamiltonian for the internal and external cases, respectively.
-
 The actions for the CR3BP are proportional to
 #+begin_src latex
   \begin{align}
@@ -578,6 +603,7 @@ The actions for the CR3BP are proportional to
     R_1  \propto \frac{e_1^2}{\mu_2^{2/3}}
   \end{align}
 #+end_src
+@@latex:\noindent@@ 
 and
 #+begin_src latex
   \begin{align}
@@ -586,55 +612,53 @@ and
   \end{align}
 #+end_src
 
-In the
-outer test particle limit where $e_1$ and $m_2$ approach 0 and $q$
-approaches infinity, the momentum $\hat R$ is proportional to
+One can see that the actions given above for the CR3BP are functions
+of the test particles' eccentricities only, as the massive planets'
+eccentricities are assumed to be zero.  On the other hand, for the
+case where $q>0$ is finite, both planets will be on eccentric
+osculating orbits.
+Hence, we expect the action $\hat R$ in equation eqref:hhat
+to be a function of both $e_1$ and $e_2$.
+
+Define $\v{\hat e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2$ and $\hat e =
+\abs{\v{\hat e}}$, where $\v e_i$ is the Runge-Lenz vector, i.e. the
+vector with magnitude $e_i$ in the direction of perihelion.  The
+action $\hat R$ then takes the form $\hat R \propto \tilde \mu
+\hat e^2$, where $\tilde\mu = m_1m_2/(m_1+m_2)$ is the reduced mass of the
+planets. In order to recover the actions given above for the
+appropriate CR3BP limits, we have
 #+begin_src latex
   \begin{align}
   \label{eq:R1limit}
     \hat R \propto \frac{\hat e^2}{q^{2/3}\hat\mu^{2/3}}
-    ;\quad R_2 \equiv \lim_{m_2 \to 0} \hat R
-    \propto  \frac{e_2^2}{\mu_1^{2/3}} .
   \end{align}
 #+end_src
-@@latex:\noindent@@ The quantity $R_1$ is the standard action for the
-circular restricted three-body problem (CR3BP) and is conjugate to the
-angle $\theta_1$.  In the opposite limit for an inner test particle,
-the action becomes
+@@latex:\noindent@@ 
+for $q < 1$
+and
 #+begin_src latex
   \begin{align}
   \label{eq:R2limit}
     \hat R \propto \frac{q^{2/3}\hat e^2}{\hat\mu^{2/3}}
-    ;\quad R_1 \equiv \lim_{m_1\to 0} \hat R
-    \propto \frac{e_1^2}{\mu_2^{2/3}}.
   \end{align}
 #+end_src
-@@latex:\noindent@@ Similarly, $R_2$ is conjugate to the angle
-$\theta_2$ in the external CR3BP.
-In our treatment, we will use equation eqref:eq:R1limit
-for $q>1$ and equation eqref:eq:R2limit for the
-case $q<1$ in order to preserve the continuity of the
-action in the appropriate CR3BP limit.
-
-Define $\v{\hat e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2$ and $\hat e =
-\abs{\v{\hat e}}$, where $\v e_i$ is the Runge-Lenz vector, i.e. the
-vector with magnitude $e_i$ in the direction of perihelion.
-
-** Resonance mode
-*** figures                                                        :ignore:
+@@latex:\noindent@@
+for $q>1$.
+The action angle is $\hat\theta$ which is given by
 #+BEGIN_SRC latex
-      \begin{figure*}
-        \centering
-        \includegraphics[width=0.5\textwidth]{{./relative-geometry}.png}
-        \caption{ }
-        \label{fig:relgeom}
-      \end{figure*}
+  \begin{align}
+  \label{hattheta}
+    \tan\hat{\theta}_1 = \frac{W_1}{w_1} = \frac{f_1 e_1\sin(\theta_1)
+    + f_2e_2\sin(\theta_2)}{f_1e_1\cos(\theta_1) + f_2e_2\cos(\theta_2)}.
+  \end{align}
 #+END_SRC
-*** phase space                                                    :ignore:
+@@latex:\noindent@@
+Appendix [[Reducing the Hamiltonian to a single degree of freedom]]
+describes the detailed behavior of $\hat H$, $\hat \theta$,
+and $\hat R$ in the CR3BP limits,
 
-** Conserved quantity
-*** figures                                                        :ignore:
-*** S2                                                             :ignore:
+** Three modes of resonance
+*** modes of resonance                                             :ignore:
 Under the assumption that the semimajor axes are stationary (or slowly
 varying), the Hamiltonian in equation eqref:hamiltonian has two
 degrees of freedom (dof): the angles $\theta_1$ and $\theta_2$.  By
@@ -648,22 +672,77 @@ eqref:hhat the resonance admits the following conserved quantity:
   \end{align}
 #+END_SRC
 
-By enforcing $dS_2/dt = 0$ with $d\alpha/dt \approx 0$,
-we arrive at the following equilibrium condition:
+By enforcing $dS_2/dt = 0$ together with the assumption $d\alpha/dt
+\approx 0$, we arrive at the following equilibrium condition:
 #+BEGIN_SRC latex
-    \begin{align}
-      e_1^2&\left(\frac{e_1-e_{1\rm d}}{T_{e,1}}\right)
-      \left[
-      q^2\alpha\abs*{\frac{f_2}{f_1}}
-      + \frac{e_2}{e_1}q\sqrt{\alpha}\cos(\varpi_1-\varpi_2)
-      \right]\nonumber\\
-      &+ e_2^2\left(\frac{e_2-e_{2\rm d}}{T_{e,2}}\right)
-      \left[
-      \abs*{\frac{f_2}{f_1}} q\sqrt{\alpha}
-      \frac{e_1}{e_2}\cos(\varpi_1-\varpi_2) + 1
-      \right] = 0.
-    \end{align}
+  \begin{align}
+    \label{eq:S2eq}
+    \frac{dS_2}{dt} \approx e_1^2\left(\frac{e_1-e_{1\rm d}}{T_{e,1}}\right)
+    \mathcal{S}_1
+    + e_2^2\left(\frac{e_2-e_{2\rm d}}{T_{e,2}}\right)
+    \mathcal{S}_2
+    = 0.
+  \end{align}
 #+END_SRC
+@@latex:\noindent@@
+where
+#+BEGIN_SRC latex
+  \begin{align}
+    \label{eq:sS1}
+    \mathcal{S}_1=&\left[
+                    q^2\alpha\abs*{\frac{f_2}{f_1}}
+                    + \frac{e_2}{e_1}q\sqrt{\alpha}\cos(\varpi_1-\varpi_2)
+                    \right]\\
+    \label{eq:sS2}
+    \mathcal{S}_2=&\left[
+                    \abs*{\frac{f_2}{f_1}} q\sqrt{\alpha}
+                    \frac{e_1}{e_2}\cos(\varpi_1-\varpi_2) + 1
+                    \right].
+  \end{align}
+#+END_SRC
+
+In Figure ref:fig:S2cons, we have plotted $\mathcal{S}_1$ and
+$\mathcal{S}_2$ as well as $\dot S_2/S_2$ for three different
+combinations of $e_{1d}$ and $e_{2d}$.  The top row is for the
+standard eccentricity damping case where $e_{1d}=e_{2d}=0$.  Once the
+system equilibrates, $S_2\approx 10^{-4}$ is well conserved (top left) and
+small. Both $\mathcal{S}_1$ and $\mathcal{S}_2$ are also close to
+zero. From equations eqref:eq:sS1 and eqref:eq:sS1, we see this
+corresponds to $e_2/e_1 \sim q$, as we found in Section [[Standard
+Picture of Resonance Capture]].
+
+The second row corresponds to the integration shown in
+ref:fig:drivingex, where $e_{1d}=0.1$ and $e_{2d}=0$.  Near the
+beginning, while the system is still caught in the $\theta_1$ and
+$\theta_2$ resonances, $\mathcal{S}_1$, $\mathcal{S}_2$, and $S_2$ are
+small.  Once the $\theta_i$ resonances are broken, and only
+$\hat\theta$ librates, they are excited to larger values.  The
+quantities $\mathcal{S}_1$ and $\mathcal{S}_2$ undergo large periodic
+oscillations away from zero, while $S_2$ grows and then stabilizes at
+its new equilibrium value. The system's eccentricities
+oscillate in such a way to conserve equation eqref:eq:S2cons.
+
+The last row presents a third mode of resonance, where $e_{2d}=0.2$
+and $e_{1d}=0$.  We have plotted the details of this system in Figure
+ref:fig:perpex.  The system is immediately caught in the $\hat\theta$
+resonance, which persists throughout the integration.  The angle
+$\theta_2$ librates with large amplitude around its resonant value of
+$0^\circ$, while $\theta_1$ librates around $270^\circ$ rather than
+$180^\circ$.  As a result, $\Delta\varpi$ approaches $90^\circ$ and so
+the planets' perihelia are now perpendicular to eachother.  For this
+system, $\mathcal{S}_2$ is conserved close to 0, while $\mathcal{S}_1$
+grows to a magnitude similar to its value in the apsidally aligned
+case.
+
+The systems in Figures ref:fig:standardex, ref:fig:drivingex, and
+ref:fig:perpex are representative of three different modes of
+resonance, ones where $\Delta\varpi=180^\circ$,
+$\Delta\varpi=90^\circ$, and $\Delta\varpi=90^\circ$,
+respectively. These correspond to three different behaviors of the
+quantities $\mathcal{S}_1$ and $\mathcal{S}_2$ while in resonance
+under the influence of eccentricity forcing.
+
+In Figure ref:fig:relgeom, we plot 
 
 ** Saturation eccentricities
 *** figures                                                        :ignore:
@@ -677,6 +756,20 @@ we arrive at the following equilibrium condition:
     \end{figure}
 #+END_SRC
 *** saturation eccs                                                :ignore:
+Now that we have identified these three resonant modes, we briefly
+explore the $(e_{1d},e_{2d})$ parameter space for the saturation
+eccentricities for moderate values between $0$ and $0.3$.
+In the left panel of Figure ref:fig:Rhat-grid,
+we summarize the resonant behavior for each system on a grid
+within the parameter space. Here, we have excluded
+runs which become unstable and escape the resonance on the timescale
+of our integrations. Roughly, for $e_{1d}\gtrsim e_{2d}$,
+the system becomes apsidally aligned. For $e_{2d} > e_{1d}$,
+$\Delta\varpi=90^\circ$.
+
+We have plotted the averaged final eccentricities in the right
+panel of Figure ref:fig:Rhat-grid.
+
 * Conclusion
 
 #+begin_src latex
