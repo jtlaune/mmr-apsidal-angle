@@ -49,7 +49,7 @@
 #+RESULTS:
 : ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
 
-* standard picture h=0.1
+* standard picture h=0.03
 ** preamble
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   class solve_eqeccs:
@@ -176,6 +176,7 @@
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
   readme = "totmass q Te1 Te2 e1 e2 |g1-g2| \n " \
            "averages taken from 0.9xT; T = 20.xTe0; Te0=1000"
+  H_SECTION = 0.03
   #################
   # CONFIGURATION #
   #################
@@ -203,7 +204,7 @@
   TE_FUNCS = np.zeros(Nqs)
   G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
   G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
-  HS = np.ones(Nqs)*0.1
+  HS = np.ones(Nqs)*H_SECTION
   JS = np.ones(Nqs)*j
   A0S = np.ones(Nqs)*a0
   QS = np.array(qs)
@@ -386,12 +387,11 @@
 
 #+RESULTS:
 :RESULTS:
-: [ 20436.61217302  21838.10845715  23335.71616219  24936.02639033
-:   26646.08224651 -30993.65692128 -33213.47685355 -35592.28417295
-:  -38141.4658343  -40873.22434604]
-: standard-eeqs-Tm2--40873-Tw0-1000.png
-#+attr_org: :width 456
-[[file:./.ob-jupyter/db63008c6bc306c97c1935a26acd945b49f084bb.png]]
+: [ 227073.46858913  242645.64952394  259285.73513547  277066.95989251
+:   296067.58051679 -344373.96579202 -369038.63170608 -395469.82414386
+:  -423794.06482555 -454146.93717826]
+: standard-eeqs-Tm2--454146-Tw0-1000.png
+[[file:./.ob-jupyter/eac2a2640c260d5203f26724802eb80378edd3d8.png]]
 :END:
 
 ** eq theta
@@ -457,9 +457,8 @@
 #+RESULTS:
 :RESULTS:
 : No handles with labels found to put in legend.
-: standard-pomega-Tm2--40873-Tw0-1000.png
-#+attr_org: :width 450
-[[file:./.ob-jupyter/851deeca627173d2c03f09dc56c2af7223711748.png]]
+: standard-pomega-Tm2--454146-Tw0-1000.png
+[[file:./.ob-jupyter/c24658bc68fdbc7001d5bb53581474358e35fb3d.png]]
 :END:
 
 ** example run
@@ -492,7 +491,7 @@
   ####################
   # THREADING ARRAYS #
   ####################
-  HS = np.ones(Nqs)*0.1
+  HS = np.ones(Nqs)*H_SECTION
   JS = np.ones(Nqs)*j
   A0S = np.ones(Nqs)*a0
   QS = np.array(qs)
@@ -504,7 +503,7 @@
   #TM1 = np.infty*np.ones(Nqs)
   TM1 = TE1/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))
   TM2 = TE2/3.46/HS**2*(1*(qs<1) - 1*(qs>=1))
-  TS = 40.*np.maximum(TE1, TE2)
+  TS = 60.*np.maximum(TE1, TE2)
   print(TS)
   #E1_0 = np.minimum(0.1/sqrt(QS), 0.1*np.ones(Nqs))
   #E2_0 = np.minimum(0.1*sqrt(QS), 0.1*np.ones(Nqs))
@@ -549,7 +548,7 @@
   iplt0 = np.where(teval > 1e2)[0][0]
   teval = teval[iplt0:]
   
-  iplt = np.where(teval > 1e4)[0][0]
+  iplt = np.where(teval > 1e5)[0][0]
   
   for axi in ax.flatten():
       axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
@@ -573,7 +572,7 @@
   ax[2,0].scatter(teval[:iplt]/tscale,e2[:iplt], s=2, alpha=0.05, c="r", label=r"$e_2$")
   ax[2,0].scatter(teval[:iplt]/tscale,e1[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
   ax[2,0].set_ylabel(r"$e$", fontsize=fontsize)
-  ax[2,0].set_ylim(0, 0.075)
+  ax[2,0].set_ylim(0, 0.03)
   ax[2,0].legend()
   C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
                         markersize=10, label=r'$e_1$')
@@ -610,13 +609,13 @@
 
 #+RESULTS:
 :RESULTS:
-: [56568.54249492 46188.02153517 42163.70213558 41952.35392681
-:  48989.79485566 56568.54249492]
+: [84852.81374239 69282.03230276 63245.55320337 62928.53089021
+:  73484.6922835  84852.81374239]
 : [0.001 0.001 0.001 0.001 0.001 0.001] [0.001 0.001 0.001 0.001 0.001 0.001]
 : q2.00
-: standard-example-h-0.1-Tw0-1000.png
-: -40873.22434604321 -20436.6121730216 1414.213562373095 707.1067811865474 2.0
-[[file:./.ob-jupyter/0cab23eb13f40f5fea5324eef79b0f9a34b9cf44.png]]
+: standard-example-h-0.03-Tw0-1000.png
+: -454146.9371782579 -227073.46858912893 1414.213562373095 707.1067811865474 2.0
+[[file:./.ob-jupyter/053f35574560ff748b6ad8f509cb419b584da3da.png]]
 :END:
 
 * MMR Hamiltonian
@@ -745,7 +744,7 @@
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
   readme = ""
   qs = [0.5, 1., 2.]
-  h=0.1
+  h=0.03
   
   for q in qs:
       #################
@@ -828,58 +827,23 @@
           results_arr[i,9] = np.std(np.abs(g1[it:]-g2[it:]))
       np.savetxt(f"varyTe-q{q}-h-{h}-Tw0-{int(Tw0)}.txt", results_arr, header=readme)
   
-      ###################
-      # WITHOUT SECULAR #
-      ###################
-      results_arr = np.zeros((Nqs, 10))
-      results_arr[:,0] = totmass
-      results_arr[:,1] = QS
-      results_arr[:,2] = TE1
-      results_arr[:,3] = TE2
-      for i, name in enumerate(NAMES):
-          data = np.load(os.path.join(DIRNAMES_NOSEC[i], name+".npz"))
-          teval  = data["teval"]
-          theta  = data["thetap"]
-          a1     = data["a1"]
-          a2     = data["a2"]
-          e1     = data["e1"]
-          e2     = data["e2"]
-          g1     = data["g1"]
-          g2     = data["g2"]
-          L1     = data["L1"]
-          L2     = data["L2"]
-          x1     = data["x1"]
-          y1     = data["y1"]
-          x2     = data["x2"]
-          y2     = data["y2"]
-  
-          it = int(len(teval)*0.9)
-  
-          results_arr[i,4] = np.average(e1[it:])
-          results_arr[i,5] = np.average(e2[it:])
-          results_arr[i,6] = np.average(np.abs(g1[it:]-g2[it:]))
-          results_arr[i,7] = np.std(e1[it:])
-          results_arr[i,8] = np.std(e2[it:])
-          results_arr[i,9] = np.std(np.abs(g1[it:]-g2[it:]))
-  
-      np.savetxt(f"varyTe-q{q}-h-{h}-Tw0-{int(Tw0)}-nosec.txt", results_arr, header=readme)
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-  ['./varyTe-q0.5-h-0.1-Tw0-1000' './varyTe-q0.5-h-0.1-Tw0-1000'
-   './varyTe-q0.5-h-0.1-Tw0-1000' './varyTe-q0.5-h-0.1-Tw0-1000'
-   './varyTe-q0.5-h-0.1-Tw0-1000' './varyTe-q0.5-h-0.1-Tw0-1000'
-   './varyTe-q0.5-h-0.1-Tw0-1000']
-  ['./varyTe-q1.0-h-0.1-Tw0-1000' './varyTe-q1.0-h-0.1-Tw0-1000'
-   './varyTe-q1.0-h-0.1-Tw0-1000' './varyTe-q1.0-h-0.1-Tw0-1000'
-   './varyTe-q1.0-h-0.1-Tw0-1000' './varyTe-q1.0-h-0.1-Tw0-1000'
-   './varyTe-q1.0-h-0.1-Tw0-1000']
-  ['./varyTe-q2.0-h-0.1-Tw0-1000' './varyTe-q2.0-h-0.1-Tw0-1000'
-   './varyTe-q2.0-h-0.1-Tw0-1000' './varyTe-q2.0-h-0.1-Tw0-1000'
-   './varyTe-q2.0-h-0.1-Tw0-1000' './varyTe-q2.0-h-0.1-Tw0-1000'
-   './varyTe-q2.0-h-0.1-Tw0-1000']
+  ['./varyTe-q0.5-h-0.03-Tw0-1000' './varyTe-q0.5-h-0.03-Tw0-1000'
+   './varyTe-q0.5-h-0.03-Tw0-1000' './varyTe-q0.5-h-0.03-Tw0-1000'
+   './varyTe-q0.5-h-0.03-Tw0-1000' './varyTe-q0.5-h-0.03-Tw0-1000'
+   './varyTe-q0.5-h-0.03-Tw0-1000']
+  ['./varyTe-q1.0-h-0.03-Tw0-1000' './varyTe-q1.0-h-0.03-Tw0-1000'
+   './varyTe-q1.0-h-0.03-Tw0-1000' './varyTe-q1.0-h-0.03-Tw0-1000'
+   './varyTe-q1.0-h-0.03-Tw0-1000' './varyTe-q1.0-h-0.03-Tw0-1000'
+   './varyTe-q1.0-h-0.03-Tw0-1000']
+  ['./varyTe-q2.0-h-0.03-Tw0-1000' './varyTe-q2.0-h-0.03-Tw0-1000'
+   './varyTe-q2.0-h-0.03-Tw0-1000' './varyTe-q2.0-h-0.03-Tw0-1000'
+   './varyTe-q2.0-h-0.03-Tw0-1000' './varyTe-q2.0-h-0.03-Tw0-1000'
+   './varyTe-q2.0-h-0.03-Tw0-1000']
 #+end_example
 
 ** eeq eccentricities
@@ -944,7 +908,7 @@
                      bottom=True, top=True, left=True, right=True,
                      direction="in", pad=10)
       ax[i].set_yticks([0.01, 0.03, 0.06, 0.09])
-      ax[i].set_ylim((0.0,0.1))
+      ax[i].set_ylim((0.0,0.03))
       ax[i].set_xscale("log")
   
       ax[i].set_ylabel(r"$e$", fontsize=fontsize)
@@ -960,10 +924,7 @@
 #+END_SRC
 
 #+RESULTS:
-:RESULTS:
-#+attr_org: :width 555
-[[file:./.ob-jupyter/750c458242d8088181620ba0f68ec02845532bae.png]]
-:END:
+[[file:./.ob-jupyter/98ae2193587ec90bcd951b01ae8b118a3c45158e.png]]
 
 ** Dpomega
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -1004,7 +965,7 @@
       ax[i].set_xscale("log")
   
       ax[i].set_yticks([175, 180, 185 ])
-      ax[i].set_ylim((170,190))
+      ax[i].set_ylim((177,183))
   
       Nplot = 100
       qplot = np.ones(Nplot)*q
@@ -1026,69 +987,7 @@
 #+END_SRC
 
 #+RESULTS:
-:RESULTS:
-#+attr_org: :width 546
-[[file:./.ob-jupyter/d22abf3344dfece8988049d53f4b9a413f7585f3.png]]
-:END:
-
-** NOT INCLUDED epsilon est
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-    os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
-    qs = [0.5, 1., 2.]
-    TM2 = -np.ones(Nqs)*5e4
-    fig, ax = plt.subplots(figsize=(8,12))
-    fontsize=32
-    for i,q in enumerate(qs):
-        results = np.loadtxt(f"q{q}-Tm2-{-int(TM2[i])}-Tw0-{int(Tw0)}.txt")
-        Te1 = results[:,2]
-        Te2 = results[:,3]
-        ratio = Te1/Te2
-        e1avg = results[:,4]
-        e2avg = results[:,5]
-        Dpomega = results[:,6]
-        ax.plot(ratio, e1avg/e2avg, c=f"C{i}", label=f"$q={q}$", ls="-", lw=4)
-        #ax.plot(ratio, e2avg, c=f"C{i}", label=r"$e_2$", ls="--")
-        ax.tick_params(which="both", labelsize=fontsize)
-        ax.set_ylim((0., 3))
-    
-        # there is no difference
-        #results = np.loadtxt(f"q{q}-Tm2-{-int(TM2[i])}-Tw0-{int(Tw0)}-nosec.txt")
-        #Te1 = results[:,2]
-        #Te2 = results[:,3]
-        #ratio = Te1/Te2
-        #e1avg = results[:,4]
-        #e2avg = results[:,5]
-        #Dpomega = results[:,6]
-        #ax.scatter(ratio, e1avg, marker="x", c="k", label=r"w/o sec.")
-        #ax.scatter(ratio, e2avg, marker="x", c="r", label=r"w/o sec.")
-    
-        alpha_0 = (j/(j+1))**(2./3.)
-        gamma = q*sqrt(alpha_0)
-        delta = j*(q/alpha_0 + 1)
-        ####################################################################
-        # I don't think this formula is correct. Check for a bug           #
-        # or algebra error. Still get close though, increasing factor of q #
-        ####################################################################
-        eps2 = np.abs(ratio/(delta-1)*(0.5*Te2/e2avg**2/TM2[0] + delta/gamma - 1))
-        eps = sqrt(eps2)
-    
-        ax.plot(ratio, eps, c=f"C{i}", ls="--", lw=4)
-    
-    ax.set_ylabel(r"$\epsilon$", fontsize=fontsize)
-    ax.set_xlabel(r"$T_{e,1}/T_{e,2}$", fontsize=fontsize)
-    
-    ax.legend(ncol=2, loc=4)
-    fig.subplots_adjust(wspace=.75)
-    os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
-    fig.savefig(f"epsilon-Tm2-{-int(TM2[i])}-Tw0-{int(Tw0)}.png", bbox_inches="tight")
-#+END_SRC
-
-#+RESULTS:
-:RESULTS:
-#+attr_org: :width 553
-[[file:./.ob-jupyter/587a9034cedb971e569dfde7709ade020a065e5a.png]]
-:END:
+[[file:./.ob-jupyter/2a7a8dafd91cbf9fb7f6fe7b408c0d030ad135a9.png]]
 
 * analytic vary Te
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -1372,14 +1271,15 @@
 ** example
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+  prefix = "inres"
   #################
   # CONFIGURATION #
   #################
   h = 0.03
   j = 2
-  a0 = 0.7
-  qRun = 16
-  Nqs = 16
+  a0 = 1.0
+  qRun = 9
+  Nqs = 9
   qs = np.ones(Nqs)*2
   overwrite = True
   totmass = 1.0e-4
@@ -1392,8 +1292,8 @@
   E1_0 = np.ones(Nqs)*0.001
   E2_0 = np.ones(Nqs)*0.001
   
-  e1ds = np.linspace(0,0.3,4)
-  e2ds = np.linspace(0,0.3,4)
+  e1ds = np.linspace(0,0.2,3)
+  e2ds = np.linspace(0,0.2,3)
   
   E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
   E1DS_single = E1DS_single.flatten()
@@ -1432,19 +1332,129 @@
   #############################################################
   cutoff_frac = 1.0
   CUTOFFS = TS*cutoff_frac
-  ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
-  NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+  NAMES = np.array([f"e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                     for i, qit in enumerate(QS)])
   
-  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+  DIRNAMES = np.array([f"./{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
                           in range(Nqs)])
   DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
-  i = 1
+  i = 2
   dirname = DIRNAMES[i]
   name = NAMES[i]+".npz"
   print(name)
   data = np.load(os.path.join(dirname, name))
+  teval  = data["teval"]
+  theta  = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  
+  alpha = a1/a2
+  theta1 = (theta+g1)%(2*np.pi)
+  theta2 = (theta+g2)%(2*np.pi)
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
+  hattheta1 = hattheta1+2*pi*(hattheta1<0.)
+  
+  fontsize=24
+  fig, ax = plt.subplots(4,2, figsize=(18,16))
+  tscale = 1.
+  
+  iplt0 = np.where(teval > 9e2)[0][0]
+  teval = teval[iplt0:]
+  
+  #iplt = np.where(teval > 5e3)[0][0]
+  iplt = len(teval)
+  
+  ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
+  ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
+  ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
+  ax[0,0].set_ylim((0.9, 1.7))
+  C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+                        markersize=10, label=r'$a_1$')
+  C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+                        markersize=10, label=r'$a_2$')
+  ax[0,0].legend(handles=[C0, C1], loc="upper right", ncol=2)
+  
+  ax[0,1].scatter(teval[:iplt]/tscale, (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05, c="k")
+  ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
+  ax[0,1].patch.set_visible(False)
+  #ax[0,1].set_ylim((1.5,1.75))
+  
+  ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
+  ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
+  
+  ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
+  ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
+  
+  ax[2,0].scatter(teval[:iplt]/tscale,e1[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
+  ax[2,0].set_ylabel(r"$e_1$", fontsize=fontsize)
+  ax[2,0].set_ylim(0, 0.3)
+  
+  ax[2,1].scatter(teval[:iplt]/tscale, e2[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
+  ax[2,1].set_ylabel(r"$e_2$", fontsize=fontsize)
+  ax[2,1].set_ylim(0, 0.3)
+  
+  ax[3,0].scatter(teval[:iplt]/tscale, deg_conv*hattheta1[:iplt], s=2, alpha=0.05,c="k")
+  ax[3,0].set_ylim((0., 360.))
+  ax[3,0].set_ylabel(r"$\hat\theta$", fontsize=fontsize)
+  
+  
+  Dpom = (g2[:iplt]-g1[:iplt])%(2*pi)
+  Dpom = Dpom - 2*pi*(Dpom>pi)
+  ax[3,1].scatter(teval[:iplt]/tscale, Dpom*deg_conv, s=2, alpha=0.05, c="k")
+  ax[3,1].set_ylabel(r"$\varpi_1-\varpi_2$", fontsize=fontsize)
+  ax[3,1].set_ylim((-180., 180.))
+  ax[3,1].axhline(y=0., c="r", ls="--", lw=3, label="$180^\circ$")
+  #ax[3,1].legend()
+  
+  fig.subplots_adjust(hspace=0.4, wspace=0.2)
+  
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.set_xlim((teval[:iplt][0]/tscale, teval[:iplt][-1]/tscale))
+      axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+      axi.yaxis.set_major_locator(MaxNLocator(4))
+      axi.set_xscale("log")
+  
+  
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+  fig.savefig(f"{prefix}-driving-example-h-{h}-Tw0-{int(Tw0)}-q{q}.png", bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: 9
+: e1d-0.200-e2d-0.000.npz
+[[file:./.ob-jupyter/89fa113459012b032417cded59d163585bb48be2.png]]
+:END:
+** example select by fname
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+  dirname = "inres-driveTe-h-0.01-mutot-1.0e-04-Tw0-10000-q2.0"
+  fname = "e1d-0.100-e2d-0.000"
+  data = np.load(os.path.join(dirname, fname+".npz"))
   teval  = data["teval"]
   theta  = data["thetap"]
   a1     = data["a1"]
@@ -1540,29 +1550,27 @@
       axi.set_xscale("log")
   
   
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
-  print(f"driving-example-h-{h}-Tw0-{int(Tw0)}.png")
-  fig.savefig(f"driving-example-h-{h}-Tw0-{int(Tw0)}.png", bbox_inches="tight")
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid")
+  fig.savefig(fname+".png", bbox_inches="tight")
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: 16
-: e1d-0.1-e2d-0.0.npz
-: driving-example-h-0.03-Tw0-1000.png
-[[file:./.ob-jupyter/78d7fcf3b94bda9fed42392ebbb18872de41145b.png]]
+#+attr_org: :width 30
+[[file:./.ob-jupyter/424a89e56f779dd22a16730a6cbd493d38bc3fa7.png]]
 :END:
 ** perp example
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+  prefix="inres"
   #################
   # CONFIGURATION #
   #################
   h = 0.03
   j = 2
-  a0 = 0.7
-  qRun = 16
-  Nqs = 16
+  a0 = 1.0
+  qRun = 9
+  Nqs = 9
   qs = np.ones(Nqs)*2
   overwrite = True
   totmass = 1.0e-4
@@ -1575,8 +1583,8 @@
   E1_0 = np.ones(Nqs)*0.001
   E2_0 = np.ones(Nqs)*0.001
   
-  e1ds = np.linspace(0,0.3,4)
-  e2ds = np.linspace(0,0.3,4)
+  e1ds = np.linspace(0,0.2,3)
+  e2ds = np.linspace(0,0.2,3)
   
   E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
   E1DS_single = E1DS_single.flatten()
@@ -1615,15 +1623,14 @@
   #############################################################
   cutoff_frac = 1.0
   CUTOFFS = TS*cutoff_frac
-  ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
-  NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+  NAMES = np.array([f"e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                     for i, qit in enumerate(QS)])
   
-  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+  DIRNAMES = np.array([f"./{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
                           in range(Nqs)])
   DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
-  i = 8
+  i = 6
   dirname = DIRNAMES[i]
   name = NAMES[i]+".npz"
   print(name)
@@ -1667,7 +1674,7 @@
   ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
   ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
   ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
-  ax[0,0].set_ylim((0.6, 1.3))
+  ax[0,0].set_ylim((0.9, 1.7))
   C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
                         markersize=10, label=r'$a_1$')
   C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
@@ -1724,22 +1731,25 @@
   
   
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
-  filename = f"driving-perpendicular-example-h-{h}-Tw0-{int(Tw0)}.png"
+  filename = f"{prefix}-driving-perpendicular-example-h-{h}-Tw0-{int(Tw0)}-q{q:0.1f}.png"
   fig.savefig(filename, bbox_inches="tight")
   print(filename)
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: 16
-: e1d-0.0-e2d-0.2.npz
-: driving-perpendicular-example-h-0.03-Tw0-1000.png
-[[file:./.ob-jupyter/ad0d5b00dc3816b9b8b7c33a6903e020dee4352a.png]]
+: 9
+: e1d-0.000-e2d-0.200.npz
+: inres-driving-perpendicular-example-h-0.03-Tw0-1000-q2.0.png
+[[file:./.ob-jupyter/9f4c810986f50bffff720d7ed5ef5a5902afe194.png]]
 :END:
 ** grid
 *** gen behaviortxt
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
+  
+  prefix = "closeres"
+  q = 2.0
   
   #################
   # CONFIGURATION #
@@ -1747,9 +1757,9 @@
   h = 0.03
   j = 2
   a0 = 0.7
-  qRun = 16
-  Nqs = 16
-  qs = np.ones(Nqs)*2.
+  qRun = 9
+  Nqs = 9
+  qs = np.ones(Nqs)*q
   overwrite = True
   totmass = 1.0e-4
   Tw0 = 1000
@@ -1761,8 +1771,8 @@
   E1_0 = np.ones(Nqs)*0.001
   E2_0 = np.ones(Nqs)*0.001
   
-  e1ds = np.linspace(0,0.3,4)
-  e2ds = np.linspace(0,0.3,4)
+  e1ds = np.linspace(0,0.2,3)
+  e2ds = np.linspace(0,0.2,3)
   
   E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
   E1DS_single = E1DS_single.flatten()
@@ -1801,13 +1811,14 @@
   #############################################################
   cutoff_frac = 1.0
   CUTOFFS = TS*cutoff_frac
-  ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
-  NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+  NAMES = np.array([f"e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                     for i, qit in enumerate(QS)])
   
-  DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+  #ALPHA2_0 = (1.5)**(2./3)*np.ones(Nqs)
+  #prefix = "inres"
+  #ALPHA2_0 = (1.55)**(2./3)*np.ones(Nqs)
+  DIRNAMES = np.array([f"./{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
                           in range(Nqs)])
-  DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
   aligned_arr = np.zeros((Nqs, 13))
   aligned_arr[:,0] = totmass
@@ -1860,17 +1871,12 @@
       aligned_arr[i,10] = hattheta1_avg
       aligned_arr[i,11] = hattheta1_std
       aligned_arr[i,12] = inres
-  np.savetxt(os.path.join(".", f"behaviors-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}.txt"), aligned_arr)
-#+END_SRC
-
-#+RESULTS:
-: 16
-*** plot grid
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  np.savetxt(os.path.join(".", f"behaviors-{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[0]}.txt"), aligned_arr)
+  
   os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
   h = 0.03
   totmass = 1e-4
-  filename = f"behaviors-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}.txt"
+  filename = f"behaviors-{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{q:0.1f}.txt"
   qRun = 16
   QS_it = [2.0]
   fig, ax = plt.subplots(len(QS_it)*1,2,figsize=(10,5*len(QS_it)))
@@ -1935,8 +1941,8 @@
       #ax[i,1].set_ylim(0,0.3)
   ax[0,1].text(0.05,0.35,r"$y=2x$")
   ax[0,1].text(0.25,0.35,r"$y=x$",c="r")
-  ax[0,0].set_ylim(-0.05, 0.35)
-  ax[0,0].set_xlim(-0.05, 0.35)
+  ax[0,0].set_ylim(-0.05, 0.25)
+  ax[0,0].set_xlim(-0.05, 0.25)
   
   for axi in ax.flatten():
       axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
@@ -1948,20 +1954,16 @@
   
   os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
   fig.savefig(os.path.join(".",
-              "Rhat-grid.png"),
+              f"Rhat-grid-q{q}-{prefix}.png"),
               bbox_inches="tight")
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: [-3.12127726  0.10886437  0.23641767  0.28378325  2.99980532  0.02076678
-:   0.22173402 -1.49893254 -3.08953736  2.38227561 -0.02686384 -1.53963981
-:  -2.51670634  2.91886473]
-: [False  True  True  True False  True  True False False False  True False
-:  False False] [False False False False False False False  True False False False  True
-:  False False] [ True False False False  True False False False  True  True False False
-:   True  True]
-[[file:./.ob-jupyter/e2f546ffab4d0bc71dfe8b209c015425d7753284.png]]
+: 9
+: [-3.12103337  0.10232788]
+: [False  True] [False False] [ True False]
+[[file:./.ob-jupyter/c1d444950769b745decf1859482678d6cad58966.png]]
 :END:
 
 ** e vectors
@@ -1969,15 +1971,17 @@
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   def plotorbit(plot_iter, cuts, fig, ax):
       os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
+      prefix = "inres"
+      q = 2.0
       #################
       # CONFIGURATION #
       #################
       h = 0.03
       j = 2
-      a0 = 0.7
-      qRun = 16
-      Nqs = 16
-      qs = np.ones(Nqs)*2.
+      a0 =1.0
+      qRun = 9
+      Nqs = 9
+      qs = np.ones(Nqs)*q
       overwrite = True
       totmass = 1.0e-4
       Tw0 = 1000
@@ -1989,8 +1993,8 @@
       E1_0 = np.ones(Nqs)*0.001
       E2_0 = np.ones(Nqs)*0.001
   
-      e1ds = np.linspace(0,0.3,4)
-      e2ds = np.linspace(0,0.3,4)
+      e1ds = np.linspace(0,0.2,3)
+      e2ds = np.linspace(0,0.2,3)
   
       E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
       E1DS_single = E1DS_single.flatten()
@@ -2029,11 +2033,10 @@
       #############################################################
       cutoff_frac = 1.0
       CUTOFFS = TS*cutoff_frac
-      ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
-      NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+      NAMES = np.array([f"e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                         for i, qit in enumerate(QS)])
   
-      DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+      DIRNAMES = np.array([f"./{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
                               in range(Nqs)])
       DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
@@ -2081,18 +2084,18 @@
           mu1 = MU1[0]
           mu2 = MU2[0]
           mutilde = mu1*mu2/(mu1+mu2)
-          e1 = e1/mu2**(1./3)
-          e2 = e2/mu1**(1./3)
+          #e1 = e1/mu2**(1./3)
+          #e2 = e2/mu1**(1./3)
           #ehat = ehat*(mu2/mutilde/q)**(1./3)
-          ehat = ehat/(q*mutilde)**(1./3)
+          #ehat = ehat/(q*mutilde)**(1./3)
   
           if cut_iter == cuts[0]:
               ax.scatter(e1*cos(pi),e1*sin(pi),
-                         c="k",label=r"$\propto\mathbf{e_1}$",zorder=2)
+                         c="k",label=r"$\mathbf{e_1}$",zorder=2)
               ax.scatter(e2*cos(pi-Dpoms),e2*sin(pi-Dpoms),
-                         c="r",label=r"$\propto\mathbf{e_2}$",zorder=1)
+                         c="r",label=r"$\mathbf{e_2}$",zorder=1)
               ax.scatter(ehat*cos(pi-(g1-hatgamma1)),ehat*sin(pi-(g1-hatgamma1)),
-                         c="g",label=r"$\propto\mathbf{\hat e}$",zorder=0)
+                         c="g",label=r"$\mathbf{\hat e}$",zorder=0)
           else:
               ax.scatter(e1*cos(pi),e1*sin(pi),
                          c="k",zorder=2)
@@ -2126,10 +2129,10 @@
   
   snaps = np.linspace(0.0,0.003,100)
   lengs = (snaps*300000).astype(int)
-  plotorbit(1,lengs, fig, ax[1,0])
+  plotorbit(2,lengs, fig, ax[1,0])
   snaps = np.linspace(0.8,0.9,100)
   lengs = (snaps*300000).astype(int)
-  plotorbit(1,lengs, fig, ax[1,1])
+  plotorbit(2,lengs, fig, ax[1,1])
   
   snaps = np.linspace(0.0,0.003,100)
   lengs = (snaps*300000).astype(int)
@@ -2138,19 +2141,23 @@
   lengs = (snaps*300000).astype(int)
   plotorbit(8,lengs, fig, ax[2,1])
   
-  
   for axi in ax.flatten():
-      axi.set_xlim(-6,4)
-      axi.set_ylim(-4,6)
-      axi.set_ylabel(r"$\propto\sqrt R\sin\gamma$")
-      axi.set_xlabel(r"$\propto\sqrt R\cos\gamma$")
+      axi.set_xlim(-0.25,0.2)
+      axi.set_ylim(-0.2,0.25)
+      axi.set_ylabel(r"$e\sin\gamma$")
+      axi.set_xlabel(r"$e\cos\gamma$")
   fig.subplots_adjust(wspace=0.3,hspace=0.4)
-  ax[0,0].text(0.5,4,r"$e_{1d}=0$"+"\n"+r"$e_{2d}=0$")
-  ax[1,0].text(0.5,4,r"$e_{1d}=0.1$"+"\n"+ r"$e_{2d}=0$")
-  ax[2,0].text(0.5,4,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.1$")
+  ax[0,0].text(0.01,0.15,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0$")
+  ax[1,0].text(0.01,0.15,r"$e_{1d}=0.2$"+"\n"+ r"$e_{2d}=0$")
+  ax[2,0].text(0.01,0.15,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.2$")
   
-  ax[0,0].text(-5,-3,r"$t=0-127$ orbits",c="r")
-  ax[0,1].text(-5,-3,r"$t=34-38,000$ orbits",c="r")
+  ax[0,0].text(-0.17,-.17,r"$t=0-127$ orbits",c="r")
+  ax[0,1].text(-0.17,-.17,r"$t=34-38,000$ orbits",c="r")
+  
+  ax[1,1].set_xlim(-.5,.4)
+  ax[1,1].set_ylim(-.4,.5)
+  ax[2,1].set_xlim(-.5,.4)
+  ax[2,1].set_ylim(-.4,.5)
   
   ax[0,0].legend(loc="upper left")
   fig.suptitle(r"$\mathbf{e}$ vectors in $\mathbf{e_1}$ rest frame")
@@ -2167,26 +2174,26 @@
 #+RESULTS:
 :RESULTS:
 #+begin_example
-  16
-  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.0.npz
+  9
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.000-e2d-0.000.npz
   0.0 127.2796448790615
-  16
-  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.0.npz
+  9
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.000-e2d-0.000.npz
   33941.2386344164 38183.89346371845
-  16
-  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.1-e2d-0.0.npz
+  9
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.000.npz
   0.0 127.2796448790615
-  16
-  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.1-e2d-0.0.npz
+  9
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.000.npz
   33941.2386344164 38183.89346371845
-  16
-  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
+  9
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.200.npz
   0.0 127.2796448790615
-  16
-  ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
+  9
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.200.npz
   33941.2386344164 38183.89346371845
 #+end_example
-[[file:./.ob-jupyter/339f74a9050960f7e6b916602826f06ea9944d0b.png]]
+[[file:./.ob-jupyter/c48d01a09bc0f7b6a6158af8ccf63d72e790823a.png]]
 :END:
 *** in e hat ref frame
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -2376,16 +2383,15 @@
   lengs = (snaps*300000).astype(int)
   plotorbit(8,lengs, fig, ax[2,1])
   
-  
   for axi in ax.flatten():
-      axi.set_xlim(-0.2,0.2)
-      axi.set_ylim(-0.2,0.2)
+      axi.set_xlim(-0.25,0.2)
+      axi.set_ylim(-0.2,0.25)
       axi.set_ylabel(r"$e\sin\gamma$")
       axi.set_xlabel(r"$e\cos\gamma$")
   fig.subplots_adjust(wspace=0.3,hspace=0.4)
-  ax[0,0].text(0.01,0.15,r"$e_{1d}=e_{2d}=0$")
-  ax[1,0].text(0.01,0.1,r"$e_{1d}=0.1$"+"\n"+ r"$e_{2d}=0$")
-  ax[2,0].text(0.01,0.1,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.1$")
+  ax[0,0].text(0.01,0.15,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0$")
+  ax[1,0].text(0.01,0.15,r"$e_{1d}=0.1$"+"\n"+ r"$e_{2d}=0$")
+  ax[2,0].text(0.01,0.15,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0.1$")
   
   ax[0,0].text(-0.17,-.17,r"$t=0-127$ orbits",c="r")
   ax[0,1].text(-0.17,-.17,r"$t=34-38,000$ orbits",c="r")
@@ -2423,22 +2429,22 @@
   ./driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.0-e2d-0.2.npz
   33941.2386344164 38183.89346371845
 #+end_example
-[[file:./.ob-jupyter/0388510eaf416678549044beec3a9f0207ad3dcf.png]]
+[[file:./.ob-jupyter/c47e3ef5373ca675026c22b952851ad793e52579.png]]
 :END:
 * apsidal alignment explanation
 ** S2 combined plot
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  def plot_sS1S2(iplot, ax1, ax2):
+  def plot_sS1S2(iplot, ax1, ax2, prefix, q):
       os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
       #################
       # CONFIGURATION #
       #################
       h = 0.03
       j = 2
-      a0 = 0.7
-      qRun = 16
-      Nqs = 16
-      qs = np.ones(Nqs)*2
+      a0 = 1.0
+      qRun = 9
+      Nqs = 9
+      qs = np.ones(Nqs)*q
       overwrite = True
       totmass = 1.0e-4
       Tw0 = 1000
@@ -2450,8 +2456,8 @@
       E1_0 = np.ones(Nqs)*0.001
       E2_0 = np.ones(Nqs)*0.001
   
-      e1ds = np.linspace(0,0.3,4)
-      e2ds = np.linspace(0,0.3,4)
+      e1ds = np.linspace(0,0.2,3)
+      e2ds = np.linspace(0,0.2,3)
   
       E1DS_single, E2DS_single = np.meshgrid(e1ds, e2ds)
       E1DS_single = E1DS_single.flatten()
@@ -2491,10 +2497,10 @@
       cutoff_frac = 1.0
       CUTOFFS = TS*cutoff_frac
       ALPHA2_0 = (3/2.)**(2./3)*np.ones(Nqs) #*(0.95*(QS>=1) + 1.05*(QS<1))
-      NAMES = np.array([f"e1d-{E1DS[i]:0.1f}-e2d-{E2DS[i]:0.1f}"
+      NAMES = np.array([f"e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                         for i, qit in enumerate(QS)])
   
-      DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
+      DIRNAMES = np.array([f"./{prefix}-driveTe-h-{h:0.2f}-mutot-{totmass:0.1e}-Tw0-{Tw0}-q{QS[i]:0.1f}" for i
                               in range(Nqs)])
       DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
   
@@ -2574,16 +2580,18 @@
       axi.set_xlabel(r"$t$ [kyr]", fontsize=fontsize)
       axi.yaxis.set_major_locator(MaxNLocator(4))
   
-  plot_sS1S2(0, ax[0,0], ax[0,1])
-  plot_sS1S2(1, ax[1,0], ax[1,1])
-  plot_sS1S2(8, ax[2,0], ax[2,1])
+  prefix = "inres"
+  q = 2.0
+  plot_sS1S2(0, ax[0,0], ax[0,1], prefix, q)
+  plot_sS1S2(2, ax[1,0], ax[1,1], prefix, q)
+  plot_sS1S2(6, ax[2,0], ax[2,1], prefix, q)
   
-  ax[1,0].set_ylim((-10,10))
   ax[0,0].set_ylim((-1,1))
+  ax[1,0].set_ylim((-10,20))
   ax[2,0].set_ylim((-10,10))
   
   ax[0,1].set_ylim((0,0.0005))
-  ax[1,1].set_ylim((0,.1))
+  ax[1,1].set_ylim((0,1.))
   ax[2,1].set_ylim((0,.2))
   #ax[1,1].set_ylim((-1e-6,1e-6))
   #ax[0,1].set_ylim((-1.5e-10,1.5e-10))
@@ -2600,18 +2608,18 @@
       ax[i,0].text(0.5, 0.1, r"$e_{1d}=$ "+f"{eds[0]}, " + r"$e_{2d}=$ " +f"{eds[1]}", fontsize=fontsize, transform=ax[i,0].transAxes)
   
   os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
-  fig.savefig("S2-conserved.png",bbox_inches="tight")
+  fig.savefig(f"S2-conserved-{prefix}-q{q:0.1f}.png",bbox_inches="tight")
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: 16
-: e1d-0.0-e2d-0.0.npz
-: 16
-: e1d-0.1-e2d-0.0.npz
-: 16
-: e1d-0.0-e2d-0.2.npz
-[[file:./.ob-jupyter/d96935beedea18f86f1f2638ac114ba147f98618.png]]
+: 9
+: e1d-0.000-e2d-0.000.npz
+: 9
+: e1d-0.200-e2d-0.000.npz
+: 9
+: e1d-0.000-e2d-0.200.npz
+[[file:./.ob-jupyter/5695b29dc0be9ea7a7ccdaf2b3cee439762fc51b.png]]
 :END:
 
 ** S2 conserved quantity

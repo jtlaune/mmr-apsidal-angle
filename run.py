@@ -594,7 +594,7 @@ class comp_mass_intH(resonance):
         self.secular = secular
         self.verbose = verbose
         self.T = self.T0*t1
-        int_cond_min = check_ratio_cm(0.5, self.q)
+        int_cond_min = check_ratio_cm(0.6, self.q)
         int_cond_max = check_ratio_cm(0.9, self.q)
 
         Lambda1_0 = self.q * 1
