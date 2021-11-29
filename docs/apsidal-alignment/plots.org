@@ -1272,6 +1272,7 @@
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
   prefix = "inres"
+  q = 2.0
   #################
   # CONFIGURATION #
   #################
@@ -1280,7 +1281,7 @@
   a0 = 1.0
   qRun = 9
   Nqs = 9
-  qs = np.ones(Nqs)*2
+  qs = np.ones(Nqs)*q
   overwrite = True
   totmass = 1.0e-4
   Tw0 = 1000
@@ -1440,124 +1441,17 @@
   
   
   os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
-  fig.savefig(f"{prefix}-driving-example-h-{h}-Tw0-{int(Tw0)}-q{q}.png", bbox_inches="tight")
+  figname = f"{prefix}-driving-example-h-{h}-Tw0-{int(Tw0)}-q{q}.png"
+  print(figname)
+  fig.savefig(figname, bbox_inches="tight")
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 : 9
 : e1d-0.200-e2d-0.000.npz
-[[file:./.ob-jupyter/89fa113459012b032417cded59d163585bb48be2.png]]
-:END:
-** example select by fname
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
-  dirname = "inres-driveTe-h-0.01-mutot-1.0e-04-Tw0-10000-q2.0"
-  fname = "e1d-0.100-e2d-0.000"
-  data = np.load(os.path.join(dirname, fname+".npz"))
-  teval  = data["teval"]
-  theta  = data["thetap"]
-  a1     = data["a1"]
-  a2     = data["a2"]
-  e1     = data["e1"]
-  e2     = data["e2"]
-  g1     = data["g1"]
-  g2     = data["g2"]
-  L1     = data["L1"]
-  L2     = data["L2"]
-  x1     = data["x1"]
-  y1     = data["y1"]
-  x2     = data["x2"]
-  y2     = data["y2"]
-  
-  alpha = a1/a2
-  theta1 = (theta+g1)%(2*np.pi)
-  theta2 = (theta+g2)%(2*np.pi)
-  f1 = A(alpha, j)
-  f2 = B(alpha, j)
-  barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
-  barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
-  hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
-                        e1*cos(theta1) + f2/f1*e2*cos(theta2))
-  hattheta1 = hattheta1+2*pi*(hattheta1<0.)
-  
-  fontsize=24
-  fig, ax = plt.subplots(4,2, figsize=(18,16))
-  tscale = 1.
-  
-  iplt0 = np.where(teval > 9e2)[0][0]
-  teval = teval[iplt0:]
-  
-  #iplt = np.where(teval > 5e3)[0][0]
-  iplt = len(teval)
-  
-  ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
-  ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
-  ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
-  ax[0,0].set_ylim((0.6, 1.3))
-  C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
-                        markersize=10, label=r'$a_1$')
-  C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
-                        markersize=10, label=r'$a_2$')
-  ax[0,0].legend(handles=[C0, C1], loc="upper right", ncol=2)
-  
-  ax[0,1].scatter(teval[:iplt]/tscale, (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05, c="k")
-  ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
-  ax[0,1].patch.set_visible(False)
-  #ax[0,1].set_ylim((1.5,1.75))
-  
-  ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
-  ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
-  ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
-  
-  ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
-  ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
-  ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
-  
-  ax[2,0].scatter(teval[:iplt]/tscale,e1[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
-  ax[2,0].set_ylabel(r"$e_1$", fontsize=fontsize)
-  ax[2,0].set_ylim(0, 0.12)
-  
-  ax[2,1].scatter(teval[:iplt]/tscale, e2[:iplt], s=2, alpha=0.05, c="k", label=r"$e_1$")
-  ax[2,1].set_ylabel(r"$e_2$", fontsize=fontsize)
-  ax[2,1].set_ylim(0, 0.12)
-  
-  ax[3,0].scatter(teval[:iplt]/tscale, deg_conv*hattheta1[:iplt], s=2, alpha=0.05,c="k")
-  ax[3,0].set_ylim((0., 360.))
-  ax[3,0].set_ylabel(r"$\hat\theta$", fontsize=fontsize)
-  
-  
-  Dpom = (g2[:iplt]-g1[:iplt])%(2*pi)
-  Dpom = Dpom - 2*pi*(Dpom>pi)
-  ax[3,1].scatter(teval[:iplt]/tscale, Dpom*deg_conv, s=2, alpha=0.05, c="k")
-  ax[3,1].set_ylabel(r"$\varpi_1-\varpi_2$", fontsize=fontsize)
-  ax[3,1].set_ylim((-180., 180.))
-  ax[3,1].axhline(y=0., c="r", ls="--", lw=3, label="$180^\circ$")
-  #ax[3,1].legend()
-  
-  fig.subplots_adjust(hspace=0.4, wspace=0.2)
-  
-  for axi in ax.flatten():
-      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
-                      bottom=True, top=True, left=True, right=True,
-                      direction="in", pad=10)
-      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
-                      bottom=True, top=True, left=True, right=True,
-                      direction="in", pad=10)
-      axi.set_xlim((teval[:iplt][0]/tscale, teval[:iplt][-1]/tscale))
-      axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
-      axi.yaxis.set_major_locator(MaxNLocator(4))
-      axi.set_xscale("log")
-  
-  
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid")
-  fig.savefig(fname+".png", bbox_inches="tight")
-#+END_SRC
-
-#+RESULTS:
-:RESULTS:
-#+attr_org: :width 30
-[[file:./.ob-jupyter/424a89e56f779dd22a16730a6cbd493d38bc3fa7.png]]
+: inres-driving-example-h-0.03-Tw0-1000-q2.0.png
+[[file:./.ob-jupyter/b09cca685ebc99d519608c6250cb2b26b58c5f8d.png]]
 :END:
 ** perp example
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -1749,7 +1643,7 @@
   os.chdir("/home/jtlaune/multi-planet-architecture/runs/Rhat-grid/")
   
   prefix = "closeres"
-  q = 2.0
+  q = 0.5
   
   #################
   # CONFIGURATION #
@@ -1931,15 +1825,22 @@
       ax[i,1].set_xlabel(r"$e_{1}$ final",fontsize=fontsize)
       ax[i,1].set_ylabel(r"$e_{2}$ final",fontsize=fontsize)
   
-      xlin = np.linspace(0,0.5,100)
-      ax[i,1].plot(xlin, qit*xlin, "k--", label=r"$y=qx$")
-      ax[i,1].plot(xlin, xlin, "r--", label=r"$y=x$")
       ax[i,1].set_xlim(0.,0.4)
       ax[i,1].set_ylim(0.,0.4)
       fig.subplots_adjust(wspace=0.4)
       #ax[i,1].set_xlim(0,0.6)
       #ax[i,1].set_ylim(0,0.3)
-  ax[0,1].text(0.05,0.35,r"$y=2x$")
+  
+  xlin = np.linspace(0,0.5,100)
+  ax[0,1].plot(xlin, xlin, "r--", label=r"$y=x$")
+  
+  if q > 1:
+      ax[0,1].plot(xlin, q*xlin, "k--", label=r"$y=qx$")
+      ax[0,1].text(0.05,0.35,r"$y=2x$")
+  if q < 1:
+      ax[0,1].plot(xlin, q*xlin, "k--", label=r"$y=qx$")
+      ax[0,1].text(0.15,0.05,r"$y=0.5x$")
+  
   ax[0,1].text(0.25,0.35,r"$y=x$",c="r")
   ax[0,0].set_ylim(-0.05, 0.25)
   ax[0,0].set_xlim(-0.05, 0.25)
@@ -1961,9 +1862,9 @@
 #+RESULTS:
 :RESULTS:
 : 9
-: [-3.12103337  0.10232788]
-: [False  True] [False False] [ True False]
-[[file:./.ob-jupyter/c1d444950769b745decf1859482678d6cad58966.png]]
+: [3.13122984 3.08980855 2.99904623 0.01224215]
+: [False False False  True] [False False False False] [ True  True  True False]
+[[file:./.ob-jupyter/b21f5da9154044364e40587577ccd6584eac33e6.png]]
 :END:
 
 ** e vectors
@@ -2084,6 +1985,8 @@
           mu1 = MU1[0]
           mu2 = MU2[0]
           mutilde = mu1*mu2/(mu1+mu2)
+          e1 = np.abs(f1)*e1
+          e2 = np.abs(f2)*e2
           #e1 = e1/mu2**(1./3)
           #e2 = e2/mu1**(1./3)
           #ehat = ehat*(mu2/mutilde/q)**(1./3)
@@ -2091,9 +1994,9 @@
   
           if cut_iter == cuts[0]:
               ax.scatter(e1*cos(pi),e1*sin(pi),
-                         c="k",label=r"$\mathbf{e_1}$",zorder=2)
+                         c="k",label=r"$|f_1|\mathbf{e_1}$",zorder=2)
               ax.scatter(e2*cos(pi-Dpoms),e2*sin(pi-Dpoms),
-                         c="r",label=r"$\mathbf{e_2}$",zorder=1)
+                         c="r",label=r"$|f_2|\mathbf{e_2}$",zorder=1)
               ax.scatter(ehat*cos(pi-(g1-hatgamma1)),ehat*sin(pi-(g1-hatgamma1)),
                          c="g",label=r"$\mathbf{\hat e}$",zorder=0)
           else:
@@ -2136,16 +2039,16 @@
   
   snaps = np.linspace(0.0,0.003,100)
   lengs = (snaps*300000).astype(int)
-  plotorbit(8,lengs, fig, ax[2,0])
+  plotorbit(6,lengs, fig, ax[2,0])
   snaps = np.linspace(0.8,0.9,100)
   lengs = (snaps*300000).astype(int)
-  plotorbit(8,lengs, fig, ax[2,1])
+  plotorbit(6,lengs, fig, ax[2,1])
   
   for axi in ax.flatten():
       axi.set_xlim(-0.25,0.2)
       axi.set_ylim(-0.2,0.25)
-      axi.set_ylabel(r"$e\sin\gamma$")
-      axi.set_xlabel(r"$e\cos\gamma$")
+      axi.set_ylabel(r"$X$")
+      axi.set_xlabel(r"$Y$")
   fig.subplots_adjust(wspace=0.3,hspace=0.4)
   ax[0,0].text(0.01,0.15,r"$e_{1d}=0$"+"\n"+ r"$e_{2d}=0$")
   ax[1,0].text(0.01,0.15,r"$e_{1d}=0.2$"+"\n"+ r"$e_{2d}=0$")
@@ -2154,10 +2057,10 @@
   ax[0,0].text(-0.17,-.17,r"$t=0-127$ orbits",c="r")
   ax[0,1].text(-0.17,-.17,r"$t=34-38,000$ orbits",c="r")
   
-  ax[1,1].set_xlim(-.5,.4)
-  ax[1,1].set_ylim(-.4,.5)
-  ax[2,1].set_xlim(-.5,.4)
-  ax[2,1].set_ylim(-.4,.5)
+  ax[1,1].set_xlim(-.7,.7)
+  ax[1,1].set_ylim(-.7,.7)
+  ax[2,1].set_xlim(-.7,.7)
+  ax[2,1].set_ylim(-.7,.7)
   
   ax[0,0].legend(loc="upper left")
   fig.suptitle(r"$\mathbf{e}$ vectors in $\mathbf{e_1}$ rest frame")
@@ -2166,6 +2069,7 @@
   #ax[1,1].arrow(0,0,-0.1,0,width=0.005,color="b",ls="--", length_includes_head=True)
   #ax[2,0].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
   #ax[2,1].arrow(0,0,0.1,0, width=0.005,color="r",ls="--")
+  fig.subplots_adjust(wspace=0.5)
   
   os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
   fig.savefig("relative-geometry.png",bbox_inches="tight")
@@ -2176,24 +2080,24 @@
 #+begin_example
   9
   ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.000-e2d-0.000.npz
-  0.0 127.2796448790615
+  0.0 254.559289758123
   9
   ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.000-e2d-0.000.npz
-  33941.2386344164 38183.89346371845
+  67882.4772688328 76367.7869274369
   9
   ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.000.npz
-  0.0 127.2796448790615
+  0.0 254.559289758123
   9
   ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.000.npz
-  33941.2386344164 38183.89346371845
+  67882.4772688328 76367.7869274369
   9
-  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.200.npz
-  0.0 127.2796448790615
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.000-e2d-0.200.npz
+  0.0 254.559289758123
   9
-  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.200-e2d-0.200.npz
-  33941.2386344164 38183.89346371845
+  ./inres-driveTe-h-0.03-mutot-1.0e-04-Tw0-1000-q2.0/e1d-0.000-e2d-0.200.npz
+  67882.4772688328 76367.7869274369
 #+end_example
-[[file:./.ob-jupyter/c48d01a09bc0f7b6a6158af8ccf63d72e790823a.png]]
+[[file:./.ob-jupyter/bd795a13132870677e2d7f84a57acc461272c4c3.png]]
 :END:
 *** in e hat ref frame
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -2431,6 +2335,148 @@
 #+end_example
 [[file:./.ob-jupyter/c47e3ef5373ca675026c22b952851ad793e52579.png]]
 :END:
+** example select by fname
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  prefix = "closeres"
+  q = 0.5
+  for e1d in [0., 0.1, 0.2]:
+      for e2d in [0., 0.1, 0.2]:
+  
+          os.chdir("/home/jtlaune/Dropbox/" \
+                   "multi-planet-architecture/runs/Rhat-grid/")
+          dirname = (f"{prefix}-driveTe-h-0.03-mutot-1.0e-04" \
+                     f"-Tw0-1000-q{q:0.1f}")
+          fname = f"e1d-{e1d:0.3f}-e2d-{e2d:0.3f}"
+          data = np.load(os.path.join(dirname, fname+".npz"))
+          teval  = data["teval"]
+          theta  = data["thetap"]
+          a1     = data["a1"]
+          a2     = data["a2"]
+          e1     = data["e1"]
+          e2     = data["e2"]
+          g1     = data["g1"]
+          g2     = data["g2"]
+          L1     = data["L1"]
+          L2     = data["L2"]
+          x1     = data["x1"]
+          y1     = data["y1"]
+          x2     = data["x2"]
+          y2     = data["y2"]
+  
+          alpha = a1/a2
+          theta1 = (theta+g1)%(2*np.pi)
+          theta2 = (theta+g2)%(2*np.pi)
+          f1 = A(alpha, j)
+          f2 = B(alpha, j)
+          barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
+          barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
+          hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                                e1*cos(theta1) + f2/f1*e2*cos(theta2))
+          hattheta1 = hattheta1+2*pi*(hattheta1<0.)
+  
+          fontsize=24
+          fig, ax = plt.subplots(4,2, figsize=(18,16))
+          tscale = 1.
+  
+          iplt0 = np.where(teval > 9e2)[0][0]
+          teval = teval[iplt0:]
+  
+          #iplt = np.where(teval > 5e3)[0][0]
+          iplt = len(teval)
+  
+          ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2,
+                          alpha=0.05, c="k")
+          ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2,
+                          alpha=0.05, c="r")
+          ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
+          C0 = mpl.lines.Line2D([], [], color='k', marker="o",
+                                linestyle='None', markersize=10,
+                                label=r'$a_1$')
+          C1 = mpl.lines.Line2D([], [], color='r', marker="o",
+                                linestyle='None', markersize=10,
+                                label=r'$a_2$')
+          ax[0,0].legend(handles=[C0, C1], loc="upper right", ncol=2)
+  
+          ax[0,1].scatter(teval[:iplt]/tscale,
+                          (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05,
+                          c="k")
+          ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
+          ax[0,1].patch.set_visible(False)
+          #ax[0,1].set_ylim((1.5,1.75))
+  
+          ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv,
+                          s=2, alpha=0.05, c="k")
+          ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
+          ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
+  
+          ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv,
+                          s=2, alpha=0.05, c="k")
+          ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
+          ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
+  
+          ax[2,0].scatter(teval[:iplt]/tscale,e1[:iplt], s=2,
+                          alpha=0.05, c="k", label=r"$e_1$")
+          ax[2,0].set_ylabel(r"$e_1$", fontsize=fontsize)
+  
+          ax[2,1].scatter(teval[:iplt]/tscale, e2[:iplt], s=2,
+                          alpha=0.05, c="k", label=r"$e_1$")
+          ax[2,1].set_ylabel(r"$e_2$", fontsize=fontsize)
+  
+          ax[3,0].scatter(teval[:iplt]/tscale,
+                          deg_conv*hattheta1[:iplt], s=2, alpha=0.05,c="k")
+          ax[3,0].set_ylim((0., 360.))
+          ax[3,0].set_ylabel(r"$\hat\theta$", fontsize=fontsize)
+  
+  
+          Dpom = (g2[:iplt]-g1[:iplt])%(2*pi)
+          Dpom = Dpom - 2*pi*(Dpom>pi)
+          ax[3,1].scatter(teval[:iplt]/tscale, Dpom*deg_conv, s=2,
+                          alpha=0.05, c="k")
+          ax[3,1].set_ylabel(r"$\varpi_1-\varpi_2$", fontsize=fontsize)
+          ax[3,1].set_ylim((-180., 180.))
+          ax[3,1].axhline(y=0., c="r", ls="--", lw=3, label="$180^\circ$")
+  
+          fig.subplots_adjust(hspace=0.4, wspace=0.2)
+  
+          for axi in ax.flatten():
+              axi.tick_params(which="major", labelsize=fontsize,
+                              width=3, length=8, bottom=True, top=True,
+                              left=True, right=True, direction="in",
+                              pad=10)
+              axi.tick_params(which="minor", labelsize=fontsize,
+                              width=3, length=4, bottom=True, top=True,
+                              left=True, right=True, direction="in",
+                              pad=10)
+              axi.set_xlim((teval[:iplt][0]/tscale,
+                            teval[:iplt][-1]/tscale))
+              axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+              axi.yaxis.set_major_locator(MaxNLocator(4))
+              axi.set_xscale("log")
+          if prefix == "closeres":
+              initstr = r"$P_2/P_1(t=0)$=1.55 "
+          elif prefix == "inres":
+              initstr = r"$P_2/P_1(t=0)$=1.5 "
+  
+          fig.suptitle(initstr+r"$e_{1d}$="+f"{e1d:0.1f}"
+                       +r" $e_{2d}$="+f"{e2d:0.1f}"
+                       +r" $q=$"+f"{q:0.1f}")
+          os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/" \
+                   "docs/apsidal-alignment/addenda/")
+          fig.savefig(dirname+"-"+fname+".png", bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+[[file:./.ob-jupyter/c9589532cb6d3e69c865717fb0f094ff710e2e3a.png]]
+[[file:./.ob-jupyter/dad1995efaad3a0159b01c28ec7160b44f012b4c.png]]
+[[file:./.ob-jupyter/e962a50fbf5b71c0ad341036f7280e07f144cad0.png]]
+[[file:./.ob-jupyter/fdc0997977af168a2f2179e478fa9796bc5607e1.png]]
+[[file:./.ob-jupyter/3c2460b282e7df3f5a9ff2fa48c0b33adcda635d.png]]
+[[file:./.ob-jupyter/8e1c3517a5daaa080b60b29e91ce0b7e77e5d1bc.png]]
+[[file:./.ob-jupyter/c1879a74c59aa137f4e0d7d1bb82b2688da2d282.png]]
+[[file:./.ob-jupyter/dddfc2539e7aa3837842e2b5e0b2b1dba47f6429.png]]
+[[file:./.ob-jupyter/ac19d668ddcdf7f6109168dde0156e53fc075db2.png]]
+:END:
 * apsidal alignment explanation
 ** S2 combined plot
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -2604,7 +2650,7 @@
   ax[0,0].legend(bbox_to_anchor=(0.21, 1.2),ncol=2,loc="center left", fancybox=True, shadow=True, handles=[C0, C1])
   ax[0,1].set_title(r"$S_2$", fontsize=fontsize, pad=20)
   
-  for i, eds in enumerate([(0,0),(0.1,0),(0,0.2)]):
+  for i, eds in enumerate([(0,0),(0.2,0),(0,0.2)]):
       ax[i,0].text(0.5, 0.1, r"$e_{1d}=$ "+f"{eds[0]}, " + r"$e_{2d}=$ " +f"{eds[1]}", fontsize=fontsize, transform=ax[i,0].transAxes)
   
   os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
@@ -2619,7 +2665,7 @@
 : e1d-0.200-e2d-0.000.npz
 : 9
 : e1d-0.000-e2d-0.200.npz
-[[file:./.ob-jupyter/5695b29dc0be9ea7a7ccdaf2b3cee439762fc51b.png]]
+[[file:./.ob-jupyter/b22702a40a0eed34a7cc52c37f4009964b18204f.png]]
 :END:
 
 ** S2 conserved quantity
@@ -2797,6 +2843,55 @@
 [[file:./.ob-jupyter/c528e62ffb35f31614e79aa33eb228bf2549a8d5.png]]
 :END:
 
+** test particle
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  j = 2
+  Pratio = 1/1.5
+  alpha = (Pratio)**(2./3)
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  a0 = 1
+  a1 = 1
+  q = np.linspace(1,10,1000)
+  Sinth2pe1sq = (a1/a0)/(4*f2**2*alpha**(3./2))*(abs(f2/f1)+1)**2*np.ones(len(q))
+  Soutth2pe1sq = (q/(1+q))**2*(a1/a0)/4/(f1**2+q*sqrt(alpha)*f2**2)*(q-abs(f2/f1))**2
+  Soutth2pe1sq_pos = (q/(1+q))**2*(a1/a0)/4/(f1**2+q*sqrt(alpha)*f2**2)*(q+abs(f2/f1))**2
+  Sinth1pe1sq = (a1/a0)/4/f1**2*(abs(f2/f1)+1)**2*np.ones(len(q))
+  S1nolim = q**4/(1+q)**2*(a1/a0)/4/(f1**2+q*sqrt(alpha)*f2**2)*(abs(f2/f1)+1)**2
+  plt.plot(q, Sinth2pe1sq)
+  plt.plot(q, Sinth1pe1sq)
+  plt.plot(q, Soutth2pe1sq)
+  plt.plot(q, S1nolim)
+  #plt.plot(q, Soutth2pe1sq_pos)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| <matplotlib.lines.Line2D | at | 0x7f6ec9e97460> |
+[[file:./.ob-jupyter/47d599ca015b5a65111b05be14cbeabe06ce4653.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  j = 2
+  Pratio = 1/1.5
+  alpha = (Pratio)**(2./3)
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  eeq = np.linspace(0,0.1,100)
+  epcrit_outer = eeq/sqrt(alpha)*np.abs(f1/f2)
+  epcrit_inner = eeq*sqrt(alpha)/np.abs(f1/f2) # maybe not sure may need to check math again
+  plt.plot(eeq, epcrit_outer)
+  plt.plot(eeq, epcrit_inner)
+  plt.xlim((0,0.1))
+  plt.ylim((0,0.1))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+| 0.0 | 0.1 |
+[[file:./.ob-jupyter/ef4cdc42be777d299bec462e2b8f22106ca73a44.png]]
+:END:
+
 ** Rhat resonance EOM
 i don't think this is right
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -2913,6 +3008,95 @@ i don't think this is right
  | -1.0 | 10.0 |
  [[file:./.ob-jupyter/5c78a17283e848dd4911a9b2eaf0e0f3d6b25fe1.png]]
  :END:
+
+* test particle results 
+** tp examples
+** grid
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig, ax = plt.subplots(1, 2, figsize=(14, 6))
+  j = 2
+  Pratio = 1/1.5
+  alpha = (Pratio)**(2./3)
+  f1 = A(alpha, j)
+  f2 = B(alpha, j)
+  eeq = np.linspace(0,0.1,100)
+  epcrit_outer = eeq/sqrt(alpha)*np.abs(f1/f2)
+  epcrit_inner = eeq*sqrt(alpha)/np.abs(f1/f2) # maybe not sure may need to check math again
+  #ax[0].plot(eeq, epcrit_inner,label="inner TP")
+  #ax[0].plot(eeq, epcrit_outer,label="outer TP")
+  #ax[1].plot(eeq, epcrit_inner,label="inner TP")
+  #ax[1].plot(eeq, epcrit_outer,label="outer TP")
+  
+  topdir = "/home/jtlaune/multi-planet-architecture/"
+  imagename = "tp-galign-grid.png"
+  rundirs = ["external-grid-1e-3-long", "internal-grid-relmup-long"]
+  filenames = [
+      os.path.join(topdir, "runs/tp", rundir, "behaviors.txt") for rundir in rundirs
+  ]
+  
+  for iax, filename in enumerate(filenames):
+      #################
+      # External Case #
+      #################
+      galigns = np.loadtxt(filename, skiprows=1, delimiter=",")
+      ep = galigns[:, 0]
+      eeq = galigns[:, 1]
+      aligns = galigns[:, 3]
+      inres = galigns[:, 4]
+      mask_res = inres < 1
+      mask_circ = np.logical_or((aligns > 0), mask_res)
+      mask_align = np.logical_or((aligns < 1), mask_res)
+  
+      ep_circ = np.ma.masked_array(ep, mask=mask_circ)
+      ep_align = np.ma.masked_array(ep, mask=mask_align)
+  
+      eeq_circ = np.ma.masked_array(eeq, mask=mask_circ)
+      eeq_align = np.ma.masked_array(eeq, mask=mask_align)
+  
+      if iax == 0:
+          ax[iax].scatter(ep_circ, eeq_circ, marker="o", s=120,
+                          facecolors="none", edgecolors="k",
+                          label=r"$\varpi$-circulating", )
+          ax[iax].scatter(ep_align, eeq_align, marker="o", c="k", s=120,
+                          label=r"$\varpi$-aligned" )
+      else:
+          ax[iax].scatter(eeq_circ, ep_circ, marker="o", s=120,
+                          facecolors="none", edgecolors="k",
+                          label=r"$\varpi$-circulating", )
+          ax[iax].scatter(eeq_align, ep_align, marker="o", c="k", s=120,
+                          label=r"$\varpi$-aligned" )
+  
+      ax[iax].set_xscale("log", subsx=[2, 3, 4, 5, 6, 7, 8, 9] )
+      ax[iax].set_yscale("log", subsy=[2, 3, 4, 5, 6, 7, 8, 9])
+  
+      majorticklength = 12
+      ax[iax].tick_params(axis="y", length=majorticklength,
+                          which="major", direction="in", pad=10 )
+      ax[iax].tick_params(axis="x", length=majorticklength,
+                          which="major", direction="in", pad=10,
+                          labelrotation=-90, )
+      ax[iax].tick_params(length=6, which="minor", direction="in")
+  
+  ax[0].set_title(r"External")
+  ax[0].set_xlabel(r"$e_{1}$", fontsize=32)
+  ax[0].set_ylabel(r"$e_{\rm tp}$", fontsize=32)
+  ax[1].set_yticklabels([])
+  ax[1].set_title(r"Internal")
+  ax[1].set_xlabel(r"$e_{\rm tp}$", fontsize=32)
+  ax[1].set_ylabel(r"$e_{2}$", fontsize=32)
+  ax[1].legend(bbox_to_anchor=(1.01, 1.03))
+  fig.subplots_adjust(wspace=0.2)
+  fig.savefig(imagename, bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: /tmp/ipykernel_7454/536295056.py:54: MatplotlibDeprecationWarning: The 'subsx' parameter of __init__() has been renamed 'subs' since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+:   ax[iax].set_xscale("log", subsx=[2, 3, 4, 5, 6, 7, 8, 9] )
+: /tmp/ipykernel_7454/536295056.py:55: MatplotlibDeprecationWarning: The 'subsy' parameter of __init__() has been renamed 'subs' since Matplotlib 3.3; support for the old name will be dropped two minor releases later.
+:   ax[iax].set_yscale("log", subsy=[2, 3, 4, 5, 6, 7, 8, 9])
+[[file:./.ob-jupyter/41ebf567be3fbd94fa89c62faa9955c744eefdf6.png]]
+:END:
 
 * large initial ecc
 ** example
