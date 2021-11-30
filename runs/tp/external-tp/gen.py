@@ -1,4 +1,3 @@
-#! /home/jtlaune/.pythonvenvs/science/bin/python
 import numpy as np
 import scipy as sp
 from scipy import optimize
@@ -9,45 +8,30 @@ import sys
 import os
 import importlib
 
-sys.path.append("/home/jtlaune/mmr/")
+sys.path.append("/home/jtlaune/multi-planet-architecture/")
 mpl.rcParams.update({'font.size': 20})
-import plotting
-from plotting import *
-import mmr
 import run
 
-# params 
-from params import *
+h=0.03
+j=2
+mup=1e-3
+a0=0.7
+ap = 1.
+tploc = "int"
+ep=0.1
+e0=0.001
+g0=np.random.randn()*2*np.pi
+Te=1000
+Tm =Te/3.46/h**2*(-1*(tploc=="ext")+1*(tploc=="int"))
+T=1*Te
+suptitle="test"
+dirname="./"
+filename="test.npz"
+figname="test.png"
+paramsname="params-test.txt"
+tscale=1e3
+overwrite=False
 
-i = 0
-mup = 1e-3
-T = 2e5
-Tm = -1e6
-tol = 1e-6
-
-for ep in eps:
-    for ir, ratio in enumerate(ratios):
-        i+=1
-        Te = -ratio*Tm
-        label = "{:0.2e}-{:0.2e}".format(ep, eeqs[ir])
-
-        print("{:0.1f}%: {}"
-              .format(100*i/(N*(N-1)), label),
-              end="\r")
-
-        sim = run.tp_intH(j, mup, ep, e0, ap, g0, a0, lambda0)
-        (teval, thetap, newresin,
-         newresout, eta, a1, e1, k, kc,
-         alpha0, alpha, g, L, G,
-         ebar, barg, x,y) = sim.int_Hsec(0, T, tol, Tm, Te)
-
-        resangle = (thetap+barg)%(2*np.pi)
-        ifrac50 = int(0.5*len(resangle))
-        resdiff = np.abs(resangle[ifrac50:] - np.pi)
-        if np.any(resdiff > 0.2*np.pi):
-            raise Warning("broke res > T/2")
-        
-
-        np.savez(label+".npz", teval=teval, thetap=thetap,
-                 L=L, g=g, G=G, x=x, y=y)
+run.run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle, dirname,
+           filename, figname, paramsname, tscale, overwrite=overwrite)
         
