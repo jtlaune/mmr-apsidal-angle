@@ -234,11 +234,11 @@ class tp_intH(resonance):
         int_cond = None
         if Tm > 0:
             self.e_eq = np.sqrt(self.Te / (2 * (self.j + 1) * self.Tm))
-            int_cond = check_ratio_tp(0.8)
+            int_cond = check_ratio_tp(1.1)
             int_cond.terminal = True
         else:
             self.e_eq = np.sqrt(self.Te / (2 * self.j * np.abs(self.Tm)))
-            int_cond = check_ratio_tp(1.25)
+            int_cond = check_ratio_tp(0.6)
             int_cond.terminal = True
 
         self.perturb = False
@@ -616,64 +616,46 @@ def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
     return fig
 
 
-class run_tp_set:
-    def __init__(self, verbose=False, overwrite=False, secular=True, method="RK45"):
-        self.verbose   = verbose
-        self.overwrite = overwrite
-        self.secular   = secular
-        self.method    = method
-    def __call__(self, params):
-        h = np.float64(params[0])
-        j = np.float64(params[1])
-        a0 = np.float64(params[2])
-        q = np.float64(params[3])
-        mu1 = np.float64(params[4])
-        T = np.float64(params[5])
+def run_tp_set(params):
+    h = float(params[0])
+    j = float(params[1])
+    mup = float(params[2])
+    ap = float(params[3])
+    a0 = float(params[4])
+    if a0 > ap: tploc="ext"
+    else: tploc="int"
+    ep = float(params[5])
+    e0 = float(params[6])
+    g0 = float(params[7])
+    Tm = float(params[8])
+    Te = float(params[9])
+    T = float(params[10])
 
-        Te_func = int(float(params[18]))
-        if Te_func:
-            Te1 = params[6]
-            Te2 = params[7]
-            Tm1 = params[8]
-            Tm2 = params[9]
-        else:
-            Te1 = np.float64(params[6])
-            Te2 = np.float64(params[7])
-            Tm1 = np.float64(params[8])
-            Tm2 = np.float64(params[9])
+    dirname = params[11]
+    filename = params[12]
+    figname = params[13]
+    paramsname = params[14]
 
-        e1_0 = np.float64(params[10])
-        e2_0 = np.float64(params[11])
-        e1d = np.float64(params[12])
-        e2d = np.float64(params[13])
-        alpha2_0 = np.float64(params[14])
-        name = params[15]
-        dirname = params[16]
-        cutoff = np.float64(params[17])
-        g1_0 = np.float64(params[19])
-        g2_0 = np.float64(params[20])
-        filename   = f"{name}.npz"
-        figname    = f"{name}.png"
-        paramsname = f"params-{name}.txt"
-        if Te_func:
-            suptitle = (f"{filename}\n" \
-                        f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n" \
-                        r"$e_{1,d}$ = " + f"{e1d:0.3f} " \
-                        r"$e_{2,d}$ = " + f"{e2d:0.3f}")
-        else:
-            suptitle = (f"{filename}\n" \
-                        f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n" \
-                        f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n" \
-                        f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n" \
-                        r"$e_{1,d}$ = " + f"{e1d:0.3f} " \
-                        r"$e_{2,d}$ = " + f"{e2d:0.3f}")
-        run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0,g1_0,
-                     g2_0, Tm1, Tm2, Te1, Te2, T, suptitle, dirname,
-                     filename, figname, paramsname,
-                     verbose=self.verbose, secular=self.secular,
-                     e1d=e1d, e2d=e2d, overwrite=self.overwrite,
-                     cutoff=cutoff, method=self.method,
-                     Te_func=Te_func)
+    tscale = float(params[15])
+    tol = float(params[16])
+
+    overwrite = params[17]
+
+    if tploc == "int":
+        eeq = np.sqrt(np.abs(Te/2/(j+1)/Tm))
+    elif tploc == "ext":
+        eeq = np.sqrt(np.abs(Te/2/j/Tm))
+
+    suptitle = (f"{filename}\n" + f"T={T:0.1e} q={tploc} tp\n" \
+                r"$\mu_{p}=$ " + f"{mup:0.2e}\n" \
+                f"Tm={Tm:0.1e} Te={Te:0.1e}\n" \
+                r"$h$ = " + f"{h:0.3f}\n" \
+                r"$e_{tp,eq}$ = " + f"{eeq:0.3f}\n" \
+                r"$e_{p}$ = " + f"{ep:0.3f}")
+
+    run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
+           dirname, filename, figname, paramsname, tscale=1e3,
+           tol=1e-9, overwrite=overwrite)
 
 
 class comp_mass_intH(resonance):
