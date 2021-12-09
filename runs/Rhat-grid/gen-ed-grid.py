@@ -29,7 +29,7 @@ for q in qs_it:
     qRun = 9
     Nqs = 9
     qs = np.ones(Nqs)*q
-    overwrite = True
+    overwrite = False
     totmass = 1.0e-4
     Tw0 = 1000
     TeRatios = sqrt(qs)

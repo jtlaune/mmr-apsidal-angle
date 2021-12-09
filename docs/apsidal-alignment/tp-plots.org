@@ -1,0 +1,820 @@
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import numpy as np
+  import os
+  from numpy import sqrt, cos, sin, pi, abs
+  import scipy as sp
+  import scipy.optimize
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  from matplotlib.ticker import MaxNLocator
+  from matplotlib.ticker import ScalarFormatter
+  import sys
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  from helper import *
+  from plotting import *
+  import importlib
+  import os
+  import seaborn as sns
+  from scipy.ndimage import uniform_filter1d
+  j = 2
+  plt.rcParams.update({"font.size": 20,
+                       "figure.facecolor": "white",
+                       "figure.figsize": (6,6),
+                       #'font.family': 'serif',
+                       #"font.serif": ["DejaVu Serif"],
+                       #"text.usetex": False,
+                       "axes.linewidth": 3,
+                       'font.family': 'lmodern',
+                       'text.usetex': True,
+                       'text.latex.preamble': (            # LaTeX preamble
+                           r'\usepackage{lmodern}'
+                           # ... more packages if needed
+                       )
+                       })
+  # Create an array with the colors you want to use
+  #colors = ["#FF0B04", "#4374B3"]# Set your custom color palette
+  #sns.set_palette("dark")
+
+  pal = sns.color_palette("colorblind").as_hex()
+  blue = pal[0]
+  orange = pal[3]
+  palette = [blue, orange, *pal[1:2], *pal[4:]]
+  print(palette)
+  sns.set_palette(sns.color_palette(palette))
+
+  # important constants
+  deg_conv = 180./np.pi
+#+END_SRC
+
+#+RESULTS:
+: ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
+
+* tp h-ep grid 
+- fix this bullshit fucking code thanks
+  - you're a stupid fucking dipshit the angles are circulating not anti-aligned
+*** gen behaviortxt
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  for h in hs:
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+      nruns = 17
+      H   = np.ones(nruns)*h
+      J   = np.ones(nruns)*2.
+      MUP = np.ones(nruns)*1e-4
+      AP  = np.ones(nruns)
+      A0  = np.ones(nruns)*(1.6)**(2./3)
+      EP = np.zeros(nruns)
+      EP[1:]  = np.logspace(-3,-1,nruns-1)
+      E0  = np.ones(nruns)*0.001
+      G0  = np.random.randn(nruns)*np.pi*2
+      TE  = np.ones(nruns)*1000.
+      TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+      T   = 150.*TE
+      tploc = np.array(["ext" for i in range(nruns)])
+      tploc[A0<AP] = "int"
+      DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                             for i in range(nruns)])
+      FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+      FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+      PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                             for i in range(nruns)])
+      TSCALE     = np.ones(nruns)*1e3
+      TOL        = np.ones(nruns)*1e-9
+      OVERWRITE  = np.ones(nruns)>0
+
+      aligned_arr = np.zeros((nruns, 15))
+      aligned_arr[:,0] = MUP
+      aligned_arr[:,1] = 0.
+      aligned_arr[:,2] = 0.
+      aligned_arr[:,3] = 0.
+      for i in range(nruns):
+          # for h=0.03:
+          # aligned i = 11
+          # circulating i=10
+          dirname = DIRNAME[i]
+          filename = FILENAME[i]
+          try:
+              data = np.load(os.path.join(dirname, filename))
+              teval  = data["teval"]
+              theta = data["thetap"]
+              a1     = data["a1"]
+              a2     = data["a2"]
+              e1     = data["e1"]
+              e2     = data["e2"]
+              g1     = data["g1"]
+              g2     = data["g2"]
+              L1     = data["L1"]
+              L2     = data["L2"]
+              x1     = data["x1"]
+              y1     = data["y1"]
+              x2     = data["x2"]
+              y2     = data["y2"]
+
+              it = int(len(teval)*0.9)
+              #xi_avg = np.average(x1[it:]-x2[it:])
+              #yi_avg = np.average(y1[it:]-y2[it:])
+              Dpoms = (g1[it:]-g2[it:])%(2*np.pi)
+              Dpom_avg = np.arctan2(np.sum(np.sin(Dpoms)), np.sum(np.cos(Dpoms)))
+              Dpom_std = np.sqrt(np.sum(Dpoms-Dpom_avg)**2)/len(Dpoms)
+
+              f1 = A(a1/a2, j)
+              f2 = B(a1/a2, j)
+              theta1 = theta + g1
+              theta2 = theta + g2
+              hattheta1s = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                                    e1*cos(theta1) + f2/f1*e2*cos(theta2))
+              hattheta1s = hattheta1s[it:]
+              hattheta1_avg = np.arctan2(np.sum(np.sin(hattheta1s)), np.sum(np.cos(hattheta1s)))
+              hattheta1_std = np.sqrt(np.sum(hattheta1s-hattheta1_avg)**2)/len(hattheta1s)
+
+              inres = np.all(np.abs(hattheta1s) < 1.)
+
+              aligned_arr[i,4]  = np.average(e1[it:])
+              aligned_arr[i,5]  = np.std(e1[it:])
+              aligned_arr[i,6]  = np.average(e2[it:])
+              aligned_arr[i,7]  = np.std(e2[it:])
+              aligned_arr[i,8]  = Dpom_avg
+              aligned_arr[i,9]  = Dpom_std
+              aligned_arr[i,10] = hattheta1_avg
+              aligned_arr[i,11] = hattheta1_std
+              aligned_arr[i,12] = inres
+              aligned_arr[i,13] = EP[i]
+              Dpoms = Dpoms - 2*np.pi*(Dpoms > np.pi)
+              aligned_arr[i,14] = np.all(np.abs(Dpoms)<(np.pi/2))
+          except(FileNotFoundError):
+              pass
+
+      np.savetxt(os.path.join(".", f"behaviors-h-{h:0.3f}.txt"), aligned_arr)
+#+END_SRC
+
+#+RESULTS:
+
+*** plot
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  fig, ax = plt.subplots()
+  for j, h in enumerate(hs):
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+      aligned_arr   = np.loadtxt(os.path.join(".", f"behaviors-h-{h:0.3f}.txt"))
+      aligned_arr = aligned_arr[8:]
+      mups          = aligned_arr[:,0]
+      qs            = aligned_arr[:,1]
+      e1ds          = aligned_arr[:,2]
+      e2ds          = aligned_arr[:,3]
+      e1_avg        = aligned_arr[:,4]
+      e1_std        = aligned_arr[:,5]  
+      e2_avg        = aligned_arr[:,6]
+      e2_std        = aligned_arr[:,7]
+      Dpom_avg      = aligned_arr[:,8]
+      Dpom_std      = aligned_arr[:,9]
+      hattheta1_avg = aligned_arr[:,10]
+      hattheta1_std = aligned_arr[:,11]
+      inres         = aligned_arr[:,12]
+      eps           = aligned_arr[:,13]
+      aligned       = aligned_arr[:,14]
+
+      circ = np.logical_not(aligned)
+
+      mask_align = np.logical_and(aligned, inres)
+      mask_anti = np.logical_and(circ, inres)
+
+      if j >0:
+          ax.scatter(eps[mask_align], h*np.ones(len(eps[mask_align])), facecolors='k', edgecolors='k')
+          ax.scatter(eps[mask_anti], h*np.ones(len(eps[mask_anti])), facecolors='none', edgecolors='k')
+      else:
+          ax.scatter(eps[mask_align], h*np.ones(len(eps[mask_align])), facecolors='k', edgecolors='k', label=r"$\varpi$-aligned")
+          ax.scatter(eps[mask_anti], h*np.ones(len(eps[mask_anti])), facecolors='none', edgecolors='k', label=r"$\varpi$-circulating")
+      #ax.set_yscale("log")
+      ax.set_xlabel(r"$e_p$")
+      ax.set_ylabel(r"$h$")
+      ax.legend(bbox_to_anchor=(1.05, 1.2), fancybox=True, shadow=True,ncol=3)
+
+      # for ext particle
+      xi = 1. # h = xi*sqrt(j/1.73)*e fudge factor
+      j = 2. 
+      alpha2 = ((j+1)/j)**(2./3)
+      cosDpom = 1
+      f1 = A(1/alpha2, j)
+      f2 = B(1/alpha2, j)
+      n = 11
+      eps = np.logspace(-2,np.log10(0.15),n,endpoint=True)
+      eeqs = np.zeros(n)
+      def ps_calc(ep):
+          return(np.array([1, 0, 2/j, 2/j/sqrt(alpha2)*abs(f2/f1)*ep]))
+      for i,ep in enumerate(eps):
+          ps = ps_calc(ep)
+          rts = -np.roots(ps)
+          rts_R = rts[np.isreal(rts)]
+          rts_win = np.logical_and(rts_R>0, rts_R<eps[-1])
+          nrts = int(np.sum(1*rts_win))
+          if nrts == 1:
+              eeqs[i] = rts_R[rts_win][0]
+          elif nrts == 0:
+              print(f"no root for ep = {ep}")
+          else:
+              print(f"{nrts} roots for ep = {ep}")
+      hs = xi*eeqs*sqrt(2*j/3.46)
+      ax.plot(eps, hs)
+      os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
+      ax.set_xlim(0,0.08)
+      ax.set_xlim(0,0.11)
+      fig.savefig(os.path.join(".",
+                  f"tp-grid-ext.png"),
+                  bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+begin_example
+  /tmp/ipykernel_4378/1320158720.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  /tmp/ipykernel_4378/1320158720.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  no root for ep = 0.15
+  no root for ep = 0.15
+  /tmp/ipykernel_4378/1320158720.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  /tmp/ipykernel_4378/1320158720.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  no root for ep = 0.15
+  no root for ep = 0.15
+  /tmp/ipykernel_4378/1320158720.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  no root for ep = 0.15
+#+end_example
+[[file:./.ob-jupyter/6710950f6c302afbd66a8707b5c0e6a37871822e.png]]
+:END:
+
+* tp examples
+** external
+*** circular h=0.03
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  #hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  #for h in hs:
+  h = 0.03
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+  nruns = 17
+  H   = np.ones(nruns)*h
+  J   = np.ones(nruns)*2.
+  MUP = np.ones(nruns)*1e-4
+  AP  = np.ones(nruns)
+  A0  = np.ones(nruns)*(1.6)**(2./3)
+  EP = np.zeros(nruns)
+  EP[1:]  = np.logspace(-3,-1,nruns-1)
+  E0  = np.ones(nruns)*0.001
+  G0  = np.random.randn(nruns)*np.pi*2
+  TE  = np.ones(nruns)*1000.
+  TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+  T   = 150.*TE
+  tploc = np.array(["ext" for i in range(nruns)])
+  tploc[A0<AP] = "int"
+  DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                         for i in range(nruns)])
+  FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+  FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+  PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                         for i in range(nruns)])
+  TSCALE     = np.ones(nruns)*1e3
+  TOL        = np.ones(nruns)*1e-9
+  OVERWRITE  = np.ones(nruns)>0
+
+  # for h=0.03:
+  # circulating i=13
+  # aligned i = 14
+  i = 0
+
+  dirname = DIRNAME[i]
+  filename = FILENAME[i]
+  data = np.load(os.path.join(dirname, filename))
+  teval  = data["teval"]
+  theta = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  fontsize=24
+  fig, ax = plt.subplots(3,2, figsize=(18,12))
+  tscale = 1.
+
+  iplt0 = np.where(teval > 1e2)[0][0]
+  teval = teval[iplt0:]
+
+  iplt = np.where(teval > 1e5)[0][0]
+
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.set_xlim((teval[:iplt][0]/tscale, teval[:iplt][-1]/tscale))
+      axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+      axi.yaxis.set_major_locator(MaxNLocator(4))
+      axi.set_xscale("log")
+
+  ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
+  ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
+  ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
+  ax[0,0].set_ylim(0.9, 1.5)
+
+  ax[0,1].scatter(teval[:iplt]/tscale, (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05, c="k")
+  ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
+
+  ax[2,0].scatter(teval[:iplt]/tscale,e2[:iplt], s=2, alpha=0.05, c="k", label=r"$e_2$")
+  ax[2,0].set_ylabel(r"$e$", fontsize=fontsize)
+  ax[2,0].set_ylim(0, 0.04)
+  j = 2
+  ax[2,0].axhline(y=sqrt(-TE[0]/TM[0]/(2*j)), ls="--", c="g")
+  #C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+  #                      markersize=10, label=r'$e_1$')
+  #C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+  #                      markersize=10, label=r'$e_2$')
+
+  #ax[2,0].legend(handles=[C0, C1], loc="upper left", ncol=2)
+
+
+  theta1 = (theta+g1)%(2*np.pi)
+  theta2 = (theta+g2)%(2*np.pi)
+  ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
+  ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
+
+  ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv, s=2, alpha=0.05, c="r")
+  ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
+  ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
+
+  ax[2,1].scatter(teval[:iplt]/tscale,-g2[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[2,1].set_ylabel(r"$\varpi$", fontsize=fontsize)
+  ax[2,1].set_ylim(-180,180)
+  #ax[2,1].axhline(y=180., c="green", ls="--", lw=3, label="$180^\circ$")
+  #ax[2,1].legend()
+
+  fig.subplots_adjust(hspace=0.4, wspace=0.2)
+  
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+  figname = f"tp-h{h:0.3f}-ext-ep{e1[0]:0.3f}-circ.png"
+  print(figname)
+  fig.savefig(figname, bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: tp-h0.030-ext-ep0.000-circ.png
+[[file:./.ob-jupyter/71b2f344e721e99744e1cd6443c80265200e75b0.png]]
+:END:
+
+*** circulating
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  #hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  #for h in hs:
+  h = 0.03
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+  nruns = 17
+  H   = np.ones(nruns)*h
+  J   = np.ones(nruns)*2.
+  MUP = np.ones(nruns)*1e-4
+  AP  = np.ones(nruns)
+  A0  = np.ones(nruns)*(1.6)**(2./3)
+  EP = np.zeros(nruns)
+  EP[1:]  = np.logspace(-3,-1,nruns-1)
+  E0  = np.ones(nruns)*0.001
+  G0  = np.random.randn(nruns)*np.pi*2
+  TE  = np.ones(nruns)*1000.
+  TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+  T   = 150.*TE
+  tploc = np.array(["ext" for i in range(nruns)])
+  tploc[A0<AP] = "int"
+  DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                         for i in range(nruns)])
+  FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+  FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+  PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                         for i in range(nruns)])
+  TSCALE     = np.ones(nruns)*1e3
+  TOL        = np.ones(nruns)*1e-9
+  OVERWRITE  = np.ones(nruns)>0
+
+  # for h=0.03:
+  # circulating i=13
+  # aligned i = 14
+  i = 13
+
+  dirname = DIRNAME[i]
+  filename = FILENAME[i]
+  data = np.load(os.path.join(dirname, filename))
+  teval  = data["teval"]
+  theta = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+
+  fontsize=24
+  fig, ax = plt.subplots(3,2, figsize=(18,12))
+  tscale = 1.
+
+  iplt0 = np.where(teval > 1e2)[0][0]
+  teval = teval[iplt0:]
+
+  iplt = np.where(teval > 1e5)[0][0]
+
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.set_xlim((teval[:iplt][0]/tscale, teval[:iplt][-1]/tscale))
+      axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+      axi.yaxis.set_major_locator(MaxNLocator(4))
+      axi.set_xscale("log")
+
+  ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
+  ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
+  ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
+  ax[0,0].set_ylim(0.9, 1.5)
+
+  ax[0,1].scatter(teval[:iplt]/tscale, (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05, c="k")
+  ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
+
+  ax[2,0].scatter(teval[:iplt]/tscale,e2[:iplt], s=2, alpha=0.05, c="k", label=r"$e_2$")
+  ax[2,0].set_ylabel(r"$e$", fontsize=fontsize)
+  ax[2,0].set_ylim(0, 0.1)
+  j = 2
+  #ax[2,0].axhline(y=sqrt(-TE[0]/TM[0]/(2*j)), ls="--", c="g")
+  #C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+  #                      markersize=10, label=r'$e_1$')
+  #C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+  #                      markersize=10, label=r'$e_2$')
+
+  #ax[2,0].legend(handles=[C0, C1], loc="upper left", ncol=2)
+
+
+  theta1 = (theta+g1)%(2*np.pi)
+  theta2 = (theta+g2)%(2*np.pi)
+  ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
+  ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
+
+  ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv, s=2, alpha=0.05, c="r")
+  ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
+  ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
+
+  ax[2,1].scatter(teval[:iplt]/tscale,-g2[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[2,1].set_ylabel(r"$\varpi$", fontsize=fontsize)
+  ax[2,1].set_ylim(-180,180)
+  #ax[2,1].axhline(y=180., c="green", ls="--", lw=3, label="$180^\circ$")
+  #ax[2,1].legend()
+
+  fig.subplots_adjust(hspace=0.4, wspace=0.2)
+
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+  figname = f"tp-h{h:0.3f}-ext-ep{e1[0]:0.3f}-circ.png"
+  print(figname)
+  fig.savefig(figname, bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: tp-h0.030-ext-ep0.040-circ.png
+[[file:./.ob-jupyter/9cb76167ac3cd4545a8ba8e62cdb392f1b046745.png]]
+:END:
+
+*** aligned
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  #hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  #for h in hs:
+  h = 0.03
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+  nruns = 17
+  H   = np.ones(nruns)*h
+  J   = np.ones(nruns)*2.
+  MUP = np.ones(nruns)*1e-4
+  AP  = np.ones(nruns)
+  A0  = np.ones(nruns)*(1.6)**(2./3)
+  EP = np.zeros(nruns)
+  EP[1:]  = np.logspace(-3,-1,nruns-1)
+  E0  = np.ones(nruns)*0.001
+  G0  = np.random.randn(nruns)*np.pi*2
+  TE  = np.ones(nruns)*1000.
+  TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+  T   = 150.*TE
+  tploc = np.array(["ext" for i in range(nruns)])
+  tploc[A0<AP] = "int"
+  DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                         for i in range(nruns)])
+  FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+  FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+  PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                         for i in range(nruns)])
+  TSCALE     = np.ones(nruns)*1e3
+  TOL        = np.ones(nruns)*1e-9
+  OVERWRITE  = np.ones(nruns)>0
+
+  # for h=0.03:
+  # circulating i=13
+  # aligned i = 14
+  i = 14
+
+  dirname = DIRNAME[i]
+  filename = FILENAME[i]
+  data = np.load(os.path.join(dirname, filename))
+  teval  = data["teval"]
+  theta = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+  
+  fontsize=24
+  fig, ax = plt.subplots(3,2, figsize=(18,12))
+  tscale = 1.
+
+  iplt0 = np.where(teval > 1e2)[0][0]
+  teval = teval[iplt0:]
+
+  iplt = np.where(teval > 1e5)[0][0]
+
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.set_xlim((teval[:iplt][0]/tscale, teval[:iplt][-1]/tscale))
+      axi.set_xlabel(r"$t$ [y]", fontsize=fontsize)
+      axi.yaxis.set_major_locator(MaxNLocator(4))
+      axi.set_xscale("log")
+
+  ax[0,0].scatter(teval[:iplt]/tscale, a1[:iplt], s=2, alpha=0.05, c="k")
+  ax[0,0].scatter(teval[:iplt]/tscale, a2[:iplt], s=2, alpha=0.05, c="r")
+  ax[0,0].set_ylabel(r"semimajor axis", fontsize=fontsize)
+  ax[0,0].set_ylim(0.9, 1.5)
+
+  ax[0,1].scatter(teval[:iplt]/tscale, (a2[:iplt]/a1[:iplt])**1.5, s=2, alpha=0.05, c="k")
+  ax[0,1].set_ylabel(r"$P_2/P_1$", fontsize=fontsize)
+
+  ax[2,0].scatter(teval[:iplt]/tscale,e2[:iplt], s=2, alpha=0.05, c="k", label=r"$e_2$")
+  ax[2,0].set_ylabel(r"$e$", fontsize=fontsize)
+  ax[2,0].set_ylim(0, 0.1)
+  j = 2
+  #ax[2,0].axhline(y=sqrt(-TE[0]/TM[0]/(2*j)), ls="--", c="g")
+  #C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
+  #                      markersize=10, label=r'$e_1$')
+  #C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
+  #                      markersize=10, label=r'$e_2$')
+
+  #ax[2,0].legend(handles=[C0, C1], loc="upper left", ncol=2)
+
+
+  theta1 = (theta+g1)%(2*np.pi)
+  theta2 = (theta+g2)%(2*np.pi)
+  ax[1,0].scatter(teval[:iplt]/tscale, theta1[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[1,0].set_ylabel(r"$\theta_1$", fontsize=fontsize)
+  ax[1,0].set_ylim(0, 2*np.pi*deg_conv)
+
+  ax[1,1].scatter(teval[:iplt]/tscale, theta2[:iplt]*deg_conv, s=2, alpha=0.05, c="r")
+  ax[1,1].set_ylabel(r"$\theta_2$", fontsize=fontsize)
+  ax[1,1].set_ylim(0, 2*np.pi*deg_conv)
+
+  ax[2,1].scatter(teval[:iplt]/tscale,-g2[:iplt]*deg_conv, s=2, alpha=0.05, c="k")
+  ax[2,1].set_ylabel(r"$\varpi$", fontsize=fontsize)
+  ax[2,1].set_ylim(-180,180)
+  #ax[2,1].axhline(y=180., c="green", ls="--", lw=3, label="$180^\circ$")
+  #ax[2,1].legend()
+
+  fig.subplots_adjust(hspace=0.4, wspace=0.2)
+
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment/")
+  figname = f"tp-h{h:0.3f}-ext-ep{e1[0]:0.3f}-aligned.png"
+  print(figname)
+  fig.savefig(figname, bbox_inches="tight")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: tp-h0.030-ext-ep0.054-aligned.png
+[[file:./.ob-jupyter/3e834e270c5cb20c66891c024c9ef3d779e3e7f4.png]]
+:END:
+
+* tp equilibrium eccs
+** int/ext
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig, ax = plt.subplots(1,2,figsize=(10,5))
+  #hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  hs = [0.015, 0.045, 0.060, 0.0750]
+  for h in hs:
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+      nruns = 1
+      H   = np.ones(nruns)*h
+      J   = np.ones(nruns)*2.
+      MUP = np.ones(nruns)*1e-4
+      AP  = np.ones(nruns)
+      A0  = np.ones(nruns)*(1.6)**(2./3)
+      EP = np.zeros(nruns)
+      EP[1:]  = np.logspace(-3,-1,nruns-1)
+      E0  = np.ones(nruns)*0.001
+      G0  = np.random.randn(nruns)*np.pi*2
+      TE  = np.ones(nruns)*1000.
+      TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+      T   = 150.*TE
+      tploc = np.array(["ext" for i in range(nruns)])
+      tploc[A0<AP] = "int"
+      DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                             for i in range(nruns)])
+      FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+      FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+      PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                             for i in range(nruns)])
+      TSCALE     = np.ones(nruns)*1e3
+      TOL        = np.ones(nruns)*1e-9
+      OVERWRITE  = np.ones(nruns)>0
+
+      aligned_arr = np.zeros((nruns, 15))
+      aligned_arr[:,0] = MUP
+      aligned_arr[:,1] = 0.
+      aligned_arr[:,2] = 0.
+      aligned_arr[:,3] = 0.
+      for i in range(nruns):
+          # for h=0.03:
+          # aligned i = 11
+          # circulating i=10
+          dirname = DIRNAME[i]
+          filename = FILENAME[i]
+
+          data = np.load(os.path.join(dirname, filename))
+          teval  = data["teval"]
+          theta = data["thetap"]
+          a1     = data["a1"]
+          a2     = data["a2"]
+          e1     = data["e1"]
+          e2     = data["e2"]
+          g1     = data["g1"]
+          g2     = data["g2"]
+          L1     = data["L1"]
+          L2     = data["L2"]
+          x1     = data["x1"]
+          y1     = data["y1"]
+          x2     = data["x2"]
+          y2     = data["y2"]
+
+          ax[1].plot(teval/TSCALE[0], e2, label=f"{h:0.3f}")
+  ax[1].set_xlim((0,1e1))
+  ax[1].set_title("external TP")
+  ax[1].legend(bbox_to_anchor=[1.,1.], loc="upper left")
+  ax[1].set_xlabel("t [kyr]",fontsize=24)
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment")
+  fig.savefig("tp-eq-eccs.png")
+
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/d16c085b49328ef3f26d2e4caad1a33339ab9c9e.png]]
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  #hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  hs = [0.015, 0.045, 0.060, 0.0750]
+  for h in hs:
+      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/internal-tp/")
+      nruns = 1
+      H   = np.ones(nruns)*h
+      J   = np.ones(nruns)*2.
+      MUP = np.ones(nruns)*1e-4
+      AP  = np.ones(nruns)
+      A0  = np.ones(nruns)*(1/1.6)**(2./3)
+      EP = np.zeros(nruns)
+      EP[1:]  = np.logspace(-3,-1,nruns-1)
+      E0  = np.ones(nruns)*0.001
+      G0  = np.random.randn(nruns)*np.pi*2
+      TE  = np.ones(nruns)*1000.
+      TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+      T   = 150.*TE
+      tploc = np.array(["ext" for i in range(nruns)])
+      tploc[A0<AP] = "int"
+      DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                             for i in range(nruns)])
+      FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+      FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+      PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                             for i in range(nruns)])
+      TSCALE     = np.ones(nruns)*1e3
+      TOL        = np.ones(nruns)*1e-9
+      OVERWRITE  = np.ones(nruns)>0
+
+      aligned_arr = np.zeros((nruns, 15))
+      aligned_arr[:,0] = MUP
+      aligned_arr[:,1] = 0.
+      aligned_arr[:,2] = 0.
+      aligned_arr[:,3] = 0.
+      for i in range(nruns):
+          # for h=0.03:
+          # aligned i = 11
+          # circulating i=10
+          dirname = DIRNAME[i]
+          filename = FILENAME[i]
+
+          data = np.load(os.path.join(dirname, filename))
+          teval  = data["teval"]
+          theta = data["thetap"]
+          a1     = data["a1"]
+          a2     = data["a2"]
+          e1     = data["e1"]
+          e2     = data["e2"]
+          g1     = data["g1"]
+          g2     = data["g2"]
+          L1     = data["L1"]
+          L2     = data["L2"]
+          x1     = data["x1"]
+          y1     = data["y1"]
+          x2     = data["x2"]
+          y2     = data["y2"]
+
+          ax[0].plot(teval/TSCALE[0], e1, label=f"{h:0.3f}")
+  ax[0].set_xlim((0,1e1))
+  ax[0].set_title("internal TP")
+  ax[0].set_ylabel("e",fontsize=24)
+  ax[0].set_xlabel("t [kyr]",fontsize=24)
+  for axi in ax.flatten():
+      axi.tick_params(which="major", labelsize=fontsize, width=3, length=8,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+      axi.tick_params(which="minor", labelsize=fontsize, width=3, length=4,
+                      bottom=True, top=True, left=True, right=True,
+                      direction="in", pad=10)
+
+  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/docs/apsidal-alignment")
+  fig.subplots_adjust(wspace=0.4)
+  fig.savefig("tp-eq-eccs.png", bbox_inches="tight")
+
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig
+#+END_SRC
+
+#+RESULTS:
+[[file:./.ob-jupyter/29242f6b75c9a3468c7c1a9473a899c707df2aa5.png]]
+
+* tp limit + Dpom=0 explanation
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  fig, ax = plt.subplots()
+  def S2dot(e, ep, alpha2, j, cosDpom):
+      f1 = A(1/alpha2, j)
+      f2 = B(1/alpha2, j)
+      #return(2*abs(f1*f2)*cosDpom*ep*e
+      #       -2*f1**2*sqrt(alpha2)*e**2)
+      return(2*abs(f1*f2)*cosDpom*ep*e
+             -2*f1**2*sqrt(alpha2)*e**2
+             - f1**2*sqrt(alpha2)*e**4*j)
+  es = np.logspace(-2, -1,10,endpoint=True)
+  eps = np.logspace(-2, -1, 1000, endpoint=True)
+  j = 2
+  alpha2 = ((j+1)/j)**(2./3)
+  cosDpom = 1
+  for e in es:
+      S2dotvals = S2dot(e, eps, alpha2, j, cosDpom)
+      ax.plot(eps, S2dotvals, label=r"$e=$"+f"{e:0.3f}", )
+  #ax.set_ylim(-0.01, 0.01)
+  #ax.set_xlim(0.01, 0.1)
+  ax.axhline(y=0.0, ls="--", c="k")
+  ax.legend(bbox_to_anchor=[1.1, 1.], loc="upper left")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: <matplotlib.legend.Legend at 0x7f72a580ed00>
+[[file:./.ob-jupyter/59f65f1dee65643d4b92411cb2834065df8df666.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  
+#+END_SRC

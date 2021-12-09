@@ -233,12 +233,16 @@ class tp_intH(resonance):
 
         int_cond = None
         if Tm > 0:
-            self.e_eq = np.sqrt(self.Te / (2 * (self.j + 1) * self.Tm))
-            int_cond = check_ratio_tp(1.1)
+            self.e_eq = np.sqrt(self.Te / (2 * (self.j + 1) *
+                                           self.Tm))
+            # for some reason this does not work
+            int_cond = check_ratio_tp(1.)
             int_cond.terminal = True
         else:
-            self.e_eq = np.sqrt(self.Te / (2 * self.j * np.abs(self.Tm)))
-            int_cond = check_ratio_tp(0.6)
+            self.e_eq = np.sqrt(self.Te / (2 * self.j *
+                                           np.abs(self.Tm)))
+            # for some reason this does not work
+            int_cond = check_ratio_tp(1.)
             int_cond.terminal = True
 
         self.perturb = False
@@ -426,6 +430,7 @@ def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
         if overwrite:
+            print("overwriting...")
             sim = tp_intH(j, mup, ep, e0, ap, g0, a0, lambda0)
 
             (teval, thetap, newresin, newresout,
@@ -639,7 +644,8 @@ def run_tp_set(params):
     tscale = float(params[15])
     tol = float(params[16])
 
-    overwrite = params[17]
+    overwrite = (params[17]=="True")
+    print(overwrite)
 
     if tploc == "int":
         eeq = np.sqrt(np.abs(Te/2/(j+1)/Tm))
