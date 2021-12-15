@@ -240,3 +240,24 @@ All three systems end up in resonance. The standard picture is a very tight reso
 $e_2$ -driving and large $e_0$ systems enter stable libration in the resonance zone.
 The two apsidally aligned cases therefore end up in analagous phase space configurations, but
 through different dynamical paths.
+
+*** Second fundamnetal model of resonance
+Now, all that is left to do is to rescale equation eqref:eq:HShat
+into what is referred to as
+the "second fundamental model of resonance" citep:henrard_second_1983.
+
+
+
+@@latex:\note{
+Now transform into $\hat R$
+}@@
+
+
+** Elliptic restricted 3 body problem
+
+@@latex:\twocolumn@@
+bibliography:references.bib
+bibliographystyle:mnras
+
+and relegate the internal case
+to Appendix [[*Elliptic restricted 3 body problem][Elliptic restricted 3 body problem]]. 
