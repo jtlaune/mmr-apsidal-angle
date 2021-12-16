@@ -670,7 +670,7 @@ mass planet. The planet's orbit is unchanging, and so we may isolate
 the effect of eccentricity on the apsidal angle.
 
 * Test Particle Results
-** TODO review Test Particle Results                              :noexport:
+** DONE review Test Particle Results                              :noexport:
 ** figures                                                          :ignore:
 #+BEGIN_SRC latex
   \begin{figure*} \centering
@@ -728,15 +728,17 @@ the effect of eccentricity on the apsidal angle.
   \end{figure*}
 #+END_SRC
 #+BEGIN_SRC latex
-        \begin{figure}
-          \centering
-          \includegraphics[width=0.4\textwidth]{{tp-grid-ext}.png}
-          \caption{Here we have summarized the behavior of $\varpi$ for a
-      range of values for $h$ and $e_p$ in an external 3:2 MMR with a planet
-    of mass $\mu_p=10^{-4}$. Generally, for $e_p$ large enough,
-  the system will become apsidally aligned, as in Figure \ref{fig:tp-align}.}
+  \begin{figure} \centering
+    \includegraphics[width=0.4\textwidth]{{tp-grid-ext}.png}
+    \caption{Here we have summarized the behavior of $\varpi$ for a
+      range of values for $h$ and $e_p$ in an external 3:2 MMR with a
+      planet of mass $\mu_p=10^{-4}$. Generally, for $e_p$ large enough,
+      the system will become apsidally aligned, as in Figure
+      \ref{fig:tp-align}.  The dashed line indicates our rough
+      analytical approximation for the boundary between the
+      $\varpi$-aligned and $\varpi$-circulating regions.}
           \label{fig:tp-grid-ext}
-        \end{figure}
+  \end{figure}
 #+END_SRC
 ** pretext                                                          :ignore:
 The dynamics of first order MMRs with comparable mass planets are
@@ -906,8 +908,7 @@ $\Delta\varpi$ for an internal and external test particle while
 varying the values $e_p$ and $h$ (and subsequently $e_{\rm eq}$). Runs
 which escape are not included in the figure. Generally, for large
 enough $e_{\rm eq}\gtrsim e_p$, the system becomes apsidally
-aligned. With additional simulations, the bifurcation between circulation
-and apsidal alignment is sharp up to an error of @@latex:$\sim$ 10\%@@.
+aligned.
 
 These test particle results motivate the eccentricity driving ansatz
 we employ in the next section for comparable mass planets. We
@@ -916,10 +917,14 @@ independently of the $\theta_i$ resonances and traps the planets into
 resonance despite the circulation of both $\theta_i$. For a detailed
 analysis of how $\hat\theta$ reduces from the comparable mass
 ($0<q<\infty$) case to the test particle case ($q\to0$ or
-$q\to\infty$), see Section [[Test particle limit]].
+$q\to\infty$), see Section [[Test particle limit]]. In the same section,
+we will also describe how we calculate the dashed line in Figure
+ref:fig:tp-grid-ext, which depicts our analytical estimate for the
+boundary between the @@latex:$\varpi$-aligned and $\varpi$-circulating@@
+regions.
 
 * Apsidal Angle
-** TODO review apsidal angle                                      :noexport:
+** DONE review apsidal angle                                      :noexport:
 ** pretext                                                          :ignore:
 As we have seen, capture into the $\theta_1$ and $\theta_2$ resonance
 always leads to $\Delta\varpi\approx 180^\circ$ due to their
@@ -940,8 +945,8 @@ angle. Then, we reduce the Hamiltonian of the system to a single
 degree of freedom through a series of canonical transformations.  This
 formulation allows us to identify the key dynamical processes that
 lead to alignment. Finally, we take the test particle limit of the
-Hamiltonian to connect $\varpi$-alignment in the comparable mass to
-the results in the previous section.
+Hamiltonian to connect @@latex:$\varpi$-alignment@@ in the comparable
+mass to the results in the previous section.
 
 ** Eccentricity driving forces
 *** figures                                                        :ignore:
@@ -1017,7 +1022,7 @@ location ($P_2/P_1= 1.5$). The system is caught in a different type of
 resonance which we will study in the following subsection.
 
 On the other hand, for $e_{2,d}=0.2$ and $e_{1,d}=0$, the sytem
-displays different resonance behavior.  We have plotted the details of
+displays different resonant behavior.  We have plotted the details of
 this system in Figure ref:fig:perpex. The angle $\theta_2$ librates
 with large amplitude around its resonant value of $0^\circ$, whereas
 $\theta_1$ librates around $270^\circ$ rather than $180^\circ$.  As a
@@ -1102,55 +1107,27 @@ quantifies the system's depth into resonance.  We do not include
 $H_{\rm sec}$ in this analysis because it is second order in
 eccentricities.
 
-First order MMRs are typically treated as the circular restricted
-three body problem (CR3BP), where one of the planets is a test
-particle and the other is on a circular orbit. These are limiting
-cases of the Hamiltonian given in equation eqref:hamiltonian for
-comparable mass planets. For an inner (outer) test particle, $m_1=0$
-($m_2=0$), $m_2$ ($m_1$) is finite, and $q$ approaches infinity
-(zero).  In the CR3BP limit, the action angles are $\theta_1$ and
-$\theta_2$ for the internal and external cases, respectively.  The
-actions for the CR3BP are proportional to
-#+begin_src latex
-  \begin{align}
-  \label{eq:R2limit}
-    R_1  \propto \frac{e_1^2}{\mu_2^{2/3}}
-  \end{align}
-#+end_src
-@@latex:\noindent@@ 
-and
-#+begin_src latex
-  \begin{align}
-  \label{eq:R1limit}
-    R_2  \propto  \frac{e_2^2}{\mu_1^{2/3}} .
-  \end{align}
-#+end_src
-@@latex:\noindent@@
-One can see that the actions given above for the CR3BP are functions
-of the test particles' eccentricities only, as the massive planets'
-eccentricities are assumed to be zero.  On the other hand, for the
-case where $q>0$ is finite, both planets will be on eccentric
+For the case where $q>0$ is finite, both planets will be on eccentric
 osculating orbits.  Hence, we expect the action $\hat R$ in equation
-eqref:hhat to be a function of both $e_1$ and $e_2$.
-
-Define $\v{\hat e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2$ and $\hat e =
-\abs{\v{\hat e}}$, where $\v e_i$ is the Runge-Lenz vector, i.e. the
-vector with magnitude $e_i$ in the direction of perihelion.  The
-action $\hat R$ takes the form $\hat R \propto \tilde \mu \hat e^2$,
-where $\tilde\mu = m_1m_2/(m_1+m_2)$ is the reduced mass of the
-planets. In order to recover the actions given above for the
-appropriate CR3BP limits, we have
+eqref:hhat to be a function of both $e_1$ and $e_2$.  Define $\v{\hat
+e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2$ and $\hat e = \abs{\v{\hat
+e}}$, where $\v e_i$ is the Runge-Lenz vector, i.e. the vector with
+magnitude $e_i$ in the direction of perihelion.  The action $\hat R$
+takes the form $\hat R \propto \tilde \mu \hat e^2$, where
+$\tilde\mu=\tilde m/M_*$ and $\tilde m= m_1m_2/(m_{\rm tot}M_*)$ is
+the reduced mass ratio of the planets. In order to recover the actions
+given above for the appropriate CR3BP limits, we have
 #+begin_src latex
   \begin{align}
   \label{eq:R1hatlimit}
-    \hat R \propto \frac{\hat e^2}{q^{2/3}\hat\mu^{2/3}}
+    \hat R \sim\frac{\hat e^2}{q^{2/3}\hat\mu^{2/3}}
   \end{align}
 #+end_src
 @@latex:\noindent@@ for $q < 1$ and
 #+begin_src latex
   \begin{align}
   \label{eq:R2hatlimit}
-    \hat R \propto \frac{q^{2/3}\hat e^2}{\hat\mu^{2/3}}
+    \hat R \sim\frac{q^{2/3}\hat e^2}{\hat\mu^{2/3}}
   \end{align}
 #+end_src
 @@latex:\noindent@@ for $q>1$.  The action angle is $\hat\theta$ which
@@ -1221,7 +1198,6 @@ $\Delta\varpi=0^\circ$, and $\Delta\varpi=90^\circ$,
 respectively. These correspond to three different behaviors of the
 quantities $\mathcal{S}_1$ and $\mathcal{S}_2$ while in resonance
 under the influence of eccentricity forcing.
-
 In Figure ref:fig:S2cons, we have plotted $\mathcal{S}_1$ and
 $\mathcal{S}_2$ as well as $\dot S_2/S_2$ for these systems.  The top
 row is for the standard eccentricity damping case where
@@ -1255,7 +1231,6 @@ The vectors $\mathbf{e}_1$ and $\mathbf{e}_2$ are anti-aligned,
 while $\mathbf{\hat e}$ aligns with $\mathbf{e}_1$.
 At later stages, the system without eccentricity driving
 remains in this configuration (top row).
-
 At later times, the second and third rows exhibit the new resonance
 behaviors described above.  For the apsidally aligned case,
 $\mathbf{e_2}$ circulates in a pattern strictly constrained to the
@@ -1309,23 +1284,28 @@ is aligned with $\mathbf{e}_2$.
 #+END_SRC
 *** saturation eccs                                                :ignore:
 Now that we have identified these three resonant modes, we briefly
-explore the $(e_{1d},e_{2d})$ parameter space for the saturation
-eccentricities for moderate values between $0$ and $0.2$.  In the left
-panel of Figure ref:fig:Rhat-grid, we summarize the resonant behavior
-for each system on a grid within the parameter space while keeping
-$q=2$, $h=0.03$, and the initial period ratio $P_2/P_1(t=0)=1.5$. We
-have excluded runs which become unstable and escape the resonance
-within the timescale of our integrations. Roughly, for $e_{1d}\gtrsim
-e_{2d}$, the system becomes apsidally aligned, while for $e_{2d} >
-e_{1d}$, $\Delta\varpi=90^\circ$.
+explore the $(e_{1d},e_{2d})$ parameter space of the saturation
+eccentricities for moderate values between $0$ and $0.2$.  First, we
+consider only the top row of Figure ref:fig:Rhat-grid, which
+corresponds to $q=2$, $h=0.03$, and initial period ratio
+$P_2/P_1=1.5$.  The additional rows of Figure ref:fig:Rhat-grid show
+summary plots analagous to the first row for various combinations of
+$q=0.5,2$ and initial period ratio $P_2/P_1=1.5,1.55$.  We will
+discuss how mass ratio and initial period ratio alter our results in
+the next two sections.
 
-We have plotted the averaged final eccentricities in the right panel
-of Figure ref:fig:Rhat-grid. The points share the same color-coding as
-in the right panel.  The eccentricities for the aligned case fall
-roughly along the line $e_1=e_2$. The perpendicular run falls slightly
-above the line $e_2=2e_1$ (i.e. $e_2/e_1=q$), while the anti-aligned
-runs fall just under it.
-
+In the left panel, we summarize the resonant behavior for each system
+on a grid within the parameter space while holding $q$, $h$, and the
+initial period ratio $P_2/P_1$ constant. We have excluded runs which
+become unstable and escape the resonance within the timescale of our
+integrations. Roughly, for $e_{1d}\gtrsim e_{2d}$, the system becomes
+apsidally aligned, while for $e_{2d} > e_{1d}$,
+$\Delta\varpi=90^\circ$.  In the right panel of Figure
+ref:fig:Rhat-grid, we have plotted the time-averaged final
+eccentricities. The points share the same color-coding as in the right
+panel.  The eccentricities for the aligned cases fall roughly along
+the line $e_1=e_2$. The perpendicular runs fall slightly above the
+line $e_2/e_1=q$ , while the anti-aligned runs fall just under it.
 
 The single $\mathtt{x}$ marker in ref:fig:Rhat-grid corresponds to a
 run which is only temporarily caught into resonance. Despite all of
@@ -1334,135 +1314,6 @@ amplitude around the period ratio $P_2/P_1=1.5$. The planets remain in
 an anti-aligned configuration throughout. Before escape,
 $\Delta\varpi\lesssim180^\circ$, while after escape,
 $\Delta\varpi\gtrsim180^\circ$.
-
-** Test particle limit
-***                                                                :ignore:
-The results of Section [[Reducing the Hamiltonian]] can be applied to the
-test particle scenario by taking the limit as $q$ approaches $0$ or
-$\infty$ while holding the canonical momenta for the massive perturber
-constant.  All expressions will use either the subscripts $1$
-and $2$ for $0<q<\infty$ or $p$ and no subscript for $q=0,\infty$.
-
-The two equilibrium configurations we observe for a test particle, as
-summarized in Figure ref:fig:tp-grid-ext, are as follows: The first is
-circulation of the particle's perihelion while $\theta_2$ librates.
-The second is alignment of the particle's perihelion with the massive
-planet's perihelion while $\theta_2$ circulates.  In both of these
-configurations, the total resonant angle given by
-#+BEGIN_SRC latex
-  \begin{align}
-    \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta + \abs{f_2/f_1}e_p},
-  \end{align}
-#+END_SRC
-@@latex:\noindent@@
-which is the the test particle limit of equation eqref:hattheta.
-This resonance is what locks the period ratio near $j:j+1$.
-
-Whether or not the test particle becomes aligned with the planet can
-be understood as a competition between the equilibrium value of $e$
-and the parameter $e_p$. The comparable mass case can then be thought
-of as a rough superposition of this mechanism since the perturbation
-Hamiltonian in equation eqref:eq:Hpert1 is linear. The test particle
-analysis simplifies the problem considerably because the vector
-$\mathbf{e}_p$ remains constant in time. While $e_{1d}$ is also a
-constant parameter in the comparable mass case, back-reactions with
-$m_2$ force $e_1$ to librate in amplitude.
-
-The internal and external test particle limits are largely analagous,
-and so we focus on the external limit.  We hold $m_1$, $a_1=1$,
-$e_1=e_p$ constant, while taking the limit $q$ approaching
-infinity. Equivalently, we are holding $\Lambda_1$ and $\Gamma_1$
-constant.  The expression for $S_2$ (equation eqref:eq:s2) becomes
-#+BEGIN_SRC latex
-  \begin{align}
-    \label{eq:s2-canon}
-    \frac{S_2}{2\Lambda_1} = f_2^2\Gamma_1
-    -2\abs{f_1f_2}\sqrt{\frac{\Gamma_1}{\Lambda_1^3}}
-    \sqrt{\frac{\Gamma_2}{\Lambda_2}}\cos(\varpi_1-\varpi_2)
-    + \frac{f_1^2}{\Lambda_1\Lambda_2}\Gamma_2.
-  \end{align}
-#+END_SRC
-@@latex:\noindent@@ after restoring the canonical momenta and dividing
-through by $\Lambda_1$.  In the limit $q\to\infty$, this expression
-represents the "$S_2$ per unit $\Lambda_1$", and so these test particle
-results may naturally be interpreted as "per unit $\Lambda_1$".  The
-fraction $S_2/\Lambda_1$ becomes
-#+BEGIN_SRC latex
-  \begin{align}
-    \frac{S_2}{\Lambda_1} = f_2^2e_p^2
-    -2\abs{f_1f_2}e_p
-    \frac{1}{\Lambda_1}
-    \sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos(\varpi_1-\varpi_2)
-    + \frac{f_1^2}{\Lambda_1\Lambda_2}\Gamma_2.
-  \end{align}
-#+END_SRC
-where we have set $e_p = \sqrt{2\Gamma_1/\Lambda_1}$ to be a constant
-parameter. 
-
-Now, the limit $q\to\infty$ can be taken along the line $\Lambda_1 =
-1$, so that $\Lambda_p = 1$ is constant.  Restoring the physical
-values for a test particle $\Lambda=\sqrt{\alpha}$, and
-$\Gamma=\frac12\Lambda e^2$, we see
-#+BEGIN_SRC latex
-  \begin{align}
-    \label{eq:tpcons}
-\mathcal{D}_{\notin\theta}\equiv 
-    \left(\frac{S_2}{\Lambda_1}\right|_{\in\theta} = f_2^2e_p^2
-    -2\abs{f_1f_2}e_p e\cos(\varpi_p-\varpi) + f_1^2e^2.
-  \end{align}
-#+END_SRC
-@@latex:\noindent@@ We note that this is just a constant multiple of
-the the canonical momentum, which corresponds with the fact that the
-test particle problem only has a single degree of freedom.
-
-Meanwhile, if $\theta$ continues to operate and $e_2$ and $\Lambda_2$
-remain constant and finite, $\Lambda_1\to\infty$ and the conserved
-quantity become
-#+BEGIN_SRC latex
-  \begin{align}
-    \label{eq:tpcons}
-\mathcal{D}_{\in\theta}\equiv 
-    \left(\frac{S_2}{\Lambda_1}\right|_{\notin\theta} = f_2^2e_p^2.
-  \end{align}
-#+END_SRC
-@@latex:\noindent@@
-
-Now, consider the situation for a fixed value of
-$e=e_{\rm eq}$.  For $e_p\ll e_{\rm eq}$, $\theta$ will circulate and
-$\cos(\varpi_1-\varpi_2)$ averages to 0 over time.  The quantities
-begin to diverge significantly whenever $e_p$ becomes comparable to
-$|f_1/f_2|e_{\rm eq}$. Once this occurs, the system will escape the
-$\theta_2$ resonance and become apsidally aligned.
-This explains the horizontal transition along the rows of
-Figure ref:fig:tp-grid-ext when traveling from left to right.
-
-Essentially, we are comparing the value of $S_2/\Lambda_1$ in the test
-particle problem ( $\mathcal{D}_{\notin\theta}$ and $q=\infty$ ) to
-the limit of the finite $q<\infty$ system ( $\mathcal{D}_{\in\theta}$
-). We base this analysis on the observed equilibria in Figure
-ref:fig:tp-grid-ext. 
-
-On the other hand, we may consider the opposite initial configuration,
-where $e_p>0$ is held constant.  For $e_{\rm eq} \ll e_p$, the system
-is aligned in equilibrium, i.e. $\cos(\varpi_p-\varpi)=1$.  These
-quantities diverge significantly when
-#+BEGIN_SRC latex
-  \begin{align}
-  f_2^2e_p^2 &\approx -2\abs{f_1f_2}e_p e\cos(\varpi_p-\varpi) + f_1^2e^2.
-  \end{align}
-#+END_SRC
-For a given value of $e_p$ large enough, $e$ will have one positive
-root. For $e_p$ less than this critical value, no positive solutions
-exist.
-This explains the vertical transition along the columns of
-Figure ref:fig:tp-grid-ext from right to left.
-
-Up until now, we have been considering an analysis of the $j:j+1$ MMR
-Hamiltonian manifold without any external dissipative forces acting on
-the system. The entire story of test particle alignment, including
-migration, resonance capture, and dissipative equilibria, is beyond
-the scope of this paper. Nevertheless, these arguments demonstrate
-the underlying mechanism of apsidal alignment.
 
 ** Initial period ratio
 *** figures                                                        :ignore:
@@ -1562,54 +1413,198 @@ amplitude over time. Eventually, the planets escape resonance. The
 inner planet $m_1$ is kicked outwards and $m_2$ continues migrating
 inwards until the planets are orbit crossing.
 
+** Test particle limit
+***                                                                :ignore:
+The results of Section [[Reducing the Hamiltonian]] can be applied to the
+test particle scenario by taking the limit as $q$ approaches $0$ or
+$\infty$ while holding the canonical momenta for the massive perturber
+constant.  All expressions will use either the subscripts $1$
+and $2$ for $0<q<\infty$ or $p$ and no subscript for $q=0,\infty$.
+
+The two equilibrium configurations we observe for a test particle, as
+summarized in Figure ref:fig:tp-grid-ext, are as follows: The first is
+circulation of the particle's perihelion while $\theta_2$ librates.
+The second is alignment of the particle's perihelion with the massive
+planet's perihelion while $\theta_2$ circulates.  In both of these
+configurations, the total resonant angle given by
+#+BEGIN_SRC latex
+  \begin{align}
+    \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta + \abs{f_2/f_1}e_p},
+  \end{align}
+#+END_SRC
+@@latex:\noindent@@
+which is the the test particle limit of equation eqref:hattheta.
+This resonance is what locks the period ratio near $j:j+1$.
+
+Whether or not the test particle becomes aligned with the planet can
+be understood as a competition between the equilibrium value of $e$
+and the parameter $e_p$. The comparable mass case can then be thought
+of as a rough superposition of this mechanism since the perturbation
+Hamiltonian in equation eqref:eq:Hpert1 is linear. The test particle
+analysis simplifies the problem considerably because the vector
+$\mathbf{e}_p$ remains constant in time. While $e_{1d}$ is also a
+constant parameter in the comparable mass case, back-reactions with
+$m_2$ force $e_1$ to librate in amplitude.
+
+The internal and external test particle limits are largely analagous,
+and so we focus on the external limit.  We hold $m_1$, $a_1=1$,
+$e_1=e_p$ constant, while taking the limit $q$ approaching
+infinity. Equivalently, we are holding $\Lambda_1$ and $\Gamma_1$
+constant.  The expression for $S_2$ (equation eqref:eq:s2) becomes
+#+BEGIN_SRC latex
+  \begin{align}
+    \label{eq:s2-canon}
+    \frac{S_2}{2\Lambda_1} = f_2^2\Gamma_1
+    -2\abs{f_1f_2}\sqrt{\frac{\Gamma_1}{\Lambda_1^3}}
+    \sqrt{\frac{\Gamma_2}{\Lambda_2}}\cos(\varpi_1-\varpi_2)
+    + \frac{f_1^2}{\Lambda_1\Lambda_2}\Gamma_2.
+  \end{align}
+#+END_SRC
+@@latex:\noindent@@ after restoring the canonical momenta and dividing
+through by $\Lambda_1$.  In the limit $q\to\infty$, this expression
+represents the "$S_2$ per unit $\Lambda_1$", and so these test particle
+results may naturally be interpreted as "per unit $\Lambda_1$".  The
+fraction $S_2/\Lambda_1$ becomes
+#+BEGIN_SRC latex
+  \begin{align}
+    \frac{S_2}{\Lambda_1} = f_2^2e_p^2
+    -2\abs{f_1f_2}e_p
+    \frac{1}{\Lambda_1}
+    \sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos(\varpi_1-\varpi_2)
+    + \frac{f_1^2}{\Lambda_1\Lambda_2}\Gamma_2.
+  \end{align}
+#+END_SRC
+@@latex:\noindent@@
+where we have set $e_p = \sqrt{2\Gamma_1/\Lambda_1}$ to be a constant
+parameter. 
+
+Now, the limit $q\to\infty$ can be taken along the line $\Lambda_1 =
+1$, so that $\Lambda_p = 1$ is constant.  Restoring the physical
+values for a test particle $\Lambda=\sqrt{\alpha}$, and
+$\Gamma=\frac12\Lambda e^2$, we see
+#+BEGIN_SRC latex
+  \begin{align}
+    \label{eq:tpcons}
+\mathcal{D}_{\notin\theta}\equiv 
+    \left(\frac{S_2}{\Lambda_1}\right|_{\notin\theta} = f_2^2e_p^2
+    -2\abs{f_1f_2}e_p e\cos(\varpi_p-\varpi) + f_1^2e^2.
+  \end{align}
+#+END_SRC
+@@latex:\noindent@@ We note that this is just a constant multiple of
+the the canonical momentum, which corresponds with the fact that the
+test particle problem only has a single degree of freedom.
+
+Meanwhile, if $\theta$ continues to operate and $e_2$ and $\Lambda_2$
+remain constant and finite, $\Lambda_1\to\infty$ and the conserved
+quantity become
+#+BEGIN_SRC latex
+  \begin{align}
+    \label{eq:tpcons}
+\mathcal{D}_{\in\theta}\equiv 
+    \left(\frac{S_2}{\Lambda_1}\right|_{\in\theta} = f_2^2e_p^2.
+  \end{align}
+#+END_SRC
+@@latex:\noindent@@
+
+Now, consider the situation for a fixed value of $e=e_{\rm eq}$.  For
+$e_p\ll e_{\rm eq}$, $\theta$ will circulate and
+$\cos(\varpi_1-\varpi_2)$ averages to 0 over time.  The quantities
+begin to diverge significantly whenever $e_p/e_{\rm eq}\sim
+\abs{f_1/f_2}$. Once this occurs, the system will escape the
+$\theta_2$ resonance and become apsidally aligned.  This explains the
+horizontal transition along the rows of Figure ref:fig:tp-grid-ext
+when traveling from left to right.
+
+Essentially, we are comparing the value of $S_2/\Lambda_1$ in the test
+particle problem ( $\mathcal{D}_{\notin\theta}$ and $q=\infty$ ) to
+the limit of the finite $q<\infty$ system ( $\mathcal{D}_{\in\theta}$
+). We base this analysis on the observed equilibria in Figure
+ref:fig:tp-grid-ext. 
+
+On the other hand, we may consider the opposite initial configuration,
+where $e_p>0$ is held constant.  For $e_{\rm eq} \ll e_p$, the system
+is aligned in equilibrium, i.e. $\cos(\varpi_p-\varpi)=1$.  These
+quantities diverge significantly when
+#+BEGIN_SRC latex
+  \begin{align}
+  \label{eq:f2ep2}
+  f_2^2e_p^2 &\approx -2\abs{f_1f_2}e_p e\cos(\varpi_p-\varpi) + f_1^2e^2.
+  \end{align}
+#+END_SRC
+@@latex:\noindent@@ For a given value of $e_p$ large enough, $e$ will
+have one positive root. For $e_p$ less than this critical value, no
+positive solutions exist.  This explains the vertical transition along
+the columns of Figure ref:fig:tp-grid-ext from bottom ($e_{\rm eq}<
+e_p$) to top ($e_{\rm eq} >e_p$).
+
+The $(e_p,h)$ parameter space is thus split into two different
+regimes, for which we approximate their boundary be a straight line.
+By comparing the limits of $\mathcal D_{\notin\theta}$ to $\mathcal
+D_{\in\theta}$, we found that roughly $e_{p}/e_{\rm eq} = |f_1/f_2|$,
+which sets the slope. Moreover, the critical value of $e_p$ for when
+$e$ has a positive solution in equation eqref:eq:f2ep2 sets an $x$
+intercept.  In Figure ref:fig:tp-grid-ext, we plot our theoretical
+prediction as a dashed line, where we have used $e\equiv e_{\rm eq}$
+for any given value of $h$ in our calculation. Despite its simplicity,
+our analytical argument here matches the numerical results well.
+
+Up until now, we have been considering an analysis of the $j:j+1$ MMR
+Hamiltonian manifold without any external dissipative forces acting on
+the system. The entire story of test particle alignment, including
+migration, resonance capture, and dissipative equilibria, is beyond
+the scope of this paper. Nevertheless, these arguments demonstrate
+the underlying dynamical mechanism which leads to apsidal alignment.
+
 * Conclusion
 In this paper, we briefly summarized the standard picture of MMR
-resonance capture in the literature and illustrated how it robustly
-leads to apsidal anti-alignment due to the fact that
+capture in the literature and illustrated how it robustly leads to
+apsidal anti-alignment due to the fact that
 $\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance.  Regardless
-of the damping ratio $T_{e,1}/T_{e,2}$, which is typically set to $1/q$
-(see equation eqref:eq:Teratio), we find that the $\theta_1$ and
-$\theta_2$ resonances adjust to the damping ratio and reach
-an equilibrium $e_2/e_1\sim q$.  Even if the system is initialized
-with large eccentricities, if $e_{1d}=e_{2d}=0$, any comparable mass
-system without an external eccentricity driving force adapts quickly
-and apsidal alignment is only temporary. This result,
-although not covered in this paper, extends to the regime
-where $q$ or $\frac1q\sim\mathcal{O}(10)$. The larger planet, even without
-dissipative forces, will lose eccentricity to the smaller planet
-and the system will reach an equilibrium with $\theta_1$
-and $\theta_2$ librating over a long enough timescale.
+of the damping ratio $T_{e,1}/T_{e,2}$, which is typically set to
+$1/q$ (see equation eqref:eq:Teratio), we find that the $\theta_1$ and
+$\theta_2$ resonances adjust to the damping ratio and reach an
+equilibrium with $e_2/e_1\sim q$.  Even if the system is initialized
+with large eccentricities, for $e_{1d}=e_{2d}=0$, any comparable mass
+system without an external eccentricity driving force evolves towards
+$\Delta\varpi=180^\circ$. The larger planet loses eccentricity to the
+smaller planet and the system will always reach an equilibrium with
+$\theta_1$ and $\theta_2$ librating over a long enough timescale.
 
-Because of this, in the next section, we briefly reviewed the textbook
-treatment of the CR3BP and its extension, the ER3BP.  This formulation
-of the problem allowed us to adjust $e_p$ independently to isolate its
-effect.  We found that apsidal alignment occurs for large values of
-$e_p$ comparable to the aspect ratio. These results can be summarized
-as a competition between the eccentricity $e_p$ versus the magnitude
-of the equilibrium eccentricity naturally induced by the disk's
-damping forces.  Our test particle results prompted the addition of an
-eccentricity driving force and informed our analytical analysis of how
-apsidal alignment may arise in the case of $q\sim\mathcal{O}(1)$.
+Because of this, in Section [[Test Particle Results]], we briefly reviewed
+the textbook treatment of the CR3BP and its extension, the ER3BP.
+This formulation of the problem allowed us to adjust $e_p$
+independently to isolate its effect.  We found that apsidal alignment
+occurs for large values of $e_p$ comparable to the aspect ratio. These
+results can be summarized as a competition between the eccentricity
+$e_p$ versus the magnitude of the equilibrium eccentricity naturally
+induced by the disk's damping forces.  Our test particle results
+informed our analysis of how apsidal alignment may arise in the case
+of $q\sim\mathcal{O}(1)$ and prompted the addition of an eccentricity
+driving force.  While previous studies typically assume that the
+eccentricity damps to zero, theoretically this is not always the case,
+as several mechanisms have been proposed that drive eccentricity in
+young exoplanetary systems
+[[citep:ragusa17_eccen_evolut_durin_planet_disc_inter,goldreich03_eccen_evolut_planet_gaseous_disks,teyssandier17_secul_evolut_eccen_protop_discs]].
 
 We find that in the test particle case, for roughly $e_p \gtrsim h$,
 the test particle becomes apsidally aligned with the planet and the
-system finds an equilibrium where $e$ librates.  The results are
-largely analagous with the comparable mass case, as long as capture
-occurs.  In fact, we have reached two conclusions throughout this
-paper:
+system finds an equilibrium where $e$ librates around $e_p$.  The
+results are largely analagous with the comparable mass case, as long
+as capture occurs and the system remains in resonance.  In fact, we
+have reached two conclusions throughout this paper:
 #+BEGIN_SRC latex
   \begin{enumerate}[label=\arabic*.]
-    \item Eccentricity driving forces may destroy the resonance.
     \item An external eccentricity driving force can robustly produce
-  apsidal alignment if the system remains in resonance.
+  apsidal alignment if the system remains captured into resonance.
+    \item Eccentricity driving forces can destroy MMRs.
   \end{enumerate}
 #+END_SRC
 @@latex:\noindent@@ The apsidal alignment in K2-19b and c, along with
 their moderate eccentricities and the fact that we observe
 $\hat\theta$ to librate [[citep:&petit_resonance_2020]], therefore
 suggests that the planets are interacting with such an external force.
-However, our first conclusion implies that such a force could
-potentially destabilize and destroy the resonance in the future.
+However, our second conclusion implies that such a force threatens to
+destabilize and destroy the resonance in the future.
 
 Both of these conclusions are also relevant to the distribution of
 period ratios in the Kepler catalogue.  On the one hand, if two
@@ -1624,15 +1619,29 @@ underabundance at exactly $P_2/P_1 = (j+1)/j$, simply because exactly
 resonant systems can be pushed to slightly larger period ratios
 whenever the disk drives the planets eccentricities.
 
-This paper represents only a preliminary investigation
-into the effects of eccentricity in mean motion resonant
-systems. Previous studies typically assume that
-the eccentricity damps to zero,
-but theoretically this is not always the case.
-Several mechanisms have been proposed that
-drive eccentricity in young exoplanetary systems,
-such as im
-[[citep:ragusa17_eccen_evolut_durin_planet_disc_inter,goldreich03_eccen_evolut_planet_gaseous_disks,teyssandier17_secul_evolut_eccen_protop_discs]].
+This paper represents only a preliminary investigation into the
+effects of eccentricity in mean motion resonant systems. Our results
+come with several caveats, the first of which is that our model
+utilizes constant dissipative timescales. In reality, the coupling
+between the disk and planet is a function of eccentricity, location in
+the disk, and disk profile
+citep:cresswell_evolution_2006,cresswell_three-dimensional_2008.  Full
+hydrodynamic simulations are the most accurate method for calculating
+planet-disk interactions but are too computationally expensive for the
+scope of this paper.
+
+Furthermore, the outcome of planet migration and MMR capture is
+clearly very sensitive to the system's parameters.  For the four
+combinations of $q=0.5,2$ and initial period ratios $P_2/P_1=1.5,1.55$
+in Figure ref:fig:Rhat-grid, capture is not always likely. In fact,
+for $q=0.5$ and $P_2/P_1=1.5$, none of the integrations lead to
+apsidal alignment, and fewer simulations are captured than escape for
+$q=0.5$ and $P_2/P_1=1.55$.  The stability and capture probability are
+likely complicated functions of the initial conditions and other
+system parameters, and so we leave a more detailed analysis to future
+studies.
+
+
 
 
 ** TODO finish conclusion                                         :noexport:
@@ -1641,12 +1650,8 @@ such as im
   theoretically be supported up to very small eccentricities
 *** TODO add caveat: constant timescales
 *** TODO add part about future work
-** TODO review conclusion                                         :noexport:
+** DONE review conclusion                                         :noexport:
 * bibliography                                                       :ignore:
-@@latex:\twocolumn@@
-bibliography:references.bib
-bibliographystyle:mnras
-
 @@latex:\twocolumn@@
 bibliography:references.bib
 bibliographystyle:mnras
