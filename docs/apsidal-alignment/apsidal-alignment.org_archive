@@ -1,0 +1,136 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* TODO this section seems dubious. check math formalism              :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Apsidal Angle/Test particle limit
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: TODO
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* TODO figure with eq eccentricities                                 :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results/Equilibrium eccentricity and stability
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: TODO
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE figure out why $\hat\theta$ goes to 0 in test particle case :noexport:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+- because hat theta 1 = hat theta 2 and tp is external
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE change coordinates to physical in above eqns                  :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results/Equations of motion
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE cite derivation away                                          :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results/Equations of motion
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE define thetas                                                 :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results/Equations of motion
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE cite away derivation of eq ecc                                :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results/Equilibrium eccentricity and stability
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE cite away stability conditions                                :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Test Particle Results/Equilibrium eccentricity and stability
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE example of escape                                             :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Apsidal Angle/Saturation eccentricities
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE example noncapture                                            :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Apsidal Angle/Initial period ratio
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:
+
+
+Archived entries from file /home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+
+
+* DONE example of instability                                        :ignore:
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-12-15 Wed 14:26
+:ARCHIVE_FILE: ~/multi-planet-architecture/docs/apsidal-alignment/apsidal-alignment.org
+:ARCHIVE_OLPATH: Apsidal Angle/Mass ratio
+:ARCHIVE_CATEGORY: apsidal-alignment
+:ARCHIVE_TODO: DONE
+:END:

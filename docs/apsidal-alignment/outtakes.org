@@ -255,9 +255,6 @@ Now transform into $\hat R$
 
 ** Elliptic restricted 3 body problem
 
-@@latex:\twocolumn@@
-bibliography:references.bib
-bibliographystyle:mnras
 
 and relegate the internal case
 to Appendix [[*Elliptic restricted 3 body problem][Elliptic restricted 3 body problem]]. 
