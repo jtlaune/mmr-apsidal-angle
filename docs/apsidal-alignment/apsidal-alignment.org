@@ -2,10 +2,12 @@
 #+TITLE: Architecture of Planetary Systems in Mean Motion Resonance
 #+OPTIONS: author:nil date:nil toc:nil
 #+LATEX_CLASS: mnras
-#+LaTeX_CLASS_OPTIONS: [usenatbib]
+#+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
 #+latex_header: \usepackage{caption}
 #+latex_header: \usepackage{tabularx}
 #+latex_header: \usepackage{subcaption}
+#+latex_header: \usepackage{setspace}
+#+latex_header: \doublespacing
 #+latex_header: \usepackage{pdfpages}
 #+latex_header: \usepackage{float}
 #+latex_header: \usepackage{booktabs}
@@ -39,10 +41,32 @@
 #+latex_header: $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 
 #+begin_src latex
-  \maketitle
+  \begin{abstract}
+    Long before the first exoplanet detection, theoretical
+    works predicted that young planets migrate across their natal disk
+    and sweep up other planets into mean motion resonances, which
+    operate whenever the planets' period ratios are related by an
+    integer fraction $j:j+k$.  In the literature, the typical treatment
+    of resonance capture parametrizes the planet's migration timescale
+    and damps all eccentricities to zero.  Post-capture, the pair
+    evolves into a configuration in which both planets' resonance angles
+    librate and their perihelia are anti-aligned.  However, there are
+    some observations which the standard picture cannot explain. The
+    system K2-19 hosts two planets close to, but just wide of, the 3:2
+    MMR which are moderately eccentric and apsidally aligned.  In this
+    paper, we investigate the MMR Hamiltonian under the influence of
+    external disk forces which facilitate migration but drive the
+    eccentricites of the system to a finite, nonzero saturation value.
+    We find that, for certain saturation eccentricities, apsidal
+    alignment is a natural outcome if the external driving force
+    overpowers the resonance.  In this configuration, both planets'
+    resonance angles circulate, but there is a combined resonance angle
+    which still librates and traps the planets near the nominal
+    resonance location.  Conversely, we find that eccentricity forcing
+    may also disrupt resonance capture or destroy an existing
+    resonance.
+  \end{abstract}
 #+end_src
-
-** TODO write abstract                                            :noexport:
 
 * Introduction
 Even before the first detection of an exoplanetary system, planets
@@ -1652,7 +1676,7 @@ studies.
 *** TODO add part about future work
 ** DONE review conclusion                                         :noexport:
 * bibliography                                                       :ignore:
-@@latex:\twocolumn@@
+@@latex:%\twocolumn@@
 bibliography:references.bib
 bibliographystyle:mnras
 * Appendix                                                           :ignore:
