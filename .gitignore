@@ -21,3 +21,4 @@ scripts
 docs/**/*.py
 auto
 tramp.*
+.projectile
