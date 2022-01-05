@@ -1,0 +1,9 @@
+* todos
+** TODO add in support for omeff [0/1]
+[[file:~/Dropbox/multi-planet-architecture/run.py][file:~/Dropbox/multi-planet-architecture/run.py]]
+** TODO run initial tests for omeff code [0/4]
+*** TODO migration timescale
+*** TODO eccentricity damping timescale
+*** TODO omega effective for mu1 << mu2
+*** TODO omega effective for mu2 << mu1
+* Research Notes                                                   :noexport:
