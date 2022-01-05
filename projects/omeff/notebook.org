@@ -7,3 +7,10 @@
 *** TODO omega effective for mu1 << mu2
 *** TODO omega effective for mu2 << mu1
 * Research Notes                                                   :noexport:
+commit c67560b8e97866c3e1d6288b0d22e33d363bf6ed
+Author: jtlaune <jtlaune@gmail.com>
+Date:   Wed Jan 5 17:50:15 2022 -0500
+
+    Update to parallelized set runs for omeff.
+    
+    Now to test numerics.

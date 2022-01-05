@@ -24,7 +24,7 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j/(j+1))**(2./3.)
-Nqs = 8
+Nqs = 1
 qs = np.ones(Nqs)*2
 overwrite = True
 totmass = 1e-3
@@ -81,7 +81,8 @@ def omeffs(a0, j, muext, aext):
     om2 = ompext_np(muext, a1, a2, aext)
     return(om2 - om1)
 
-AEXTS = np.linspace(4,10,Nqs,endpoint=True)
+#AEXTS = np.linspace(4,10,Nqs,endpoint=True)
+AEXTS = np.array([15])
 MUEXTS = np.ones(Nqs)*1e-3
 OMEFFS = omeffs(A0S, j, MUEXTS, AEXTS)
 
