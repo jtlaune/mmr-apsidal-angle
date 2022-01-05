@@ -20,6 +20,9 @@ class check_ratio_cm:
     def __call__(self, t, Y):
         L1 = Y[1]
         L2 = Y[2]
+        # super sloppy lol
+        if np.isnan(L1):
+            return(0)
         alpha1 = L1 ** 2 / self.q ** 2
         alpha2 = L2 ** 2 
         alpha = alpha1 / alpha2

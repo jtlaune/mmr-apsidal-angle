@@ -27,7 +27,7 @@ alpha_0 = (j/(j+1))**(2./3.)
 Nqs = 8
 qs = np.ones(Nqs)*2
 overwrite = True
-totmass = 1e-4
+totmass = 1e-3
 Tw0 = 1000
 TeRatios = sqrt(qs)
 
@@ -62,7 +62,7 @@ TE2 = Tw0*TeRatios
 #TM1 = np.infty*np.ones(Nqs)
 TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
-TS = 30.*np.maximum(TE1, TE2)
+TS = 10.*np.maximum(TE1, TE2)
 ALPHA_0 = alpha_0*np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -70,7 +70,7 @@ ALPHA_0 = alpha_0*np.ones(Nqs)
 #############################################################
 cutoff_frac = 1.0
 CUTOFFS = TS*cutoff_frac
-ALPHA2_0 = (1.6)**(2./3)*np.ones(Nqs)
+ALPHA2_0 = (1.55)**(2./3)*np.ones(Nqs)
 
 #def muext(omeff, aext):
 def omeffs(a0, j, muext, aext):
@@ -81,14 +81,14 @@ def omeffs(a0, j, muext, aext):
     om2 = ompext_np(muext, a1, a2, aext)
     return(om2 - om1)
 
-AEXTS = np.linspace(1.5,10,Nqs,endpoint=True)
-MUEXTS = np.ones(Nqs)*1e-2
+AEXTS = np.linspace(4,10,Nqs,endpoint=True)
+MUEXTS = np.ones(Nqs)*1e-3
 OMEFFS = omeffs(A0S, j, MUEXTS, AEXTS)
 
 NAMES = np.array([f"omeff-{OMEFFS[i]:0.1e}-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                   for i, qit in enumerate(QS)])
 
-DIRNAMES = np.array([f"./h-{h:0.2f}-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i
+DIRNAMES = np.array([f"./q{QS[i]:0.1f}/h-{h:0.2f}-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i
                         in range(Nqs)])
 DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
 
@@ -103,7 +103,7 @@ print(RUN_PARAMS)
 print(f"Running {RUN_PARAMS.shape[0]} simulations...")
 integrate = run.run_compmass_set_omeff(verbose=True, overwrite=overwrite,
                                  secular=True, method="RK45")
-Nproc=16
+Nproc=4
 N_sims = len(QS)
 with Pool(processes=min(Nproc, N_sims)) as pool:
     pool.map(integrate, RUN_PARAMS)
