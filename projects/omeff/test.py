@@ -85,10 +85,10 @@ AEXTS = np.linspace(1.5,10,Nqs,endpoint=True)
 MUEXTS = np.ones(Nqs)*1e-2
 OMEFFS = omeffs(A0S, j, MUEXTS, AEXTS)
 
-NAMES = np.array([f"aext-{AEXTS[i]:0.2f}-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
+NAMES = np.array([f"omeff-{OMEFFS[i]:0.1e}-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                   for i, qit in enumerate(QS)])
 
-DIRNAMES = np.array([f"./driveTe-h-{h:0.2f}-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i
+DIRNAMES = np.array([f"./h-{h:0.2f}-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i
                         in range(Nqs)])
 DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
 
@@ -101,7 +101,7 @@ RUN_PARAMS = np.column_stack((HS, JS, A0S, QS, MU1, TS, TE1, TE2, TM1,
                               G1_0, G2_0,MUEXTS, AEXTS))
 print(RUN_PARAMS)
 print(f"Running {RUN_PARAMS.shape[0]} simulations...")
-integrate = run.run_compmass_set(verbose=True, overwrite=overwrite,
+integrate = run.run_compmass_set_omeff(verbose=True, overwrite=overwrite,
                                  secular=True, method="RK45")
 Nproc=16
 N_sims = len(QS)

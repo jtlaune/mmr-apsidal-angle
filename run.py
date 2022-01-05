@@ -1161,10 +1161,13 @@ class run_compmass_set:
 class comp_mass_omeff(comp_mass_intH):
     def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None,
                  e2d=None, cutoff=np.infty, Te_func=False, aext=0., muext=0.):
-        super().__init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None,
+        super().__init__(j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None,
                  e2d=None, cutoff=np.infty, Te_func=False)
-        self.aext
-        self.muext
+        self.aext = aext
+        self.muext = muext
+        self.perturb = False
+        if self.muext > 0:
+            self.perturb = True
     def H4dofsec(self, t, Y):
         (thetadot, L1dot, L2dot,
          x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t,Y)
@@ -1182,6 +1185,10 @@ class comp_mass_omeff(comp_mass_intH):
             y1 = Y[4]
             x2 = Y[5]
             y2 = Y[6]
+
+            alpha = (L1/L2)**2
+            a2 = L2**2*self.a0
+            a1 = alpha*a2
 
             g1 = np.arctan2(y1, x1)
             G1 = sqrt(x1 * x1 + y1 * y1)
@@ -1209,10 +1216,12 @@ class comp_mass_omeff(comp_mass_intH):
 ################### new stuff
 
             om1ext = om1ext_np(self.muext, a1, a2, self.aext)
-            om2ext = om2ext_np(self.muext, a1, a2, self.aext)
+            om2ext = ompext_np(self.muext, a1, a2, self.aext)
 
-            xdot = xdot + self.om_eff * sqrt(G) * sin(g)
-            ydot = ydot - self.om_eff * sqrt(G) * cos(g)
+            x1dot = x1dot + om1ext * sqrt(G1) * sin(g1)
+            y1dot = y1dot - om1ext * sqrt(G1) * cos(g1)
+            x2dot = x2dot + om2ext * sqrt(G1) * sin(g1)
+            y2dot = y2dot - om2ext * sqrt(G1) * cos(g1)
 
             # see above for the ldot secular force from mup
             # these are just ldot secular forcing from ext
@@ -1392,6 +1401,7 @@ class run_compmass_set_omeff(run_compmass_set):
         self.overwrite = overwrite
         self.secular   = secular
         self.method    = method
+        self.tscale = 1e3
     def __call__(self, params):
         h = np.float64(params[0])
         j = np.float64(params[1])
@@ -1440,7 +1450,8 @@ class run_compmass_set_omeff(run_compmass_set):
                         r"$a_{\rm ext}$ = " + f"{aext:0.3f} " \
                         r"$\mu_{\rm ext}$ = " + f"{muext:0.3f}")
         run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0,
-                           e2_0,g1_0, g2_0, Tm1, Tm2, Te1, Te2, T, suptitle,
-                           dirname, filename, figname, paramsname, verbose,
-                           secular, e1d, e2d, overwrite, cutoff, method,
-                           Te_func,muext, aext)
+                           e2_0,g1_0, g2_0, Tm1, Tm2, Te1, Te2, T,
+                           suptitle, dirname, filename, figname,
+                           paramsname, self.verbose, self.tscale,
+                           self.secular, e1d, e2d, self.overwrite,
+                           cutoff, self.method, Te_func,muext, aext)
