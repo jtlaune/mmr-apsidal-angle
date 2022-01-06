@@ -1,4 +1,6 @@
 * todos
+** TODO try stronger precession
+** TODO get computer account on exo
 ** TODO add in support for omeff [0/1]
 [[file:~/Dropbox/multi-planet-architecture/run.py][file:~/Dropbox/multi-planet-architecture/run.py]]
 ** TODO run initial tests for omeff code [0/4]
@@ -7,10 +9,31 @@
 *** TODO omega effective for mu1 << mu2
 *** TODO omega effective for mu2 << mu1
 * Research Notes                                                   :noexport:
-commit c67560b8e97866c3e1d6288b0d22e33d363bf6ed
-Author: jtlaune <jtlaune@gmail.com>
-Date:   Wed Jan 5 17:50:15 2022 -0500
+* Important code commits
+** "the test particle can be captured for small omeff over long enough times"
+muext=1e-3
+mutot=1e-3
+aext=15
+e1d=e2d=0
+==> m2 is captured into theta1 and m1<->theta2
 
-    Update to parallelized set runs for omeff.
+muext=1e-3
+mutot=1e-3
+aext=10
+e1d=e2d=0
+==> m2 is *not* captured into theta1 *but* still m1<->theta2
+- it appears theta1 is about to capture m2, possibly run more time
+  - [[*get computer account on exo][get computer account on exo]]
+- only ran for weak precession so far, could precession totally
+  disrupt capture?
+  - [[*try stronger precession][try stronger precession]]
+
+*** git log
+commit db8b398f329f0e4456daf1bf2d121b60c57d60de
+Author: jtlaune <jtlaune@gmail.com>
+Date:   Wed Jan 5 18:14:34 2022 -0500
+
+    Show behavior convergence from omeff>0 to 0
     
-    Now to test numerics.
+    Have shown that there is a change in behavior from
+    0 to 1 that occurs x>0
