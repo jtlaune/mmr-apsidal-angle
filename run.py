@@ -18,11 +18,12 @@ class check_ratio_cm:
         self.q = q
 
     def __call__(self, t, Y):
+        theta = Y[0]
         L1 = Y[1]
         L2 = Y[2]
         # super sloppy lol
-        if np.isnan(L1):
-            return(0)
+        if np.isnan(theta):
+            return(np.random.randn(1)[0])
         alpha1 = L1 ** 2 / self.q ** 2
         alpha2 = L2 ** 2 
         alpha = alpha1 / alpha2

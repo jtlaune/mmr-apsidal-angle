@@ -1,18 +1,26 @@
-* todos
+* Intro
+* Methods
+* Results
+* Discussion
+* todos                                                            :noexport:
 ** TODO try stronger precession
 ** TODO get computer account on exo
-** TODO add in support for omeff [0/1]
+* Research questions [0/4]                                         :noexport:
+** TODO "does the code work?" [1/2]
+*** DONE add in support for omeff
+*** TODO run initial tests for omeff code [0/4]
+**** TODO migration timescale
+**** TODO eccentricity damping timescale
+[[file:test-Te.py::TE1 = Tw0/TeRatios][<test-Te>]]
+- low muext, check q>>1 with e0=0.1 to check damping timescale
+**** TODO omega effective for mu1 << mu2
+**** TODO omega effective for mu2 << mu1
 [[file:~/Dropbox/multi-planet-architecture/run.py][file:~/Dropbox/multi-planet-architecture/run.py]]
-** TODO run initial tests for omeff code [0/4]
-*** TODO migration timescale
-*** TODO eccentricity damping timescale
-*** TODO omega effective for mu1 << mu2
-*** TODO omega effective for mu2 << mu1
-* Research questions                                               :noexport:
-** "can precession completely disrupt a capture?"
-
-* Commit notes
-** "both planets can be captured for small omeff over long enough times"
+** TODO "can precession completely disrupt a capture?"
+** TODO "does precession affect equilibrium eccentricities?"
+** TODO "does finite q precession converge to test particle results?"
+* Commit notes [1/1]                                               :noexport:
+** DONE "both planets can be captured for small omeff over long enough times"
 
 muext=1e-3
 mutot=1e-3
@@ -40,3 +48,6 @@ Date:   Wed Jan 5 18:14:34 2022 -0500
     
     Have shown that there is a change in behavior from
     0 to 1 that occurs x>0
+* Possible inquiries
+** can rings of dust interacting in MMRs affect ring dynamics?
+- [[cite:&izidoro21_planet_rings_as_cause_solar]]
