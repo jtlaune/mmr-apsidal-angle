@@ -8,9 +8,12 @@
 *** TODO eccentricity damping timescale
 *** TODO omega effective for mu1 << mu2
 *** TODO omega effective for mu2 << mu1
-* Research Notes                                                   :noexport:
-* Important code commits
-** "the test particle can be captured for small omeff over long enough times"
+* Research questions                                               :noexport:
+** "can precession completely disrupt a capture?"
+
+* Commit notes
+** "both planets can be captured for small omeff over long enough times"
+
 muext=1e-3
 mutot=1e-3
 aext=15
@@ -27,7 +30,7 @@ e1d=e2d=0
 - only ran for weak precession so far, could precession totally
   disrupt capture?
   - [[*try stronger precession][try stronger precession]]
-
+  - 
 *** git log
 commit db8b398f329f0e4456daf1bf2d121b60c57d60de
 Author: jtlaune <jtlaune@gmail.com>
