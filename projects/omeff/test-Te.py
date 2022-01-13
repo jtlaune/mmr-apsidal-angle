@@ -25,11 +25,11 @@ a0 = 1.0
 h = 0.03
 alpha_0 = (j/(j+1))**(2./3.)
 Nqs = 1
-qs = np.ones(Nqs)*2.
+qs = np.ones(Nqs)*25.
 overwrite = True
-totmass = 1e-2
+totmass = 1e-3
 Tw0 = 1000
-TeRatios = sqrt(qs)
+TeRatios = qs
 
 ######################
 # Varying parameters #
@@ -59,10 +59,10 @@ MU2 = totmass/(1+QS)
 MU1 = totmass - MU2
 TE1 = Tw0/TeRatios
 TE2 = Tw0*TeRatios
-#TM1 = np.infty*np.ones(Nqs)
-TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
+TM1 = np.infty*np.ones(Nqs)
+#TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
-TS = 10.*np.maximum(TE1, TE2)
+TS = 5.*np.maximum(TE1, TE2)
 ALPHA_0 = alpha_0*np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -70,7 +70,7 @@ ALPHA_0 = alpha_0*np.ones(Nqs)
 #############################################################
 cutoff_frac = 1.0
 CUTOFFS = TS*cutoff_frac
-ALPHA2_0 = (1.55)**(2./3)*np.ones(Nqs)
+ALPHA2_0 = (1.5)**(2./3)*np.ones(Nqs)
 
 #def muext(omeff, aext):
 def omeffs(a0, j, muext, aext):
@@ -79,19 +79,27 @@ def omeffs(a0, j, muext, aext):
     a2 = a0
     om1 = om1ext_np(muext, a1, a2, aext)
     om2 = ompext_np(muext, a1, a2, aext)
-    return(om2 - om1)
+    return(om1-om2)
 
-#AEXTS = np.linspace(4,10,Nqs,endpoint=True)
-AEXTS = np.array([5.])
-MUEXTS = np.ones(Nqs)*1e-5
-OMEFFS = omeffs(A0S, j, MUEXTS, AEXTS)
+AEXTS = np.array([25.])
+#AEXTS = np.array([10.])
+MUEXTS = np.ones(Nqs)*1e-3
+######################################
+#OMEFFS = omeffs(A0S, j, MUEXTS, AEXTS)
+OMEFFS = np.zeros(len(A0S))
+######################################
 
-NAMES = np.array([f"omeff-{OMEFFS[i]:0.1e}-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
+NAMES = np.array([f"omeff-{OMEFFS[i]:0.1e}" \
+                  f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
                   for i, qit in enumerate(QS)])
 
-DIRNAMES = np.array([f"./q{QS[i]:0.1f}/h-{h:0.2f}-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i
-                        in range(Nqs)])
-DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC" for i in range(Nqs)])
+DIRNAMES = np.array([f"./q{QS[i]:0.1f}/h-{h:0.2f}" \
+                     f"-Tw0-{Tw0}-mutot-{totmass:0.1e}"
+                     for i in
+                     range(Nqs)])
+
+DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC"
+                           for i in range(Nqs)])
 
 ################
 # WITH SECULAR #

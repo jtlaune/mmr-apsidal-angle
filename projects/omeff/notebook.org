@@ -5,9 +5,10 @@
 * todos                                                            :noexport:
 ** TODO try stronger precession
 ** TODO get computer account on exo
-* Research questions [0/4]                                         :noexport:
-** TODO "does the code work?" [1/2]
+* Research questions [0/5]                                         :noexport:
+** TODO "does the code work?" [1/3]
 *** DONE add in support for omeff
+*** TODO "does weak precession large q recreate TP equilibrium eccentricities?"
 *** TODO run initial tests for omeff code [0/4]
 **** TODO migration timescale
 **** TODO eccentricity damping timescale
@@ -16,9 +17,27 @@
 **** TODO omega effective for mu1 << mu2
 **** TODO omega effective for mu2 << mu1
 [[file:~/Dropbox/multi-planet-architecture/run.py][file:~/Dropbox/multi-planet-architecture/run.py]]
+*** TODO debugging code [1/2]
+**** DONE try q<1
+- nothing
+**** TODO try -omeff [0/1]
+code only worked for small omeff, i.e. kept crashing, nans
+- in definition of omeff, flipped omeff=om2-om2 to omeff=om1-om2
+- new behavior: code equilibrates into resonance for small omeff
+  - [[file:q2.0/h-0.03-Tw0-1000-mutot-1.0e-03/omeff--1.6e-07-e1d-0.000-e2d-0.000.png]]
+  - raise omeff: code equilibrates into some resonances
+    - [[file:q2.0/h-0.03-Tw0-1000-mutot-1.0e-03/omeff--4.6e-07-e1d-0.000-e2d-0.000.png]]
+    - [[file:q2.0/h-0.03-Tw0-1000-mutot-1.0e-03/omeff--5.4e-07-e1d-0.000-e2d-0.000.png]]
+    - various behaviors/timescales to escape resonance. these runs begin
+      /in/ resonance, at period ratio = 1.5
+- this should explain why the code only started to work with very low
+  "negative" omeff frequencies
+***** TODO [#A] check math
+
+*** TODO "does finite q precession converge to test particle results?"
+** TODO "why does external precession break thetai bar?"
 ** TODO "can precession completely disrupt a capture?"
 ** TODO "does precession affect equilibrium eccentricities?"
-** TODO "does finite q precession converge to test particle results?"
 * Commit notes [1/1]                                               :noexport:
 ** DONE "both planets can be captured for small omeff over long enough times"
 
@@ -51,3 +70,18 @@ Date:   Wed Jan 5 18:14:34 2022 -0500
 * Possible inquiries
 ** can rings of dust interacting in MMRs affect ring dynamics?
 - [[cite:&izidoro21_planet_rings_as_cause_solar]]
+- can you model the evolution of planetessimal rings in late stage PPD
+  as mass rings under the influence of a weak gas disk?
+
+* research projects (?)
+** TODO ask dong about a semi-analytic dust project
+[[*can rings of dust interacting in MMRs affect ring dynamics?][can rings of dust interacting in MMRs affect ring dynamics?]]
+** semi-analytic celestial mechanics [0/2]
+*** TODO apsidal alignment
+*** TODO external perturber
+** semi-analytic dust dynamics in accretion disks [0/2]
+*** TODO ??
+*** TODO ??
+** hydrodynamic dusty accretion disk simulations [0/2]
+*** TODO ??
+*** TODO ??
