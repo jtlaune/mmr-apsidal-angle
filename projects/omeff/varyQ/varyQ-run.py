@@ -12,10 +12,11 @@ from plotting import plotsim, loadsim
 from helper import *
 
 # get run dir information
+# seriesname is simulation "series"
 abspath, filename = os.path.split(os.readlink(__file__))
-runsname = os.path.basename(filename).split("-")[0]
-paramsname = runsname+"-params.py"
-runpath = os.path.join(abspath, runsname)
+seriesname = os.path.basename(filename).split("-")[0]
+paramsname = seriesname+"-params.py"
+runpath = os.path.join(abspath, seriesname)
 print(abspath, filename)
 
 def load_params(filepath):
@@ -25,8 +26,11 @@ def load_params(filepath):
     print(f"Loading run file {filepath} in directory {os.getcwd()}")
     return(np.array(_.RUN_PARAMS))
 
+if not os.path.exists(seriesname):
+    os.mkdir(seriesname)
+
 # change to run directory
-os.chdir(runsname)
+os.chdir(seriesname)
 
 #################
 # Configuration #
