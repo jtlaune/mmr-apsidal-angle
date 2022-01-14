@@ -2032,3 +2032,7 @@ A similar representation of $\mathcal H, \mathcal M$, $\mathcal N$,
 and $\mathcal{K}$ also exists for which the limit $q\to 0$ converges
 to the case of an inner test particle by exchanging the necessary
 factors of $q$ for $\Lambda_1/\Lambda_2 = q\sqrt\alpha$.
+* todos  [0/3]                                                     :noexport:
+** TODO Mention transition to dimless H
+** TODO Tell people why you are transitioning to test particles
+** TODO check maryam's paper

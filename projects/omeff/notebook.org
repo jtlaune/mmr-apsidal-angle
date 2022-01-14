@@ -1,12 +1,20 @@
-* Intro
-* Methods
-* Results
-* Discussion
+#+TITLE: OmEff Notebook
+#+OPTIONS: author:nil date:nil toc:nil
+#+LATEX_CLASS: mnras
+#+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
 * todos                                                            :noexport:
+** TODO finish setting up following structure:
+"run" symlink -> dirname/dirname-run.py
+"params" are located dirname/dirname-params.py
 ** TODO try stronger precession
 ** TODO get computer account on exo
+** TODO rename to: Apsidal Alignment in ..
+** TODO *read* papers MMR capture using real hydro
+** TODO *read* planet migrating into cavity hydro sims
+** TODO write up tp omeff results for next week
+*** massive planet, finite e, TP migrates into it
 * Research questions [0/5]                                         :noexport:
-** TODO "does the code work?" [1/3]
+** TODO "does the code work?" [1/6]
 *** DONE add in support for omeff
 *** TODO "does weak precession large q recreate TP equilibrium eccentricities?"
 *** TODO run initial tests for omeff code [0/4]
@@ -35,6 +43,7 @@ code only worked for small omeff, i.e. kept crashing, nans
 ***** TODO [#A] check math
 
 *** TODO "does finite q precession converge to test particle results?"
+*** TODO "what does 1000>q>>1 capture look like?"
 ** TODO "why does external precession break thetai bar?"
 ** TODO "can precession completely disrupt a capture?"
 ** TODO "does precession affect equilibrium eccentricities?"
@@ -67,15 +76,20 @@ Date:   Wed Jan 5 18:14:34 2022 -0500
     
     Have shown that there is a change in behavior from
     0 to 1 that occurs x>0
-* Possible inquiries
+* Possible inquiries                                               :noexport:
 ** can rings of dust interacting in MMRs affect ring dynamics?
 - [[cite:&izidoro21_planet_rings_as_cause_solar]]
 - can you model the evolution of planetessimal rings in late stage PPD
   as mass rings under the influence of a weak gas disk?
 
-* research projects (?)
-** TODO ask dong about a semi-analytic dust project
+* research projects (?)                                            :noexport:
+** TODO ask dong about a semi-analytic dust project [1/2]
 [[*can rings of dust interacting in MMRs affect ring dynamics?][can rings of dust interacting in MMRs affect ring dynamics?]]
+*** DONE Question: can two dust rings lock into MMR?
+- answer: dong said: two dust rings cannot interact resonantly
+*** TODO Question: can a massive planet capture a ring?
+- can a massive planet "capture" an arc of the ring into a shepherded
+  region that facilitates planetesimal mergers?
 ** semi-analytic celestial mechanics [0/2]
 *** TODO apsidal alignment
 *** TODO external perturber
@@ -85,3 +99,6 @@ Date:   Wed Jan 5 18:14:34 2022 -0500
 ** hydrodynamic dusty accretion disk simulations [0/2]
 *** TODO ??
 *** TODO ??
+* FINESST [0/1]                                                    :noexport:
+** TODO new objective disk edge & migration
+** maybe still include apsidal alignment section?
