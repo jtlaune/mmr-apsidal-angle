@@ -44,6 +44,21 @@
 
   # important constants
   deg_conv = 180./np.pi
+  
+  def load_params(filepath):
+      spec = importlib.util.spec_from_file_location("_", filepath)
+      _ = importlib.util.module_from_spec(spec)
+      spec.loader.exec_module(_)
+      print(f"Loading run file {filepath} in directory {os.getcwd()}")
+      return(np.array(_.RUN_PARAMS))
 #+END_SRC
 
 #+RESULTS:
+: ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  
+#+END_SRC
+
+#+RESULTS:
+

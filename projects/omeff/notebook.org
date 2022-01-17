@@ -3,7 +3,7 @@
 #+LATEX_CLASS: mnras
 #+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
 * todos                                                            :noexport:
-** TODO finish setting up following structure:
+** DONE finish setting up following structure:
 "run" symlink -> dirname/dirname-run.py
 "params" are located dirname/dirname-params.py
 ** TODO try stronger precession
@@ -47,8 +47,39 @@ code only worked for small omeff, i.e. kept crashing, nans
 ** TODO "why does external precession break thetai bar?"
 ** TODO "can precession completely disrupt a capture?"
 ** TODO "does precession affect equilibrium eccentricities?"
-* Commit notes [1/1]                                               :noexport:
-** DONE "both planets can be captured for small omeff over long enough times"
+* Commit notes                                                     :noexport:
+** v2.4 934682 Update code to use symlinked run directories
+
+Update to "runsim symlink" run directory structure.
+
+For automatic documentation/SSOT design.  Each run directory is now
+self contained in a directory named "series", where we have defined
+series="whatever descriptive word that we would like to name our
+figures after". No longer copy pasting the first 100 lines of code
+from a "test-*.py" into plotting applications.  This will be standard
+going forward, but "apsidal-alignment" project will remain backwards
+compatible because this update simply splits the original test-*.py
+files into two files and hooks them together in the following way:
+
+../project/*symlinked-runfile-dir*/
+	series-run.py
+	series-params.py
+
+../project/
+	runsim -> series/series-run.py
+
+Then, executing "python runsim" in ../project/ directory will
+check if ../project/series/ exists, and, if not, it will
+create it. Next, it enters that directory and begins executing
+simulations. All of this happens irrespective of the value
+of *symlinked-runfile-dir*, so that the naming scheme
+"series-run.py" and "series-params.py" automatically
+create output in a directory named "../project/series/".
+
+*Note:* could just have chdired and "python series-run.py",
+but it's helpful to manually change the symlink when
+switching contexts.
+** "both planets can be captured for small omeff over long enough times"
 
 muext=1e-3
 mutot=1e-3
@@ -66,7 +97,6 @@ e1d=e2d=0
 - only ran for weak precession so far, could precession totally
   disrupt capture?
   - [[*try stronger precession][try stronger precession]]
-  - 
 *** git log
 commit db8b398f329f0e4456daf1bf2d121b60c57d60de
 Author: jtlaune <jtlaune@gmail.com>

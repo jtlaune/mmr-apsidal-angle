@@ -1,4 +1,4 @@
-#!/home/jtlaune/miniconda3/envs/science/bin/python
+#!/Home/jtlaune/miniconda3/envs/science/bin/python
 from multiprocessing import Pool, TimeoutError
 import sys
 import importlib
