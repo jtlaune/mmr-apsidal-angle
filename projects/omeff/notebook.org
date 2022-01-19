@@ -3,17 +3,38 @@
 #+LATEX_CLASS: mnras
 #+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
 * todos                                                            :noexport:
+** TODO [#A] set up fargo3d 2d "cavity" 
+*** derive proper initial conditions to use in [[file:~/fargo3d/setups/cavity/condinit.c::rho\[l\] = SIGMA0*pow(r/R0,-SIGMASLOPE)*(1.0+NOISE*(drand48()-.5));][<no description>]]
+** TODO [#A] read and annotate [[file:~/annurev.aa.14.090176.001243.pdf::%PDF-1.4][<peale 1976>]]
+** TODO [#A] "how does external precession affect TP capture?"
+SCHEDULED: <2022-01-18 Tue> DEADLINE: <2022-01-20 Thu>
+** TODO [#B] implement laetitia's changes[[file:~/apsidal-alignment_Laetitiacomments-1.pdf::%PDF-1.5][<no description>]]
+*** TODO rename to: Apsidal Alignment in ..
+* waits
+** TODO get computer account on exo
+** TODO *read* papers MMR capture using real hydro
+** TODO *read* planet migrating into cavity hydro sims
+* dones
 ** DONE finish setting up following structure:
 "run" symlink -> dirname/dirname-run.py
 "params" are located dirname/dirname-params.py
-** TODO try stronger precession
-** TODO get computer account on exo
-** TODO rename to: Apsidal Alignment in ..
-** TODO *read* papers MMR capture using real hydro
-** TODO *read* planet migrating into cavity hydro sims
-** TODO write up tp omeff results for next week
-*** massive planet, finite e, TP migrates into it
-* Research questions [0/5]                                         :noexport:
+* Research questions [0/6]                                         :noexport:
+** TODO "How should I structure my code?"
+SCHEDULED: <2022-01-17 Mon> DEADLINE: <2022-01-18 Tue>
+*** fndefs.py
+- definitions of f1, f2, omega, nu
+- replaces helper
+*** plotter.py
+- unified plotting parameters & size/axis
+*** resonance.py
+*** run.py
+*** runsim -> 'series'-run.py
+- calls run.py parallelization library
+- 
+*** goals [0/3]
+- [ ] subsume TP into finite q
+- [ ] universally use m1, m2 notation
+- [ ] consolidate simulation output to a dict of arrays
 ** TODO "does the code work?" [1/6]
 *** DONE add in support for omeff
 *** TODO "does weak precession large q recreate TP equilibrium eccentricities?"
@@ -44,9 +65,10 @@ code only worked for small omeff, i.e. kept crashing, nans
 
 *** TODO "does finite q precession converge to test particle results?"
 *** TODO "what does 1000>q>>1 capture look like?"
-** TODO "why does external precession break thetai bar?"
-** TODO "can precession completely disrupt a capture?"
-** TODO "does precession affect equilibrium eccentricities?"
+** future questions
+*** TODO "why does external precession break thetai bar?"
+*** TODO "can precession completely disrupt a capture?"
+*** TODO "does precession affect equilibrium eccentricities?"
 * Commit notes                                                     :noexport:
 ** v2.4 934682 Update code to use symlinked run directories
 

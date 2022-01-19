@@ -56,9 +56,26 @@
 #+RESULTS:
 : ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
 
+* shape of theta hat transformation
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  
+  import numpy as np
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  from mpl_toolkits import mplot3d
+  theta1 = np.linspace(0, 2*np.pi,100)
+  theta2 = np.linspace(0, 2*np.pi,100)
+  Th1, Th2 = np.meshgrid(theta1, theta2)
+  eps = 0.1 # look at behavior for eps -> 0, inf, 1
+  hatTh = np.arctan2(eps*np.sin(Th1) + np.sin(Th2),
+                        eps*np.cos(Th1) + np.cos(Th2))
+  fig = plt.figure()
+  ax = plt.axes(projection='3d')
+  ax.contourf3D(Th1, Th2, hatTh)
 #+END_SRC
 
 #+RESULTS:
-
+:RESULTS:
+: <matplotlib.contour.QuadContourSet at 0x7fab185156d0>
+#+attr_org: :width 269
+[[file:./.ob-jupyter/0daaab4b379fcfccadc0abac43f95d326436dd4b.png]]
+:END:
