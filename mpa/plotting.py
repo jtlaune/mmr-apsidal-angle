@@ -1,12 +1,4 @@
-import numpy as np
-import scipy as sp
-from scipy import optimize
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import sys
-import os
-import importlib
-import run
+from . import *
 
 sys.path.append("/home/jtlaune/mmr/")
 

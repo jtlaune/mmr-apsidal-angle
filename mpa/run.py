@@ -1,3 +1,5 @@
+from . import *
+
 def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
            dirname, filename, figname, paramsname, tscale=1e3,
            tol=1e-9, overwrite=False):

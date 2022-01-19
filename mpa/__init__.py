@@ -1,6 +1,7 @@
 import os
 import math
 import subprocess
+import sys
 
 import numpy as np
 from numpy import sin, cos, sqrt, pi, abs
@@ -18,10 +19,9 @@ from . import LaplaceCoefficients as LC
 # paralleliation 
 from .run import *
 from .plotting import *
-from .helper import *
 from .fndefs import *
 # definitions of f1, f2, omega, nu
 # replaces helper
-from .plotter import *
+from .plotting import *
 # unified plotting parameters & size/axis
 from .resonance import *
