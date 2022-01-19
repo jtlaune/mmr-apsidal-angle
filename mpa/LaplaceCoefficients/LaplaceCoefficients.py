@@ -2,8 +2,6 @@
 # Computation of Laplace coefficients from Murray & Dermott 1999
 # Original Author: Laetitia Rodet 02-2020
 ###
-import numpy as np
-from scipy.special import hyp2f1
 
 def Pochhammer(a, k):
     if k == 0:

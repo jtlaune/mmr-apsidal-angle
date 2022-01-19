@@ -1,7 +1,3 @@
-import numpy as np
-import math
-import LaplaceCoefficients as LC
-
 # helper functions
 def log_mean(x1, x2):
     return np.exp(0.5 * (np.log(x1) + np.log(x2)))

@@ -3,23 +3,7 @@
 #+LATEX_CLASS: mnras
 #+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
 * todos                                                            :noexport:
-** TODO [#A] set up fargo3d 2d "cavity" 
-*** derive proper initial conditions to use in [[file:~/fargo3d/setups/cavity/condinit.c::rho\[l\] = SIGMA0*pow(r/R0,-SIGMASLOPE)*(1.0+NOISE*(drand48()-.5));][<no description>]]
-** TODO [#A] read and annotate [[file:~/annurev.aa.14.090176.001243.pdf::%PDF-1.4][<peale 1976>]]
-** TODO [#A] "how does external precession affect TP capture?"
-SCHEDULED: <2022-01-18 Tue> DEADLINE: <2022-01-20 Thu>
-** TODO [#B] implement laetitia's changes[[file:~/apsidal-alignment_Laetitiacomments-1.pdf::%PDF-1.5][<no description>]]
-*** TODO rename to: Apsidal Alignment in ..
-* waits
-** TODO get computer account on exo
-** TODO *read* papers MMR capture using real hydro
-** TODO *read* planet migrating into cavity hydro sims
-* dones
-** DONE finish setting up following structure:
-"run" symlink -> dirname/dirname-run.py
-"params" are located dirname/dirname-params.py
-* Research questions [0/6]                                         :noexport:
-** TODO "How should I structure my code?"
+** TODO [#A] "How should I structure my code?"
 SCHEDULED: <2022-01-17 Mon> DEADLINE: <2022-01-18 Tue>
 *** fndefs.py
 - definitions of f1, f2, omega, nu
@@ -35,6 +19,28 @@ SCHEDULED: <2022-01-17 Mon> DEADLINE: <2022-01-18 Tue>
 - [ ] subsume TP into finite q
 - [ ] universally use m1, m2 notation
 - [ ] consolidate simulation output to a dict of arrays
+** TODO [#A] "how does external precession affect TP capture?"
+SCHEDULED: <2022-01-18 Tue> DEADLINE: <2022-01-20 Thu>
+** TODO [#B] read and annotate [[file:~/annurev.aa.14.090176.001243.pdf::%PDF-1.4][<peale 1976>]]
+** TODO [#B] implement laetitia's changes[[file:~/apsidal-alignment_Laetitiacomments-1.pdf::%PDF-1.5][<no description>]]
+*** TODO rename to: Apsidal Alignment in ..
+* waits
+** TODO get computer account on exo
+** TODO *read* papers MMR capture using real hydro
+** TODO *read* planet migrating into cavity hydro sims
+* dones
+** DONE finish setting up following structure:
+"run" symlink -> dirname/dirname-run.py
+"params" are located dirname/dirname-params.py
+** DONE [#A] set up fargo3d 2d "cavity" 
+*** derive proper initial conditions to use in [[file:~/fargo3d/setups/cavity/condinit.c::rho\[l\] = SIGMA0*pow(r/R0,-SIGMASLOPE)*(1.0+NOISE*(drand48()-.5));][<no description>]]
+commit a95fed6e22aa2c8eef3e8913afd0e9e7b3f61aa4
+Author: JT Laune <jtlaune@gmail.com>
+Date:   Wed Jan 19 15:10:35 2022 -0500
+
+    Update to cavity running
+
+* Research questions [0/6]                                         :noexport:
 ** TODO "does the code work?" [1/6]
 *** DONE add in support for omeff
 *** TODO "does weak precession large q recreate TP equilibrium eccentricities?"
