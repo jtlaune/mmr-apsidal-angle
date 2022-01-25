@@ -754,8 +754,8 @@ the effect of eccentricity on the apsidal angle.
 The dynamics of first order MMRs with comparable mass planets are
 complicated by the presence of two critical arguments in the
 Hamiltonian, $\theta_1$ and $\theta_2$.  By assuming that one of the
-planets is a test particle, i.e. $m_1=0$, we can ignore the opposite
-resonance angle, $\theta_2$, because its width is also zero. The
+planets is a test particle, i.e. $m_1=0$, we may ignore the 
+$\theta_2$ resonance because $\varpi_2$ will be fixed. The
 respective case for an external test particle is setting $m_2=0$ while
 ignoring the dynamics of $\theta_1$.  Furthermore, absent any external
 forces, these assumptions imply the massive planet will remain on an
@@ -774,6 +774,8 @@ we label the sma- and $e\text{-damping}$ for the test particle as
 $T_{m}$ and $T_{e}$, respectively. This problem is well-studied in the
 literature, and so in lieu of a detailed derivation we briefly
 summarize the problem with references to the key results.
+
+*** TODO explain the theta_2 resonance angle in first par        :noexport:
 
 ** Equations of motion
 The Hamiltonian, including secular effects, for a test particle in the
@@ -823,14 +825,16 @@ and
 In these two Hamiltonians, $\theta_p$ is now an explicit function of
 time, since $\lambda_p=n_p t$ and $\varpi_p=0$ is constant.  For
 simplicity, we first consider the case for which the massive planet is
-on a circular orbit, i.e. $e_p=0$, so we may ignore the $\lambda$ in
-$\theta_p$. This problem is known as the circular restricted three
+on a circular orbit, i.e. $e_p=0$.
+In this case, $\varpi_p$ is undefined, and $\gamma$ will
+always circulate in equilibrium.
+This problem is known as the circular restricted three
 body problem (CR3BP), while $e_p>0$ is the eccentric restricted three
 body problem (ER3BP).  In Figure ref:fig:tp-ep0, we've plotted an
 example of a test particle captured into an external resonance with
 $h=0.03$, $\mu_p = 10^{-4}$, and $T_{e} = 1000$.  The test particle is
-captured into the $\theta_2$ resonance, while its longitude of
-perihelion, $\varpi$, and the other resonance angle, $\theta_1$,
+captured into the $\theta$ resonance, while its longitude of
+perihelion, $\varpi$, and the other resonance angle, $\theta_p$,
 circulates.
 
 ** Equilibrium eccentricity and stability
@@ -838,7 +842,7 @@ When a test particle is caught into a stable resonance, its
 eccentricity grows and saturates at a finite value which depends on
 the ratio $T_{e}/T_{m}$.  For a detailed derivation, see e.g.
 [[citep:&goldreich_overstable_2014]] and [[citep:&xu_migration_2018]].
-By setting $\dot\eta=0$ (equation\ref{doteta}), equilibrium
+By setting $\dot\eta=0$ (equation \ref{doteta}), equilibrium
 in $e$ arises once the forces of migration into the resonance, $T_m$, balances
 the forces of eccentricity damping, $T_e$. For an internal
 test particle, the equilibrium eccentricity is
@@ -915,10 +919,9 @@ in the previous case. Finally, the system becomes apsidally aligned.
 
 In Figure ref:fig:tp-grid-ext, we summarize the behavior of
 $\Delta\varpi$ for an internal and external test particle while
-varying the values $e_p$ and $h$ (and subsequently $e_{\rm eq}$). Runs
-which escape are not included in the figure. Generally, for large
-enough $e_{\rm eq}\gtrsim e_p$, the system becomes apsidally
-aligned.
+varying the values $e_p$ and $h$ (and subsequently $e_{\rm
+eq}$). Generally, for large enough $e_{\rm eq}\gtrsim e_p$, the system
+becomes apsidally aligned.
 
 These test particle results motivate the eccentricity driving ansatz
 we employ in the next section for comparable mass planets. We
