@@ -1,13 +1,11 @@
 * preamble                                                           :ignore:
-#+TITLE: Architecture of Planetary Systems in Mean Motion Resonance
+#+TITLE: Apsidal Angle of Planetary Systems in Mean Motion Resonance
 #+OPTIONS: author:nil date:nil toc:nil
 #+LATEX_CLASS: mnras
-#+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
+#+LaTeX_CLASS_OPTIONS: [usenatbib,twocolumn]
 #+latex_header: \usepackage{caption}
 #+latex_header: \usepackage{tabularx}
 #+latex_header: \usepackage{subcaption}
-#+latex_header: \usepackage{setspace}
-#+latex_header: \doublespacing
 #+latex_header: \usepackage{pdfpages}
 #+latex_header: \usepackage{float}
 #+latex_header: \usepackage{booktabs}
@@ -41,30 +39,28 @@
 #+latex_header: $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 
 #+begin_src latex
-  \begin{abstract}
-    Long before the first exoplanet detection, theoretical
-    works predicted that young planets migrate across their natal disk
-    and sweep up other planets into mean motion resonances, which
-    operate whenever the planets' period ratios are related by an
-    integer fraction $j:j+k$.  In the literature, the typical treatment
-    of resonance capture parametrizes the planet's migration timescale
-    and damps all eccentricities to zero.  Post-capture, the pair
-    evolves into a configuration in which both planets' resonance angles
-    librate and their perihelia are anti-aligned.  However, there are
-    some observations which the standard picture cannot explain. The
-    system K2-19 hosts two planets close to, but just wide of, the 3:2
-    MMR which are moderately eccentric and apsidally aligned.  In this
-    paper, we investigate the MMR Hamiltonian under the influence of
-    external disk forces which facilitate migration but drive the
-    eccentricites of the system to a finite, nonzero saturation value.
-    We find that, for certain saturation eccentricities, apsidal
-    alignment is a natural outcome if the external driving force
-    overpowers the resonance.  In this configuration, both planets'
-    resonance angles circulate, but there is a combined resonance angle
-    which still librates and traps the planets near the nominal
-    resonance location.  Conversely, we find that eccentricity forcing
-    may also disrupt resonance capture or destroy an existing
-    resonance.
+  \begin{abstract} Long before the first exoplanet detection,
+  theoretical works predicted that young planets migrate across their
+  natal disk and sweep up other planets into mean motion resonances,
+  which operate whenever the planets' period ratios are related by an
+  integer fraction $j:j+k$.  In the literature, the typical treatment of
+  resonance capture parametrizes the planet's migration timescale and
+  damps all eccentricities to zero.  Post-capture, the pair evolves into
+  a configuration in which both planets' resonance angles librate and
+  their perihelia are anti-aligned.  However, there are some
+  observations which the standard picture cannot explain. The system
+  K2-19 hosts two planets close to, but just wide of, the 3:2 MMR which
+  are moderately eccentric and apsidally aligned.  In this paper, we
+  investigate the MMR Hamiltonian under the influence of external disk
+  forces which facilitate migration but drive the eccentricites of the
+  system to a finite, nonzero saturation value.  We find that, for
+  certain saturation eccentricities, apsidal alignment is a natural
+  outcome if the external driving force overpowers the resonance.  In
+  this configuration, both planets' resonance angles circulate, but
+  there is a combined resonance angle which still librates and traps the
+  planets near the nominal resonance location.  Conversely, we find that
+  eccentricity forcing may also disrupt resonance capture or destroy an
+  existing resonance.
   \end{abstract}
 #+end_src
 
@@ -115,9 +111,9 @@ order MMRs are given by
 #+BEGIN_SRC latex
   \begin{align}
   \label{circangles1}
-   \theta_1 &= (j+1)\lambda_2 - \lambda_1 - \varpi_1 \\
+   \theta_1 &= (j+1)\lambda_2 - j\lambda_1 - \varpi_1 \\
   \label{circangles2}
-   \theta_2 &= (j+1)\lambda_2 - \lambda_1 - \varpi_2.
+   \theta_2 &= (j+1)\lambda_2 - j\lambda_1 - \varpi_2.
   \end{align}
 #+END_SRC
 @@latex:\noindent@@ The mean longitudes of the inner and outer planets
@@ -147,20 +143,7 @@ an equilibrium with finite eccentricities which are determined by the
 particular migration timescales.  This leads to pairs and then chains
 of planets in resonance.  However, the effects of eccentricity,
 particularly an externally driven eccentricity, on MMR dynamics are
-unclear.
-
-In the solar system, several dynamical mechanisms involving MMRs have
-been proposed to explain certain phenomena, such as circumplanetary
-rings and gaps and the various dynamical populations of the Kuiper
-Belt
-[[citep:goldreich77_reven_tiny_miran,Malhotra2020Asteroid,malhotra_resonant_2019]].
-Pluto is on a peculiar orbit due to late-stage migration in the $3:2$
-resonance with Neptune citep:malhotra_origin_1995.  Many of Saturn's
-moons, while migrating instead due to tidal dissipation, are locked
-into MMRs, such as the pairs Mimas-Tethys (4:2), Enceladus-Dione
-(2:1), and Titon-Hyperion (4:3). Around Jupyter, Io, Europa, and
-Ganymede form a three-body Laplace resonance, with period ratios
-4:2:1.
+unclear, since eccentricity is part of the normal process.
 
 In the past 40 years, exoplanet surveys have given us a wealth of
 systems to test our understanding of disk migration and resonant
@@ -175,7 +158,7 @@ citep:fabrycky_architecture_2014,choksi_sub-neptune_2020.  A system's
 orbital architecture can reveal details about its history.
 Commensurate period ratios may indicate past resonant interactions
 within the planetary system, but the present state of the resonance
-can only be determined by analyzing the behavior of the angles in
+can only be determined by analyzing the behavior of the angles given by
 equations eqref:circangles1 and eqref:circangles2.  
 
 NASA's \emph{Kepler} mission observed several planet pairs near a
@@ -224,12 +207,11 @@ Such an external force which drives the eccentricities beyond their
 equilibrium ratio $e_2/e_1 = m_1/m_2$ can
 break the MMR system out of the $\theta_1$ and $\theta_2$ resonances.
 However, through a series of canonical rotations, we demonstrate that
-there is a third resonance angle, $\hat\theta$, which may to
+there is a third resonance angle, $\hat\theta$, which may
 librate.  If so, this resonance still traps the system near the nominal
 period ratio $P_2/P_1=(j+1)/j$ and, in this configuration, naturally
 leads to apsidal alignment.
 
-** DONE review standard picture                                   :noexport:
 * Standard Picture of Resonance Capture
 *** DONE review standard picture                                 :noexport:
 *** IC table                                                       :ignore:
