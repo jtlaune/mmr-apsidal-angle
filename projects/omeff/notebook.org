@@ -1,7 +1,7 @@
 #+TITLE: OmEff Notebook
 #+OPTIONS: author:nil date:nil toc:nil
 #+LATEX_CLASS: mnras
-#+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
+#+LaTeX_CLASS_OPTIONS: [usenatbib,twocolumn]
 * todos                                                            :noexport:
 ** TODO [#A] "How should I structure my code?"
 SCHEDULED: <2022-01-17 Mon> DEADLINE: <2022-01-18 Tue>
@@ -24,11 +24,11 @@ SCHEDULED: <2022-01-18 Tue> DEADLINE: <2022-01-20 Thu>
 ** TODO [#B] read and annotate [[file:~/annurev.aa.14.090176.001243.pdf::%PDF-1.4][<peale 1976>]]
 ** TODO [#B] implement laetitia's changes[[file:~/apsidal-alignment_Laetitiacomments-1.pdf::%PDF-1.5][<no description>]]
 *** TODO rename to: Apsidal Alignment in ..
-* waits
+* waits                                                            :noexport:
 ** TODO get computer account on exo
 ** TODO *read* papers MMR capture using real hydro
 ** TODO *read* planet migrating into cavity hydro sims
-* dones
+* dones                                                            :noexport:
 ** DONE finish setting up following structure:
 "run" symlink -> dirname/dirname-run.py
 "params" are located dirname/dirname-params.py
@@ -160,3 +160,41 @@ Date:   Wed Jan 5 18:14:34 2022 -0500
 * FINESST [0/1]                                                    :noexport:
 ** TODO new objective disk edge & migration
 ** maybe still include apsidal alignment section?
+* paper sections                                                     :ignore:
+** Results
+*** External Test Particle with @@latex:$\omega_{\rm eff}$@@
+*** figures                                                        :ignore:
+#+BEGIN_SRC latex
+  \begin{figure} \centering
+  \includegraphics[width=0.45\textwidth]{{oldTpResults/total-gbehaviors-eq5.62e-02}.png}
+  \caption{Here we have plotted the numerical average eccentricity of
+  the test particle over the last 10\% of simulation time, while holding
+  the disk forces constant to set $e_{\rm eq} = 0.056$. Each line
+  corresponds to a different value of $e_p$, while holding disk and
+  initial conditions constant. The dashed parts of the line indicate
+  standard test particle behavior, which is dependent on the specific
+  values of $e_p$ and $e_{\rm eq}$. The new behavior in the presence of
+  $\omega_{\rm eff}$ is indicated by solid lines, where
+  $\Delta\varpi\to\pi$.}
+  \label{fig:omeffbehaviors}
+  \end{figure}
+#+END_SRC
+#+BEGIN_SRC latex
+        \begin{figure} \centering
+  \includegraphics[width=0.45\textwidth]{{oldTpResults/regularbehavior}.png}
+        \caption{Here we have plotted a typical outcome of test particle
+  capture with weak external precession. This plot corresponds to the
+  dashed segment of the pink line in Figure \ref{fig:omeffbehaviors}. As
+  we can see, because $e_p>e_{\rm eq}$, apsides become aligned.}
+        \end{figure}
+#+END_SRC
+#+BEGIN_SRC latex
+      \begin{figure} \centering
+      \includegraphics[width=0.45\textwidth]{{oldTpResults/newbehavior}.png}
+      \caption{Here we have plotted a new phenomena of test particle capture
+        with weak external precession. This plot corresponds to the solid segment
+      of the pink line in Figure \ref{fig:omeffbehaviors}. As we can see,
+    the apsides become anti-aligned. This is not previously a feature of
+  TP capture with $\omega_{\rm eff}=0$.}
+      \end{figure}
+#+END_SRC

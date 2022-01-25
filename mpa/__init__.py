@@ -3,12 +3,14 @@ import math
 import subprocess
 import sys
 
+import importlib
+import importlib.util
+
 import numpy as np
 from numpy import sin, cos, sqrt, pi, abs
 
 import scipy as sp
 import scipy.integrate
-from scipy.special import hyp2f1
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt

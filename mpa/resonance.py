@@ -1,86 +1,326 @@
 from . import *
-class check_ratio_cm:
-    def __init__(self, ratio0, q):
-        self.ratio0 = ratio0
-        self.terminal = True
-        self.q = q
+from .fndefs import *
 
-    def __call__(self, t, Y):
+class resonance(object):
+    # Parent class for j:j+k resonance with useful functions
+    # that sets secular/external effects
+    def __init__(self, j, datafn=None):
+        self.j = 2
+        self.loaded = False
+    def f3(self, alpha):
+        return sqr_ei_lc(alpha)
+
+    def f4(self, alpha):
+        return eiej_lc(alpha)
+
+class FirstOrder(resonance):
+    """
+    - No indirect terms implemented (MD p330, only applicable for 2:1) 
+    - j+1:j resonance, for j>1
+    - MD p228: ' is outer secondary, unprimed is inner secondary
+
+    - notes on f1 and f2:
+        sign so Hamiltonian takes form:
+        H = -H_kep -H_res -Hsec
+    
+    - also serves as the 
+    """
+    def is_loaded(func):
+        def wrapper():
+            if self.loaded:
+                func()
+            else:
+                raise Warning("No data in simulation")
+        return wrapper
+    def f1(self, alpha):
+        return -f27lc(alpha, self.j)
+    def f2(self, alpha):
+        return -f31lc(alpha, self.j)
+
+class FOCompMass(FirstOrder):
+    # This class will integrate two planets with mass ratio q=m1/m2.
+    # We will have T_m1,2 and T_e1,2 as parameters.
+    def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None,
+                 e2d=None, cutoff=np.infty, Te_func=False):
+        self.j = j
+        self.mu1 = mu1
+        self.q = q
+        self.a0 = a0
+
+        self.T0 = 2 * np.pi
+        # This seems super sloppy. should probably do some type
+        # checking or at least make all of them functions rather than
+        # constants, but this would screw up a lot of other code.
+        # Also, Te_func will toggle Tm functions as well but too lazy
+        # to rename.
+        self.Tm1 = Tm1
+        self.Tm2 = Tm2
+        self.Te_func = Te_func
+        self.Te1 = Te1
+        self.Te2 = Te2
+        self.e1d = e1d
+        self.e2d = e2d
+        self.cutoff = cutoff * self.T0
+
+    def H4dofsec(self, t, Y):
+
+        # 7 variables
         theta = Y[0]
         L1 = Y[1]
         L2 = Y[2]
-        # super sloppy lol
-        if np.isnan(theta):
-            return(np.random.randn(1)[0])
-        alpha1 = L1 ** 2 / self.q ** 2
-        alpha2 = L2 ** 2 
+        x1 = Y[3]
+        y1 = Y[4]
+        x2 = Y[5]
+        y2 = Y[6]
+
+        g1 = np.arctan2(y1, x1)
+        G1 = sqrt(x1 * x1 + y1 * y1)
+        g2 = np.arctan2(y2, x2)
+        G2 = sqrt(x2 * x2 + y2 * y2)
+
+        j = self.j
+        mu2 = self.mu1 / self.q
+
+        e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
+        e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
+
+        # the Hamiltonian is -(constants) as the internal TP
+        # Hamiltonian, i.e. it matches MD
+        alpha1 = L1 * L1 / self.q / self.q
+        alpha2 = L2 * L2
         alpha = alpha1 / alpha2
-        return(alpha - self.ratio0)
-    
+        theta1 = theta + g1
+        theta2 = theta + g2
+        f1 = self.f1(alpha)
+        f2 = self.f2(alpha)
+        C = self.f3(alpha)
+        D = self.f4(alpha)
 
-class check_ratio_tp:
-    def __init__(self, ratio0):
-        self.ratio0 = ratio0
-        self.terminal = True
+        ###################
+        # Resonant forces #
+        ###################
+        l1dot = ((1 / alpha1 / sqrt(alpha1))
+            + mu2 * f1 * e1 * cos(theta1) / (
+            2 * alpha2 * sqrt(alpha1)
+        ))
+        l2dot = ((1 / alpha2 / sqrt(alpha2))
+                 + self.q * mu2 / (alpha2 * sqrt(alpha2)) * (
+            2 * f1 * e1 * cos(theta1) + 2.5 * f2 * e2 * cos(theta2)
+        ))
 
-    def __call__(self, t, Y):
-        L = Y[1]
-        ratio = L * L
-        return ratio - self.ratio0
+        Ldot_prefactor = (
+            self.q * mu2 / alpha2 * (f1 * e1 * sin(theta1) + f2 * e2 * sin(theta2))
+        )
+        L1dot = j * Ldot_prefactor
+        L2dot = -(j + 1) * Ldot_prefactor
+
+        e1g1dot = -mu2 * f1 * cos(theta1) / sqrt(alpha1) / alpha2
+        e2g2dot = -self.q * mu2 * f2 * cos(theta2) / sqrt(alpha2) / alpha2
+
+        G1dot = -self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
+        G2dot = -self.q * mu2 * f2 * e2 * sin(theta2) / alpha2
+
+        x1dot = G1dot * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot
+        y1dot = G1dot * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot
+
+        x2dot = G2dot * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot
+        y2dot = G2dot * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot
+
+        thetadot = (j + 1) * l2dot - j * l1dot
+
+        ##################
+        # Secular forces #
+        ##################
+        if self.secular:
+            l1dot_sec = (mu2/alpha2/sqrt(alpha1)
+                         * (2*C*e1*e1+D*e1*e2/2*cos(g1-g2)))
+            l2dot_sec = (self.q*mu2/alpha2/sqrt(alpha2)
+                         * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
+            G1dot_sec = -self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
+            G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
+
+            e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
+            e2g2dot_sec = (-self.q*mu2/alpha2/sqrt(alpha2)*(2*C*e2+D*e1))
+
+            x1dot_sec = G1dot_sec * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot_sec
+            y1dot_sec = G1dot_sec * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot_sec
+
+            x2dot_sec = G2dot_sec * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot_sec
+            y2dot_sec = G2dot_sec * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot_sec
+
+        else:
+            l1dot_sec = 0.
+            l2dot_sec = 0.
+
+            G1dot_sec = 0.
+            G2dot_sec = 0.
+
+            e1g1dot_sec = 0.
+            e2g2dot_sec = 0.
+
+            x1dot_sec = 0.
+            y1dot_sec = 0.
+
+            x2dot_sec = 0.
+            y2dot_sec = 0.
+
+        l1dot = l1dot + l1dot_sec
+        x1dot = x1dot + x1dot_sec
+        y1dot = y1dot + y1dot_sec
+
+        l2dot = l2dot + l2dot_sec
+        x2dot = x2dot + x2dot_sec
+        y2dot = y2dot + y2dot_sec
 
 
-class resonance:
-    # Parent class for j:j+1 resonance with useful functions
-    # that sets constants and initial values.
-    def ebar(self, ep, e, A, B, g):
-        return helper.ebarfunc(ep, e, A, B, g)
+        #############
+        # MIGRATION #
+        #############
 
-    def eta(self, ep, e, A, B, g):
-        return helper.etafunc(ep, e, A, B, g)
+        # Add in the dissipative terms for migration
+        # convert time units
+        if t < self.cutoff:
+            T0 = self.T0
 
-    def alpha0(self, a, ap, j, ebar):
-        return helper.alpha0func(a, ap, j, ebar)
+            if self.Te_func:
+                Tm1 = self.Tm1(e1, t) * T0
+                Tm2 = self.Tm2(e2, t) * T0
+                Te1 = self.Te1(e1, t) * T0
+                Te2 = self.Te2(e2, t) * T0
+            # this is legacy code. should change e1d and e2d into
+            # same format as Te_func
+            else:
+                Tm1 = self.Tm1 * T0
+                Tm2 = self.Tm2 * T0
+                Te1 = self.Te1 * T0
+                Te2 = self.Te2 * T0
+                if self.e1d:
+                    Te1 = self.Te1/(e1-self.e1d)
+                if self.e2d:
+                    Te2 = self.Te2/(e2-self.e2d)
 
-    def A(self, alpha):
-        return helper.A(alpha, self.j)
+            L1dot_dis = (L1 / 2) * (1 / Tm1 - 2 * e1*e1 / Te1)
+            L2dot_dis = (L2 / 2) * (1 / Tm2 - 2 * e2*e2 / Te2)
 
-    def B(self, alpha):
-        return helper.B(alpha, self.j)
+            L1dot = L1dot + L1dot_dis
+            L2dot = L2dot + L2dot_dis
 
-    def C(self, alpha):
-        return helper.C(alpha)
+            G1dot_dis = (L1dot_dis * G1 / L1) - 2 * G1 / Te1
+            G2dot_dis = (L2dot_dis * G2 / L2) - 2 * G2 / Te2
 
-    def D(self, alpha):
-        return helper.D(alpha)
+            x1dot = x1dot + cos(g1) * G1dot_dis
+            y1dot = y1dot + sin(g1) * G1dot_dis
 
-    def omega(self, a, ap, mu):
-        if a <= ap:
-            return (
-                (np.pi * mu)
-                * (a / ap) ** 2
-                / (2 * a * sqrt(a))
-                * LC.b(1.5, 1.0, (a / ap))
-            )
-        if a > ap:
-            return (
-                (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 1.0, (a / ap))
-            )
+            x2dot = x2dot + cos(g2) * G2dot_dis
+            y2dot = y2dot + sin(g2) * G2dot_dis
 
-    def nu(self, a, ap, mu):
-        if a <= ap:
-            return (
-                (np.pi * mu)
-                * (a / ap) ** 2
-                / (2 * a * sqrt(a))
-                * LC.b(1.5, 2.0, (a / ap))
-            )
-        if a > ap:
-            return (
-                (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 2.0, (a / ap))
-            )
+        if self.verbose:
+            print(("alpha1: {:0.2f}    " \
+                  "alpha2: {:0.2f}    " \
+                  "alpha: {:0.2f}    " \
+                  "theta1: {:0.2f}    " \
+                  "theta2: {:0.2f}    " \
+                  "done%: {:0.2f}" \
+                  .format((L1/self.q)**2,
+                          L2**2,
+                          (L1/L2/self.q)**2,
+                          (theta1 % (2*pi)),
+                          (theta2 % (2*pi)),
+                          100.*t/self.T,
+                          )), end="\r")
 
+        return(np.array([thetadot, L1dot, L2dot, x1dot,
+                        y1dot, x2dot, y2dot]))
 
-class tp_intH(resonance):
+    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, g1_0, g2_0,
+                 verbose=False, secular=True, method="RK45"):
+        self.secular = secular
+        self.verbose = verbose
+        self.T = self.T0*t1
+        int_cond_min = check_ratio_cm(0.6, self.q)
+        int_cond_max = check_ratio_cm(0.9, self.q)
+
+        Lambda1_0 = self.q * 1
+        Lambda2_0 = sqrt(alpha2_0)
+
+        # set initial eccentricities
+        G1_0 = 0.5 * Lambda1_0 * e1_0 ** 2
+        G2_0 = 0.5 * Lambda2_0 * e2_0 ** 2
+
+        # initial pomegas
+        #g10 = -pi/4
+        #g20 = 3*pi/4
+        g10 = g1_0
+        g20 = g2_0
+
+        x1_0 = G1_0*cos(g10)
+        y1_0 = G1_0*sin(g10)
+        x2_0 = G2_0*cos(g20)
+        y2_0 = G2_0*sin(g20)
+        IV = (0, Lambda1_0, Lambda2_0, x1_0, y1_0, x2_0, y2_0)
+
+        g1_0 = np.arctan2(y1_0, x1_0)
+        g2_0 = np.arctan2(y2_0, x2_0)
+
+        RHS = self.H4dofsec
+
+        teval = np.linspace(0., t1, 300000) * self.T0
+        span = (teval[0], teval[-1])
+        sol = sp.integrate.solve_ivp(
+            RHS,
+            span,
+            IV,
+            method=method,
+            events=[int_cond_min, int_cond_max],
+            t_eval=teval,
+            rtol=tol,
+            atol=tol,
+            dense_output=True,
+        )
+
+        theta = sol.y[0, :]
+        L1 = sol.y[1, :]
+        L2 = sol.y[2, :]
+        x1 = sol.y[3, :]
+        y1 = sol.y[4, :]
+        x2 = sol.y[5, :]
+        y2 = sol.y[6, :]
+
+        teval = teval[0 : len(theta)]
+
+        g1 = np.arctan2(y1, x1)
+        G1 = sqrt(x1 ** 2 + y1 ** 2)
+
+        g2 = np.arctan2(y2, x2)
+        G2 = sqrt(x2 ** 2 + y2 ** 2)
+
+        e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
+        e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
+        a1 = L1 ** 2 * self.a0 / self.q ** 2
+        a2 = L2 ** 2 * self.a0
+        alpha = a1 / a2
+
+        # convert back to time units
+        teval = teval / self.T0
+
+        return (
+            teval,
+            theta,
+            a1,
+            a2,
+            e1,
+            e2,
+            g1,
+            g2,
+            L1,
+            L2,
+            x1,
+            y1,
+            x2,
+            y2,
+        )
+
+class FOTestPart(FirstOrder):
     # This class integrates the Hamiltonian for an inner test
     # particle, with and without migration. Without migration we may
     # put the particle directly into resonance. In this case we still
@@ -405,291 +645,7 @@ class tp_intH(resonance):
 
         return (teval, e, gamma, a)
 
-
-class comp_mass_intH(resonance):
-    # This class will integrate two planets with mass ratio q=m1/m2.
-    # We will have T_m1,2 and T_e1,2 as parameters.
-    def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None, e2d=None, cutoff=np.infty, Te_func=False):
-        self.j = j
-        self.mu1 = mu1
-        self.q = q
-        self.a0 = a0
-
-        self.T0 = 2 * np.pi
-        # This seems super sloppy. should probably do some type
-        # checking or at least make all of them functions rather than
-        # constants, but this would screw up a lot of other code.
-        # Also, Te_func will toggle Tm functions as well but too lazy
-        # to rename.
-        self.Tm1 = Tm1
-        self.Tm2 = Tm2
-        self.Te_func = Te_func
-        self.Te1 = Te1
-        self.Te2 = Te2
-        self.e1d = e1d
-        self.e2d = e2d
-        self.cutoff = cutoff * self.T0
-
-    def H4dofsec(self, t, Y):
-
-        # 7 variables
-        theta = Y[0]
-        L1 = Y[1]
-        L2 = Y[2]
-        x1 = Y[3]
-        y1 = Y[4]
-        x2 = Y[5]
-        y2 = Y[6]
-
-        g1 = np.arctan2(y1, x1)
-        G1 = sqrt(x1 * x1 + y1 * y1)
-        g2 = np.arctan2(y2, x2)
-        G2 = sqrt(x2 * x2 + y2 * y2)
-
-        j = self.j
-        mu2 = self.mu1 / self.q
-
-        e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
-        e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
-
-        # the Hamiltonian is -(constants) as the internal TP
-        # Hamiltonian, i.e. it matches MD
-        alpha1 = L1 * L1 / self.q / self.q
-        alpha2 = L2 * L2
-        alpha = alpha1 / alpha2
-        theta1 = theta + g1
-        theta2 = theta + g2
-        f1 = -self.A(alpha)
-        f2 = -self.B(alpha)
-        C = self.C(alpha)
-        D = self.D(alpha)
-
-        ###################
-        # Resonant forces #
-        ###################
-        l1dot = ((1 / alpha1 / sqrt(alpha1))
-            + mu2 * f1 * e1 * cos(theta1) / (
-            2 * alpha2 * sqrt(alpha1)
-        ))
-        l2dot = ((1 / alpha2 / sqrt(alpha2))
-                 + self.q * mu2 / (alpha2 * sqrt(alpha2)) * (
-            2 * f1 * e1 * cos(theta1) + 2.5 * f2 * e2 * cos(theta2)
-        ))
-
-        Ldot_prefactor = (
-            self.q * mu2 / alpha2 * (f1 * e1 * sin(theta1) + f2 * e2 * sin(theta2))
-        )
-        L1dot = j * Ldot_prefactor
-        L2dot = -(j + 1) * Ldot_prefactor
-
-        e1g1dot = -mu2 * f1 * cos(theta1) / sqrt(alpha1) / alpha2
-        e2g2dot = -self.q * mu2 * f2 * cos(theta2) / sqrt(alpha2) / alpha2
-
-        G1dot = -self.q * mu2 * f1 * e1 * sin(theta1) / alpha2
-        G2dot = -self.q * mu2 * f2 * e2 * sin(theta2) / alpha2
-
-        x1dot = G1dot * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot
-        y1dot = G1dot * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot
-
-        x2dot = G2dot * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot
-        y2dot = G2dot * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot
-
-        thetadot = (j + 1) * l2dot - j * l1dot
-
-        ##################
-        # Secular forces #
-        ##################
-        if self.secular:
-            l1dot_sec = (mu2/alpha2/sqrt(alpha1)
-                         * (2*C*e1*e1+D*e1*e2/2*cos(g1-g2)))
-            l2dot_sec = (self.q*mu2/alpha2/sqrt(alpha2)
-                         * ((2*C*e1*e1 +3*C*e2*e2+ 2.5*D*e1*e2/2*cos(g1-g2))))
-            G1dot_sec = -self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
-            G2dot_sec = self.q*mu2*D*e1*e2/alpha2*sin(g1-g2)
-
-            e1g1dot_sec = (-mu2/alpha2/sqrt(alpha1)*(2*C*e1+D*e2))
-            e2g2dot_sec = (-self.q*mu2/alpha2/sqrt(alpha2)*(2*C*e2+D*e1))
-
-            x1dot_sec = G1dot_sec * cos(g1) - 0.5 * L1 * e1 * sin(g1) * e1g1dot_sec
-            y1dot_sec = G1dot_sec * sin(g1) + 0.5 * L1 * e1 * cos(g1) * e1g1dot_sec
-
-            x2dot_sec = G2dot_sec * cos(g2) - 0.5 * L2 * e2 * sin(g2) * e2g2dot_sec
-            y2dot_sec = G2dot_sec * sin(g2) + 0.5 * L2 * e2 * cos(g2) * e2g2dot_sec
-
-        else:
-            l1dot_sec = 0.
-            l2dot_sec = 0.
-
-            G1dot_sec = 0.
-            G2dot_sec = 0.
-
-            e1g1dot_sec = 0.
-            e2g2dot_sec = 0.
-
-            x1dot_sec = 0.
-            y1dot_sec = 0.
-
-            x2dot_sec = 0.
-            y2dot_sec = 0.
-
-        l1dot = l1dot + l1dot_sec
-        x1dot = x1dot + x1dot_sec
-        y1dot = y1dot + y1dot_sec
-
-        l2dot = l2dot + l2dot_sec
-        x2dot = x2dot + x2dot_sec
-        y2dot = y2dot + y2dot_sec
-
-
-        #############
-        # MIGRATION #
-        #############
-
-        # Add in the dissipative terms for migration
-        # convert time units
-        if t < self.cutoff:
-            T0 = self.T0
-
-            if self.Te_func:
-                Tm1 = self.Tm1(e1, t) * T0
-                Tm2 = self.Tm2(e2, t) * T0
-                Te1 = self.Te1(e1, t) * T0
-                Te2 = self.Te2(e2, t) * T0
-            # this is legacy code. should change e1d and e2d into
-            # same format as Te_func
-            else:
-                Tm1 = self.Tm1 * T0
-                Tm2 = self.Tm2 * T0
-                Te1 = self.Te1 * T0
-                Te2 = self.Te2 * T0
-                if self.e1d:
-                    Te1 = self.Te1/(e1-self.e1d)
-                if self.e2d:
-                    Te2 = self.Te2/(e2-self.e2d)
-
-            L1dot_dis = (L1 / 2) * (1 / Tm1 - 2 * e1*e1 / Te1)
-            L2dot_dis = (L2 / 2) * (1 / Tm2 - 2 * e2*e2 / Te2)
-
-            L1dot = L1dot + L1dot_dis
-            L2dot = L2dot + L2dot_dis
-
-            G1dot_dis = (L1dot_dis * G1 / L1) - 2 * G1 / Te1
-            G2dot_dis = (L2dot_dis * G2 / L2) - 2 * G2 / Te2
-
-            x1dot = x1dot + cos(g1) * G1dot_dis
-            y1dot = y1dot + sin(g1) * G1dot_dis
-
-            x2dot = x2dot + cos(g2) * G2dot_dis
-            y2dot = y2dot + sin(g2) * G2dot_dis
-
-        if self.verbose:
-            print(("alpha1: {:0.2f}    " \
-                  "alpha2: {:0.2f}    " \
-                  "alpha: {:0.2f}    " \
-                  "theta1: {:0.2f}    " \
-                  "theta2: {:0.2f}    " \
-                  "done%: {:0.2f}" \
-                  .format((L1/self.q)**2,
-                          L2**2,
-                          (L1/L2/self.q)**2,
-                          (theta1 % (2*pi)),
-                          (theta2 % (2*pi)),
-                          100.*t/self.T,
-                          )), end="\r")
-
-        return(np.array([thetadot, L1dot, L2dot, x1dot,
-                        y1dot, x2dot, y2dot]))
-
-    def int_Hsec(self, t1, tol, alpha2_0, e1_0, e2_0, g1_0, g2_0,
-                 verbose=False, secular=True, method="RK45"):
-        self.secular = secular
-        self.verbose = verbose
-        self.T = self.T0*t1
-        int_cond_min = check_ratio_cm(0.6, self.q)
-        int_cond_max = check_ratio_cm(0.9, self.q)
-
-        Lambda1_0 = self.q * 1
-        Lambda2_0 = sqrt(alpha2_0)
-
-        # set initial eccentricities
-        G1_0 = 0.5 * Lambda1_0 * e1_0 ** 2
-        G2_0 = 0.5 * Lambda2_0 * e2_0 ** 2
-
-        # initial pomegas
-        #g10 = -pi/4
-        #g20 = 3*pi/4
-        g10 = g1_0
-        g20 = g2_0
-
-        x1_0 = G1_0*cos(g10)
-        y1_0 = G1_0*sin(g10)
-        x2_0 = G2_0*cos(g20)
-        y2_0 = G2_0*sin(g20)
-        IV = (0, Lambda1_0, Lambda2_0, x1_0, y1_0, x2_0, y2_0)
-
-        g1_0 = np.arctan2(y1_0, x1_0)
-        g2_0 = np.arctan2(y2_0, x2_0)
-
-        RHS = self.H4dofsec
-
-        teval = np.linspace(0., t1, 300000) * self.T0
-        span = (teval[0], teval[-1])
-        sol = sp.integrate.solve_ivp(
-            RHS,
-            span,
-            IV,
-            method=method,
-            events=[int_cond_min, int_cond_max],
-            t_eval=teval,
-            rtol=tol,
-            atol=tol,
-            dense_output=True,
-        )
-
-        theta = sol.y[0, :]
-        L1 = sol.y[1, :]
-        L2 = sol.y[2, :]
-        x1 = sol.y[3, :]
-        y1 = sol.y[4, :]
-        x2 = sol.y[5, :]
-        y2 = sol.y[6, :]
-
-        teval = teval[0 : len(theta)]
-
-        g1 = np.arctan2(y1, x1)
-        G1 = sqrt(x1 ** 2 + y1 ** 2)
-
-        g2 = np.arctan2(y2, x2)
-        G2 = sqrt(x2 ** 2 + y2 ** 2)
-
-        e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
-        e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
-        a1 = L1 ** 2 * self.a0 / self.q ** 2
-        a2 = L2 ** 2 * self.a0
-        alpha = a1 / a2
-
-        # convert back to time units
-        teval = teval / self.T0
-
-        return (
-            teval,
-            theta,
-            a1,
-            a2,
-            e1,
-            e2,
-            g1,
-            g2,
-            L1,
-            L2,
-            x1,
-            y1,
-            x2,
-            y2,
-        )
-
-
-class comp_mass_omeff(comp_mass_intH):
+class FOCompMassOmeff(FOCompMass):
     def __init__(self, j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None,
                  e2d=None, cutoff=np.infty, Te_func=False, aext=0., muext=0.):
         super().__init__(j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d=None,
@@ -773,3 +729,4 @@ class comp_mass_omeff(comp_mass_intH):
 ################### new stuff
         return(np.array([thetadot, L1dot, L2dot, x1dot,
                         y1dot, x2dot, y2dot]))
+

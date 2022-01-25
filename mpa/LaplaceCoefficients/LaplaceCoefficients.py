@@ -1,3 +1,5 @@
+from scipy.special import hyp2f1
+
 ###
 # Computation of Laplace coefficients from Murray & Dermott 1999
 # Original Author: Laetitia Rodet 02-2020

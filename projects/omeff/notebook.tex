@@ -1,0 +1,61 @@
+% Created 2022-01-20 Thu 12:56
+% Intended LaTeX compiler: pdflatex
+\documentclass[usenatbib,twocolumn]{mnras}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{}
+\title{OmEff Notebook}
+\hypersetup{
+ pdfauthor={JT Laune},
+ pdftitle={OmEff Notebook},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.5.2)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\section{Results}
+\label{sec:org2c38111}
+\subsection{External Test Particle with $\omega_{\rm eff}$}
+\label{sec:orgacdee2a}
+\begin{figure} \centering
+\includegraphics[width=0.45\textwidth]{{oldTpResults/total-gbehaviors-eq5.62e-02}.png}
+\caption{Here we have plotted the numerical average eccentricity of
+the test particle over the last 10\% of simulation time, while holding
+the disk forces constant to set $e_{\rm eq} = 0.056$. Each line
+corresponds to a different value of $e_p$, while holding disk and
+initial conditions constant. The dashed parts of the line indicate
+standard test particle behavior, which is dependent on the specific
+values of $e_p$ and $e_{\rm eq}$. The new behavior in the presence of
+$\omega_{\rm eff}$ is indicated by solid lines, where
+$\Delta\varpi\to\pi$.}
+\label{fig:omeffbehaviors}
+\end{figure}
+
+\begin{figure} \centering
+\includegraphics[width=0.45\textwidth]{{oldTpResults/regularbehavior}.png}
+      \caption{Here we have plotted a typical outcome of test particle
+capture with weak external precession. This plot corresponds to the
+dashed segment of the pink line in Figure \ref{fig:omeffbehaviors}. As
+we can see, because $e_p>e_{\rm eq}$, apsides become aligned.}
+      \end{figure}
+
+\begin{figure} \centering
+    \includegraphics[width=0.45\textwidth]{{oldTpResults/newbehavior}.png}
+    \caption{Here we have plotted a new phenomena of test particle capture
+      with weak external precession. This plot corresponds to the solid segment
+    of the pink line in Figure \ref{fig:omeffbehaviors}. As we can see,
+  the apsides become anti-aligned. This is not previously a feature of
+TP capture with $\omega_{\rm eff}=0$.}
+    \end{figure}
+\end{document}

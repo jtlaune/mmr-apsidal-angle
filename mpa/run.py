@@ -1,4 +1,8 @@
 from . import *
+from .resonance import FOCompMassOmeff
+from .plotting import plotsim
+from .fndefs import *
+from multiprocessing import Pool
 
 def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
            dirname, filename, figname, paramsname, tscale=1e3,
@@ -269,6 +273,7 @@ def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0, g2_0,
                                                            verbose=verbose,
                                                            secular=secular,
                                                            method=method)
+            print("FILENAME="+os.path.join(dirname, filename))
             np.savez(
                 os.path.join(dirname, filename),
                 teval=teval,
@@ -287,6 +292,7 @@ def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0, g2_0,
                 y2=y2,
             )
         else:
+            print("FILENAME="+os.path.join(dirname, filename))
             data = np.load(os.path.join(dirname, filename))
             teval  = data["teval"]
             theta = data["thetap"]
@@ -471,7 +477,7 @@ def run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0,
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
         if overwrite:
-            sim = comp_mass_omeff(j, mu1, q, a0, Tm1, Tm2, Te1, Te2,
+            sim = FOCompMassOmeff(j, mu1, q, a0, Tm1, Tm2, Te1, Te2,
                                   e1d, e2d, cutoff, Te_func, aext, muext)
             (teval, theta, a1, a2, e1, e2,
             g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(T, 1e-9,
@@ -480,6 +486,7 @@ def run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0,
                                                            verbose=verbose,
                                                            secular=secular,
                                                            method=method)
+            print("DATAFILEPATH="+os.path.join(dirname, filename))
             np.savez(
                 os.path.join(dirname, filename),
                 teval=teval,
@@ -515,7 +522,7 @@ def run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0,
             y2     = data["y2"]
             
     else:
-        sim = comp_mass_omeff(j, mu1, q, a0, Tm1, Tm2, Te1, Te2,
+        sim = FOCompMassOmeff(j, mu1, q, a0, Tm1, Tm2, Te1, Te2,
                               e1d, e2d, cutoff, Te_func, aext, muext)
         (teval, theta, a1, a2, e1, e2,
         g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(T, 1e-9,
@@ -550,8 +557,8 @@ def run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0,
     pnom = j / (j + 1)
     pdiff = period_ratio - pnom
 
-    f1 = A(alpha, j)
-    f2 = B(alpha, j)
+    f1 = f27lc(alpha, j)
+    f2 = f31lc(alpha, j)
     barg1 = np.arctan2(e2*np.sin(g2), e2*np.cos(g2) + f2*e1/f1)
     barg2 = np.arctan2(e1*np.sin(g1), e1*np.cos(g1) + f1*e2/f2)
 
@@ -610,7 +617,7 @@ def run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0,
         f.write("\ncommit {}".format(commit))
 
     return fig
-
+    
 
 class run_compmass_set_omeff(run_compmass_set):
     def __init__(self, verbose=False, overwrite=False, secular=True, method="RK45"):
@@ -619,6 +626,7 @@ class run_compmass_set_omeff(run_compmass_set):
         self.secular   = secular
         self.method    = method
         self.tscale = 1e3
+
     def __call__(self, params):
         h = np.float64(params[0])
         j = np.float64(params[1])
@@ -672,3 +680,79 @@ class run_compmass_set_omeff(run_compmass_set):
                            paramsname, self.verbose, self.tscale,
                            self.secular, e1d, e2d, self.overwrite,
                            cutoff, self.method, Te_func,muext, aext)
+
+
+class SimSeries(object):
+    """
+    - file management
+    - setting up files, reading RUN_PARAMS from file
+    - loading data from npz files
+    """
+    def __init__(self, series, projectdir, load=True):
+        #self.RUN_PARAMS = load_params(paramsname)
+        self.seriesname = series
+        self.pdir = projectdir
+        self.sdir = os.path.join(self.pdir, self.seriesname)
+        self.paramsfpath = os.path.join(self.sdir, self.seriesname+"-params.py")
+        self.load = load
+        self.data = {}
+        self.initialize()
+
+    def initialize(self):
+        self.RUN_PARAMS = self.load_params(self.paramsfpath)
+
+    def load_run(self, ind):
+        params = self.RUN_PARAMS
+        Nqs = len(params[:,0])
+        name = params[ind,15]
+        dirname = params[ind,16]
+        dirname = os.path.join(self.seriesname, dirname)
+        filename   = f"{name}.npz"
+        try:
+            data = np.load(os.path.join(dirname, filename))
+            self.data[ind] = data
+        except FileNotFoundError as err:
+            print(f"Cannot find file {filename}... have you run it?")
+            raise err
+
+    def load_all_runs(self):
+        params = self.RUN_PARAMS
+        Nqs = len(params[:,0])
+        for ind in range(Nqs):
+            self.load_run(ind)
+
+    def load_params(self, filepath):
+        spec = importlib.util.spec_from_file_location("_", filepath)
+        _ = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_)
+        print(f"Loading run file {filepath} in directory {os.getcwd()}")
+        return(np.array(_.RUN_PARAMS))
+    
+
+class SeriesFOCompmass(SimSeries):
+    """
+    - Class to run first order comparable mass simulations
+    - define which physics to include for compmass, i.e. omeff, dissipative, etc
+      - could possibly be defined in a separate file like fargo?
+    """
+#    def __init__(
+    def __call__(self, Nproc=8):
+        # change to series directory
+        if not os.path.exists(self.seriesname):
+            os.mkdir(self.seriesname)
+        os.chdir(self.seriesname)
+        print(os.getcwd())
+
+        N_sims = self.RUN_PARAMS.shape[0]
+
+        overwrite = not self.load
+        integrate = run_compmass_set_omeff(verbose=True,
+                                           overwrite=overwrite,
+                                           secular=True, method="RK45")
+        np.savez("RUN_PARAMS", self.RUN_PARAMS)
+        print(self.RUN_PARAMS)
+        print(f"Running {N_sims} simulations...")
+        
+        with Pool(processes=min(Nproc, N_sims)) as pool:
+            pool.map(integrate, self.RUN_PARAMS)
+        os.chdir(self.pdir)
