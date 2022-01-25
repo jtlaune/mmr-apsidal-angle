@@ -181,7 +181,7 @@ The system's photometry data can be reproduced by setting the
 innermost planet's eccentricity to zero while planets b and c orbit
 the primary with moderate eccentricity, $e_b\approx e_c \approx 0.2$.
 K2-19 is a solar-type star
-($M_*=0.88M_\odot$), planet b has $M_{b}=10.8 M_{\oplus}$, and c has
+($M=0.88M_\odot$), planet b has $M_{b}=10.8 M_{\oplus}$, and c has
 $M_{c}<10M_{\oplus}$.  Further observations revealed K2-19b and
 c to be apsidally \emph{aligned}, with $\Delta\varpi\equiv
 \varpi_c-\varpi_b \approx 2\pm 2^\circ$ citep:petigura_k2-19b_2020.
@@ -213,7 +213,6 @@ period ratio $P_2/P_1=(j+1)/j$ and, in this configuration, naturally
 leads to apsidal alignment.
 
 * Standard Picture of Resonance Capture
-*** DONE review standard picture                                 :noexport:
 *** IC table                                                       :ignore:
 #+ATTR_LATEX: :float table* :center t :placement [htb] :mode table :environment tabular :align | l | c | c | c |
 #+NAME: tab:ICs
@@ -276,8 +275,8 @@ of MMR capture
 notation, $T_{m,i}>0$ $(<0)$ denotes inward (outward) migration.
 
 We will consider two planets with masses $m_1$ and $m_2$ around a star
-of mass $M_*$. We define $\mu_i=m_i/M_*$ to be their mass fractions
-and set $M_*=1M_\odot$ throughout. For typical, thin disk profiles, we
+of mass $M$. We define $\mu_i=m_i/M$ to be their mass fractions
+and set $M=1M_\odot$ throughout. For typical, thin disk profiles, we
 have
 citep:tanaka_three-dimensional_2004,cresswell_three-dimensional_2008,xu_migration_2018
 #+BEGIN_SRC latex
@@ -285,7 +284,7 @@ citep:tanaka_three-dimensional_2004,cresswell_three-dimensional_2008,xu_migratio
     \label{eq:Teratio}
     \frac{T_{e,1}}{T_{e,2}}&= \frac1q\\
     \label{eq:Tmratio}
-    T_{e,i}&=3.46 h^2 T_{m,i},
+    T_{e,i}&=3.46 h^2 \abs{T_{m,i}},
   \end{align}
 #+END_SRC
 @@latex:\noindent@@ where $q=m_1/m_2$ is the mass ratio and $h$ is the
@@ -344,7 +343,7 @@ a primary of mass $M$ is
 #+END_SRC
 @@latex:\noindent@@ where $m_1$, $m_2$ are the masses of the planets
 and $\mathbf{r}_1$, $\mathbf{r}_2$ their position vectors with respect
-to $M$.  The third term is known as the "disturbing function," and can
+to $M$.  The third term is known as the @@latex:``disturbing function,''@@ and can
 be expanded into cosine terms with angles and amplitudes
 involving the orbital elements of the two planets.
 For details of this derivation, see Chapter 6 of
@@ -379,22 +378,22 @@ citet:murray_solar_2000 as
     f_1 &= \frac12[2(j+1)+\alpha D]b_{1/2}^{(j+1)}(\alpha); f_1(\alpha_{2:3})\approx 2.0 \\
     f_2 &= -\frac12[-1+2(j+1)+\alpha D]b_{1/2}^{(j)}(\alpha);f_2(\alpha_{2:3}) \approx -2.5\\
     f_3 &= \frac18[2\alpha D + \alpha^2 D^2]b_{1/2}^{(0)}(\alpha); f_3(\alpha_{2:3})\approx 1.15\\
-    f_4 &= \frac14[2-2\alpha D - \alpha^2 D^2]b_{1/2}^{(1)}(\alpha); f_4(\alpha_{2:3})\approx -2.0, \\
+    f_4 &= \frac14[2-2\alpha D - \alpha^2 D^2]b_{1/2}^{(1)}(\alpha); f_4(\alpha_{2:3})\approx -2.0,
   \end{align}
 #+END_SRC
 @@latex:\noindent@@ where $D$ denotes the derivative operator with
 respect to $\alpha$ and the $b_{l}^m$ are Laplace coefficients.  In
 our numerical integrations, we evaluate them at the instantaneous
-semimajor axis ratio.  However, $f_1$ and $f_2$ depend weakly on
-$\alpha$, and so in our analytical treatment we may ignore their
-derivatives to good approximation.  $H_{\rm kep}$ is the standard
-Keplerian Hamiltonian; $H_{\rm res}$ the resonant interactions between
-the planets of order $\O(e_i)$; and $H_{\rm sec}$ the secular
-interactions.
+semimajor axis ratio.  The coefficients $f_1$ and $f_2$ depend weakly
+on $\alpha$ around the resonant value, so we may ignore them in our
+analytical treatment. $H_{\rm kep}$ is the standard Keplerian
+Hamiltonian; $H_{\rm res}$ and $H_{\rm sec}$ are the resonant and secular
+Hamiltonians, respectively.
 
 The Hamiltonian system defined by equation eqref:hamiltonian admits
 seven independent coupled ordinary differential equations, which we
-may integrate together with the effects of dissipation to simulate MMR
+may integrate together with the effects of dissipation (equations eqref:eq:disforce
+and eqref:eq:disforce1) to simulate MMR
 capture.  The equations are obtained by scaling and substituting the
 following @@latex:Poincair\'e@@ momenta into equation
 eqref:hamiltonian
@@ -405,7 +404,7 @@ eqref:hamiltonian
   \end{align}
 #+END_SRC
 @@latex:\noindent@@ where $\Lambda_i$ is conjugate to $\lambda_i$ and
-$\Gamma_i$ to $\gamma_i$.  Then we apply Hamilton's equations to
+$\Gamma_i$ to $-\varpi_i$.  Then we apply Hamilton's equations to
 generate the equations of motion and combine $\lambda_1$ and
 $\lambda_2$ into the angles $\theta_1$ and $\theta_2$.  We utilize the
 $\mathtt{scipy}$ Python package with the Runge-Kutta method of order
@@ -423,7 +422,7 @@ $180^\circ$ and $\theta_2$ to $0^\circ$.  The planets' eccentricities
 level off at their equilibrium values near $e_1\approx 0.008$ and
 $e_2\approx0.016$, and the planets become apsidally anti-aligned with
 $\varpi_1-\varpi_2\approx 180^\circ$.  In this paper, we will use the
-term "resonance" to mean the libration of an angle such as $\theta_1$,
+term @@latex:``resonance''@@ to mean the libration of an angle such as $\theta_1$,
 $\theta_2$, and later on $\hat\theta$.  We will also use the angle
 itself to refer to the resonance, i.e. the planets $m_1$ and $m_2$ in
 Figure ref:fig:standardex are caught into both $\theta_1$ and
@@ -470,12 +469,12 @@ $e_1$, $e_2$,and $\Delta\varpi$:
 #+begin_src latex
   \begin{equation}
   \label{dote1}
-    \dot e_1 = \frac{\mu_2}{\alpha_2} [f_1\sin(\theta_1) - De_2 \sin(\gamma_2-\gamma_1)] - \frac{e_1}{T_{e,1}}=0
+    \dot e_1 = \frac{\mu_2}{\alpha_2} [f_1\sin(\theta_1) - De_2 \sin(\varpi_1-\varpi_2)] - \frac{e_1}{T_{e,1}}=0
   \end{equation}
   
   \begin{equation}
   \label{dote2}
-    \dot e_2 = \frac{q\mu_2}{\alpha_2} [f_2\sin(\theta_2) - De_1 \sin(\gamma_1-\gamma_2)]- \frac{e_2}{T_{e,2}}=0
+    \dot e_2 = \frac{q\mu_2}{\alpha_2} [f_2\sin(\theta_2) - De_1 \sin(\varpi_2-\varpi_1)]- \frac{e_2}{T_{e,2}}=0
   \end{equation}
   
   \begin{align}
@@ -487,9 +486,9 @@ $e_1$, $e_2$,and $\Delta\varpi$:
       - \frac{2qC}{\alpha_2^{1/2}} - \frac{qDe_1}{ \alpha_2^{1/2}e_2}\right]=0.
   \end{align}
 #+end_src
-@@latex:\noindent@@
-The first two equations determine the equilibrium values of $\theta_1$
-and $\theta_2$, while the last implies that $e_2/e_1 \sim q$.
+@@latex:\noindent@@ To first order in eccentricity, the first two
+equations determine the equilibrium values of $\theta_1$ and
+$\theta_2$, while the last implies that $e_2/e_1 \sim q$.
 
 Moreover, absent any dissipative or secular forces, the following
 quantities are strictly conserved [[citep:&xu_migration_2018]]:
@@ -502,11 +501,10 @@ quantities are strictly conserved [[citep:&xu_migration_2018]]:
 @@latex:\noindent@@ where $\Lambda_1 = (m_1/m_{\rm
 tot})\sqrt{a_1/a_0}$ and $\Lambda_2=(m_2/m_{\rm tot})\sqrt{a_2/a_0}$.
 Here we have scaled the overall Hamiltonian by the quantity
-$GM_*m_{\rm tot}/a_0$ with $m_{\rm tot}=m_1+m_2$ and $M_*$ the mass of
-the primary. Details can be found in Appendix [[Reducing the Hamiltonian
-to a single degree of freedom]]. The quantity $J$ is the angular
+$GMm_{\rm tot}/a_0$ with $m_{\rm tot}=m_1+m_2$ and $M$ the mass of
+the primary. The quantity $J$ is the angular
 momentum of the system, and $G$ is an integral of motion for the the
-Hamiltonian $H_{\rm kep}+H_{\rm res}$ in equation eqref:hamiltonian.
+Hamiltonian in equation eqref:hamiltonian.
 Next, we define $\eta$ to be the following function of $\alpha$ and $J/G$,
 #+begin_src latex
   \begin{align}
@@ -514,7 +512,7 @@ Next, we define $\eta$ to be the following function of $\alpha$ and $J/G$,
   \end{align}
 #+end_src
 @@latex:\noindent@@
-where $\alpha_0 = (j/(j+1))^{3/2}$ and $\left(J/G\right|_{0}$ is
+where $\alpha_0 = (j/(j+1))^{3/2}$ and $\left.(J/G)\right|_{0}$ is
 evaluated at $e_i=0$ and $\alpha=\alpha_0$.
 Thus, we have $\eta(\alpha_0, 0, 0)=0$ and the corresponding Taylor expansion yields
 #+begin_src latex
@@ -537,13 +535,13 @@ The evolution over time of the conserved quantity $\eta$ is then given by
 #+end_src
 @@latex:\noindent@@ We note that $\dot\eta$ depends only on the
 /effective/ migration rate, $1/T_m \equiv 1/T_{m,2} - 1/T_{m,1}$.  This
-equation, combined with equation eqref:dotdpom, fully determine the
-equilibrium eccentricities. While $d\Delta\varpi/dt=0$ sets their ratio,
-equation eqref:doteta sets their magnitude based on $1/T_m$, $T_{e,1}$,
+equation, combined with equation eqref:dotdpom, determines the
+equilibrium eccentricities to first order. The requirement $d\Delta\varpi/dt=0$ sets their ratio,
+and equation eqref:doteta sets their magnitude based on $1/T_m$, $T_{e,1}$,
 and $T_{e,2}$.
 
 By solving the four equations [[eqref:dote1]] -- eqref:dotdpom and
-[[eqref:doteta]], we may calculate the equilibrium values for the system.
+[[eqref:doteta]], we may calculate the exact equilibrium values for the system.
 In the standard picture while neglecting secular terms (i.e., for small
 $e_i$), equations [[eqref:dote1]] and [[eqref:dote2]] show
 $\sin(\theta_i)\approx 0^\circ$.  Equation [[eqref:dotdpom]] gives us
@@ -557,8 +555,11 @@ in the time-dependent integration in Figure ref:fig:standardex.
 *** Standard model                                                 :ignore:
 The equilibrium $e_i$'s and $\Delta\varpi$'s for comparable mass
 planets $(q\in[0.5,2])$ are given in Figures ref:fig:standardeqecc and
-[[ref:fig:standardDpom]].  Analytical solutions to the equilibrium
-equations are plotted as dashed lines.
+[[ref:fig:standardDpom]].
+We calculated the analytical solutions to equations eqref:dote1 -- eqref:dotdpom
+and eqref:doteta
+with the @@latex:$\mathtt{scipy}$@@ root finding library.
+and plotted them as dashed lines.
 We compare the analytical results to a numerical integration of the 
 time-dependent differential equations from Hamiltonian
 eqref:hamiltonian and plot the average $e_1$, $e_2$, and
@@ -573,9 +574,14 @@ $\Delta\varpi$ average values are all very close to $180^\circ$.  The
 numerical (markers) and analytical (lines) results largely agree.
 Hence, in the standard picture of resonant capture, comparable mass
 planets will always end up caught in both $\theta_1$ and $\theta_2$
-and consequently apsidally anti-aligned.  In the next two sections, we
-will explore slightly modified models by varying the ratio
-$T_{e,1}/T_{e,2}$ to test whether they can produce apsidal alignment.
+and consequently apsidally anti-aligned.
+
+In the next two sections, we will explore the effects of eccentricity
+damping ratio $T_{e,1}/T_{e,2}$ on the apsidal angle in MMR
+equilibrium.  By forcing the ratio away from $T_{e,1}/T_{e,2}\sim
+1/q$, we hope to illuminate the conflict between disk and resonant
+forces, with the ultimate goal of finding disk conditions which
+naturally give rise to apsidal alignment in exoplanetary systems.
 
 ** Eccentricity damping timescales
 *** figures                                                        :ignore:
@@ -644,22 +650,18 @@ eccentricities by a roughly similar factor, as seen in Figure
 ref:fig:eqecc.  The dashed lines plot the analytic results from
 solving equations [[eqref:dote1]] -- [[eqref:doteta]]; these findings largely
 reproduce the numerical results if the system migrates in the same
-direction as in the standard picture, i.e. if $T_{e,1}/T_{e,2}$ and
-$q$ are on the same side of one.  If $T_{e,1}/T_{e,2}$ and $q$ are on
-the opposite side of one, the planets are therefore migrating in the
-opposite direction than the standard picture, $T_{e,1}/T_{e,2}=1/q$.
-For these cases, we see that the analytical results systematically
-underestimate ($q=2$) or overestimate ($q=0.5$) the numerical results.
-This effect is true for both sides of unity whenever $q=1$, i.e. for
-$T_{e,1}/T_{e,2}<1$ the equilibrium eccentricities are overestimated
-by the dashed lines and vice versa for $>1$.  The eccentricity ratio
-$e_1/e_2$ is unchanged, yet the magnitudes $e_1$ and $e_2$ are larger
-for more extreme values of $T_{e,1}/T_{e,2}$.  The corresponding
-values for $\Delta\varpi$ are shown in Figure ref:fig:eqDpom. In all
-cases, the analytic equilibrium equations predict $\Delta\varpi\approx
+direction as in the standard picture,
+For Te1/Te2 far from 1/q,
+the analytical results systematically overestimate the equilibrium
+eccentricity for Te1/Te2 < 1, and underestimate it for Te1/Te2 > 1.
+The eccentricity ratio $e_1/e_2$ is
+unchanged, yet the magnitudes $e_1$ and $e_2$ are larger for more
+extreme values of $T_{e,1}/T_{e,2}$.  The corresponding values for
+$\Delta\varpi$ are shown in Figure ref:fig:eqDpom. In all cases, the
+analytic equilibrium equations predict $\Delta\varpi\approx
 180^\circ$, and the numerical integrations agree.
 
-The shape of the dashed lines in Figures ref:fig:standardeqecc
+The peaked shape of the dashed lines in Figures ref:fig:standardeqecc and
 ref:fig:eqecc can be explained as follows.  As
 $T_{m,1}/T_{m,2}=T_{e,1}/T_{e,2}$ approaches one, the effective
 migration timescale $T_m$ approaches infinity.  Equation eqref:doteta
@@ -668,7 +670,9 @@ We note that the equilibrium solutions given in Figures
 ref:fig:standard - ref:fig:eqDpom are not continuous across the line
 $T_{e,1}/T_{e_2} = 1$ (i.e. $q=1$ in Figure ref:fig:standard), which
 is where we reverse the migration direction to ensure it is
-convergent.  Variations in the eccentricity damping ratio cannot
+convergent.
+
+Variations in the eccentricity damping ratio cannot
 account for apsidal alignment; $e_1$ and $e_2$ always adjust to
 satisfy equation eqref:dotdpom.  In order to simplify the problem, we
 turn to the case of a test particle orbiting near an MMR with a finite
@@ -1120,7 +1124,7 @@ e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2$ and $\hat e = \abs{\v{\hat
 e}}$, where $\v e_i$ is the Runge-Lenz vector, i.e. the vector with
 magnitude $e_i$ in the direction of perihelion.  The action $\hat R$
 takes the form $\hat R \propto \tilde \mu \hat e^2$, where
-$\tilde\mu=\tilde m/M_*$ and $\tilde m= m_1m_2/(m_{\rm tot}M_*)$ is
+$\tilde\mu=\tilde m/M$ and $\tilde m= m_1m_2/(m_{\rm tot}M)$ is
 the reduced mass ratio of the planets. In order to recover the actions
 given above for the appropriate CR3BP limits, we have
 #+begin_src latex
@@ -1468,8 +1472,8 @@ constant.  The expression for $S_2$ (equation eqref:eq:s2) becomes
 #+END_SRC
 @@latex:\noindent@@ after restoring the canonical momenta and dividing
 through by $\Lambda_1$.  In the limit $q\to\infty$, this expression
-represents the "$S_2$ per unit $\Lambda_1$", and so these test particle
-results may naturally be interpreted as "per unit $\Lambda_1$".  The
+represents the@@latex:``$S_2$ per unit $\Lambda_1$", and so these test particle
+results may naturally be interpreted as@@latex:``per unit $\Lambda_1$".  The
 fraction $S_2/\Lambda_1$ becomes
 #+BEGIN_SRC latex
   \begin{align}
