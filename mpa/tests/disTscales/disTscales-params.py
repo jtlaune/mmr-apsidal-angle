@@ -19,8 +19,8 @@ a0 = 1.0
 h = 0.03
 alpha_0 = (j/(j+1))**(2./3.)
 Nqs = 1
-qs = np.logspace(1, 3, Nqs, endpoint=True)
-totmass = 1e-3
+qs = np.ones(Nqs)*0.1
+totmass = 1e-5
 Tw0 = 1000
 TeRatios = qs
 
@@ -55,7 +55,7 @@ TE2 = Tw0*TeRatios
 TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 #TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
-TS = 0.1*np.maximum(TE1, TE2)
+TS = 2*np.maximum(TE1, TE2)
 ALPHA_0 = alpha_0*np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #

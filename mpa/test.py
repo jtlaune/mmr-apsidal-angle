@@ -37,34 +37,35 @@ class ResonanceTestCase(unittest.TestCase):
     def test_Compmass_disTscales(self):
         origindir, filename = os.path.split(__file__)
         projectdir = os.path.join(origindir, "tests/")
-        os.chdir("tests/")
+        os.chdir("mpa/tests/")
         seriesname  = "disTscales"
         series = SeriesFOCompmass(seriesname, projectdir, load=False)
         series(1)
-        #series = SeriesFOCompmass(seriesname, projectdir, load=True)
-        #params = series.RUN_PARAMS
-######################################
-        #Te1 = np.float64(params[0,6])
-        #Te2 = np.float64(params[0,7])
-        #Tm1 = np.float64(params[0,8])
-        #Tm2 = np.float64(params[0,9])
-######################################
-        #series.load_all_runs()
-        #rundata = series.data[0]
+        series = SeriesFOCompmass(seriesname, projectdir, load=True)
+        params = series.RUN_PARAMS
+#####################################
+        Te1 = np.float64(params[0,6])
+        Te2 = np.float64(params[0,7])
+        Tm1 = np.float64(params[0,8])
+        Tm2 = np.float64(params[0,9])
+        alpha2_0 = np.float64(params[0,14])
+#####################################
+        series.load_all_runs()
+        rundata = series.data[0]
 
-        #teval = rundata["teval"]
-        #it = -1
-        #teval = teval[0:it]
-        #a1 = rundata["a1"][0:it]
-        #a2 = rundata["a2"][0:it]
-        #a1dot = np.gradient(a1, teval)
-        #a2dot = np.gradient(a2, teval)
-        #avg_a1_a1dot = np.average(a1/a1dot)
-        #avg_a2_a2dot = np.average(a2/a2dot)
-        #print(avg_a2_a2dot)
-        #print(Tm2)
-        #print(avg_a2_a2dot/Tm2)
-        #self.assertAlmostEquals(avg_a2_a2dot, Tm2)
+        teval = rundata["teval"]
+        it = int(0.1*len(teval))
+        teval = teval[0:it]
+        a1 = rundata["a1"][0:it]
+        a2 = rundata["a2"][0:it]
+        a1dot = np.gradient(a1, teval)
+        a2dot = np.gradient(a2, teval)
+        avg_a1_a1dot = np.average(a1/a1dot)
+        avg_a2_a2dot = np.average(a2/a2dot)
+        print(avg_a2_a2dot)
+        print(Tm2)
+        print(Tm2/avg_a2_a2dot)
+        self.assertTrue((avg_a2_a2dot-Tm2) < 0.001*np.abs(Tm2))
 
         os.chdir(origindir)
 
