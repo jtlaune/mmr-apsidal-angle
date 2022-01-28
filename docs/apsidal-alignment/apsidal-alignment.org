@@ -1,5 +1,5 @@
 * preamble                                                           :ignore:
-#+TITLE: Apsidal Angle of Planetary Systems in Mean Motion Resonance
+#+TITLE: Apsidal Architecture of Planetary Systems in Mean Motion Resonance
 #+OPTIONS: author:nil date:nil toc:nil
 #+LATEX_CLASS: mnras
 #+LaTeX_CLASS_OPTIONS: [usenatbib,twocolumn]
@@ -1048,8 +1048,8 @@ perihelia are now perpendicular to each other.
   \begin{figure}
     \centering
     \includegraphics[width=0.45\textwidth]{{./S2-conserved-inres-q2.0}.png}
-    \caption{In the left column, we have plotted $\mathcal{S}_1$ and
-      $\mathcal{S}_2$ from equations (\ref{eq:sS1}) and (\ref{eq:sS2})
+    \caption{In the left column, we have plotted $\sigma_1$ and
+      $\sigma_2$ from equations (\ref{eq:sS1}) and (\ref{eq:sS2})
       for the three different combinations of of $e_{1d}$ and $e_{2d}$
       in Figures \ref{fig:standardex}, \ref{fig:drivingex}, and
       \ref{fig:perpex}. Each row corresponds to one of the three
@@ -1058,12 +1058,12 @@ perihelia are now perpendicular to each other.
       $\Delta\varpi=90^\circ$, respectively. In the right column, we
       plot the evolution of the conserved resonance quantity $S_2$
       (equation (\ref{eq:S2eq})).  For $\Delta\varpi=0^\circ$, all three
-      of $\mathcal{S}_1$, $\mathcal{S}_1$, and $S_2$ are conserved near
+      of $\sigma_1$, $\sigma_1$, and $S_2$ are conserved near
       zero. For the other two cases, $S_2$ transitions to larger values
       near $\sim 0.5$ (middle) and $\sim 0.1$ (bottom) as the
-      eccentricity driving reach an equilibrium.  Both $\mathcal{S}_1$
-      and $\mathcal{S}_2$ are excited to factors of a few in the
-      apsidally aligned case, while only $\mathcal{S}_1$ is excited for
+      eccentricity driving reach an equilibrium.  Both $\sigma_1$
+      and $\sigma_2$ are excited to factors of a few in the
+      apsidally aligned case, while only $\sigma_1$ is excited for
       $\Delta\varpi=90^\circ$.  For $\Delta\varpi=0^\circ$ and
       $\Delta\varpi=90^\circ$, the eccentricities oscillate in such a
       way to conserve $S_2$ according to equation \ref{eq:S2eq}.}
@@ -1103,10 +1103,10 @@ shown that $\theta_1$ and $\theta_2$ are actually subresonances of a
 resonance $\hat\theta$ which arises after transforming the system's
 Hamiltonian so that it has only a single degree of freedom. 
 
-If we assume that the semimajor axis ratio $\alpha$ is stationary or
-varying adiabatically, we may transform the resonant Hamiltonian
-$H_{\rm Kep} + H_{\rm res}$ in equation [[eqref:hamiltonian]] into the
-form
+If we assume that the secular behavior of the semimajor axis ratio
+$\alpha$ is stationary or varying adiabatically, we may transform the
+resonant Hamiltonian $H_{\rm Kep} + H_{\rm res}$ in equation
+[[eqref:hamiltonian]] into the form
 #+begin_src latex
   \begin{equation}
     \label{hhat}
@@ -1166,12 +1166,12 @@ varying), the Hamiltonian in equation eqref:hamiltonian has two
 degrees of freedom (dof) as written: the angles $\theta_1$ and
 $\theta_2$.  However, by transforming this Hamiltonian into the single
 dof form of equation eqref:hhat the resonance admits the following
-conserved quantity:
+conserved quantity (see equation eqref:eq:appS2deriv):
 #+BEGIN_SRC latex
   \begin{align}
     \label{eq:s2}
     S_2 = q\sqrt{\alpha}f_2^2e_1^2
-  +2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2.
+  -2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2.
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
@@ -1181,9 +1181,9 @@ By enforcing $dS_2/dt = 0$ together with the assumption $d\alpha/dt
   \begin{align}
     \label{eq:S2eq}
     \frac{dS_2}{dt} \propto e_1^2\left(\frac{e_1-e_{1\rm d}}{T_{e,1}}\right)\abs*{\frac{f_2}{f_1}}
-    \mathcal{S}_1
+    \sigma_1
     + e_2^2\left(\frac{e_2-e_{2\rm d}}{T_{e,2}}\right)
-    \mathcal{S}_2
+    \sigma_2
     = 0.
   \end{align}
 #+END_SRC
@@ -1192,12 +1192,12 @@ where
 #+BEGIN_SRC latex
   \begin{align}
     \label{eq:sS1}
-    \mathcal{S}_1=&\left[
+    \sigma_1=&\left[
                     q^2\alpha\abs*{\frac{f_2}{f_1}}
                     + \frac{e_2}{e_1}q\sqrt{\alpha}\cos(\varpi_1-\varpi_2)
                     \right]\\
     \label{eq:sS2}
-    \mathcal{S}_2=&\left[
+    \sigma_2=&\left[
                     \abs*{\frac{f_2}{f_1}} q\sqrt{\alpha}
                     \frac{e_1}{e_2}\cos(\varpi_1-\varpi_2) + 1
                     \right].
@@ -1209,30 +1209,30 @@ ref:fig:perpex are representative of three different modes of
 resonance, ones where $\Delta\varpi=180^\circ$,
 $\Delta\varpi=0^\circ$, and $\Delta\varpi=90^\circ$,
 respectively. These correspond to three different behaviors of the
-quantities $\mathcal{S}_1$ and $\mathcal{S}_2$ while in resonance
+quantities $\sigma_1$ and $\sigma_2$ while in resonance
 under the influence of eccentricity forcing.
-In Figure ref:fig:S2cons, we have plotted $\mathcal{S}_1$ and
-$\mathcal{S}_2$ as well as $\dot S_2/S_2$ for these systems.  The top
+In Figure ref:fig:S2cons, we have plotted $\sigma_1$ and
+$\sigma_2$ as well as $\dot S_2/S_2$ for these systems.  The top
 row is for the standard eccentricity damping case where
 $e_{1d}=e_{2d}=0$.  Once the system equilibrates, $S_2\approx 10^{-4}$
-is well conserved (top left) and small. Both $\mathcal{S}_1$ and
-$\mathcal{S}_2$ are also close to zero. From equations eqref:eq:sS1
-and eqref:eq:sS1, we see this corresponds to $e_2/e_1 \sim q$, as we
+is well conserved (top left) and small. Both $\sigma_1$ and
+$\sigma_2$ are also close to zero. From equations eqref:eq:sS1
+and eqref:eq:sS2, we see this corresponds to $e_2/e_1 \sim q$, as we
 found in Section [[Standard Picture of Resonance Capture]].
 
-The second row corresponds to the integration shown in
+The second row corresponds to the integration shown in Figure
 ref:fig:drivingex, where $e_{1d}=0.2$ and $e_{2d}=0$.  For early
 times, while the system is still caught in the $\theta_1$ and
-$\theta_2$ resonances, $\mathcal{S}_1$, $\mathcal{S}_2$, and $S_2$ are
+$\theta_2$ resonances, $\sigma_1$, $\sigma_2$, and $S_2$ are
 small.  Once the $\theta_i$ resonances are broken, and only
 $\hat\theta$ librates, they are excited to larger values.  The
-quantities $\mathcal{S}_1$ and $\mathcal{S}_2$ undergo large periodic
+quantities $\sigma_1$ and $\sigma_2$ undergo large periodic
 oscillations away from zero, while $S_2$ grows and then stabilizes at
 its new equilibrium value, $S_2\approx 0.5$. The planets'
 eccentricities oscillate in such a way as to conserve $S_2$.  The last
 row corresponds to the integration in ref:fig:perpex, where
-$e_{2d}=0.2$ and $e_{1d}=0$.  For this system, $\mathcal{S}_2$ is
-conserved close to 0, while $\mathcal{S}_1$ grows to a magnitude
+$e_{2d}=0.2$ and $e_{1d}=0$.  For this system, $\sigma_2$ is
+conserved close to 0, while $\sigma_1$ grows to a magnitude
 similar to its value in the apsidally aligned case.
 
 In Figure ref:fig:relgeom, we plot the eccentricity
@@ -1312,21 +1312,25 @@ on a grid within the parameter space while holding $q$, $h$, and the
 initial period ratio $P_2/P_1$ constant. We have excluded runs which
 become unstable and escape the resonance within the timescale of our
 integrations. Roughly, for $e_{1d}\gtrsim e_{2d}$, the system becomes
-apsidally aligned, while for $e_{2d} > e_{1d}$,
+apsidally aligned, while for $e_{2d} > e_{1d}$, some cases exhibit
 $\Delta\varpi=90^\circ$.  In the right panel of Figure
 ref:fig:Rhat-grid, we have plotted the time-averaged final
 eccentricities. The points share the same color-coding as in the right
 panel.  The eccentricities for the aligned cases fall roughly along
-the line $e_1=e_2$. The perpendicular runs fall slightly above the
+the line $e_1=e_2$. ### The perpendicular runs fall slightly above the
 line $e_2/e_1=q$ , while the anti-aligned runs fall just under it.
 
-The single $\mathtt{x}$ marker in ref:fig:Rhat-grid corresponds to a
-run which is only temporarily caught into resonance. Despite all of
+The single $\mathtt{x}$ marker in Figure ref:fig:Rhat-grid corresponds to a
+run which is only temporarily caught into resonance.
+We have plotted the detailed evolution of this system
+in Figure ref:fig:escapeex. Despite all of
 the resonance angles circulating, the period ratio librates with small
 amplitude around the period ratio $P_2/P_1=1.5$. The planets remain in
 an anti-aligned configuration throughout. Before escape,
 $\Delta\varpi\lesssim180^\circ$, while after escape,
 $\Delta\varpi\gtrsim180^\circ$.
+
+*** TODO explain e1=e2 line                                      :noexport:
 
 ** Initial period ratio
 *** figures                                                        :ignore:
@@ -1417,7 +1421,7 @@ paper. Rows three and four of Figure ref:fig:Rhat-grid depict the
 results of running identical simulations to the first two rows but
 with $q=0.5$.
 
-In Figure ref:fig:escapeex3, we display the results of a system which
+### In Figure ref:fig:escapeex3, we display the results of a system which
 is identical to Figure ref:fig:drivingex besides setting the mass
 ratio to $q=0.5$, reversing the migration direction, and modifying the
 dissipation timescales appropriately.  The two planets convergently
@@ -1425,6 +1429,10 @@ migrate in resonance, but librations in the period ratio grow in
 amplitude over time. Eventually, the planets escape resonance. The
 inner planet $m_1$ is kicked outwards and $m_2$ continues migrating
 inwards until the planets are orbit crossing.
+*** TODO Laetitia comment                                        :noexport:
+We need to comment on rows three and four. Is it expected that we get
+anti-alignment where we had alignment before? (because the more
+massive planet becomes planet 2 for example)
 
 ** Test particle limit
 ***                                                                :ignore:
@@ -1954,6 +1962,7 @@ We note that the other angle, $\hat\theta_2$,
 is cyclic, and so its conjugate momentum $S_2$ is constant:
 #+BEGIN_SRC latex
   \begin{align}
+  \label{eq:appS2deriv}
     S_2 = w_2^2 + W_2^2 = q\sqrt{\alpha}f_2^2e_1^2
   -2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2
   ,
@@ -2021,7 +2030,8 @@ A similar representation of $\mathcal H, \mathcal M$, $\mathcal N$,
 and $\mathcal{K}$ also exists for which the limit $q\to 0$ converges
 to the case of an inner test particle by exchanging the necessary
 factors of $q$ for $\Lambda_1/\Lambda_2 = q\sqrt\alpha$.
-* todos  [0/3]                                                     :noexport:
+* todos  [0/4]                                                     :noexport:
 ** TODO Mention transition to dimless H
 ** TODO Tell people why you are transitioning to test particles
 ** TODO check maryam's paper
+** TODO change cal S to sigma in figures
