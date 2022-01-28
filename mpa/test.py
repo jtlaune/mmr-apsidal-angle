@@ -29,15 +29,15 @@ class ResonanceTestCase(unittest.TestCase):
             seriesname  = "init"
             series = SeriesFOCompmass(seriesname, projectdir, load=False)
             self.assertTrue(isinstance(series, SeriesFOCompmass))
-        except:
-            quit
+        except FileNotFoundError as err:
+            raise err
         finally:
             os.chdir(origindir)
 
-    def test_Compmass_disTscales(self):
+    def test_compmass_disTscales(self):
         origindir, filename = os.path.split(__file__)
         projectdir = os.path.join(origindir, "tests/")
-        os.chdir("mpa/tests/")
+        os.chdir("tests/")
         seriesname  = "disTscales"
         series = SeriesFOCompmass(seriesname, projectdir, load=False)
         series(1)

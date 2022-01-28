@@ -4,6 +4,15 @@ from .plotting import plotsim
 from .fndefs import *
 from multiprocessing import Pool
 
+
+class SimSet(object):
+    def __init__(self, verbose=False, overwrite=False, secular=True, tscale=1000., method="RK45"):
+        self.verbose   = verbose
+        self.overwrite = overwrite
+        self.secular   = secular
+        self.method    = method
+        self.tscale    = tscale
+                           
 def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
            dirname, filename, figname, paramsname, tscale=1e3,
            tol=1e-9, overwrite=False):
@@ -211,47 +220,48 @@ def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
     return fig
 
 
-def run_tp_set(params):
-    h = float(params[0])
-    j = float(params[1])
-    mup = float(params[2])
-    ap = float(params[3])
-    a0 = float(params[4])
-    if a0 > ap: tploc="ext"
-    else: tploc="int"
-    ep = float(params[5])
-    e0 = float(params[6])
-    g0 = float(params[7])
-    Tm = float(params[8])
-    Te = float(params[9])
-    T = float(params[10])
+class TpSet(SimSet):
+    def __call__(params):
+        h = float(params[0])
+        j = float(params[1])
+        mup = float(params[2])
+        ap = float(params[3])
+        a0 = float(params[4])
+        if a0 > ap: tploc="ext"
+        else: tploc="int"
+        ep = float(params[5])
+        e0 = float(params[6])
+        g0 = float(params[7])
+        Tm = float(params[8])
+        Te = float(params[9])
+        T = float(params[10])
 
-    dirname = params[11]
-    filename = params[12]
-    figname = params[13]
-    paramsname = params[14]
+        dirname = params[11]
+        filename = params[12]
+        figname = params[13]
+        paramsname = params[14]
 
-    tscale = float(params[15])
-    tol = float(params[16])
+        tscale = float(params[15])
+        tol = float(params[16])
 
-    overwrite = (params[17]=="True")
-    print(overwrite)
+        overwrite = (params[17]=="True")
+        print(overwrite)
 
-    if tploc == "int":
-        eeq = np.sqrt(np.abs(Te/2/(j+1)/Tm))
-    elif tploc == "ext":
-        eeq = np.sqrt(np.abs(Te/2/j/Tm))
+        if tploc == "int":
+            eeq = np.sqrt(np.abs(Te/2/(j+1)/Tm))
+        elif tploc == "ext":
+            eeq = np.sqrt(np.abs(Te/2/j/Tm))
 
-    suptitle = (f"{filename}\n" + f"T={T:0.1e} q={tploc} tp\n" \
-                r"$\mu_{p}=$ " + f"{mup:0.2e}\n" \
-                f"Tm={Tm:0.1e} Te={Te:0.1e}\n" \
-                r"$h$ = " + f"{h:0.3f}\n" \
-                r"$e_{tp,eq}$ = " + f"{eeq:0.3f}\n" \
-                r"$e_{p}$ = " + f"{ep:0.3f}")
+        suptitle = (f"{filename}\n" + f"T={T:0.1e} q={tploc} tp\n" \
+                    r"$\mu_{p}=$ " + f"{mup:0.2e}\n" \
+                    f"Tm={Tm:0.1e} Te={Te:0.1e}\n" \
+                    r"$h$ = " + f"{h:0.3f}\n" \
+                    r"$e_{tp,eq}$ = " + f"{eeq:0.3f}\n" \
+                    r"$e_{p}$ = " + f"{ep:0.3f}")
 
-    run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
-           dirname, filename, figname, paramsname, tscale=1e3,
-           tol=1e-9, overwrite=overwrite)
+        run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
+               dirname, filename, figname, paramsname, tscale=1e3,
+               tol=1e-9, overwrite=overwrite)
 
 
 def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0, g2_0,
@@ -407,12 +417,7 @@ def run_compmass(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0, g2_0,
     return fig
 
 
-class run_compmass_set:
-    def __init__(self, verbose=False, overwrite=False, secular=True, method="RK45"):
-        self.verbose   = verbose
-        self.overwrite = overwrite
-        self.secular   = secular
-        self.method    = method
+class CompmassSet(SimSet):
     def __call__(self, params):
         h = np.float64(params[0])
         j = np.float64(params[1])
@@ -619,14 +624,7 @@ def run_compmass_omeff(h, j, mu1, q, a0, alpha2_0, e1_0, e2_0, g1_0,
     return fig
     
 
-class run_compmass_set_omeff(run_compmass_set):
-    def __init__(self, verbose=False, overwrite=False, secular=True, method="RK45"):
-        self.verbose   = verbose
-        self.overwrite = overwrite
-        self.secular   = secular
-        self.method    = method
-        self.tscale = 1e3
-
+class CompmassSetOmeff(CompmassSet):
     def __call__(self, params):
         h = np.float64(params[0])
         j = np.float64(params[1])
@@ -746,9 +744,10 @@ class SeriesFOCompmass(SimSeries):
         N_sims = self.RUN_PARAMS.shape[0]
 
         overwrite = not self.load
-        integrate = run_compmass_set_omeff(verbose=True,
-                                           overwrite=overwrite,
-                                           secular=True, method="RK45")
+        integrate = CompmassSetOmeff(verbose=True,
+                                       overwrite=overwrite,
+                                       secular=True,
+                                       method="RK45")
         np.savez("RUN_PARAMS", self.RUN_PARAMS)
         print(self.RUN_PARAMS)
         print(f"Running {N_sims} simulations...")
