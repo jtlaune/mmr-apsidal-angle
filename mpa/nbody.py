@@ -1,9 +1,30 @@
 from . import *
 
-class seriesNbodyMigTrap(SimSeries):
-    def __call__(self, Nproc=8):
 
-class nbodySet(SimSet):
+class NbodyMigTrapSeries(SimSeries):
+    def __call__(self, Nproc=8):
+        # change to series directory
+        if not os.path.exists(self.seriesname):
+            os.mkdir(self.seriesname)
+        os.chdir(self.seriesname)
+        print(os.getcwd())
+
+        N_sims = self.RUN_PARAMS.shape[0]
+
+        overwrite = not self.load
+        integrate = CompmassSetOmeff(verbose=True,
+                                       overwrite=overwrite,
+                                       secular=True,
+                                       method="RK45")
+        np.savez("RUN_PARAMS", self.RUN_PARAMS)
+        print(self.RUN_PARAMS)
+        print(f"Running {N_sims} simulations...")
+        
+        with Pool(processes=min(Nproc, N_sims)) as pool:
+            pool.map(integrate, self.RUN_PARAMS)
+        os.chdir(self.pdir)
+
+class NbodySet(SimSet):
     def __call__(self, params):
         h = np.float64(params[0])
         j = np.float64(params[1])

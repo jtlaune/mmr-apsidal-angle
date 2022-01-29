@@ -4,6 +4,23 @@ from .plotting import plotsim
 from .fndefs import *
 from multiprocessing import Pool
 
+def series_dir(f):
+    # first check if series directory exists
+    # then change into directory, then change out of it
+    def wrapper1(*args):
+        def wrapper2(*args):
+            s = args[0]
+            pwd = os.path.abspath(os.path.getcwd())
+            if not os.path.exists(s.series_name):
+                os.mkdir(s.series_name)
+            os.chdir(s.series_name)
+            # do stuff before
+            f(*args)
+            # do stuff after
+            os.chdir(pwd)
+        return(wrapper2)
+    return(wrapper1)
+
 
 class SimSet(object):
     def __init__(self, verbose=False, overwrite=False, secular=True, tscale=1000., method="RK45"):
@@ -13,6 +30,7 @@ class SimSet(object):
         self.method    = method
         self.tscale    = tscale
                            
+
 def run_tp(h, j, mup, ap, a0, ep, e0, g0, Tm, Te, T, suptitle,
            dirname, filename, figname, paramsname, tscale=1e3,
            tol=1e-9, overwrite=False):
@@ -733,25 +751,20 @@ class SeriesFOCompmass(SimSeries):
     - define which physics to include for compmass, i.e. omeff, dissipative, etc
       - could possibly be defined in a separate file like fargo?
     """
-#    def __init__(
+    # This decorator takes care of the project/series/runsim file
+    # management. intended to be executed from runsim (symbolic link)
+    @series_dir
     def __call__(self, Nproc=8):
-        # change to series directory
-        if not os.path.exists(self.seriesname):
-            os.mkdir(self.seriesname)
-        os.chdir(self.seriesname)
-        print(os.getcwd())
-
         N_sims = self.RUN_PARAMS.shape[0]
 
         overwrite = not self.load
         integrate = CompmassSetOmeff(verbose=True,
-                                       overwrite=overwrite,
-                                       secular=True,
-                                       method="RK45")
+                                     overwrite=overwrite,
+                                     secular=True,
+                                     method="RK45")
         np.savez("RUN_PARAMS", self.RUN_PARAMS)
         print(self.RUN_PARAMS)
         print(f"Running {N_sims} simulations...")
         
         with Pool(processes=min(Nproc, N_sims)) as pool:
             pool.map(integrate, self.RUN_PARAMS)
-        os.chdir(self.pdir)
