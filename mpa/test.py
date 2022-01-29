@@ -27,8 +27,8 @@ class ResonanceTestCase(unittest.TestCase):
             print(origindir)
             os.chdir("tests/")
             seriesname  = "init"
-            series = SeriesFOCompmass(seriesname, projectdir, load=False)
-            self.assertTrue(isinstance(series, SeriesFOCompmass))
+            series = FOCompmassSeries(seriesname, projectdir, load=False)
+            self.assertTrue(isinstance(series, FOCompmassSeries))
         except FileNotFoundError as err:
             raise err
         finally:
@@ -39,9 +39,9 @@ class ResonanceTestCase(unittest.TestCase):
         projectdir = os.path.join(origindir, "tests/")
         os.chdir("tests/")
         seriesname  = "disTscales"
-        series = SeriesFOCompmass(seriesname, projectdir, load=False)
+        series = FOCompmassSeries(seriesname, projectdir, load=False)
         series(1)
-        series = SeriesFOCompmass(seriesname, projectdir, load=True)
+        series = FOCompmassSeries(seriesname, projectdir, load=True)
         params = series.RUN_PARAMS
 #####################################
         Te1 = np.float64(params[0,6])

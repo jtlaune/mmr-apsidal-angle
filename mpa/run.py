@@ -745,7 +745,7 @@ class SimSeries(object):
         return(np.array(_.RUN_PARAMS))
     
 
-class SeriesFOCompmass(SimSeries):
+class FOCompmassSeries(SimSeries):
     """
     - Class to run first order comparable mass simulations
     - define which physics to include for compmass, i.e. omeff, dissipative, etc
