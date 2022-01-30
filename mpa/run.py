@@ -9,21 +9,19 @@ from multiprocessing import Pool
 # Decorators                                                             #
 ##########################################################################
 def series_dir(f):
-    # first check if series directory exists
-    # then change into directory, then change out of it
+    # first check if series directory exists then change into
+    # directory, then change out of it only to be used with
+    # .initialize() and .__call__() methods
     def wrapper1(*args):
-        def wrapper2(*args):
-            s = args[0]
-            pwd = os.path.abspath(os.path.getcwd())
-            if not os.path.exists(s.series_name):
-                os.mkdir(s.series_name)
-            os.chdir(s.series_name)
-            # do stuff before
-            f(*args)
-            # do stuff after
-            os.chdir(pwd)
-
-        return wrapper2
+        s = args[0]
+        pwd = os.path.abspath(os.getcwd())
+        if not os.path.exists(s.pdir):
+            os.mkdir(s.pdir)
+        os.chdir(s.pdir)
+        # do stuff before
+        f(*args)
+        # do stuff after
+        os.chdir(pwd)
 
     return wrapper1
 
@@ -48,16 +46,12 @@ def params_load(f):
     # etc
     def wrapper1(*args):
         names = args[0].param_spec
-
-        def wrapper2(*args):
-            # do stuff before
-            vals = args[0]
-            for val, name in zip(vals, names):
-                create_var(val, name)
-            f(*args)
-            # do stuff after
-
-        return wrapper2
+        # do stuff before
+        vals = args[0]
+        for val, name in zip(vals, names):
+            create_var(val, name)
+        f(*args)
+        # do stuff after
 
     return wrapper1
 
@@ -954,36 +948,62 @@ class TpSet(SimSet):
 
 
 class CompmassSet(SimSet):
+    params_spec = [
+            "h",
+            "j",
+            "mu1",
+            "q",
+            "a0",
+            "alpha2_0",
+            "e1_0",
+            "e2_0",
+            "g1_0",
+            "g2_0",
+            "Tm1",
+            "Tm2",
+            "Te1",
+            "Te2",
+            "T",
+            "name",
+            "e1d",
+            "e2d",
+            "cutoff",
+    ]
+
+    @params_load
     def __call__(self, params):
-        h = np.float64(params[0])
-        j = np.float64(params[1])
-        a0 = np.float64(params[2])
-        q = np.float64(params[3])
-        mu1 = np.float64(params[4])
-        T = np.float64(params[5])
+        Te_func = 0. # I don't think i use this. can delete this param in future
 
-        Te_func = int(float(params[18]))
-        if Te_func:
-            Te1 = params[6]
-            Te2 = params[7]
-            Tm1 = params[8]
-            Tm2 = params[9]
-        else:
-            Te1 = np.float64(params[6])
-            Te2 = np.float64(params[7])
-            Tm1 = np.float64(params[8])
-            Tm2 = np.float64(params[9])
+        #h = np.float64(params[0])
+        #j = np.float64(params[1])
+        #a0 = np.float64(params[2])
+        #q = np.float64(params[3])
+        #mu1 = np.float64(params[4])
+        #T = np.float64(params[5])
 
-        e1_0 = np.float64(params[10])
-        e2_0 = np.float64(params[11])
-        e1d = np.float64(params[12])
-        e2d = np.float64(params[13])
-        alpha2_0 = np.float64(params[14])
-        name = params[15]
-        dirname = params[16]
-        cutoff = np.float64(params[17])
-        g1_0 = np.float64(params[19])
-        g2_0 = np.float64(params[20])
+        #Te_func = int(float(params[18]))
+        #if Te_func:
+        #    Te1 = params[6]
+        #    Te2 = params[7]
+        #    Tm1 = params[8]
+        #    Tm2 = params[9]
+        #else:
+        #    Te1 = np.float64(params[6])
+        #    Te2 = np.float64(params[7])
+        #    Tm1 = np.float64(params[8])
+        #    Tm2 = np.float64(params[9])
+
+        #e1_0 = np.float64(params[10])
+        #e2_0 = np.float64(params[11])
+        #e1d = np.float64(params[12])
+        #e2d = np.float64(params[13])
+        #alpha2_0 = np.float64(params[14])
+        #name = params[15]
+        #dirname = params[16]
+        #cutoff = np.float64(params[17])
+        #g1_0 = np.float64(params[19])
+        #g2_0 = np.float64(params[20])
+
         filename = f"{name}.npz"
         figname = f"{name}.png"
         paramsname = f"params-{name}.txt"
@@ -1131,19 +1151,29 @@ class SimSeries(object):
     - setting up files, reading RUN_PARAMS from file
     - loading data from npz files
     """
-
-    def __init__(self, series, projectdir, load=True):
+    def __init__(self, name, projectdir, load=False):
         # self.RUN_PARAMS = load_params(paramsname)
-        self.seriesname = series
+        self.seriesname = name
         self.pdir = projectdir
         self.sdir = os.path.join(self.pdir, self.seriesname)
         self.paramsfpath = os.path.join(self.sdir, self.seriesname + "-params.py")
-        self.load = load
         self.data = {}
+        self.load = load
         self.initialize()
 
+    @series_dir
     def initialize(self):
         self.RUN_PARAMS = self.load_params(self.paramsfpath)
+        if self.load: self.load_all_runs()
+
+
+    def load_params(self, filepath):
+        spec = importlib.util.spec_from_file_location("_", filepath)
+        _ = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_)
+        print(f"Loading run file {filepath} in directory {os.getcwd()}")
+        return np.array(_.RUN_PARAMS)
+
 
     def load_run(self, ind):
         params = self.RUN_PARAMS
@@ -1159,18 +1189,13 @@ class SimSeries(object):
             print(f"Cannot find file {filename}... have you run it?")
             raise err
 
+
     def load_all_runs(self):
         params = self.RUN_PARAMS
         Nqs = len(params[:, 0])
         for ind in range(Nqs):
             self.load_run(ind)
 
-    def load_params(self, filepath):
-        spec = importlib.util.spec_from_file_location("_", filepath)
-        _ = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(_)
-        print(f"Loading run file {filepath} in directory {os.getcwd()}")
-        return np.array(_.RUN_PARAMS)
 
 
 class FOCompmassSeries(SimSeries):
@@ -1184,15 +1209,17 @@ class FOCompmassSeries(SimSeries):
     # management. intended to be executed from runsim (symbolic link)
     @series_dir
     def __call__(self, Nproc=8):
-        N_sims = self.RUN_PARAMS.shape[0]
+        print("__call__ is running")
+        if self.load:
+            self.load_all_runs()
+        else:
+            N_sims = self.RUN_PARAMS.shape[0]
+            integrate = CompmassSetOmeff(
+                verbose=True, overwrite=True, secular=True, method="RK45"
+               )
+            np.savez("RUN_PARAMS", self.RUN_PARAMS)
+            print(self.RUN_PARAMS)
+            print(f"Running {N_sims} simulations...")
 
-        overwrite = not self.load
-        integrate = CompmassSetOmeff(
-            verbose=True, overwrite=overwrite, secular=True, method="RK45"
-        )
-        np.savez("RUN_PARAMS", self.RUN_PARAMS)
-        print(self.RUN_PARAMS)
-        print(f"Running {N_sims} simulations...")
-
-        with Pool(processes=min(Nproc, N_sims)) as pool:
-            pool.map(integrate, self.RUN_PARAMS)
+            with Pool(processes=min(Nproc, N_sims)) as pool:
+                pool.map(integrate, self.RUN_PARAMS)

@@ -1,11 +1,17 @@
 from . import *
 import unittest
+import os.path
+
 
 class ResonanceTestCase(unittest.TestCase):
+    origindir, filename = os.path.split(os.path.abspath(__file__))
+    projectdir = os.path.join(origindir, "tests/")
+
     def test_module_import(self):
         # intentionally redundant. testing the import as i transition to a
         # module.
         self.assertEqual(0.,0.)
+
 
     def test_FO_LaplaceCoefficients(self):
         j = 2.
@@ -18,30 +24,25 @@ class ResonanceTestCase(unittest.TestCase):
         self.assertAlmostEqual(FO.f3(alpha),1.1527998000076145)
         self.assertAlmostEqual(FO.f4(alpha),-2.000522975124446)
 
+
     def test_SimSeries_init(self):
         # get run dir information
         # seriesname is simulation "series"
-        origindir, filename = os.path.split(__file__)
         try:
-            projectdir = os.path.join(origindir, "tests/")
-            print(origindir)
-            os.chdir("tests/")
+            print(self.origindir)
+            #os.chdir("tests/")
             seriesname  = "init"
-            series = FOCompmassSeries(seriesname, projectdir, load=False)
+            series = FOCompmassSeries(seriesname, self.projectdir, load=False)
             self.assertTrue(isinstance(series, FOCompmassSeries))
         except FileNotFoundError as err:
             raise err
         finally:
-            os.chdir(origindir)
+            os.chdir(self.origindir)
+
 
     def test_compmass_disTscales(self):
-        origindir, filename = os.path.split(__file__)
-        projectdir = os.path.join(origindir, "tests/")
-        os.chdir("tests/")
         seriesname  = "disTscales"
-        series = FOCompmassSeries(seriesname, projectdir, load=False)
-        series(1)
-        series = FOCompmassSeries(seriesname, projectdir, load=True)
+        series = FOCompmassSeries(seriesname, self.projectdir, load=True)
         params = series.RUN_PARAMS
 #####################################
         Te1 = np.float64(params[0,6])
@@ -50,8 +51,8 @@ class ResonanceTestCase(unittest.TestCase):
         Tm2 = np.float64(params[0,9])
         alpha2_0 = np.float64(params[0,14])
 #####################################
-        series.load_all_runs()
         rundata = series.data[0]
+        print(rundata)
 
         teval = rundata["teval"]
         it = int(0.1*len(teval))
@@ -67,9 +68,11 @@ class ResonanceTestCase(unittest.TestCase):
         print(Tm2/avg_a2_a2dot)
         self.assertTrue((avg_a2_a2dot-Tm2) < 0.001*np.abs(Tm2))
 
-        os.chdir(origindir)
+        os.chdir(self.origindir)
+
 
     def test_Compmass_secular(self):
         pass
+
     def test_Compmass_eqEccs(self):
         pass
