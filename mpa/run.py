@@ -4,6 +4,7 @@ from .plotting import plotsim
 from .fndefs import *
 from multiprocessing import Pool
 
+
 def series_dir(f):
     # first check if series directory exists
     # then change into directory, then change out of it
@@ -20,6 +21,39 @@ def series_dir(f):
             os.chdir(pwd)
         return(wrapper2)
     return(wrapper1)
+
+
+def create_var(val, name):
+    # initializes variables using exec flycheck keeps bothering me
+    # about this so i should change it
+    try:
+        exec(f"{name} = float(val)")
+    except ValueError:
+        exec(f"{name} = str(val)")
+    finally:
+        raise ValueError
+
+
+def params_load(f):
+    # alternative to doing stuff like this in SimSet objects
+    # will probably define in run.py and fix code there next
+    # h = params[0]
+    # ...
+    # ...
+    # etc
+    def wrapper1(*args):
+        names = args[0].param_spec
+        def wrapper2(*args):
+            # do stuff before
+            vals = args[0]
+            for val, name in zip(vals, names):
+                create_var(val, name)
+            f(*args)
+            # do stuff after
+
+        return wrapper2
+
+    return wrapper1
 
 
 class SimSet(object):
