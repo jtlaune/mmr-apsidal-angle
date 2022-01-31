@@ -26,17 +26,6 @@ def series_dir(f):
     return wrapper1
 
 
-def create_var(val, name):
-    # initializes variables using exec flycheck keeps bothering me
-    # about this so i should change it
-    try:
-        exec(f"{name} = float(val)")
-    except ValueError:
-        exec(f"{name} = str(val)")
-    finally:
-        raise ValueError
-
-
 def params_load(f):
     # alternative to doing stuff like this in SimSet objects
     # will probably define in run.py and fix code there next
@@ -47,9 +36,14 @@ def params_load(f):
     def wrapper1(*args):
         names = args[0].param_spec
         # do stuff before
-        vals = args[0]
+        vals = args[1]
+
         for val, name in zip(vals, names):
-            create_var(val, name)
+            print(name,val)
+            try:
+                args[0].params[name] = float(val)
+            except ValueError:
+                args[0].params[name] = str(val)
         f(*args)
         # do stuff after
 
@@ -626,38 +620,39 @@ def run_compmass(
 
 
 def run_compmass_omeff(
-    h,
-    j,
-    mu1,
-    q,
-    a0,
-    alpha2_0,
-    e1_0,
-    e2_0,
-    g1_0,
-    g2_0,
-    Tm1,
-    Tm2,
-    Te1,
-    Te2,
-    T,
-    suptitle,
-    dirname,
-    filename,
-    figname,
-    paramsname,
     verbose,
     tscale,
     secular,
+    overwrite,
+    method,
+    suptitle,
+    filename,
+    figname,
+    paramsname, # end of positional params
+    h,
+    j,
+    a0,
+    q,
+    mu1,
+    T,
+    Te1,
+    Te2,
+    Tm1,
+    Tm2,
+    e1_0,
+    e2_0,
     e1d,
     e2d,
-    overwrite,
+    alpha2_0,
+    name,
+    dirname,
     cutoff,
-    method,
-    Te_func,
+    g1_0,
+    g2_0,
     muext,
     aext,
 ):
+    Te_func = 0.0  # I don't think i use this. can delete this param in future
     print(method)
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
@@ -949,60 +944,60 @@ class TpSet(SimSet):
 
 class CompmassSet(SimSet):
     params_spec = [
-            "h",
-            "j",
-            "mu1",
-            "q",
-            "a0",
-            "alpha2_0",
-            "e1_0",
-            "e2_0",
-            "g1_0",
-            "g2_0",
-            "Tm1",
-            "Tm2",
-            "Te1",
-            "Te2",
-            "T",
-            "name",
-            "e1d",
-            "e2d",
-            "cutoff",
+        "h",
+        "j",
+        "mu1",
+        "q",
+        "a0",
+        "alpha2_0",
+        "e1_0",
+        "e2_0",
+        "g1_0",
+        "g2_0",
+        "Tm1",
+        "Tm2",
+        "Te1",
+        "Te2",
+        "T",
+        "name",
+        "e1d",
+        "e2d",
+        "cutoff",
     ]
 
     @params_load
     def __call__(self, params):
-        Te_func = 0. # I don't think i use this. can delete this param in future
+        Te_func = 0.0  # I don't think i use this. can delete this param in future
 
-        #h = np.float64(params[0])
-        #j = np.float64(params[1])
-        #a0 = np.float64(params[2])
-        #q = np.float64(params[3])
-        #mu1 = np.float64(params[4])
-        #T = np.float64(params[5])
+        # h = np.float64(params[0])
+        # j = np.float64(params[1])
+        # a0 = np.float64(params[2])
+        # q = np.float64(params[3])
+        # mu1 = np.float64(params[4])
+        # T = np.float64(params[5])
 
-        #Te_func = int(float(params[18]))
-        #if Te_func:
+        # Te_func = int(float(params[18]))
+        # if Te_func:
         #    Te1 = params[6]
         #    Te2 = params[7]
         #    Tm1 = params[8]
         #    Tm2 = params[9]
-        #else:
+        # else:
         #    Te1 = np.float64(params[6])
         #    Te2 = np.float64(params[7])
         #    Tm1 = np.float64(params[8])
         #    Tm2 = np.float64(params[9])
 
-        #e1_0 = np.float64(params[10])
-        #e2_0 = np.float64(params[11])
-        #e1d = np.float64(params[12])
-        #e2d = np.float64(params[13])
-        #alpha2_0 = np.float64(params[14])
-        #name = params[15]
-        #dirname = params[16]
-        #cutoff = np.float64(params[17])
-        #g1_0 = np.float64(params[19])
-        #g2_0 = np.float64(params[20])
+        # e1_0 = np.float64(params[10])
+        # e2_0 = np.float64(params[11])
+        # e1d = np.float64(params[12])
+        # e2d = np.float64(params[13])
+        # alpha2_0 = np.float64(params[14])
+        # name = params[15]
+        # dirname = params[16]
+        # cutoff = np.float64(params[17])
+        # g1_0 = np.float64(params[19])
+        # g2_0 = np.float64(params[20])
 
         filename = f"{name}.npz"
         figname = f"{name}.png"
@@ -1055,90 +1050,70 @@ class CompmassSet(SimSet):
         )
 
 
-class CompmassSetOmeff(CompmassSet):
+class CompmassSetOmeff(SimSet):
+    params = {}
+    param_spec = [
+        "h",
+        "j",
+        "a0",
+        "q",
+        "mu1",
+        "T",
+        "Te1",
+        "Te2",
+        "Tm1",
+        "Tm2",
+        "e1_0",
+        "e2_0",
+        "e1d",
+        "e2d",
+        "alpha2_0",
+        "name",
+        "dirname",
+        "cutoff",
+        "g1_0",
+        "g2_0",
+        "muext",
+        "aext",
+    ]
+ 
+ 
+    @params_load
     def __call__(self, params):
-        h = np.float64(params[0])
-        j = np.float64(params[1])
-        a0 = np.float64(params[2])
-        q = np.float64(params[3])
-        mu1 = np.float64(params[4])
-        T = np.float64(params[5])
+        name = self.params["name"]
+        T = self.params["T"]
+        Te1 = self.params["Te1"]
+        Te2 = self.params["Te2"]
+        Tm1 = self.params["Tm1"]
+        Tm2 = self.params["Tm2"]
+        aext = self.params["aext"]
+        muext = self.params["muext"]
+        q = self.params["q"]
+        mu1 = self.params["mu1"]
 
-        Te_func = int(float(params[18]))
-        if Te_func:
-            Te1 = params[6]
-            Te2 = params[7]
-            Tm1 = params[8]
-            Tm2 = params[9]
-        else:
-            Te1 = np.float64(params[6])
-            Te2 = np.float64(params[7])
-            Tm1 = np.float64(params[8])
-            Tm2 = np.float64(params[9])
-
-        e1_0 = np.float64(params[10])
-        e2_0 = np.float64(params[11])
-        e1d = np.float64(params[12])
-        e2d = np.float64(params[13])
-        alpha2_0 = np.float64(params[14])
-        name = params[15]
-        dirname = params[16]
-        cutoff = np.float64(params[17])
-        g1_0 = np.float64(params[19])
-        g2_0 = np.float64(params[20])
-        muext = np.float64(params[21])
-        aext = np.float64(params[22])
         filename = f"{name}.npz"
         figname = f"{name}.png"
         paramsname = f"params-{name}.txt"
-        if Te_func:
-            suptitle = (
-                f"{filename}\n"
-                f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
-                r"$a_{\rm ext}$ = " + f"{aext:0.3f} "
-                r"$\mu_{\rm ext}$ = " + f"{muext:0.3f}"
-            )
-        else:
-            suptitle = (
-                f"{filename}\n"
-                f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
-                f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
-                f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-                r"$a_{\rm ext}$ = " + f"{aext:0.3f} "
-                r"$\mu_{\rm ext}$ = " + f"{muext:0.3f}"
-            )
+        suptitle = (
+            f"{filename}\n"
+            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
+            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
+            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
+            r"$a_{\rm ext}$ = " + f"{aext:0.3f} "
+            r"$\mu_{\rm ext}$ = " + f"{muext:0.3f}"
+        )
+
         run_compmass_omeff(
-            h,
-            j,
-            mu1,
-            q,
-            a0,
-            alpha2_0,
-            e1_0,
-            e2_0,
-            g1_0,
-            g2_0,
-            Tm1,
-            Tm2,
-            Te1,
-            Te2,
-            T,
-            suptitle,
-            dirname,
-            filename,
-            figname,
-            paramsname,
             self.verbose,
             self.tscale,
             self.secular,
-            e1d,
-            e2d,
             self.overwrite,
-            cutoff,
             self.method,
-            Te_func,
-            muext,
-            aext,
+            suptitle,
+            filename,
+            figname,
+            paramsname,
+            **self.params
         )
 
 
@@ -1151,6 +1126,7 @@ class SimSeries(object):
     - setting up files, reading RUN_PARAMS from file
     - loading data from npz files
     """
+
     def __init__(self, name, projectdir, load=False):
         # self.RUN_PARAMS = load_params(paramsname)
         self.seriesname = name
@@ -1164,8 +1140,8 @@ class SimSeries(object):
     @series_dir
     def initialize(self):
         self.RUN_PARAMS = self.load_params(self.paramsfpath)
-        if self.load: self.load_all_runs()
-
+        if self.load:
+            self.load_all_runs()
 
     def load_params(self, filepath):
         spec = importlib.util.spec_from_file_location("_", filepath)
@@ -1173,7 +1149,6 @@ class SimSeries(object):
         spec.loader.exec_module(_)
         print(f"Loading run file {filepath} in directory {os.getcwd()}")
         return np.array(_.RUN_PARAMS)
-
 
     def load_run(self, ind):
         params = self.RUN_PARAMS
@@ -1189,13 +1164,11 @@ class SimSeries(object):
             print(f"Cannot find file {filename}... have you run it?")
             raise err
 
-
     def load_all_runs(self):
         params = self.RUN_PARAMS
         Nqs = len(params[:, 0])
         for ind in range(Nqs):
             self.load_run(ind)
-
 
 
 class FOCompmassSeries(SimSeries):
@@ -1216,7 +1189,7 @@ class FOCompmassSeries(SimSeries):
             N_sims = self.RUN_PARAMS.shape[0]
             integrate = CompmassSetOmeff(
                 verbose=True, overwrite=True, secular=True, method="RK45"
-               )
+            )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
             print(self.RUN_PARAMS)
             print(f"Running {N_sims} simulations...")

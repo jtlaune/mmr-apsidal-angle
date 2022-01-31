@@ -665,7 +665,6 @@ class FOCompMassOmeff(FOCompMass):
         if self.perturb:
 ################### old stuff
             # 7 variables
-            theta = Y[0]
             L1 = Y[1]
             L2 = Y[2]
             x1 = Y[3]
@@ -683,22 +682,12 @@ class FOCompMassOmeff(FOCompMass):
             G2 = sqrt(x2 * x2 + y2 * y2)
 
             j = self.j
-            mu2 = self.mu1 / self.q
-
-            e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
-            e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
 
             # the Hamiltonian is -(constants) as the internal TP
             # Hamiltonian, i.e. it matches MD
             alpha1 = L1 * L1 / self.q / self.q
             alpha2 = L2 * L2
             alpha = alpha1 / alpha2
-            theta1 = theta + g1
-            theta2 = theta + g2
-            f1 = -self.A(alpha)
-            f2 = -self.B(alpha)
-            C = self.C(alpha)
-            D = self.D(alpha)
 
 ################### new stuff
 
@@ -707,8 +696,8 @@ class FOCompMassOmeff(FOCompMass):
 
             x1dot = x1dot + om1ext * sqrt(G1) * sin(g1)
             y1dot = y1dot - om1ext * sqrt(G1) * cos(g1)
-            x2dot = x2dot + om2ext * sqrt(G1) * sin(g1)
-            y2dot = y2dot - om2ext * sqrt(G1) * cos(g1)
+            x2dot = x2dot + om2ext * sqrt(G2) * sin(g2)
+            y2dot = y2dot - om2ext * sqrt(G2) * cos(g2)
 
             # see above for the ldot secular force from mup
             # these are just ldot secular forcing from ext

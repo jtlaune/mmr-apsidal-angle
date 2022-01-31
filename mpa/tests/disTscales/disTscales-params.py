@@ -41,7 +41,6 @@ E2DS = np.ones(Nqs)*0.0
 ####################
 # THREADING ARRAYS #
 ####################
-TE_FUNCS = np.zeros(Nqs)
 G1_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
 G2_0 = np.array([np.random.uniform(0, 2*np.pi) for i in range(Nqs)])
 HS = np.ones(Nqs)*h
@@ -100,5 +99,5 @@ DIRNAMES_NOSEC = np.array([DIRNAMES[i]+"_NOSEC"
 ################
 RUN_PARAMS = np.column_stack((HS, JS, A0S, QS, MU1, TS, TE1, TE2, TM1,
                               TM2, E1_0, E2_0, E1DS, E2DS, ALPHA2_0,
-                              NAMES, DIRNAMES, CUTOFFS, TE_FUNCS,
+                              NAMES, DIRNAMES, CUTOFFS,
                               G1_0, G2_0,MUEXTS, AEXTS))

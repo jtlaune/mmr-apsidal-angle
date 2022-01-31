@@ -74,5 +74,6 @@ class ResonanceTestCase(unittest.TestCase):
     def test_Compmass_secular(self):
         pass
 
+
     def test_Compmass_eqEccs(self):
         pass
