@@ -1,14 +1,21 @@
 import mpa
+import mpa.series
 import mpa.test
 import os
 
 origindir = mpa.test.ResonanceTestCase.projectdir
 filename = mpa.test.ResonanceTestCase.filename
-projectdir = mpa.test.ResonanceTestCase.projectdir
+testdir = mpa.test.ResonanceTestCase.projectdir
 
-os.chdir("mpa/tests/")
-seriesname = "disTscales"
-series = mpa.FOCompmassSeries(seriesname, projectdir, load=False)
-print(series.seriesname)
-print(dir(series))
+# run these in the test directory
+print(testdir)
+os.chdir(testdir)
+
+#seriesname = "disTscales"
+#series = mpa.series.FOCompmassSeries(seriesname, testdir, load=False)
+#series()
+
+seriesname = "omEff"
+seriesdir = os.path.join(testdir, seriesname)
+series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
 series()

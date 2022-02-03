@@ -1,25 +1,24 @@
-from . import *
+import numpy as np
+from . import LaplaceCoefficients as LC
+
+
 # helper functions
 def log_mean(x1, x2):
     return np.exp(0.5 * (np.log(x1) + np.log(x2)))
 
 
-def om1ext_np(muext, a, ap, aext):
+def omjdot_Hjext(Li, alphai, muext, alphaext):
     return (
-        muext
-        * (a / ap)
-        * np.sqrt(a / ap)
-        * a
-        * a
-        / 4
-        / aext
-        / aext
-        * LC.b(1.5, 1, a / aext)
+        0.25 * (1 / Li) * muext * (alphai / alphaext) * LC.b(1.5, 1, alphai / alphaext)
     )
 
 
-def ompext_np(muext, a, ap, aext):
-    return muext * ap * ap / 4 / aext / aext * LC.b(1.5, 1, ap / aext)
+def om1ext_n2(muext, a1, a2, aext):
+    return muext * (a1 / a2) ** 1.5 * a1**2 / 4 / aext**2 * LC.b(1.5, 1, a1 / aext)
+
+
+def om2ext_n2(muext, a2, aext):
+    return muext * a2**2 / 4 / aext**2 * LC.b(1.5, 1, a2 / aext)
 
 
 def f27lc(alpha, j):
@@ -27,8 +26,9 @@ def f27lc(alpha, j):
     f27 in MD p543
     (1/2)[−2 j − αD] b^(j)_{1/2}(α) x [e1cos(theta1)]
     """
-    return(0.5 * ( -2 * (j + 1) * LC.b(0.5, j + 1, alpha) - alpha *
-                   LC.Db(0.5, j + 1, alpha) ))
+    return 0.5 * (
+        -2 * (j + 1) * LC.b(0.5, j + 1, alpha) - alpha * LC.Db(0.5, j + 1, alpha)
+    )
 
 
 def f31lc(alpha, j):
@@ -36,8 +36,9 @@ def f31lc(alpha, j):
     f31 in MD p543
     (1/2)[−1 + 2 j + αD] b^(j-1)_{1/2}(α) x [e2cos(theta2)]
     """
-    return(0.5 * ( (-1 + 2 * (j + 1)) * LC.b(0.5, j, alpha) + alpha *
-                   LC.Db(0.5, j, alpha) ))
+    return 0.5 * (
+        (-1 + 2 * (j + 1)) * LC.b(0.5, j, alpha) + alpha * LC.Db(0.5, j, alpha)
+    )
 
 
 def sqr_ei_lc(alpha):
@@ -46,9 +47,12 @@ def sqr_ei_lc(alpha):
     f3lc x [e1^2 + e2^2]
     (1/8)[2α_12 D + α_12^2 D^2]b_{1/2}^(0)
     """
-    return(0.25 * alpha * LC.Db(0.5, 0, alpha) + alpha ** 2 / 8 * 0.5
-           * ( LC.Db(1.5, 1, alpha) - 2 * alpha * LC.Db(1.5, 0, alpha) +
-               LC.Db(1.5, 1, alpha) - 2 * LC.b(1.5, 0, alpha)))
+    return 0.25 * alpha * LC.Db(0.5, 0, alpha) + alpha**2 / 8 * 0.5 * (
+        LC.Db(1.5, 1, alpha)
+        - 2 * alpha * LC.Db(1.5, 0, alpha)
+        + LC.Db(1.5, 1, alpha)
+        - 2 * LC.b(1.5, 0, alpha)
+    )
 
 
 def eiej_lc(alpha):
@@ -60,11 +64,11 @@ def eiej_lc(alpha):
     # These are the values given in Murray Dermott.
     # signs on C and D are to be consistent with Laetitia's notes
     # fs1
-    return(
+    return (
         0.5 * LC.b(0.5, 1, alpha)
         - 0.5 * alpha * LC.Db(0.5, 1.0, alpha)
         - 0.25
-        * alpha ** 2
+        * alpha**2
         * 0.5
         * (
             LC.Db(1.5, 0, alpha)
@@ -87,15 +91,15 @@ def round_sig(x, sig=2):
 
 
 def ebarfunc(ep, e, A, B, g):
-    return np.sqrt(e ** 2 + 2 * B / A * ep * e * np.cos(g) + B ** 2 / A ** 2 * ep ** 2)
+    return np.sqrt(e**2 + 2 * B / A * ep * e * np.cos(g) + B**2 / A**2 * ep**2)
 
 
 def etafunc(ep, e, A, B, g):
-    return sqrt(e ** 2 + 2 * B / A * ep * e * cos(g) + B ** 2 / A ** 2 * ep ** 2)
+    return sqrt(e**2 + 2 * B / A * ep * e * cos(g) + B**2 / A**2 * ep**2)
 
 
 def alpha0func(a, ap, j, ebar):
-    return (a / ap) * (1 + j * ebar ** 2)
+    return (a / ap) * (1 + j * ebar**2)
 
 
 def format_e(x, pos):
@@ -128,12 +132,12 @@ class check_ratio_cm:
         L2 = Y[2]
         # super sloppy lol
         if np.isnan(theta):
-            return(np.random.randn(1)[0])
-        alpha1 = L1 ** 2 / self.q ** 2
-        alpha2 = L2 ** 2 
+            return np.random.randn(1)[0]
+        alpha1 = L1**2 / self.q**2
+        alpha2 = L2**2
         alpha = alpha1 / alpha2
-        return(alpha - self.ratio0)
-    
+        return alpha - self.ratio0
+
 
 class check_ratio_tp:
     def __init__(self, ratio0):
@@ -149,25 +153,16 @@ class check_ratio_tp:
 def omega(self, a, ap, mu):
     if a <= ap:
         return (
-            (np.pi * mu)
-            * (a / ap) ** 2
-            / (2 * a * sqrt(a))
-            * LC.b(1.5, 1.0, (a / ap))
+            (np.pi * mu) * (a / ap) ** 2 / (2 * a * sqrt(a)) * LC.b(1.5, 1.0, (a / ap))
         )
     if a > ap:
-        return (
-            (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 1.0, (a / ap))
-        )
+        return (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 1.0, (a / ap))
+
 
 def nu(self, a, ap, mu):
     if a <= ap:
         return (
-            (np.pi * mu)
-            * (a / ap) ** 2
-            / (2 * a * sqrt(a))
-            * LC.b(1.5, 2.0, (a / ap))
+            (np.pi * mu) * (a / ap) ** 2 / (2 * a * sqrt(a)) * LC.b(1.5, 2.0, (a / ap))
         )
     if a > ap:
-        return (
-            (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 2.0, (a / ap))
-        )
+        return (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 2.0, (a / ap))

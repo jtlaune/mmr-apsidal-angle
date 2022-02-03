@@ -1,5 +1,5 @@
-from . import *
 from .run import *
+import reboundx
 
 
 class NbodyTPSet(SimSet):
