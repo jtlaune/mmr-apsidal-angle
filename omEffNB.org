@@ -1,0 +1,5 @@
+#+TITLE: Notes on Secular Hamiltonian
+* Disturbing function for N body problem [[file:./images/screenshot-02.png][7.8]]
+- coefficients: [[file:./images/screenshot-03.png][7.9-7.12]]
+- bar(alpha12) = [(alpha12 if j=1 external pert),  (1 if j=2 internal pert)]
+
