@@ -1,16 +1,115 @@
-#+TITLE: Rebound MEGNO calculator for j:j+1 MMR
+#+TITLE: Rebound MEGNO calculator
+
+want to extend to an analysis of the j:j+1 MMRs role in trapping a
+planet into resonance, what kind of "barrier" is it?
 
 Adapted from: [[https://rebound.readthedocs.io/en/doctest/ipython/Megno.html][rebound docs]]
+
+I think MEGNO will be a good learning characteristic
+
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import importlib
+  importlib.reload(mpa)
+#+END_SRC
+
+#+RESULTS:
+: <module 'mpa' from '/home/jtlaune/multi-planet-architecture/mpa/__init__.py'>
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import sys
   import os
+
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
   import mpa
+  from mpa import mpl_styles
+  import rebound
+  import numpy as np
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  %matplotlib inline
+  # @mpl.rc_context(analytic)
+#+END_SRC
+
+#+RESULTS:
+
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+def simulation(par):
+    a, e = par # unpack parameters
+    sim = rebound.Simulation()
+    sim.integrator = "whfast"
+    sim.ri_whfast.safe_mode = 0
+    sim.dt = 5.
+    sim.add(m=1.) # Star
+    sim.add(m=0.000954, a=5.204, M=0.600, omega=0.257, e=0.048)
+    sim.add(m=0.000285, a=a, M=0.871, omega=1.616, e=e)
+    sim.move_to_com()
+
+    sim.init_megno()
+    sim.exit_max_distance = 20.
+    try:
+        sim.integrate(5e2*2.*np.pi, exact_finish_time=0) # integrate for 500 years, integrating to the nearest
+        #timestep for each output to keep the timestep constant and preserve WHFast's symplectic nature
+        megno = sim.calculate_megno()
+        return megno
+    except rebound.Escape:
+        return 10. # At least one particle got ejected, returning large MEGNO.
 #+END_SRC
 
 #+RESULTS:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  
+  simulation((7,0.1))
 #+END_SRC
+
+#+RESULTS:
+: 2.043322276476812
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  Ngrid = 80
+  par_a = np.linspace(7.,10.,Ngrid)
+  par_e = np.linspace(0.,0.5,Ngrid)
+  parameters = []
+  for e in par_e:
+      for a in par_a:
+          parameters.append((a,e))
+  from rebound.interruptible_pool import InterruptiblePool
+  pool = InterruptiblePool()
+  results = pool.map(simulation,parameters)
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  @mpl.rc_context(mpl_styles.analytic)
+  def plot():
+      results2d = np.array(results).reshape(Ngrid, Ngrid)
+      fig = plt.figure(figsize=(7, 5))
+      ax = plt.subplot(111)
+      extent = [min(par_a), max(par_a), min(par_e), max(par_e)]
+      ax.set_xlim(extent[0], extent[1])
+      ax.set_xlabel("semi-major axis $a$")
+      ax.set_ylim(extent[2], extent[3])
+      ax.set_ylabel("eccentricity $e$")
+      im = ax.imshow(
+          results2d,
+          interpolation="none",
+          vmin=1.9,
+          vmax=4,
+          cmap="RdYlGn_r",
+          origin="lower",
+          aspect="auto",
+          extent=extent,
+      )
+      cb = plt.colorbar(im, ax=ax)
+      cb.set_label("MEGNO $\\langle Y \\rangle$")
+  
+  plot()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+attr_org: :width 523
+[[file:./.ob-jupyter/bf1be2ec36e76a72068c34a2b9e6a92cd3822c9c.png]]
+:END:
