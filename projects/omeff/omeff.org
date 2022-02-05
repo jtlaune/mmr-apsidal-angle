@@ -5,5 +5,37 @@
 * Intro
 * Methods
 ** Secular @@latex:$\varpi$@@-precession rates
+Consider a massive planet on a circular orbit which perturbs an MMR
+which lies internal to its orbit.  Let the planet's mass and sma are
+given by $\mu_{\rm ext}$ and $a_{\rm ext}$.  For each planet $m_i$ in
+the resonance, the interaction Hamiltonian with the external
+planet is given by
+#+begin_src latex
+  \begin{equation}
+    H_{i,\rm ext} = -\frac14 \frac{\Gamma_i}{\Lambda_i} \mu_{\rm ext}
+    \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+  \end{equation}
+#+end_src
+@@latex:\noindent@@
+for $j=1,2$ and we have utilized the approximation $\Gamma_i \approx \frac12 \Lambda_i e_i^2$.
+
+As a result, each planet experiences a precession in its mean longitude $\lambda_i$ and
+$\gamma_i\equiv -\varpi_i$. In particular, the $\dot\varpi_i$ precession frequency
+is
+#+begin_src latex
+  \begin{equation}
+  \dot\varpi_{i, \rm ext} = \frac14 \frac{1}{\Lambda_j} \mu_{\rm ext} 
+      \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+  \end{equation}
+#+end_src
+#+begin_src latex
+  \begin{center}
+  \includegraphics[width=0.5\textwidth]{~/multi-planet-architecture/mpa/tests/omEff/test-omEff.png}
+  \end{center}
+#+end_src
+In the above figure, we have set the total mass to 
+
+
+
 * Results
 * Discussion

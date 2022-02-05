@@ -1,0 +1,16 @@
+#+TITLE: Rebound MEGNO calculator for j:j+1 MMR
+
+Adapted from: [[https://rebound.readthedocs.io/en/doctest/ipython/Megno.html][rebound docs]]
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import sys
+  import os
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  import mpa
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  
+#+END_SRC

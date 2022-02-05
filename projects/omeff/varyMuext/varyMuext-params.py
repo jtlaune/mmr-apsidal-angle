@@ -24,7 +24,7 @@ a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
 Nqs = 1
-qs = np.ones(Nqs) * 100.0
+qs = np.ones(Nqs) * 0.01
 totmass = 1e-4
 Tw0 = 10000
 TeRatios = qs
@@ -54,12 +54,12 @@ A0S = np.ones(Nqs) * a0
 QS = qs
 MU2 = totmass / (1 + QS)
 MU1 = totmass - MU2
-TE1 = Tw0 / np.sqrt(TeRatios)
-TE2 = Tw0 * np.sqrt(TeRatios)
+TE1 = Tw0 / sqrt(TeRatios)
+TE2 = Tw0 * sqrt(TeRatios)
 TM1 = TE1 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
 # TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
-TS = 0.001*np.minimum(TE1, TE2)
+TS = np.minimum(TE1, TE2)
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -72,7 +72,7 @@ ALPHA2_0 = (1.8) ** (2.0 / 3) * np.ones(Nqs)
 ##########
 # OMEFFS #
 ##########
-AEXTS = np.ones(Nqs)*3.
+AEXTS = np.ones(Nqs)*5.
 MUEXTS = np.logspace(-3, -2, Nqs)
 #MUEXTS = np.zeros(Nqs)
 
@@ -93,7 +93,7 @@ NAMES = np.array(
 )
 
 DIRNAMES = np.array(
-    [f"q{QS[i]:0.1f}/h-{h:0.2f}" f"-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i in range(Nqs)]
+    [f"q{QS[i]:0.2f}/h-{h:0.2f}" f"-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i in range(Nqs)]
 )
 
 DIRNAMES_NOSEC = np.array([DIRNAMES[i] + "_NOSEC" for i in range(Nqs)])
@@ -125,5 +125,6 @@ RUN_PARAMS = np.column_stack(
         G2_0,
         MUEXTS,
         AEXTS,
+        OMEFFS,
     )
 )

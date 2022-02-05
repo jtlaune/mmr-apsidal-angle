@@ -22,16 +22,16 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 16
+Nqs = 8
 qs = np.ones(Nqs) * 0.01
-totmass = 1e-3
+totmass = 1e-4
 Tw0 = 10000
 TeRatios = qs
 
 ######################
 # Varying parameters #
 ######################
-E1_0 = np.ones(Nqs) * 0.
+E1_0 = np.ones(Nqs) * 0.01
 E2_0 = np.ones(Nqs) * 0.01
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
@@ -45,20 +45,20 @@ E2DS = np.ones(Nqs) * 0.0
 ####################
 # THREADING ARRAYS #
 ####################
-G1_0 = -0.1*np.ones(Nqs) #np.array([np.random.uniform(0, 2 * np.pi) for i in range(Nqs)])
-G2_0 = -0.1*np.ones(Nqs) #np.array([np.random.uniform(0, 2 * np.pi) for i in range(Nqs)])
+G1_0 = 0.1*np.ones(Nqs) #np.array([np.random.uniform(0, 2 * np.pi) for i in range(Nqs)])
+G2_0 = 0.2*np.ones(Nqs) #np.array([np.random.uniform(0, 2 * np.pi) for i in range(Nqs)])
 HS = np.ones(Nqs) * h
 JS = np.ones(Nqs) * j
 A0S = np.ones(Nqs) * a0
 QS = qs
 MU2 = totmass / (1 + QS)
 MU1 = totmass - MU2
-TE1 = Tw0 / TeRatios
-TE2 = Tw0 * TeRatios
+TE1 = Tw0 / sqrt(TeRatios)
+TE2 = Tw0 * sqrt(TeRatios)
 TM1 = TE1 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
 # TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
-TS = 100.*np.ones(Nqs) #0.01 * np.maximum(TE1, TE2)
+TS = 1.*np.ones(Nqs) #0.01 * np.maximum(TE1, TE2)
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -66,7 +66,7 @@ ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 cutoff_frac = 1.0
 CUTOFFS = TS * cutoff_frac
-ALPHA2_0 = (1.75) ** (2.0 / 3) * np.ones(Nqs)
+ALPHA2_0 = (1.85) ** (2.0 / 3) * np.ones(Nqs)
 
 # def muext(omeff, aext):
 def omeffs(q, a0, j, muext, aext):
@@ -81,17 +81,29 @@ def omeffs(q, a0, j, muext, aext):
 ##########
 # OMEFFS #
 ##########
-halfN = int(Nqs/2)
-AEXTS = np.ones(Nqs)
-MUEXTS = np.ones(Nqs)
 
-AEXTS[:halfN] = AEXTS[halfN:]*3.
-AEXTS[halfN:] = np.linspace(1.5, 2., halfN)
-MUEXTS[:halfN] = np.logspace(-2, -3, halfN)
-MUEXTS[halfN:] = MUEXTS[halfN:]*1e-3
+AEXTS = np.ones(Nqs)*3.
+MUEXTS = np.logspace(-2,-3, Nqs)
 
-OMEFFS = omeffs(QS, A0S, j, MUEXTS, AEXTS)
+#halfN = int(Nqs/2)
+#AEXTS = np.ones(Nqs)
+#MUEXTS = np.ones(Nqs)
+#AEXTS[:halfN] = AEXTS[halfN:]*2.
+#AEXTS[halfN:] = np.linspace(1.5, 2., halfN)
+#MUEXTS[:halfN] = np.logspace(-2, -3, halfN)
+#MUEXTS[halfN:] = MUEXTS[halfN:]*1e-3
+
+#OMEFFS = omeffs(QS, A0S, j, MUEXTS, AEXTS)
 # OMEFFS = np.zeros(Nqs)
+
+alpha1 = np.ones(Nqs)
+alpha2 = ALPHA2_0
+alphaext = AEXTS/alpha2
+L1 = np.sqrt(alpha2)
+L2 = np.sqrt(alpha2)
+OMEXT1 = fns.omjdot_Hjext(L1, alpha1, MUEXTS, alphaext)
+OMEXT2 = fns.omjdot_Hjext(L2, alpha2, MUEXTS, alphaext)
+OMEFFS = OMEXT1-OMEXT2
 
 NAMES = np.array(
     [
@@ -133,5 +145,6 @@ RUN_PARAMS = np.column_stack(
         G2_0,
         MUEXTS,
         AEXTS,
+        OMEFFS,
     )
 )

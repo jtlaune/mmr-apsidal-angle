@@ -103,19 +103,17 @@ class ResonanceTestCase(unittest.TestCase):
         halfN = int(Nruns/2)
 
         QS =    np.float64(params[:,3])
-        AEXTS =    np.float64(params[:,-1])
-        MUEXTS =   np.float64(params[:,-2])
-        NAMES =    params[:,-7]
-        ALPHA2_0 = np.float64(params[:, -8])
-        G1_0 = np.float64(params[:, -4]) % (2*np.pi)
-        G2_0 = np.float64(params[:, -3]) % (2*np.pi)
+        AEXTS =    np.float64(params[:,-2])
+        MUEXTS =   np.float64(params[:,-3])
+        NAMES =    params[:,-8]
+        ALPHA2_0 = np.float64(params[:, -9])
         len_pre = len('omeff-')
         len_num = 10
-        OMEFFS = np.array([float(name[len_pre:len_pre+len_num]) for name in NAMES])
+        OMEFFS = np.float64(params[:,-1])
 
         fig, ax = plt.subplots()
         # varying a_ext np.linspace(2., 8, halfN)
-        for jit in range(halfN):
+        for jit in range(len(OMEFFS)):
             rundata = series.data[jit]
             teval = rundata["teval"]
             it = int(len(teval))
@@ -125,8 +123,8 @@ class ResonanceTestCase(unittest.TestCase):
             g1 = rundata["g1"][0:it] % (2*np.pi)
             g2 = rundata["g2"][0:it] % (2*np.pi)
 
-            g1 = g1 - 2*np.pi*(g1>(2*np.pi))
-            g2 = g2 - 2*np.pi*(g2>(2*np.pi))
+            g1 = g1 - 2*np.pi*(g1>(np.pi))
+            g2 = g2 - 2*np.pi*(g2>(np.pi))
 
             dotg1 = np.gradient(g1, teval)
             avgdotg1 = np.average(dotg1)
@@ -134,23 +132,30 @@ class ResonanceTestCase(unittest.TestCase):
             avgdotg2 = np.average(dotg2)
 
             a0 = ALPHA2_0[jit]
-            g20 = G2_0[jit]
-            print(a0)
-            print(a2)
+            g20 = g20 = g2[0]
+            print(OMEFFS[jit])
             alphaext = AEXTS[jit]/a0
             alpha2 = a2/a0
             L2 = np.sqrt(alpha2)
 
-            dotg2_ext = -np.average((0.25 * (1 / L2) * MUEXTS[jit] * (a2 / alphaext) *
-                         LC.b(1.5, 1, a2 / alphaext)))
+            #dotg2_ext = -np.average((0.25 * (1 / L2) * MUEXTS[jit] * (a2 / alphaext) *
+            #             LC.b(1.5, 1, a2 / alphaext)))
+            dotg2_ext = OMEFFS[jit]
 
-            ax.scatter(teval, g2, s=1)
-            ax.scatter(teval, g20+dotg2_ext*teval, s=0.1, c="k", ls="--")
-            #ax.scatter(MUEXTS[jit], dotg2_ext/avgdotg2, c="r")
-
-        # varying mu_ext np.logspace(-3, -2, halfN)
-
+            #ax.scatter(teval, g2, s=1)
+            #ax.scatter(teval, g20+dotg2_ext*teval, s=0.1, c="k", ls="--")
+            if jit == 0:
+                ax.scatter(MUEXTS[jit], dotg2_ext, c="r",
+                           label=r"analytic $\dot g_2$")
+                ax.scatter(MUEXTS[jit], avgdotg2, c="k",
+                           label=r"numerical $\dot g_2$")
+            else:
+                ax.scatter(MUEXTS[jit], dotg2_ext, c="r")
+                ax.scatter(MUEXTS[jit], avgdotg2, c="k")
+                
+        ax.legend()
         ax.set_title(r"$q=$"+f"{QS[jit]}")
+        ax.set_xlabel(r"$\mu_{\rm ext}$")
         ax.set_ylabel(r"$\gamma_2$")
         # ax.set_yscale("log")
         figfp = os.path.join(seriesdir, "test-omEff.png")
@@ -158,3 +163,6 @@ class ResonanceTestCase(unittest.TestCase):
 
         os.chdir(self.origindir)
 
+
+    def test_nbody_run(self):
+        

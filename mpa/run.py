@@ -650,6 +650,7 @@ def run_compmass_omeff(
     g2_0,
     muext,
     aext,
+    omeff,
 ):
     Te_func = 0.0  # I don't think i use this. can delete this param in future
     print(method)
@@ -672,22 +673,7 @@ def run_compmass_omeff(
             aext,
             muext,
         )
-        (
-            teval,
-            theta,
-            a1,
-            a2,
-            e1,
-            e2,
-            g1,
-            g2,
-            L1,
-            L2,
-            x1,
-            y1,
-            x2,
-            y2,
-        ) = sim.int_Hsec(
+        (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2,) = sim.int_Hsec(
             T,
             1e-9,
             alpha2_0,
@@ -848,6 +834,7 @@ def run_compmass_omeff(
 ##########################################################################
 class SimSet(object):
     params = {}
+
     def __init__(
         self, verbose=False, overwrite=False, secular=True, tscale=1000.0, method="RK45"
     ):
@@ -1056,6 +1043,7 @@ class CompmassSetOmeff(SimSet):
         "g2_0",
         "muext",
         "aext",
+        "omeff",
     ]
 
     @params_load
@@ -1070,6 +1058,7 @@ class CompmassSetOmeff(SimSet):
         muext = self.params["muext"]
         q = self.params["q"]
         mu1 = self.params["mu1"]
+        omeff = self.params["omeff"]
 
         filename = f"{name}.npz"
         figname = f"{name}.png"
@@ -1080,7 +1069,8 @@ class CompmassSetOmeff(SimSet):
             f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
             f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
             r"$a_{\rm ext}$ = " + f"{aext:0.3f} "
-            r"$\mu_{\rm ext}$ = " + f"{muext:0.3f}"
+            r"$\mu_{\rm ext}$ = " + f"{muext:0.2e}\n"
+            r"$\omega_{\rm eff}$ = " + f"{omeff:0.3f}"
         )
 
         run_compmass_omeff(

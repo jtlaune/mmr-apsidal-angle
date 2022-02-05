@@ -1,0 +1,64 @@
+% Created 2022-02-03 Thu 12:53
+% Intended LaTeX compiler: pdflatex
+\documentclass[usenatbib,onecolumn]{mnras}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\date{}
+\title{Effects of a massive secular perturber on mean motion resonant architecture}
+\hypersetup{
+ pdfauthor={JT Laune},
+ pdftitle={Effects of a massive secular perturber on mean motion resonant architecture},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.5.2)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\section{Intro}
+\label{sec:org92f826b}
+\section{Methods}
+\label{sec:orgf297d0e}
+\subsection{Secular $\varpi$-precession rates}
+\label{sec:org5cd563c}
+Consider a massive planet on a circular orbit which perturbs an MMR
+which lies internal to its orbit.  Let the planet's mass and sma are
+given by \(\mu_{\rm ext}\) and \(a_{\rm ext}\).  For each planet \(m_i\) in
+the resonance, the interaction Hamiltonian with the external
+planet is given by
+\begin{equation}
+  H_{i,\rm ext} = -\frac14 \frac{\Gamma_i}{\Lambda_i} \mu_{\rm ext}
+  \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+\end{equation}
+
+\noindent
+for \(j=1,2\) and we have utilized the approximation \(\Gamma_i \approx \frac12 \Lambda_i e_i^2\).
+
+As a result, each planet experiences a precession in its mean longitude \(\lambda_i\) and
+\(\gamma_i\equiv -\varpi_i\). In particular, the \(\dot\varpi_i\) precession frequency
+is
+\begin{equation}
+\dot\varpi_{i, \rm ext} = \frac14 \frac{1}{\Lambda_j} \mu_{\rm ext} 
+    \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+\end{equation}
+
+\begin{center}
+\includegraphics[width=0.5\textwidth]{~/multi-planet-architecture/mpa/tests/omEff/test-omEff.png}
+\end{center}
+
+
+
+\section{Results}
+\label{sec:org2107ac0}
+\section{Discussion}
+\label{sec:orgb131450}
+\end{document}

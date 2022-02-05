@@ -161,6 +161,8 @@ Date:   Wed Jan 5 18:14:34 2022 -0500
 ** TODO new objective disk edge & migration
 ** maybe still include apsidal alignment section?
 * paper sections                                                     :ignore:
+** External precession in the comparable mass regime
+ 
 ** Results
 *** External Test Particle with @@latex:$\omega_{\rm eff}$@@
 *** figures                                                        :ignore:
