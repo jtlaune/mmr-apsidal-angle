@@ -5,6 +5,7 @@ import os.path
 from .series import FOCompmassSeries
 from .series import FOomEffSeries
 from . import LaplaceCoefficients as LC
+from . import nbody
 
 
 class ResonanceTestCase(unittest.TestCase):
@@ -165,4 +166,7 @@ class ResonanceTestCase(unittest.TestCase):
 
 
     def test_nbody_run(self):
-
+        seriesname  = "nbody"
+        seriesdir = os.path.join(self.projectdir, seriesname)
+        sim = nbody.NbodyMigTrapSeries(seriesname, seriesdir, load=False)
+        sim(16)
