@@ -165,4 +165,4 @@ class ResonanceTestCase(unittest.TestCase):
 
 
     def test_nbody_run(self):
-        
+

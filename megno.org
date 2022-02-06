@@ -3,18 +3,13 @@
 want to extend to an analysis of the j:j+1 MMRs role in trapping a
 planet into resonance, what kind of "barrier" is it?
 
-Adapted from: [[https://rebound.readthedocs.io/en/doctest/ipython/Megno.html][rebound docs]]
-
 I think MEGNO will be a good learning characteristic
 
-
+* Adapted from: [[https://rebound.readthedocs.io/en/doctest/ipython/Megno.html][rebound docs]]
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import importlib
   importlib.reload(mpa)
 #+END_SRC
-
-#+RESULTS:
-: <module 'mpa' from '/home/jtlaune/multi-planet-architecture/mpa/__init__.py'>
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import sys
@@ -29,42 +24,33 @@ I think MEGNO will be a good learning characteristic
   import matplotlib.pyplot as plt
   %matplotlib inline
   # @mpl.rc_context(analytic)
-#+END_SRC
+  
+  def simulation(par):
+      a, e = par # unpack parameters
+      sim = rebound.Simulation()
+      sim.integrator = "whfast"
+      sim.ri_whfast.safe_mode = 0
+      sim.dt = 5.
+      sim.add(m=1.) # Star
+      sim.add(m=0.000954, a=5.204, M=0.600, omega=0.257, e=0.048)
+      sim.add(m=0.000285, a=a, M=0.871, omega=1.616, e=e)
+      sim.move_to_com()
 
-#+RESULTS:
+      sim.init_megno()
+      sim.exit_max_distance = 20.
+      try:
+          sim.integrate(5e2*2.*np.pi, exact_finish_time=0) # integrate for 500 years, integrating to the nearest
+          #timestep for each output to keep the timestep constant and preserve WHFast's symplectic nature
+          megno = sim.calculate_megno()
+          return megno
+      except rebound.Escape:
+          return 10. # At least one particle got ejected, returning large MEGNO.
 
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-def simulation(par):
-    a, e = par # unpack parameters
-    sim = rebound.Simulation()
-    sim.integrator = "whfast"
-    sim.ri_whfast.safe_mode = 0
-    sim.dt = 5.
-    sim.add(m=1.) # Star
-    sim.add(m=0.000954, a=5.204, M=0.600, omega=0.257, e=0.048)
-    sim.add(m=0.000285, a=a, M=0.871, omega=1.616, e=e)
-    sim.move_to_com()
-
-    sim.init_megno()
-    sim.exit_max_distance = 20.
-    try:
-        sim.integrate(5e2*2.*np.pi, exact_finish_time=0) # integrate for 500 years, integrating to the nearest
-        #timestep for each output to keep the timestep constant and preserve WHFast's symplectic nature
-        megno = sim.calculate_megno()
-        return megno
-    except rebound.Escape:
-        return 10. # At least one particle got ejected, returning large MEGNO.
-#+END_SRC
-
-#+RESULTS:
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   simulation((7,0.1))
 #+END_SRC
 
 #+RESULTS:
-: 2.043322276476812
+: 2.0330715326180533
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   Ngrid = 80
