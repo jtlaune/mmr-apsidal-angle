@@ -12,10 +12,16 @@ print(testdir)
 os.chdir(testdir)
 
 #seriesname = "disTscales"
-#series = mpa.series.FOCompmassSeries(seriesname, testdir, load=False)
+#seriesdir = os.path.join(testdir, seriesname)
+#series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
+#series()
+#
+#seriesname = "omEff"
+#seriesdir = os.path.join(testdir, seriesname)
+#series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
 #series()
 
-seriesname = "omEff"
+seriesname = "secular"
 seriesdir = os.path.join(testdir, seriesname)
 series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
 series()

@@ -1,12 +1,28 @@
 import numpy as np
+import math
 from . import LaplaceCoefficients as LC
+from numpy import sqrt
+from numpy import cos, sin, pi
 
 
-# helper functions
+##########################################################################
+# helper functions                                                       #
+##########################################################################
 def log_mean(x1, x2):
     return np.exp(0.5 * (np.log(x1) + np.log(x2)))
 
+def radNormZero(x):
+    # normalizes radian coordinate
+    return x % (2*pi)
 
+def radNormNegpi(x):
+    rad = radNormZero(x)
+    return rad - 2*pi*(rad>pi)
+
+
+##########################################################################
+# orbital mechanics functions                                            #
+##########################################################################
 def omjdot_Hjext(Li, alphai, muext, alphaext):
     return (
         0.25 * (1 / Li) * muext * (alphai / alphaext) * LC.b(1.5, 1, alphai / alphaext)

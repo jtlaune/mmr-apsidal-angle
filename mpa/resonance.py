@@ -70,8 +70,8 @@ class FOCompMass(FirstOrder):
         self.mu1 = mu1
         self.q = q
         self.a0 = a0
-
         self.T0 = 2 * np.pi
+
         # This seems super sloppy. should probably do some type
         # checking or at least make all of them functions rather than
         # constants, but this would screw up a lot of other code.
@@ -87,7 +87,6 @@ class FOCompMass(FirstOrder):
         self.cutoff = cutoff * self.T0
 
     def H4dofsec(self, t, Y):
-        print(Y)
         if np.any(np.isnan(Y)):
             raise Warning("nans detected")
 

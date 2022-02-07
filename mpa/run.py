@@ -3,7 +3,7 @@ import subprocess
 import matplotlib.pyplot as plt
 from numpy import sin, cos
 import os
-from .resonance import FOCompMassOmeff
+from .resonance import FOCompMassOmeff, FOCompMass
 from .plotting import plotsim
 from . import fndefs as fns
 
@@ -22,7 +22,12 @@ def series_dir(f):
             os.mkdir(s.sdir)
         os.chdir(s.sdir)
         # do stuff before
-        f(*args)
+        try:
+            f(*args)
+        except TypeError as err:
+            print(f, *args)
+            print("series_dir")
+            raise err
         # do stuff after
         os.chdir(pwd)
 
@@ -37,7 +42,7 @@ def params_load(f):
     # ...
     # etc
     def wrapper1(*args):
-        names = args[0].param_spec
+        names = args[0].params_spec
         # do stuff before
         vals = args[1]
 
@@ -47,7 +52,12 @@ def params_load(f):
                 args[0].params[name] = float(val)
             except ValueError:
                 args[0].params[name] = str(val)
-        f(*args)
+        try:
+            f(*args)
+        except TypeError as err:
+            print(f, *args)
+            print("params_load")
+            raise err
         # do stuff after
 
     return wrapper1
@@ -371,120 +381,42 @@ def run_tp(
 
 
 def run_compmass(
-    h,
-    j,
-    mu1,
-    q,
-    a0,
-    alpha2_0,
-    e1_0,
-    e2_0,
-    g1_0,
-    g2_0,
-    Tm1,
-    Tm2,
-    Te1,
-    Te2,
-    T,
+    verbose,
+    tscale,
+    secular,
+    overwrite,
+    method,
     suptitle,
-    dirname,
     filename,
     figname,
-    paramsname,
-    verbose=False,
-    tscale=1e3,
-    secular=True,
-    e1d=None,
-    e2d=None,
-    overwrite=False,
-    cutoff=np.infty,
-    method="RK45",
-    Te_func=False,
+    paramsname,  # end of positional params
+    h,
+    j,
+    a0,
+    q,
+    mu1,
+    T,
+    Te1,
+    Te2,
+    Tm1,
+    Tm2,
+    e1_0,
+    e2_0,
+    e1d,
+    e2d,
+    alpha2_0,
+    name,
+    dirname,
+    cutoff,
+    g1_0,
+    g2_0,
 ):
+    Te_func = 0.0  # I don't think i use this. can delete this param in future
     print(method)
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
-        if overwrite:
-            sim = comp_mass_intH(
-                j,
-                mu1,
-                q,
-                a0,
-                Tm1,
-                Tm2,
-                Te1,
-                Te2,
-                e1d=e1d,
-                e2d=e2d,
-                cutoff=cutoff,
-                Te_func=Te_func,
-            )
-            (
-                teval,
-                theta,
-                a1,
-                a2,
-                e1,
-                e2,
-                g1,
-                g2,
-                L1,
-                L2,
-                x1,
-                y1,
-                x2,
-                y2,
-            ) = sim.int_Hsec(
-                T,
-                1e-9,
-                alpha2_0,
-                e1_0,
-                e2_0,
-                g1_0,
-                g2_0,
-                verbose=verbose,
-                secular=secular,
-                method=method,
-            )
-            print("FILENAME=" + os.path.join(dirname, filename))
-            np.savez(
-                os.path.join(dirname, filename),
-                teval=teval,
-                thetap=theta,
-                a1=a1,
-                a2=a2,
-                e1=e1,
-                e2=e2,
-                g1=g1,
-                g2=g2,
-                L1=L1,
-                L2=L2,
-                x1=x1,
-                y1=y1,
-                x2=x2,
-                y2=y2,
-            )
-        else:
-            print("FILENAME=" + os.path.join(dirname, filename))
-            data = np.load(os.path.join(dirname, filename))
-            teval = data["teval"]
-            theta = data["thetap"]
-            a1 = data["a1"]
-            a2 = data["a2"]
-            e1 = data["e1"]
-            e2 = data["e2"]
-            g1 = data["g1"]
-            g2 = data["g2"]
-            L1 = data["L1"]
-            L2 = data["L2"]
-            x1 = data["x1"]
-            y1 = data["y1"]
-            x2 = data["x2"]
-            y2 = data["y2"]
-
-    else:
-        sim = comp_mass_intH(
+        sim = FOCompMass(
             j,
             mu1,
             q,
@@ -493,10 +425,46 @@ def run_compmass(
             Tm2,
             Te1,
             Te2,
-            e1d=e1d,
-            e2d=e2d,
-            cutoff=cutoff,
-            Te_func=Te_func,
+            e1d,
+            e2d,
+            cutoff,
+            Te_func,
+        )
+        (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2,) = sim.int_Hsec(
+            T,
+            1e-9,
+            alpha2_0,
+            e1_0,
+            e2_0,
+            g1_0,
+            g2_0,
+            verbose=verbose,
+            secular=secular,
+            method=method,
+            # need to phase this out and add overwrite into class defs
+        )
+        print("DATAFILEPATH=" + os.path.join(dirname, filename))
+        np.savez(
+            os.path.join(dirname, filename),
+            teval=teval,
+            thetap=theta,
+            a1=a1,
+            a2=a2,
+            e1=e1,
+            e2=e2,
+            g1=g1,
+            g2=g2,
+            L1=L1,
+            L2=L2,
+            x1=x1,
+            y1=y1,
+            x2=x2,
+            y2=y2,
+        )
+
+    else:
+        sim = FOCompMassOmeff(
+            j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d, e2d, cutoff, Te_func
         )
         (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(
             T,
@@ -533,8 +501,8 @@ def run_compmass(
     alpha = a1 / a2
     period_ratio = (alpha) ** (1.5)
 
-    f1 = fns.f1(alpha, j)
-    f2 = fns.f2(alpha, j)
+    f1 = fns.f27lc(alpha, j)
+    f2 = fns.f31lc(alpha, j)
     barg1 = np.arctan2(e2 * np.sin(g2), e2 * np.cos(g2) + f2 * e1 / f1)
     barg2 = np.arctan2(e1 * np.sin(g1), e1 * np.cos(g1) + f1 * e2 / f2)
 
@@ -915,112 +883,67 @@ class CompmassSet(SimSet):
     params_spec = [
         "h",
         "j",
-        "mu1",
-        "q",
         "a0",
-        "alpha2_0",
-        "e1_0",
-        "e2_0",
-        "g1_0",
-        "g2_0",
-        "Tm1",
-        "Tm2",
+        "q",
+        "mu1",
+        "T",
         "Te1",
         "Te2",
-        "T",
-        "name",
+        "Tm1",
+        "Tm2",
+        "e1_0",
+        "e2_0",
         "e1d",
         "e2d",
+        "alpha2_0",
+        "name",
+        "dirname",
         "cutoff",
+        "g1_0",
+        "g2_0",
     ]
 
     @params_load
     def __call__(self, params):
-        Te_func = 0.0  # I don't think i use this. can delete this param in future
-
-        # h = np.float64(params[0])
-        # j = np.float64(params[1])
-        # a0 = np.float64(params[2])
-        # q = np.float64(params[3])
-        # mu1 = np.float64(params[4])
-        # T = np.float64(params[5])
-
-        # Te_func = int(float(params[18]))
-        # if Te_func:
-        #    Te1 = params[6]
-        #    Te2 = params[7]
-        #    Tm1 = params[8]
-        #    Tm2 = params[9]
-        # else:
-        #    Te1 = np.float64(params[6])
-        #    Te2 = np.float64(params[7])
-        #    Tm1 = np.float64(params[8])
-        #    Tm2 = np.float64(params[9])
-
-        # e1_0 = np.float64(params[10])
-        # e2_0 = np.float64(params[11])
-        # e1d = np.float64(params[12])
-        # e2d = np.float64(params[13])
-        # alpha2_0 = np.float64(params[14])
-        # name = params[15]
-        # dirname = params[16]
-        # cutoff = np.float64(params[17])
-        # g1_0 = np.float64(params[19])
-        # g2_0 = np.float64(params[20])
+        name = self.params["name"]
+        T = self.params["T"]
+        Te1 = self.params["Te1"]
+        Te2 = self.params["Te2"]
+        e1d = self.params["e1d"]
+        e2d = self.params["e2d"]
+        Tm1 = self.params["Tm1"]
+        Tm2 = self.params["Tm2"]
+        q = self.params["q"]
+        mu1 = self.params["mu1"]
 
         filename = f"{name}.npz"
         figname = f"{name}.png"
         paramsname = f"params-{name}.txt"
-        if Te_func:
-            suptitle = (
-                f"{filename}\n"
-                f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
-                r"$e_{1,d}$ = " + f"{e1d:0.3f} "
-                r"$e_{2,d}$ = " + f"{e2d:0.3f}"
-            )
-        else:
-            suptitle = (
-                f"{filename}\n"
-                f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
-                f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
-                f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-                r"$e_{1,d}$ = " + f"{e1d:0.3f} "
-                r"$e_{2,d}$ = " + f"{e2d:0.3f}"
-            )
+        suptitle = (
+            f"{filename}\n"
+            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
+            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
+            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
+            r"$e_{1,d}$ = " + f"{e1d:0.3f} "
+            r"$e_{2,d}$ = " + f"{e2d:0.3f}"
+        )
+
         run_compmass(
-            h,
-            j,
-            mu1,
-            q,
-            a0,
-            alpha2_0,
-            e1_0,
-            e2_0,
-            g1_0,
-            g2_0,
-            Tm1,
-            Tm2,
-            Te1,
-            Te2,
-            T,
+            self.verbose,
+            self.tscale,
+            self.secular,
+            self.overwrite,
+            self.method,
             suptitle,
-            dirname,
             filename,
             figname,
-            paramsname,
-            verbose=self.verbose,
-            secular=self.secular,
-            e1d=e1d,
-            e2d=e2d,
-            overwrite=self.overwrite,
-            cutoff=cutoff,
-            method=self.method,
-            Te_func=Te_func,
-        )
+            paramsname,  # end of positional params
+            **self.params
+)
 
 
 class CompmassSetOmeff(SimSet):
-    param_spec = [
+    params_spec = [
         "h",
         "j",
         "a0",

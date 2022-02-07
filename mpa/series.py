@@ -76,7 +76,7 @@ class FOCompmassSeries(SimSeries):
             self.load_all_runs()
         else:
             N_sims = self.RUN_PARAMS.shape[0]
-            integrate = CompmassSetOmeff(
+            integrate = CompmassSet(
                 verbose=True, overwrite=True, secular=True, method="RK45"
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)

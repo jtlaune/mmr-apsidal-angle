@@ -23,8 +23,12 @@ I think MEGNO will be a good learning characteristic
   import matplotlib as mpl
   import matplotlib.pyplot as plt
   %matplotlib inline
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   # @mpl.rc_context(analytic)
-  
   def simulation(par):
       a, e = par # unpack parameters
       sim = rebound.Simulation()
@@ -50,7 +54,7 @@ I think MEGNO will be a good learning characteristic
 #+END_SRC
 
 #+RESULTS:
-: 2.0330715326180533
+: 2.01242539090659
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   Ngrid = 80
@@ -97,5 +101,5 @@ I think MEGNO will be a good learning characteristic
 #+RESULTS:
 :RESULTS:
 #+attr_org: :width 523
-[[file:./.ob-jupyter/bf1be2ec36e76a72068c34a2b9e6a92cd3822c9c.png]]
+[[file:./.ob-jupyter/aa91cdee260fb6feb63d0c636ab18f3b46c8ef70.png]]
 :END:
