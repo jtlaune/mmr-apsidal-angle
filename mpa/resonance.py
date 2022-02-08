@@ -749,6 +749,7 @@ class FOCompMassOmeff(FOCompMass):
         return(-fns.omjdot_Hjext(Li, alphai, muext, alphaext))
 
     def H4dofsec(self, t, Y):
+        import pdb; pdb.set_trace()
         (thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t, Y)
 
         aext = self.aext

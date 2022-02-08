@@ -33,7 +33,7 @@ TeRatios = qs
 # Varying parameters #
 ######################
 E1_0 = np.ones(Nqs) * 0.01
-E2_0 = np.ones(Nqs) * 0.07
+E2_0 = np.ones(Nqs) * 0.01
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
 
@@ -59,7 +59,7 @@ TE2 = Tw0 * sqrt(TeRatios)
 TM1 = TE1 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
 # TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
-TS = np.ones(Nqs)*100000.
+TS = np.ones(Nqs)*10000.
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -75,7 +75,7 @@ ALPHA2_0 = (1.55) ** (2.0 / 3) * np.ones(Nqs)
 AEXTS = np.ones(Nqs)*8.
 #MUEXTS = np.zeros(Nqs)
 #MUEXTS[1:] = np.logspace(-4, -2.5, Nqs-1)
-MUEXTS = -np.ones(Nqs)*1e-4
+MUEXTS = np.ones(Nqs)*1e-4
 
 alpha1 = np.ones(Nqs)
 alpha2 = ALPHA2_0
