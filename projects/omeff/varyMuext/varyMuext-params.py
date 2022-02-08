@@ -21,19 +21,19 @@ mpl.rcParams.update({"font.size": 20, "figure.facecolor": "white"})
 #################
 j = 2
 a0 = 1.0
-h = 0.03
+h = 0.01
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
 Nqs = 1
-qs = np.ones(Nqs) * 0.01
-totmass = 1e-4
-Tw0 = 10000
+qs = np.ones(Nqs) * 10.
+totmass = 1e-3
+Tw0 = 1000
 TeRatios = qs
 
 ######################
 # Varying parameters #
 ######################
 E1_0 = np.ones(Nqs) * 0.01
-E2_0 = np.ones(Nqs) * 0.01
+E2_0 = np.ones(Nqs) * 0.07
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
 
@@ -59,7 +59,7 @@ TE2 = Tw0 * sqrt(TeRatios)
 TM1 = TE1 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
 # TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
-TS = np.minimum(TE1, TE2)
+TS = np.ones(Nqs)*100000.
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -67,14 +67,15 @@ ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 cutoff_frac = 1.0
 CUTOFFS = TS * cutoff_frac
-ALPHA2_0 = (1.8) ** (2.0 / 3) * np.ones(Nqs)
+ALPHA2_0 = (1.55) ** (2.0 / 3) * np.ones(Nqs)
 
 ##########
 # OMEFFS #
 ##########
-AEXTS = np.ones(Nqs)*5.
-MUEXTS = np.logspace(-3, -2, Nqs)
+AEXTS = np.ones(Nqs)*8.
 #MUEXTS = np.zeros(Nqs)
+#MUEXTS[1:] = np.logspace(-4, -2.5, Nqs-1)
+MUEXTS = -np.ones(Nqs)*1e-4
 
 alpha1 = np.ones(Nqs)
 alpha2 = ALPHA2_0
