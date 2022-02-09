@@ -5,7 +5,7 @@
 #+OPTIONS: toc:nil
 #+LATEX_HEADER: \usepackage{amsthm}
 #+LATEX_HEADER: \newtheorem{defn}{Definition}
-#+STARTUP: latexpreview
+#+STARTUP: nolatexpreview
 
 * Start
 Consider $n$ point *orbiters* with finite masses
@@ -35,7 +35,6 @@ where $\vec x_i$ and $\vec p_i$ are the Cartesian position and momentum vectors,
 the Cartesian vector with magnitude @@latex:$e$@@ in the
 direction of orbital perihelion
 #+end_defn
-
 
 * Scaling
 We choose the following units
@@ -161,6 +160,59 @@ where the dot notation corresponds to the time derivative of the
 orbital elements. The functions $\xi(t)$ and $\zeta(t)$ are the
 coupling between the eccentricity damping, $\tau_e(t)$, and the
 semimajor axis (sma) damping, $\tau_m(t)$.
-
+* External companion
+#+attr_latex: :float
+[[./images/maxq-aext-3.0.png]]
+* References
 bibliography:references.bib
 bibliographystyle:unsrt
+* code                                                             :noexport:
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import os
+
+  os.chdir("/home/jtlaune/multi-planet-architecture/")
+  import mpa.fndefs as fns
+  from mpa import mpl_styles
+  import numpy as np
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  from matplotlib import colors
+
+
+  @mpl.rc_context(mpl_styles.analytic)
+  def plot_func(alpha_1, alpha_2, ratio):
+      return plt.contourf(
+          alpha_1,
+          alpha_2,
+          ratio,
+          norm=colors.LogNorm(vmin=ratio.min(), vmax=ratio.max()),
+      )
+
+
+  # scalars
+  j = 2
+  a1 = 1
+  Npts = 1000
+  alpha = (j / (j + 1)) ** (2.0 / 3)
+  alpha_ext = 3.0 * a1
+
+  # vectors
+  alpha_1 = a1 * np.linspace(0.5, 2, Npts)
+  alpha_2 = alpha_1 / alpha * np.linspace(0.9, 1.1, Npts)
+  a1coord, a2coord = np.meshgrid(alpha_1, alpha_2)  # units au
+  ratio = fns.sqr_ei_lc(a2coord / alpha_ext) / fns.sqr_ei_lc(a1coord / alpha_ext)
+  cs = plot_func(a1coord, a2coord / a1coord, ratio)
+  cb = plt.colorbar(cs, label=r"max $q$ before sign flip")
+  plt.xlabel(r"$a_1$")
+  plt.ylabel(r"$\alpha$")
+  plt.title(r"$a_{\rm ext}=$" + f"{alpha_ext}")
+  for j in range(1, 8):
+      plt.axhline(y=((j + 1) / j) ** (2.0 / 3.0), c="k", ls="--", lw="1")
+  plt.savefig(f"images/maxq-aext-{alpha_ext}.png")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+attr_org: :width 435
+[[file:./.ob-jupyter/9cab057cdbd08f3b94d740297f7ab6e8fa5c1111.png]]
+:END:
