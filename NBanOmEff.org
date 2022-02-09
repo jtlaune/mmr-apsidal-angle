@@ -1,0 +1,62 @@
+#+OPTIONS: toc:nil
+#+TITLE: MMR Barrier Problem
+#+AUTHOR: JT Laune
+#+DATE: <2022-02-08 Tue>
+
+* Problem statement
+Consider two point *orbiters* with finite masses $m_1,m_2\ll M$, with $M$ the mass of
+the primary. Define the following parameters
+#+begin_src latex
+  \begin{align}
+   q&\equiv \frac{m_1}{m_2}\\ 
+   \mu_i&\equiv \frac{m_i}{M}\\ 
+   \mu_{\rm tot}&\equiv \mu_1+\mu_2,\\ 
+  \end{align}
+#+end_src
+@@latex:\noindent@@
+where $M$ is the primary mass.
+
+** Formal constructions
+The *Kepler problem* is a special case of the *2-body problem*.
+Its solutions are 
+
+** Hamiltonian Mechanics
+
+** Dissipation as ...
+In the following, we characterize dissipation by its effects on each
+planets' angular momentum (AM) and energy.  A planet's energy,
+$\mathcal E$, is determined by its semimajor axis (sma), $a$:
+#+begin_src latex
+  \begin{align}
+     \mathcal E = -\frac{1}{2a},
+  \end{align}
+  \noindent
+#+end_src
+@@latex:\noindent@@
+where we have chosen units such that $GM=1$. One such example is
+#+begin_src latex
+  \begin{align}
+  \frac{4\pi^2[M_\odot][{\rm au}]}{[{\rm yr}]^2}
+  \end{align}
+#+end_src
+@@latex:\noindent@@ angular momentum is given by
+#+begin_src latex
+  \begin{align}
+  h = \mathcal E \sqrt{1-e^2}.
+  \end{align}
+#+end_src
+
+We may characterize dissipation by its action on the ...
+$\tau_{mi}(t)$ and $\tau_{ei}(t)$ by the instantaneous derivatives
+#+begin_src latex
+  \begin{align}
+     \frac{\dot e_i}{e_i} &= - \frac{1}{\tau_e(t)} - \xi(t, \mathbf X_i)\frac{1}{\tau_m(t)} \\
+     \frac{\dot a_i}{a_i} &= -\frac{1}{\tau_m(t)} - \zeta(t, \mathbf X_i)\frac{1}{\tau_e(t)},
+  \end{align}
+  \noindent
+#+end_src
+@@latex:\noindent@@
+where the dot notation corresponds to the time derivative of the
+orbital elements. The functions $\xi(t)$ and $\zeta(t)$ are the
+coupling between the eccentricity damping, $\tau_e(t)$, and the
+semimajor axis (sma) damping, $\tau_m(t)$.
