@@ -17,9 +17,9 @@ seriesname = "varyOmeff"
 seriesdir = os.path.join(projpath, seriesname)
 paramsname = seriesname+"-params.py"
 runpath = seriesdir
-series = FOomEffSeries(seriesname, runpath, load=False, verbose=True)
+series = FOomEffSeries(seriesname, runpath, load=False, verbose=True, overwrite=False)
 #import pdb; pdb.set_trace()
 start = time.time()
 series(16)
 end = time.time()
-print(end - start)
+print("done in " + f"{end - start:0.2f}" + "s")

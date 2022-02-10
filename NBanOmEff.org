@@ -163,6 +163,9 @@ semimajor axis (sma) damping, $\tau_m(t)$.
 * External companion
 #+attr_latex: :float
 [[./images/maxq-aext-3.0.png]]
+** Constant $\omega_{\rm eff}$
+Here we assume ...
+insert results from last night
 * References
 bibliography:references.bib
 bibliographystyle:unsrt

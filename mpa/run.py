@@ -618,6 +618,71 @@ def run_compmass_omeff(
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
+        if overwrite:
+            print("this code running")
+            sim = FOCompMassOmeff(
+                j,
+                mu1,
+                q,
+                a0,
+                Tm1,
+                Tm2,
+                Te1,
+                Te2,
+                e1d,
+                e2d,
+                cutoff,
+                Te_func,
+                omeff,
+            )
+            (
+                teval,
+                theta,
+                a1,
+                a2,
+                e1,
+                e2,
+                g1,
+                g2,
+                L1,
+                L2,
+                x1,
+                y1,
+                x2,
+                y2,
+            ) = sim.int_Hsec(
+                T,
+                1e-9,
+                alpha2_0,
+                e1_0,
+                e2_0,
+                g1_0,
+                g2_0,
+                verbose=verbose,
+                secular=secular,
+                method=method,
+                # need to phase this out and add overwrite into class defs
+            )
+            np.savez(
+                os.path.join(dirname, filename),
+                teval=teval,
+                thetap=theta,
+                a1=a1,
+                a2=a2,
+                e1=e1,
+                e2=e2,
+                g1=g1,
+                g2=g2,
+                L1=L1,
+                L2=L2,
+                x1=x1,
+                y1=y1,
+                x2=x2,
+                y2=y2,
+            )
+
+        else: return(None)
+    else:
         sim = FOCompMassOmeff(
             j,
             mu1,
@@ -632,41 +697,6 @@ def run_compmass_omeff(
             cutoff,
             Te_func,
             omeff,
-        )
-        (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2,) = sim.int_Hsec(
-            T,
-            1e-9,
-            alpha2_0,
-            e1_0,
-            e2_0,
-            g1_0,
-            g2_0,
-            verbose=verbose,
-            secular=secular,
-            method=method,
-            # need to phase this out and add overwrite into class defs
-        )
-        np.savez(
-            os.path.join(dirname, filename),
-            teval=teval,
-            thetap=theta,
-            a1=a1,
-            a2=a2,
-            e1=e1,
-            e2=e2,
-            g1=g1,
-            g2=g2,
-            L1=L1,
-            L2=L2,
-            x1=x1,
-            y1=y1,
-            x2=x2,
-            y2=y2,
-        )
-
-    else:
-        sim = FOCompMassOmeff(
-            j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d, e2d, cutoff, Te_func, omeff,
         )
         (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(
             T,
@@ -928,8 +958,8 @@ class CompmassSet(SimSet):
             filename,
             figname,
             paramsname,  # end of positional params
-            **self.params
-)
+            **self.params,
+        )
 
 
 class CompmassSetOmeff(SimSet):
@@ -958,8 +988,8 @@ class CompmassSetOmeff(SimSet):
     ]
 
     @params_load
-    def __call__(self, params): # params NEEDS to be here for
-                                # decorator to work.
+    def __call__(self, params):  # params NEEDS to be here for
+        # decorator to work.
         # TODO put params in argument of params_load
         name = self.params["name"]
         T = self.params["T"]

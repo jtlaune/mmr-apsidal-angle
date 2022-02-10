@@ -17,7 +17,7 @@ class SimSeries(object):
     - loading data from npz files
     """
 
-    def __init__(self, name, seriesdir, load=False, verbose=True):
+    def __init__(self, name, seriesdir, load=False, verbose=True, overwrite=True):
         # self.RUN_PARAMS = load_params(paramsname)
         self.seriesname = name
         self.sdir = seriesdir
@@ -25,6 +25,7 @@ class SimSeries(object):
         self.data = {}
         self.load = load
         self.verbose = verbose
+        self.overwrite = overwrite
         self.initialize()
 
     @series_dir
@@ -76,7 +77,10 @@ class FOCompmassSeries(SimSeries):
         else:
             N_sims = self.RUN_PARAMS.shape[0]
             integrate = CompmassSet(
-                verbose=self.verbose, overwrite=True, secular=True, method="RK45"
+                verbose=self.verbose,
+                overwrite=self.overwrite,
+                secular=True,
+                method="RK45",
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
 
@@ -98,7 +102,10 @@ class FOomEffSeries(SimSeries):
         else:
             N_sims = self.RUN_PARAMS.shape[0]
             integrate = CompmassSetOmeff(
-                verbose=self.verbose, overwrite=True, secular=True, method="RK45"
+                verbose=self.verbose,
+                overwrite=self.overwrite,
+                secular=True,
+                method="RK45",
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
 

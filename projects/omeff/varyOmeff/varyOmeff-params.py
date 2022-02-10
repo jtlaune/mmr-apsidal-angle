@@ -22,7 +22,7 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 17
+Nqs = 33
 qs = np.ones(Nqs) * 0.5
 totmass = 1e-3
 Tw0 = 1000
@@ -72,7 +72,10 @@ ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 # OMEFFS #
 ##########
 OMEFFS = np.zeros(Nqs)
-OMEFFS[1:] = np.logspace(-9, -5, Nqs-1)
+OMEFFS[1:17] = np.logspace(-9, -5, 16)
+OMEFFS[17:] = np.logspace(-5.5, -2, Nqs-17)
+# 
+OMEFFS = -OMEFFS
 
 NAMES = np.array([f"{i:03d}-omeff0-{OMEFFS[i]:0.3e}" for i, qit in enumerate(QS)])
 

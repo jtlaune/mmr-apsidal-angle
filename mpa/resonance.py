@@ -260,7 +260,7 @@ class FOCompMass(FirstOrder):
                     "alpha: {:0.2f} "
                     "th1: {:0.2f} "
                     "th2: {:0.2f} "
-                    "%: {:0.2f}".format(
+                    "%: {:0.2f} ".format(
                         (L1 / self.q) ** 2,
                         L2**2,
                         (L1 / L2 / self.q) ** 2,
