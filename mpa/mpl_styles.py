@@ -7,7 +7,7 @@ analytic = {
     "figure.facecolor": "FFFFFF",
     "figure.figsize": (6, 5),
     "axes.labelsize": 16,
-    "axes.grid": True,
+    #"axes.grid": True,
     "axes.linewidth": 2,
     "axes.titlesize": 20,
     "xtick.labelsize": 16,

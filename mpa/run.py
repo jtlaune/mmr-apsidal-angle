@@ -25,8 +25,6 @@ def series_dir(f):
         try:
             f(*args)
         except TypeError as err:
-            print(f, *args)
-            print("series_dir")
             raise err
         # do stuff after
         os.chdir(pwd)
@@ -47,7 +45,6 @@ def params_load(f):
         vals = args[1]
 
         for val, name in zip(vals, names):
-            print(name, val)
             try:
                 args[0].params[name] = float(val)
             except ValueError:
@@ -55,8 +52,7 @@ def params_load(f):
         try:
             f(*args)
         except TypeError as err:
-            print(f, *args)
-            print("params_load")
+            print(f)
             raise err
         # do stuff after
 
@@ -100,7 +96,6 @@ def run_tp(
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
         if overwrite:
-            print("overwriting...")
             sim = fns.tp_intH(j, mup, ep, e0, ap, g0, a0, lambda0)
 
             (
@@ -412,7 +407,6 @@ def run_compmass(
     g2_0,
 ):
     Te_func = 0.0  # I don't think i use this. can delete this param in future
-    print(method)
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
@@ -443,7 +437,6 @@ def run_compmass(
             method=method,
             # need to phase this out and add overwrite into class defs
         )
-        print("DATAFILEPATH=" + os.path.join(dirname, filename))
         np.savez(
             os.path.join(dirname, filename),
             teval=teval,
@@ -616,12 +609,9 @@ def run_compmass_omeff(
     cutoff,
     g1_0,
     g2_0,
-    muext,
-    aext,
     omeff,
 ):
     Te_func = 0.0  # I don't think i use this. can delete this param in future
-    print(method)
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
@@ -638,8 +628,7 @@ def run_compmass_omeff(
             e2d,
             cutoff,
             Te_func,
-            aext,
-            muext,
+            omeff,
         )
         (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2,) = sim.int_Hsec(
             T,
@@ -654,7 +643,6 @@ def run_compmass_omeff(
             method=method,
             # need to phase this out and add overwrite into class defs
         )
-        print("DATAFILEPATH=" + os.path.join(dirname, filename))
         np.savez(
             os.path.join(dirname, filename),
             teval=teval,
@@ -675,7 +663,7 @@ def run_compmass_omeff(
 
     else:
         sim = FOCompMassOmeff(
-            j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d, e2d, cutoff, Te_func, aext, muext
+            j, mu1, q, a0, Tm1, Tm2, Te1, Te2, e1d, e2d, cutoff, Te_func, omeff,
         )
         (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(
             T,
@@ -840,7 +828,6 @@ class TpSet(SimSet):
         tol = float(params[16])
 
         overwrite = params[17] == "True"
-        print(overwrite)
 
         if tploc == "int":
             eeq = np.sqrt(np.abs(Te / 2 / (j + 1) / Tm))
@@ -964,21 +951,19 @@ class CompmassSetOmeff(SimSet):
         "cutoff",
         "g1_0",
         "g2_0",
-        "muext",
-        "aext",
         "omeff",
     ]
 
     @params_load
-    def __call__(self, params):
+    def __call__(self, params): # params NEEDS to be here for
+                                # decorator to work.
+        # TODO put params in argument of params_load
         name = self.params["name"]
         T = self.params["T"]
         Te1 = self.params["Te1"]
         Te2 = self.params["Te2"]
         Tm1 = self.params["Tm1"]
         Tm2 = self.params["Tm2"]
-        aext = self.params["aext"]
-        muext = self.params["muext"]
         q = self.params["q"]
         mu1 = self.params["mu1"]
         omeff = self.params["omeff"]
@@ -991,8 +976,6 @@ class CompmassSetOmeff(SimSet):
             f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
             f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
             f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            r"$a_{\rm ext}$ = " + f"{aext:0.3f} "
-            r"$\mu_{\rm ext}$ = " + f"{muext:0.2e}\n"
             r"$\omega_{\rm eff}$ = " + f"{omeff:0.3f}"
         )
 

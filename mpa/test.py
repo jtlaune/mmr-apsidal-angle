@@ -1,4 +1,5 @@
 from . import *
+import scipy as sp
 import numpy as np
 import unittest
 import os.path
@@ -7,6 +8,7 @@ from .series import FOomEffSeries
 from . import LaplaceCoefficients as LC
 from . import nbody
 from .fndefs import radNormNegpi, radNormZero
+from .mpl_styles import analytic
 
 class ResonanceTestCase(unittest.TestCase):
     origindir, filename = os.path.split(os.path.abspath(__file__))
@@ -109,15 +111,11 @@ class ResonanceTestCase(unittest.TestCase):
         dotg2 = np.gradient(g2, teval)
         avgdotg2 = np.average(dotg2)
 
-
-        oms = rel_oms(q, a0, mu1, a1, a2)
-        print(oms)
-
         ax.set_title(r"$q=$" + f"{q}")
 
         ddg = np.gradient(dg, teval)
         ax.plot(teval, ddg, ls="--", c="k", label="data")
-        ax.plot(teval, oms, label="analytic")
+        #ax.plot(teval, oms, label="analytic")
         ax.legend()
 
         figfp = os.path.join(seriesdir, "test-secular.png")
@@ -128,77 +126,33 @@ class ResonanceTestCase(unittest.TestCase):
     def test_Compmass_eqecc(self):
         pass
 
+    @mpl.rc_context(analytic)
     def test_Compmass_OmEff(self):
         seriesname = "omEff"
         seriesdir = os.path.join(self.projectdir, seriesname)
         series = FOomEffSeries(seriesname, seriesdir, load=True)
         params = series.RUN_PARAMS
 
-        #####################################
-        Te1 = np.float64(params[0, 6])
-        Te2 = np.float64(params[0, 7])
-        Tm1 = np.float64(params[0, 8])
-        Tm2 = np.float64(params[0, 9])
-        alpha2_0 = np.float64(params[0, 14])
-        #####################################
-
-        Nruns = len(series.data)
-        halfN = int(Nruns / 2)
-
-        QS = np.float64(params[:, 3])
-        AEXTS = np.float64(params[:, -2])
-        MUEXTS = np.float64(params[:, -3])
-        NAMES = params[:, -8]
-        ALPHA2_0 = np.float64(params[:, -9])
-        len_pre = len("omeff-")
-        len_num = 10
-        OMEFFS = np.float64(params[:, -1])
-
         fig, ax = plt.subplots()
-        # varying a_ext np.linspace(2., 8, halfN)
-        for jit in range(len(OMEFFS)):
-            rundata = series.data[jit]
-            teval = rundata["teval"]
-            it = int(len(teval))
-            teval = teval[0:it]
-            a1 = rundata["a1"][0:it]
-            a2 = rundata["a2"][0:it]
-            g1 = rundata["g1"][0:it] % (2 * np.pi)
-            g2 = rundata["g2"][0:it] % (2 * np.pi)
-
-            g1 = g1 - 2 * np.pi * (g1 > (np.pi))
-            g2 = g2 - 2 * np.pi * (g2 > (np.pi))
-
-            dotg1 = np.gradient(g1, teval)
-            avgdotg1 = np.average(dotg1)
-            dotg2 = np.gradient(g2, teval)
-            avgdotg2 = np.average(dotg2)
-
-            a0 = ALPHA2_0[jit]
-            g20 = g20 = g2[0]
-            print(OMEFFS[jit])
-            alphaext = AEXTS[jit] / a0
-            alpha2 = a2 / a0
-            L2 = np.sqrt(alpha2)
-
-            # dotg2_ext = -np.average((0.25 * (1 / L2) * MUEXTS[jit] * (a2 / alphaext) *
-            #             LC.b(1.5, 1, a2 / alphaext)))
-            dotg2_ext = OMEFFS[jit]
-
-            # ax.scatter(teval, g2, s=1)
-            # ax.scatter(teval, g20+dotg2_ext*teval, s=0.1, c="k", ls="--")
-            if jit == 0:
-                ax.scatter(MUEXTS[jit], dotg2_ext, c="r", label=r"analytic $\dot g_2$")
-                ax.scatter(MUEXTS[jit], avgdotg2, c="k", label=r"numerical $\dot g_2$")
-            else:
-                ax.scatter(MUEXTS[jit], dotg2_ext, c="r")
-                ax.scatter(MUEXTS[jit], avgdotg2, c="k")
+        q = params[0,3] # constant
+        n = len(series.data)
+        for i in range(n):
+            prescomEff = float(params[i,-1]) # prescribed
+            print(i)
+            sim = series.data[i]
+            teval = sim["teval"]
+            diffom = sim["g2"] - sim["g1"] # actual
+            calcomEff = np.average(np.gradient(diffom, teval)) # average
+            print(prescomEff)
+            print(calcomEff)
+                                                               # calculated
+            ax.scatter(prescomEff, (calcomEff), c="k", s=10)
+            # ax.scatter(teval, diffom, c="k", s=10)
 
         ax.legend()
-        ax.set_title(r"$q=$" + f"{QS[jit]}")
-        ax.set_xlabel(r"$\mu_{\rm ext}$")
-        ax.set_ylabel(r"$\gamma_2$")
-        # ax.set_yscale("log")
+        ax.set_title(r"$q=$" + f"{q}")
+        ax.set_xlabel(r"prescribed $\omega_{\rm eff}$")
+        ax.set_ylabel(r"simulation $\omega_{\rm eff}$")
         figfp = os.path.join(seriesdir, "test-omEff.png")
         fig.savefig(figfp, bbox_inches="tight")
 

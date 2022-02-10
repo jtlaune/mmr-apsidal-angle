@@ -36,7 +36,6 @@ class SimSeries(object):
         spec = importlib.util.spec_from_file_location("_", filepath)
         _ = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(_)
-        print(f"Loading run file {filepath} in directory {os.getcwd()}")
         return np.array(_.RUN_PARAMS)
 
     def load_run(self, ind):
@@ -71,7 +70,6 @@ class FOCompmassSeries(SimSeries):
     # management. intended to be executed from runsim (symbolic link)
     @series_dir
     def __call__(self, Nproc=8):
-        print("__call__ is running")
         if self.load:
             self.load_all_runs()
         else:
@@ -80,8 +78,6 @@ class FOCompmassSeries(SimSeries):
                 verbose=True, overwrite=True, secular=True, method="RK45"
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
-            print(self.RUN_PARAMS)
-            print(f"Running {N_sims} simulations...")
 
             with Pool(processes=min(Nproc, N_sims)) as pool:
                 pool.map(integrate, self.RUN_PARAMS)
@@ -96,7 +92,6 @@ class FOomEffSeries(SimSeries):
     # management. intended to be executed from runsim (symbolic link)
     @series_dir
     def __call__(self, Nproc=8):
-        print("__call__ is running")
         if self.load:
             self.load_all_runs()
         else:
@@ -105,8 +100,6 @@ class FOomEffSeries(SimSeries):
                 verbose=True, overwrite=True, secular=True, method="RK45"
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
-            print(self.RUN_PARAMS)
-            print(f"Running {N_sims} simulations...")
 
             with Pool(processes=min(Nproc, N_sims)) as pool:
                 pool.map(integrate, self.RUN_PARAMS)

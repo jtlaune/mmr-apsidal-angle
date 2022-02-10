@@ -24,15 +24,15 @@ h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
 Nqs = 8
 qs = np.ones(Nqs) * 0.01
-totmass = 1e-4
+totmass = 1e-7
 Tw0 = 10000
 TeRatios = qs
 
 ######################
 # Varying parameters #
 ######################
-E1_0 = np.ones(Nqs) * 0.01
-E2_0 = np.ones(Nqs) * 0.01
+E1_0 = np.ones(Nqs) * 0.001
+E2_0 = np.ones(Nqs) * 0.001
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
 
@@ -81,29 +81,7 @@ def omeffs(q, a0, j, muext, aext):
 ##########
 # OMEFFS #
 ##########
-
-AEXTS = np.ones(Nqs)*3.
-MUEXTS = np.logspace(-2,-3, Nqs)
-
-#halfN = int(Nqs/2)
-#AEXTS = np.ones(Nqs)
-#MUEXTS = np.ones(Nqs)
-#AEXTS[:halfN] = AEXTS[halfN:]*2.
-#AEXTS[halfN:] = np.linspace(1.5, 2., halfN)
-#MUEXTS[:halfN] = np.logspace(-2, -3, halfN)
-#MUEXTS[halfN:] = MUEXTS[halfN:]*1e-3
-
-#OMEFFS = omeffs(QS, A0S, j, MUEXTS, AEXTS)
-# OMEFFS = np.zeros(Nqs)
-
-alpha1 = np.ones(Nqs)
-alpha2 = ALPHA2_0
-alphaext = AEXTS/alpha2
-L1 = np.sqrt(alpha2)
-L2 = np.sqrt(alpha2)
-OMEXT1 = fns.omjdot_Hjext(L1, alpha1, MUEXTS, alphaext)
-OMEXT2 = fns.omjdot_Hjext(L2, alpha2, MUEXTS, alphaext)
-OMEFFS = OMEXT1-OMEXT2
+OMEFFS = np.linspace(1e-2, 1e-1, Nqs)
 
 NAMES = np.array(
     [
@@ -143,8 +121,6 @@ RUN_PARAMS = np.column_stack(
         CUTOFFS,
         G1_0,
         G2_0,
-        MUEXTS,
-        AEXTS,
         OMEFFS,
     )
 )

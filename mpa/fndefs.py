@@ -182,3 +182,16 @@ def nu(self, a, ap, mu):
         )
     if a > ap:
         return (np.pi * mu) * (a / ap) / (2 * a * sqrt(a)) * LC.b(1.5, 2.0, (a / ap))
+
+## TODO: put these into fndefs
+#l1dotext = (
+#    -self.muext
+#    * L1
+#    * (a2 * a2 / self.aext / self.aext)
+#    * LC.Db(0.5, 0, a1 / self.aext)
+#)
+#l2dotext = (
+#    -(a2 * a2 / self.aext / self.aext)
+#    * self.muext
+#    * LC.Db(0.5, 0, a2 / self.aext)
+#)

@@ -255,12 +255,12 @@ class FOCompMass(FirstOrder):
         if self.verbose:
             print(
                 (
-                    "alpha1: {:0.2f}    "
-                    "alpha2: {:0.2f}    "
-                    "alpha: {:0.2f}    "
-                    "theta1: {:0.2f}    "
-                    "theta2: {:0.2f}    "
-                    "done%: {:0.2f}".format(
+                    "a1: {:0.2f}"
+                    "a2: {:0.2f}"
+                    "alpha: {:0.2f}"
+                    "th1: {:0.2f}"
+                    "th2: {:0.2f}"
+                    "%: {:0.2f}".format(
                         (L1 / self.q) ** 2,
                         L2**2,
                         (L1 / L2 / self.q) ** 2,
@@ -718,8 +718,7 @@ class FOCompMassOmeff(FOCompMass):
         e2d=None,
         cutoff=np.infty,
         Te_func=False,
-        aext=0.0,
-        muext=0.0,
+        omeff=0.0,
     ):
         super().__init__(
             j,
@@ -735,24 +734,13 @@ class FOCompMassOmeff(FOCompMass):
             cutoff=np.infty,
             Te_func=False,
         )
-        self.aext = aext
-        self.alphaext = self.aext/self.a0
-        self.muext = muext
+        self.omeff = omeff/self.T0
         self.perturb = False
-        if self.muext > 0:
+        if np.abs(self.omeff) > 0.:
             self.perturb = True
-
-    def omjext_dot(self, Li, alphai):
-        muext = self.muext
-        alphaext = self.alphaext
-        # negative sign  from gj = -varpij
-        return(-fns.omjdot_Hjext(Li, alphai, muext, alphaext))
 
     def H4dofsec(self, t, Y):
         (thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t, Y)
-
-        aext = self.aext
-        muext = self.muext
 
         if self.perturb:
             ################### old stuff
@@ -786,32 +774,20 @@ class FOCompMassOmeff(FOCompMass):
 
             ################### new stuff
 
-            # om1ext = fns.om1ext_n2(self.muext, a1, a2, self.aext)
-            # om2ext = fns.om2ext_n2(self.muext, a2, self.aext)
-            g1dotext = self.omjext_dot(L1, alpha1)
-            g2dotext = self.omjext_dot(L2, alpha2)
+            # doing this in the frame of the outer planet
+            g1dotext = -self.omeff
+            g2dotext = 0.
 
             x1dot = x1dot - g1dotext * y1
             y1dot = y1dot + g1dotext * x1
             x2dot = x2dot - g2dotext * y2
             y2dot = y2dot + g2dotext * x2
 
-            # see above for the ldot secular force from mup
-            # these are just ldot secular forcing from ext
-            # TODO: put these into fndefs
-            l1dotext = (
-                -self.muext
-                * L1
-                * (a2 * a2 / self.aext / self.aext)
-                * LC.Db(0.5, 0, a1 / self.aext)
-            )
-            l2dotext = (
-                -(a2 * a2 / self.aext / self.aext)
-                * self.muext
-                * LC.Db(0.5, 0, a2 / self.aext)
-            )
+            # see parent for the ldot secular force from mup these are
+            # just ldot secular forcing from ext. important for fine
+            # detail but not implemented
+            #thetadot = thetadot + (j + 1) * l2dotext - j * l1dotext
 
-            thetadot = thetadot + (j + 1) * l2dotext - j * l1dotext
         ###################
 
         return np.array([thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot])
