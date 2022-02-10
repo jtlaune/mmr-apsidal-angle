@@ -14,17 +14,16 @@ sys.path.append("/home/jtlaune/multi-planet-architecture/mpa/")
 import mpa
 import mpa.fndefs as fns
 
-mpl.rcParams.update({"font.size": 20, "figure.facecolor": "white"})
 
 #################
 # CONFIGURATION #
 #################
 j = 2
 a0 = 1.0
-h = 0.01
+h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 1
-qs = np.ones(Nqs) * 10.
+Nqs = 17
+qs = np.ones(Nqs) * 0.5
 totmass = 1e-3
 Tw0 = 1000
 TeRatios = qs
@@ -59,7 +58,7 @@ TE2 = Tw0 * sqrt(TeRatios)
 TM1 = TE1 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
 # TM1 = TE1/3.46/HS**2*(-1*(qs<1) + 1*(qs>=1))
 TM2 = TE2 / 3.46 / HS**2 * (-1 * (qs < 1) + 1 * (qs >= 1))
-TS = np.ones(Nqs)*10000.
+TS = np.ones(Nqs) * 1e5
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
@@ -67,31 +66,15 @@ ALPHA_0 = alpha_0 * np.ones(Nqs)
 #############################################################
 cutoff_frac = 1.0
 CUTOFFS = TS * cutoff_frac
-ALPHA2_0 = (1.55) ** (2.0 / 3) * np.ones(Nqs)
+ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 
 ##########
 # OMEFFS #
 ##########
-AEXTS = np.ones(Nqs)*8.
-#MUEXTS = np.zeros(Nqs)
-#MUEXTS[1:] = np.logspace(-4, -2.5, Nqs-1)
-MUEXTS = np.ones(Nqs)*1e-4
+OMEFFS = np.zeros(Nqs)
+OMEFFS[1:] = np.logspace(-9, -5, Nqs-1)
 
-alpha1 = np.ones(Nqs)
-alpha2 = ALPHA2_0
-alphaext = AEXTS/alpha2
-L1 = np.sqrt(alpha2)
-L2 = np.sqrt(alpha2)
-OMEXT1 = fns.omjdot_Hjext(L1, alpha1, MUEXTS, alphaext)
-OMEXT2 = fns.omjdot_Hjext(L2, alpha2, MUEXTS, alphaext)
-OMEFFS = OMEXT1-OMEXT2
-
-NAMES = np.array(
-    [
-        f"omeff0-{OMEFFS[i]:0.3e}" f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
-        for i, qit in enumerate(QS)
-    ]
-)
+NAMES = np.array([f"{i:03d}-omeff0-{OMEFFS[i]:0.3e}" for i, qit in enumerate(QS)])
 
 DIRNAMES = np.array(
     [f"q{QS[i]:0.2f}/h-{h:0.2f}" f"-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i in range(Nqs)]
@@ -124,8 +107,6 @@ RUN_PARAMS = np.column_stack(
         CUTOFFS,
         G1_0,
         G2_0,
-        MUEXTS,
-        AEXTS,
         OMEFFS,
     )
 )

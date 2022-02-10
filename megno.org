@@ -31,13 +31,13 @@ I think MEGNO will be a good learning characteristic
   # @mpl.rc_context(analytic)
   def simulation(par):
       a, e = par # unpack parameters
+      mup = 1e-2
       sim = rebound.Simulation()
       sim.integrator = "whfast"
       sim.ri_whfast.safe_mode = 0
       sim.dt = 5.
       sim.add(m=1.) # Star
-      sim.add(m=0.000954, a=5.204, M=0.600, omega=0.257, e=0.048)
-      sim.add(m=0.000285, a=a, M=0.871, omega=1.616, e=e)
+      sim.add(m=mup, a=1., l=0., omega=0.0, e=0.03)
       sim.move_to_com()
 
       sim.init_megno()
@@ -54,12 +54,12 @@ I think MEGNO will be a good learning characteristic
 #+END_SRC
 
 #+RESULTS:
-: 2.01242539090659
+: 2.021391160012995
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   Ngrid = 80
-  par_a = np.linspace(7.,10.,Ngrid)
-  par_e = np.linspace(0.,0.5,Ngrid)
+  par_a = np.linspace(1., 2.,Ngrid)
+  par_e = np.linspace(0.,0.1,Ngrid)
   parameters = []
   for e in par_e:
       for a in par_a:
@@ -100,6 +100,6 @@ I think MEGNO will be a good learning characteristic
 
 #+RESULTS:
 :RESULTS:
-#+attr_org: :width 523
-[[file:./.ob-jupyter/aa91cdee260fb6feb63d0c636ab18f3b46c8ef70.png]]
+#+attr_org: :width 536
+[[file:./.ob-jupyter/12ee8dd050706aa038c9b914b0813a6adea6f12a.png]]
 :END:

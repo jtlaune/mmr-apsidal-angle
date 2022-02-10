@@ -255,11 +255,11 @@ class FOCompMass(FirstOrder):
         if self.verbose:
             print(
                 (
-                    "a1: {:0.2f}"
-                    "a2: {:0.2f}"
-                    "alpha: {:0.2f}"
-                    "th1: {:0.2f}"
-                    "th2: {:0.2f}"
+                    "a1: {:0.2f} "
+                    "a2: {:0.2f} "
+                    "alpha: {:0.2f} "
+                    "th1: {:0.2f} "
+                    "th2: {:0.2f} "
                     "%: {:0.2f}".format(
                         (L1 / self.q) ** 2,
                         L2**2,

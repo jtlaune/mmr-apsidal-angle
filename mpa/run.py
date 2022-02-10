@@ -6,7 +6,8 @@ import os
 from .resonance import FOCompMassOmeff, FOCompMass
 from .plotting import plotsim
 from . import fndefs as fns
-
+import matplotlib as mpl
+from .mpl_styles import analytic
 
 ##########################################################################
 # Decorators                                                             #
@@ -375,6 +376,7 @@ def run_tp(
     return fig
 
 
+@mpl.rc_context(analytic)
 def run_compmass(
     verbose,
     tscale,
@@ -579,6 +581,7 @@ def run_compmass(
     return fig
 
 
+@mpl.rc_context(analytic)
 def run_compmass_omeff(
     verbose,
     tscale,
@@ -976,7 +979,7 @@ class CompmassSetOmeff(SimSet):
             f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
             f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
             f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            r"$\omega_{\rm eff}$ = " + f"{omeff:0.3f}"
+            r"$\omega_{\rm eff}$ = " + f"{omeff:0.3e}"
         )
 
         run_compmass_omeff(
