@@ -374,12 +374,103 @@ class FOCompMass(FirstOrder):
         )
 
 
-class FOTestPart(FirstOrder):
-    # This class integrates the Hamiltonian for an inner test
-    # particle, with and without migration. Without migration we may
-    # put the particle directly into resonance. In this case we still
-    # have all the other initial conditions set to exact resonance,
-    # but this doesn't matter after significant migration anyways.
+class FOCompMassOmeff(FOCompMass):
+    def __init__(
+        self,
+        j,
+        mu1,
+        q,
+        a0,
+        Tm1,
+        Tm2,
+        Te1,
+        Te2,
+        e1d=None,
+        e2d=None,
+        cutoff=np.infty,
+        Te_func=False,
+        omeff1=0.0,
+        omeff2=0.0,
+    ):
+        super().__init__(
+            j,
+            mu1,
+            q,
+            a0,
+            Tm1,
+            Tm2,
+            Te1,
+            Te2,
+            e1d=None,
+            e2d=None,
+            cutoff=np.infty,
+            Te_func=False,
+        )
+        self.omeff1 = omeff1 / self.T0
+        self.omeff2 = omeff2 / self.T0
+        self.perturb = False
+        if np.abs(self.omeff1) > 0.0:
+            self.perturb = True
+        elif np.abs(self.omeff2) > 0.0:
+            self.perturb = True
+
+    def H4dofsec(self, t, Y):
+        (thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t, Y)
+
+        if self.perturb:
+            ################### old stuff
+            # 7 variables
+            L1 = Y[1]
+            L2 = Y[2]
+            x1 = Y[3]
+            y1 = Y[4]
+            x2 = Y[5]
+            y2 = Y[6]
+
+            alpha = (L1 / L2) ** 2
+            a2 = L2**2 * self.a0
+            a1 = alpha * a2
+
+            g1 = np.arctan2(y1, x1)
+            G1 = sqrt(x1 * x1 + y1 * y1)
+            g2 = np.arctan2(y2, x2)
+            G2 = sqrt(x2 * x2 + y2 * y2)
+
+            e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
+            e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
+
+            j = self.j
+
+            # the Hamiltonian is -(constants) as the internal TP
+            # Hamiltonian, i.e. it matches MD
+            alpha1 = L1 * L1 / self.q / self.q
+            alpha2 = L2 * L2
+            alpha = alpha1 / alpha2
+
+            ################### new stuff
+
+            # doing this in the frame of the outer planet
+            g1dotext = -self.omeff1
+            g2dotext = -self.omeff2
+
+            x1dot = x1dot - g1dotext * y1
+            y1dot = y1dot + g1dotext * x1
+            x2dot = x2dot - g2dotext * y2
+            y2dot = y2dot + g2dotext * x2
+
+            # see parent for the ldot secular force from mup these are
+            # just ldot secular forcing from ext. important for fine
+            # detail but not implemented
+            # thetadot = thetadot + (j + 1) * l2dotext - j * l1dotext
+
+        ###################
+
+        return np.array([thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot])
+
+
+class FOTestPartOmeff(FirstOrder):
+    # This class integrates the Hamiltonian for a test
+    # particle with migration.
     def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0):
         # set other params and dirname in child classes
         self.j = j
@@ -409,20 +500,20 @@ class FOTestPart(FirstOrder):
             alpha = L * L
             theta = thetap + g
             dtheta_dl = -j
-            A = self.A(alpha)
-            B = self.B(alpha)
-            C = self.C(alpha)
-            D = self.D(alpha)
+            A = self.f1(alpha)
+            B = self.f2(alpha)
+            C = self.f3(alpha)
+            D = self.f4(alpha)
 
         # tploc=ext
         else:
             alpha = 1.0 / (L * L)
             theta = thetap + g
             dtheta_dl = j + 1
-            B = alpha * self.A(alpha)
-            A = alpha * self.B(alpha)
-            C = alpha * self.C(alpha)
-            D = alpha * self.D(alpha)
+            B = alpha * self.f1(alpha)
+            A = alpha * self.f2(alpha)
+            C = alpha * self.f3(alpha)
+            D = alpha * self.f4(alpha)
 
         e = np.sqrt(2 * G / L)
 
@@ -513,6 +604,7 @@ class FOTestPart(FirstOrder):
         return np.array([thetapdot, Ldot, xdot, ydot])
 
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None, aext=None):
+        print(self)
         thetap0 = np.random.rand() * 2 * np.pi
         # Here we're using time = tau*t
         self.migrate = False
@@ -701,97 +793,3 @@ class FOTestPart(FirstOrder):
         e = sqrt(x**2 + y**2)
 
         return (teval, e, gamma, a)
-
-
-class FOCompMassOmeff(FOCompMass):
-    def __init__(
-        self,
-        j,
-        mu1,
-        q,
-        a0,
-        Tm1,
-        Tm2,
-        Te1,
-        Te2,
-        e1d=None,
-        e2d=None,
-        cutoff=np.infty,
-        Te_func=False,
-        omeff1=0.0,
-        omeff2=0.0,
-    ):
-        super().__init__(
-            j,
-            mu1,
-            q,
-            a0,
-            Tm1,
-            Tm2,
-            Te1,
-            Te2,
-            e1d=None,
-            e2d=None,
-            cutoff=np.infty,
-            Te_func=False,
-        )
-        self.omeff1 = omeff1/self.T0
-        self.omeff2 = omeff2/self.T0
-        self.perturb = False
-        if np.abs(self.omeff1) > 0.:
-            self.perturb = True
-        elif np.abs(self.omeff2) > 0.:
-            self.perturb = True
-
-    def H4dofsec(self, t, Y):
-        (thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t, Y)
-
-        if self.perturb:
-            ################### old stuff
-            # 7 variables
-            L1 = Y[1]
-            L2 = Y[2]
-            x1 = Y[3]
-            y1 = Y[4]
-            x2 = Y[5]
-            y2 = Y[6]
-
-            alpha = (L1 / L2) ** 2
-            a2 = L2**2 * self.a0
-            a1 = alpha * a2
-
-            g1 = np.arctan2(y1, x1)
-            G1 = sqrt(x1 * x1 + y1 * y1)
-            g2 = np.arctan2(y2, x2)
-            G2 = sqrt(x2 * x2 + y2 * y2)
-
-            e1 = np.sqrt(1 - (1 - G1 / L1) ** 2)
-            e2 = np.sqrt(1 - (1 - G2 / L2) ** 2)
-
-            j = self.j
-
-            # the Hamiltonian is -(constants) as the internal TP
-            # Hamiltonian, i.e. it matches MD
-            alpha1 = L1 * L1 / self.q / self.q
-            alpha2 = L2 * L2
-            alpha = alpha1 / alpha2
-
-            ################### new stuff
-
-            # doing this in the frame of the outer planet
-            g1dotext = -self.omeff1
-            g2dotext = -self.omeff2
-
-            x1dot = x1dot - g1dotext * y1
-            y1dot = y1dot + g1dotext * x1
-            x2dot = x2dot - g2dotext * y2
-            y2dot = y2dot + g2dotext * x2
-
-            # see parent for the ldot secular force from mup these are
-            # just ldot secular forcing from ext. important for fine
-            # detail but not implemented
-            #thetadot = thetadot + (j + 1) * l2dotext - j * l1dotext
-
-        ###################
-
-        return np.array([thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot])

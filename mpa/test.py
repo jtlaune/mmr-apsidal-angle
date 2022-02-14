@@ -45,6 +45,37 @@ class ResonanceTestCase(unittest.TestCase):
         finally:
             os.chdir(self.origindir)
 
+    def test_TP_disTscales(self):
+        seriesname = "tpDisTscales"
+        seriesdir = os.path.join(self.projectdir, seriesname)
+        series = FOCompmassSeries(seriesname, seriesdir, load=True)
+        params = series.RUN_PARAMS
+        #####################################
+        Te1 = np.float64(params[0, 6])
+        Te2 = np.float64(params[0, 7])
+        Tm1 = np.float64(params[0, 8])
+        Tm2 = np.float64(params[0, 9])
+        alpha2_0 = np.float64(params[0, 14])
+        #####################################
+        rundata = series.data[0]
+        print(rundata)
+
+        teval = rundata["teval"]
+        it = int(0.1 * len(teval))
+        teval = teval[0:it]
+        a1 = rundata["a1"][0:it]
+        a2 = rundata["a2"][0:it]
+        a1dot = np.gradient(a1, teval)
+        a2dot = np.gradient(a2, teval)
+        avg_a1_a1dot = np.average(a1 / a1dot)
+        avg_a2_a2dot = np.average(a2 / a2dot)
+        print(avg_a2_a2dot)
+        print(Tm2)
+        print(Tm2 / avg_a2_a2dot)
+        self.assertTrue((avg_a2_a2dot - Tm2) < 0.001 * np.abs(Tm2))
+
+        os.chdir(self.origindir)
+
     def test_Compmass_disTscales(self):
         seriesname = "disTscales"
         seriesdir = os.path.join(self.projectdir, seriesname)
@@ -158,6 +189,11 @@ class ResonanceTestCase(unittest.TestCase):
 
         os.chdir(self.origindir)
 
+    def test_TP_OmEff(self):
+        seriesname = "tpOmEff"
+        seriesdir = os.path.join(self.projectdir, seriesname)
+        series = FOomEffSeries(seriesname, seriesdir, load=True)
+        params = series.RUN_PARAMS
 
 class NbodyTestCase(unittest.TestCase):
     origindir, filename = os.path.split(os.path.abspath(__file__))

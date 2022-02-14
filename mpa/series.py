@@ -1,7 +1,7 @@
 import importlib
 import os
 from .run import series_dir
-from .run import CompmassSet
+from .run import CompmassSet, TPSetOmeff
 import numpy as np
 from .run import CompmassSetOmeff
 from multiprocessing import Pool, TimeoutError
@@ -82,7 +82,6 @@ class FOCompmassSeries(SimSeries):
                 secular=True,
                 method="RK45",
             )
-            np.savez("RUN_PARAMS", self.RUN_PARAMS)
 
             with Pool(processes=min(Nproc, N_sims)) as pool:
                 pool.map(integrate, self.RUN_PARAMS)
@@ -107,7 +106,30 @@ class FOomEffSeries(SimSeries):
                 secular=True,
                 method="RK45",
             )
-            np.savez("RUN_PARAMS", self.RUN_PARAMS)
+
+            with Pool(processes=min(Nproc, N_sims)) as pool:
+                pool.map(integrate, self.RUN_PARAMS)
+
+
+class FOomEffTPSeries(SimSeries):
+    """
+    - Class to run first order TP simulations with omeff
+    """
+
+    # This decorator takes care of the project/series/runsim file
+    # management. intended to be executed from runsim (symbolic link)
+    @series_dir
+    def __call__(self, Nproc=8):
+        if self.load:
+            self.load_all_runs()
+        else:
+            N_sims = self.RUN_PARAMS.shape[0]
+            integrate = TPSetOmeff(
+                verbose=self.verbose,
+                overwrite=self.overwrite,
+                secular=True,
+                method="RK45",
+            )
 
             with Pool(processes=min(Nproc, N_sims)) as pool:
                 pool.map(integrate, self.RUN_PARAMS)

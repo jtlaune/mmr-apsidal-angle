@@ -15,12 +15,17 @@ os.chdir(testdir)
 #series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
 #series()
 
-seriesname = "omEff"
-seriesdir = os.path.join(testdir, seriesname)
-series = mpa.series.FOomEffSeries(seriesname, seriesdir, load=False)
-series()
+#seriesname = "omEff"
+#seriesdir = os.path.join(testdir, seriesname)
+#series = mpa.series.FOomEffSeries(seriesname, seriesdir, load=False)
+#series()
 
 #seriesname = "secular"
 #seriesdir = os.path.join(testdir, seriesname)
 #series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
 #series()
+
+seriesname = "tpOmEff"
+seriesdir = os.path.join(testdir, seriesname)
+series = mpa.series.FOomEffTPSeries(seriesname, seriesdir, load=False)
+series()
