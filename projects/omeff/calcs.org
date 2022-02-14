@@ -1,52 +1,19 @@
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import numpy as np
+  import importlib
   import os
   from numpy import sqrt, cos, sin, pi, abs
   import scipy as sp
-  import scipy.optimize
   import matplotlib as mpl
   import matplotlib.pyplot as plt
-  from matplotlib.ticker import MaxNLocator
-  from matplotlib.ticker import ScalarFormatter
   import sys
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
-  from helper import *
-  from plotting import *
-  import importlib
-  import os
-  import seaborn as sns
-  from scipy.ndimage import uniform_filter1d
-  j = 2
-  plt.rcParams.update({"font.size": 20,
-                       "figure.facecolor": "white",
-                       "figure.figsize": (6,6),
-                       #'font.family': 'serif',
-                       #"font.serif": ["DejaVu Serif"],
-                       #"text.usetex": False,
-                       "axes.linewidth": 3,
-                       'font.family': 'lmodern',
-                       'text.usetex': True,
-                       'text.latex.preamble': (            # LaTeX preamble
-                           r'\usepackage{lmodern}'
-                           # ... more packages if needed
-                       )
-                       })
-  # Create an array with the colors you want to use
-  #colors = ["#FF0B04", "#4374B3"]# Set your custom color palette
-  #sns.set_palette("dark")
+  from mpa.mpl_styles import analytic
+  from mpa.series import FOomEffSeries
 
-  pal = sns.color_palette("colorblind").as_hex()
-  blue = pal[0]
-  orange = pal[3]
-  palette = [blue, orange, *pal[1:2], *pal[4:]]
-  print(palette)
-  sns.set_palette(sns.color_palette(palette))
-
-  # important constants
   deg_conv = 180./np.pi
 
   def load_params(filepath):
-
       spec = importlib.util.spec_from_file_location("_", filepath)
       _ = importlib.util.module_from_spec(spec)
       spec.loader.exec_module(_)
@@ -55,7 +22,7 @@
 #+END_SRC
 
 #+RESULTS:
-: ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
+: hello
 
 * shape of theta hat transformation
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
@@ -79,4 +46,141 @@
 : <matplotlib.contour.QuadContourSet at 0x7fab185156d0>
 #+attr_org: :width 269
 [[file:./.ob-jupyter/0daaab4b379fcfccadc0abac43f95d326436dd4b.png]]
+:END:
+
+* analysis of constant omext1
+** final dvarpi
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  @mpl.rc_context(analytic)
+  def plot():
+      projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/"
+      seriesname = "varyOmeff"
+      seriesdir = os.path.join(projpath, seriesname)
+      paramsname = seriesname+"-params.py"
+      runpath = seriesdir
+      series = FOomEffSeries(seriesname, runpath, load=True, verbose=True, overwrite=False)
+      params = series.RUN_PARAMS
+      fig, ax = plt.subplots()
+
+      for i in [7, 8, 9, 10, 11, 12]:
+          prescomEff = float(params[i,-2]) # prescribed omext1
+          sim = series.data[i]
+          teval = sim["teval"]
+          ti = int(len(teval)*0.9)
+          diffom = np.abs(sim["g2"][ti:] - sim["g1"][ti:]) # actual
+          avgDom = np.average(diffom) # average
+          e1 = sim["e1"][ti:]
+          e2 = sim["e2"][ti:]
+          e1avg = np.average(e1)
+          e2avg = np.average(e2)
+          #ax.scatter(prescomEff, e1avg, c="k", s=10)
+          #ax.scatter(prescomEff, e2avg, c="r", s=10)
+          ax.scatter(prescomEff, avgDom, c="r", s=20)
+          print(prescomEff)
+          # ax.scatter(teval, diffom, c="k", s=10)
+
+      ax.legend()
+      figfp = os.path.join(seriesdir, "final-Dvarpi-states.png")
+      fig.savefig(figfp, bbox_inches="tight")
+      ax.set_xscale("log")
+      ax.set_title(r"$\Delta\varpi$ for varying $\dot\varpi_{1,\rm ext}$",
+                   pad=20)
+      ax.set_xlabel(r"$\dot\varpi_{1,\rm ext}$")
+      ax.set_ylabel(r"final $\Delta\varpi$")
+  plot()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+begin_example
+  No handles with labels found to put in legend.
+  [ 0.00000000e+00 -1.00000000e-09 -1.58489319e-08 -2.51188643e-07
+   -3.98107171e-06 -6.30957344e-05 -1.00000000e-03  1.00000000e-09
+    1.58489319e-08  2.51188643e-07  3.98107171e-06  6.30957344e-05
+    1.00000000e-03  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00] [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00 -1.00000000e-09 -1.58489319e-08 -2.51188643e-07
+   -3.98107171e-06 -6.30957344e-05 -1.00000000e-03  1.00000000e-09
+    1.58489319e-08  2.51188643e-07  3.98107171e-06  6.30957344e-05
+    1.00000000e-03]
+  1e-09
+  1.5848931924611143e-08
+  2.5118864315095823e-07
+  3.981071705534969e-06
+  6.309573444801929e-05
+  0.001
+#+end_example
+[[file:./.ob-jupyter/bcedd0a8664479f49579ccfde62924d8429d8149.png]]
+:END:
+
+** final eccentricities
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  @mpl.rc_context(analytic)
+  def plot():
+      projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/"
+      seriesname = "varyOmeff"
+      seriesdir = os.path.join(projpath, seriesname)
+      paramsname = seriesname+"-params.py"
+      runpath = seriesdir
+      series = FOomEffSeries(seriesname, runpath, load=True, verbose=True, overwrite=False)
+      params = series.RUN_PARAMS
+      fig, ax = plt.subplots()
+
+      for i in [7, 8, 9, 10, 11, 12]:
+          prescomEff = float(params[i,-2]) # prescribed omext1
+          sim = series.data[i]
+          teval = sim["teval"]
+          ti = int(len(teval)*0.9)
+          diffom = np.abs(sim["g2"][ti:] - sim["g1"][ti:]) # actual
+          avgDom = np.average(diffom) # average
+          e1 = sim["e1"][ti:]
+          e2 = sim["e2"][ti:]
+          e1avg = np.average(e1)
+          e2avg = np.average(e2)
+          ax.scatter(prescomEff, e1avg, c="k", s=10)
+          ax.scatter(prescomEff, e2avg, c="r", s=10)
+          #ax.scatter(prescomEff, avgDom, c="r", s=20)
+          print(prescomEff)
+          # ax.scatter(teval, diffom, c="k", s=10)
+
+      ax.legend()
+      figfp = os.path.join(seriesdir, "final-ecc-states.png")
+      fig.savefig(figfp, bbox_inches="tight")
+      ax.set_xscale("log")
+      ax.set_title(r"Final $e_1$, $e_2$ values for varying $\dot\varpi_{1,\rm ext}$",
+                   pad=20)
+      ax.set_xlabel(r"$\dot\varpi_{1,\rm ext}$")
+      ax.set_ylabel(r"final eccentricity")
+  plot()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+begin_example
+  No handles with labels found to put in legend.
+  [ 0.00000000e+00 -1.00000000e-09 -1.58489319e-08 -2.51188643e-07
+   -3.98107171e-06 -6.30957344e-05 -1.00000000e-03  1.00000000e-09
+    1.58489319e-08  2.51188643e-07  3.98107171e-06  6.30957344e-05
+    1.00000000e-03  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00] [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+    0.00000000e+00 -1.00000000e-09 -1.58489319e-08 -2.51188643e-07
+   -3.98107171e-06 -6.30957344e-05 -1.00000000e-03  1.00000000e-09
+    1.58489319e-08  2.51188643e-07  3.98107171e-06  6.30957344e-05
+    1.00000000e-03]
+  1e-09
+  1.5848931924611143e-08
+  2.5118864315095823e-07
+  3.981071705534969e-06
+  6.309573444801929e-05
+  0.001
+#+end_example
+[[file:./.ob-jupyter/1a10f671bc7c0fabfa6500eb3bbdb7994fcd2a00.png]]
 :END:

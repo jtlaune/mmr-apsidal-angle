@@ -718,7 +718,8 @@ class FOCompMassOmeff(FOCompMass):
         e2d=None,
         cutoff=np.infty,
         Te_func=False,
-        omeff=0.0,
+        omeff1=0.0,
+        omeff2=0.0,
     ):
         super().__init__(
             j,
@@ -734,9 +735,12 @@ class FOCompMassOmeff(FOCompMass):
             cutoff=np.infty,
             Te_func=False,
         )
-        self.omeff = omeff/self.T0
+        self.omeff1 = omeff1/self.T0
+        self.omeff2 = omeff2/self.T0
         self.perturb = False
-        if np.abs(self.omeff) > 0.:
+        if np.abs(self.omeff1) > 0.:
+            self.perturb = True
+        elif np.abs(self.omeff2) > 0.:
             self.perturb = True
 
     def H4dofsec(self, t, Y):
@@ -775,8 +779,8 @@ class FOCompMassOmeff(FOCompMass):
             ################### new stuff
 
             # doing this in the frame of the outer planet
-            g1dotext = -self.omeff
-            g2dotext = 0.
+            g1dotext = -self.omeff1
+            g2dotext = -self.omeff2
 
             x1dot = x1dot - g1dotext * y1
             y1dot = y1dot + g1dotext * x1

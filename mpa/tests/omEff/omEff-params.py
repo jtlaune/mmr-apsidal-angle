@@ -81,11 +81,12 @@ def omeffs(q, a0, j, muext, aext):
 ##########
 # OMEFFS #
 ##########
-OMEFFS = np.linspace(1e-2, 1e-1, Nqs)
+OMEFFS1 = np.linspace(1e-2, 1e-1, Nqs)
+OMEFFS2 = np.zeros(Nqs)
 
 NAMES = np.array(
     [
-        f"omeff-{OMEFFS[i]:0.3e}" f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
+        f"omeff-{OMEFFS1[i]:0.3e}" f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
         for i, qit in enumerate(QS)
     ]
 )
@@ -121,6 +122,7 @@ RUN_PARAMS = np.column_stack(
         CUTOFFS,
         G1_0,
         G2_0,
-        OMEFFS,
+        OMEFFS1,
+        OMEFFS2,
     )
 )

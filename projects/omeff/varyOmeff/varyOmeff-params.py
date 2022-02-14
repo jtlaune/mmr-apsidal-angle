@@ -22,7 +22,7 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 33
+Nqs = 25
 qs = np.ones(Nqs) * 0.5
 totmass = 1e-3
 Tw0 = 1000
@@ -71,13 +71,15 @@ ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 ##########
 # OMEFFS #
 ##########
-OMEFFS = np.zeros(Nqs)
-OMEFFS[1:17] = np.logspace(-9, -5, 16)
-OMEFFS[17:] = np.logspace(-5.5, -2, Nqs-17)
-# 
-OMEFFS = -OMEFFS
+OMEFFS1 = np.zeros(Nqs)
+OMEFFS1[1:7] = -np.logspace(-9, -3, 6)
+OMEFFS1[7:13] = -OMEFFS1[1:7]
+OMEFFS2 = np.zeros(Nqs)
+OMEFFS2[13:19] = -np.logspace(-9, -3, 6)
+OMEFFS2[19:] = -OMEFFS2[13:19]
+print(OMEFFS1, OMEFFS2)
 
-NAMES = np.array([f"{i:03d}-omeff0-{OMEFFS[i]:0.3e}" for i, qit in enumerate(QS)])
+NAMES = np.array([f"{i:03d}-omeff0-{OMEFFS1[i]:0.3e}-{OMEFFS2[i]:0.3e}" for i, qit in enumerate(QS)])
 
 DIRNAMES = np.array(
     [f"q{QS[i]:0.2f}/h-{h:0.2f}" f"-Tw0-{Tw0}-mutot-{totmass:0.1e}" for i in range(Nqs)]
@@ -110,6 +112,7 @@ RUN_PARAMS = np.column_stack(
         CUTOFFS,
         G1_0,
         G2_0,
-        OMEFFS,
+        OMEFFS1,
+        OMEFFS2,
     )
 )

@@ -137,7 +137,7 @@ class ResonanceTestCase(unittest.TestCase):
         q = params[0,3] # constant
         n = len(series.data)
         for i in range(n):
-            prescomEff = float(params[i,-1]) # prescribed
+            prescomEff = float(params[i,-2]) # prescribed omext1
             print(i)
             sim = series.data[i]
             teval = sim["teval"]

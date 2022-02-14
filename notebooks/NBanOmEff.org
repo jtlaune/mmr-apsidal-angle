@@ -1,4 +1,4 @@
-#+TITLE: MMR Barrier Problem
+#+TITLE: MMR Summary
 #+AUTHOR: JT Laune
 #+DATE: <2022-02-08 Tue>
 #+LATEX_CLASS: article
@@ -7,7 +7,7 @@
 #+LATEX_HEADER: \newtheorem{defn}{Definition}
 #+STARTUP: nolatexpreview
 
-* Start
+* Start                                                            :noexport:
 Consider $n$ point *orbiters* with finite masses
 $m_1,m_2,m_3,\ldots\ll M$, where $M$ is the mass of the primary about
 which they orbit. Most generally, its Hamiltonian is:
@@ -22,14 +22,16 @@ which they orbit. Most generally, its Hamiltonian is:
 #+end_src
 where $\vec x_i$ and $\vec p_i$ are the Cartesian position and momentum vectors, respectively.
 
-* Assumptions, definitions, and notation
-- Two orbiters, $i=1,2$
+* Assumptions and notation
+- Two comparable mass orbiters, $i=1,2$
   - Internal/external duality around q=1
 - Coplanar, $i_i=0$
 - Eccentricities are small, $e_i\ll 1$
   - First order expansion in $e_i$
 - Orbiter masses are small, $m_i\ll M$
 - Near a first order MMR (1MMR), $j = 1, 2, \ldots$
+- separable $\dot\varpi_{1,\rm ext}$ and $\dot\varpi_{2,\rm ext}$
+** Definitions                                                    :noexport:
 #+attr_latex: :options [Runge-Lenz vector]
 #+begin_defn
 the Cartesian vector with magnitude @@latex:$e$@@ in the
@@ -69,11 +71,41 @@ We define:
    q&\equiv \frac{m_1}{m_2}\quad\text{mass ratio with each other}\\ 
    \mu_i&\equiv \frac{m_i}{M}\quad\text{dimless mass}\\ 
    \mu_{\rm tot}&\equiv \mu_1+\mu_2\quad\text{total mass},\\ 
-   \mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
+   %\mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
   \end{align}
 #+end_src
 @@latex:\noindent@@
 where $M$ is the primary mass.
+
+* Geometric energy and AM
+In the following, we characterize dissipation by its effects on each
+planets' angular momentum (AM) and energy.  A planet's energy,
+$\mathcal E$, is determined by its semimajor axis (sma), $a$:
+#+begin_src latex
+  \begin{align}
+     \mathcal E = -\frac{1}{2a},
+  \end{align}
+  \noindent
+#+end_src
+@@latex:\noindent@@
+where we have chosen units such that $GM=1$.
+Angular momentum is given by
+#+begin_src latex
+  \begin{align}
+  h = \mathcal E \sqrt{1-e^2}.
+  \end{align}
+#+end_src
+** Dissipative effects
+The dissipative effects are modeled
+by two constant timescales for each planet, 
+#+begin_src latex
+  \begin{align}
+    \frac{\dot a_i}{a_i} = -\frac{1}{2\pi\tau_{ai}} - \frac{pe_i^2}{2\pi\tau_{ei}} \\
+    \frac{\dot e_i}{e_i} = -\frac{1}{2\pi\tau_{ei}} ,
+  \end{align}
+#+end_src
+where $\tau_{ai}$ is the exponential e-damping of sma in years.  The
+quantity $\tau_{ei} is the same for eccentricity.
 
 * @@latex:Poincair\'e@@'s conjugate pair
 We utilize the following dimensionless coordinate-momentum conjugate
@@ -88,15 +120,18 @@ pairs (aka @@latex:Poincair\'e@@ coordinates):
 where $\varpi_i$ is the longitude of perihelion and $\lambda_i$ the mean longitude
 of orbiter $m_i$.
 
-* MMR
+* MMR Hamiltonian Model
 Index MMR locations with $j$, such that first order MMRs (hereafter ``1MMRS'') occur whenever
 $n_1/n_2\simeq(j+1)/j$.
 Near these points, the relative angle between these 
 
 Near this point, the following geometric angles in the literal expansion of the perturbing
-function (see [[cite:&murray_solar_2000][Murray and Dermott]] for details) have commensurate ``fast`` frequenc
+function (see [[cite:&murray_solar_2000][Murray and Dermott]] for details) have commensurate ``fast'' frequencies
 #+begin_src latex
-
+  \begin{align}
+  \theta_1 &= (j+1)\lambda_2-j\lambda_1-\varpi_1\\
+  \theta_2 &= (j+1)\lambda_2-j\lambda_1-\varpi_2
+  \end{align}
 #+end_src
 
 
@@ -122,29 +157,83 @@ $\mathcal{H}/\Lambda_i$ reduces to the standard test particle
 Hamiltonian found in [[cite:&murray_solar_2000][Murray and Dermott]] if the limits are taken
 carefully.
 
-* Formal constructions
-The *Kepler problem* is a special case of the *2-body problem*.
-Its solutions are...
+* External companion
+** Constant $\omega_{\rm eff}$
+Set $q=0.5$, inward migration. For simplicity, set $\dot\varpi_{2,\rm
+ext} = 0$ and $\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}$ to be an
+arbitrary precession frequency on $m_1$.
 
-* Hamiltonian Mechanics
-* Dissipation
-In the following, we characterize dissipation by its effects on each
-planets' angular momentum (AM) and energy.  A planet's energy,
-$\mathcal E$, is determined by its semimajor axis (sma), $a$:
+#+attr_latex: :float :width 0.6\textwidth
+#+caption: Here is the unperturbed system, with $\mu_{tot}=1e-3$,
+#+caption: $q=0.5, inward migration, and slow dissipative timescales (T_{w,0}=10000 years) compared to
+#+caption: those in Apsidal Alignment paper.
+[[./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/000-omeff0-0.000e+00-0.000e+00.png]]
+
+#+attr_latex: :float :width 0.6\textwidth
+#+caption: Here is a perturbed system, with $\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\approx 4\times10^{-6}$
+#+caption: and  $\dot\varpi_{2,\rm ext}=0$.
+[[./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/010-omeff0-3.981e-06-0.000e+00.png]]
+
+*** Results summary in final eccentricity and $\Delta\varpi$
+#+attr_latex: :float :width 0.6\textwidth
+#+caption: Here we have plotted the final apsidal angle as a function of $\dot\varpi_{1,\rm ext}$
+[[./projects/omeff/varyOmeff/final-Dvarpi-states.png]]
+
+#+attr_latex: :float :width 0.6\textwidth
+#+caption: Here we have plotted the final eccentricities as a function of $\dot\varpi_{1,\rm ext}$
+[[./projects/omeff/varyOmeff/final-ecc-states.png]]
+
+*** Code validation
+#+attr_latex: :float :width 0.6\textwidth
+#+caption: In the above figure, we have set the total mass to be 1e-7 so
+#+caption: that resonant and secular effects are negligible compared
+#+caption: to the effects of external precession on $\gamma_1$.
+[[./mpa/tests/omEff/test-omEff.png]]
+
+
+** Secular @@latex:$\varpi$@@-precession rates
+Consider a massive planet on a circular orbit which perturbs an MMR
+which lies internal to its orbit.  Let the planet's mass and sma are
+given by $\mu_{\rm ext}$ and $a_{\rm ext}$.  For each planet $m_i$ in
+the resonance, the interaction Hamiltonian with the external
+planet is given by
 #+begin_src latex
-  \begin{align}
-     \mathcal E = -\frac{1}{2a},
-  \end{align}
-  \noindent
+  \begin{equation}
+    H_{i,\rm ext} = -\frac14 \frac{\Gamma_i}{\Lambda_i} \mu_{\rm ext}
+    \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+  \end{equation}
 #+end_src
 @@latex:\noindent@@
-where we have chosen units such that $GM=1$.
-Angular momentum is given by
+for $j=1,2$ and we have utilized the approximation $\Gamma_i \approx \frac12 \Lambda_i e_i^2$.
+
+As a result, each planet experiences a precession in its mean longitude $\lambda_i$ and
+$\gamma_i\equiv -\varpi_i$. In particular, the $\dot\varpi_i$ precession frequency
+is
 #+begin_src latex
-  \begin{align}
-  h = \mathcal E \sqrt{1-e^2}.
-  \end{align}
+  \begin{equation}
+  \dot\varpi_{i, \rm ext} = \frac14 \frac{1}{\Lambda_j} \mu_{\rm ext} 
+      \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+  \end{equation}
 #+end_src
+
+** Sign of $\omega_{\rm eff}$
+One can show
+#+begin_src latex
+  \begin{equation}
+    \dot\varpi_{1,\rm ext}-\dot\varpi_{2,\rm ext}
+  \propto \left(\frac{f_3(a_2/a_{\rm ext})}{f_3(a_1/a_{\rm ext})} - q\right)
+  \end{equation}
+#+end_src
+where $f_3$ is a combination of Laplace coefficients and their derivatives.
+#+attr_latex: :float
+#+caption: Here we have plotted @@latex:$f_3(a_2/a_{\rm ext})/f_3(a_1/a_{\rm ext})$@@.
+#+caption: The horizontal lines show $\alpha$ values where MMRs occur.
+[[./images/maxq-aext-5.0.png]]
+
+
+* Formal constructions                                             :noexport:
+The *Kepler problem* is a special case of the *2-body problem*.
+Its solutions are...
 
 We may characterize dissipation by its action on the ...
 $\tau_{mi}(t)$ and $\tau_{ei}(t)$ by the instantaneous derivatives
@@ -160,12 +249,8 @@ where the dot notation corresponds to the time derivative of the
 orbital elements. The functions $\xi(t)$ and $\zeta(t)$ are the
 coupling between the eccentricity damping, $\tau_e(t)$, and the
 semimajor axis (sma) damping, $\tau_m(t)$.
-* External companion
-#+attr_latex: :float
-[[./images/maxq-aext-3.0.png]]
-** Constant $\omega_{\rm eff}$
-Here we assume ...
-insert results from last night
+
+* Hamiltonian Mechanics                                            :noexport:
 * References
 bibliography:references.bib
 bibliographystyle:unsrt
@@ -188,24 +273,25 @@ bibliographystyle:unsrt
           alpha_1,
           alpha_2,
           ratio,
-          norm=colors.LogNorm(vmin=ratio.min(), vmax=ratio.max()),
       )
 
 
   # scalars
   j = 2
   a1 = 1
-  Npts = 1000
+  Npts = 100
   alpha = (j / (j + 1)) ** (2.0 / 3)
-  alpha_ext = 3.0 * a1
+  alpha_ext = 5.0 * a1
 
   # vectors
   alpha_1 = a1 * np.linspace(0.5, 2, Npts)
-  alpha_2 = alpha_1 / alpha * np.linspace(0.9, 1.1, Npts)
-  a1coord, a2coord = np.meshgrid(alpha_1, alpha_2)  # units au
+  alpha =  np.linspace(1/1.7, 1., Npts)
+  a1coord, alphacoord = np.meshgrid(alpha_1, alpha)  # units au
+  a2coord = a1coord/alphacoord
   ratio = fns.sqr_ei_lc(a2coord / alpha_ext) / fns.sqr_ei_lc(a1coord / alpha_ext)
   cs = plot_func(a1coord, a2coord / a1coord, ratio)
   cb = plt.colorbar(cs, label=r"max $q$ before sign flip")
+  #plt.text(1.4,4,r"$\frac{f_3(a_2/a_{\rm ext})}{f_3(a_1/a_{\rm ext})}$", fontsize=24)
   plt.xlabel(r"$a_1$")
   plt.ylabel(r"$\alpha$")
   plt.title(r"$a_{\rm ext}=$" + f"{alpha_ext}")
@@ -215,7 +301,4 @@ bibliographystyle:unsrt
 #+END_SRC
 
 #+RESULTS:
-:RESULTS:
-#+attr_org: :width 435
-[[file:./.ob-jupyter/9cab057cdbd08f3b94d740297f7ab6e8fa5c1111.png]]
-:END:
+[[file:./.ob-jupyter/b5eefa66e6c4f1ad9f4c9c42696f622b80cc6363.png]]

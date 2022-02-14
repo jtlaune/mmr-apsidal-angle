@@ -612,7 +612,8 @@ def run_compmass_omeff(
     cutoff,
     g1_0,
     g2_0,
-    omeff,
+    omeff1,
+    omeff2,
 ):
     Te_func = 0.0  # I don't think i use this. can delete this param in future
     if not os.path.isdir(dirname):
@@ -633,7 +634,8 @@ def run_compmass_omeff(
                 e2d,
                 cutoff,
                 Te_func,
-                omeff,
+                omeff1,
+                omeff2,
             )
             (
                 teval,
@@ -696,7 +698,8 @@ def run_compmass_omeff(
             e2d,
             cutoff,
             Te_func,
-            omeff,
+            omeff1,
+            omeff2,
         )
         (teval, theta, a1, a2, e1, e2, g1, g2, L1, L2, x1, y1, x2, y2) = sim.int_Hsec(
             T,
@@ -984,7 +987,8 @@ class CompmassSetOmeff(SimSet):
         "cutoff",
         "g1_0",
         "g2_0",
-        "omeff",
+        "omeff1",
+        "omeff2",
     ]
 
     @params_load
@@ -999,7 +1003,8 @@ class CompmassSetOmeff(SimSet):
         Tm2 = self.params["Tm2"]
         q = self.params["q"]
         mu1 = self.params["mu1"]
-        omeff = self.params["omeff"]
+        omeff1 = self.params["omeff1"]
+        omeff2 = self.params["omeff2"]
 
         filename = f"{name}.npz"
         figname = f"{name}.png"
@@ -1009,7 +1014,8 @@ class CompmassSetOmeff(SimSet):
             f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
             f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
             f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            r"$\omega_{\rm eff}$ = " + f"{omeff:0.3e}"
+            r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
+            r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
         )
 
         run_compmass_omeff(

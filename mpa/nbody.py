@@ -152,7 +152,7 @@ class NbodyMigTrapSeries(SimSeries):
             N_sims = self.RUN_PARAMS.shape[0]
             overwrite = not self.load
             integrate = NbodyTPSet(
-                verbose=True, overwrite=overwrite, secular=True, method="RK45"
+                verbose=self.verbose, overwrite=self.overwrite, secular=True, method="RK45"
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
 
