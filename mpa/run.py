@@ -523,7 +523,7 @@ def run_tp_omeff(
     j,
     a0,
     q,
-    mu1,
+    mup,
     T,
     Te1,
     Te2,
@@ -546,7 +546,14 @@ def run_tp_omeff(
     lambda0 = np.random.randn() * 2 * np.pi
     t0 = 0.0
     t1 = T
-    mu2 = mu1/q
+    if q < 1:
+        mu1 = 0.
+        mu2 = mup
+        omEff = omeff1
+    else:
+        mu2 = 0.
+        mu1 = mup
+        omEff = omeff2
     a1_0 = a0
     a2_0 = a0*alpha2_0
     tol = 1e-9
@@ -593,7 +600,7 @@ def run_tp_omeff(
             y,
             g,
             G,
-            ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=None, aext=None)
+            ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=omEff)
 
             if tploc == "int":
                 teval = teval
@@ -695,7 +702,7 @@ def run_tp_omeff(
             y,
             g,
             G,
-        ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=None, aext=None)
+        ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=omEff)
 
         if tploc == "int":
             teval = teval
@@ -998,7 +1005,7 @@ class TPSetOmeff(SimSet):
         "j",
         "a0",
         "q",
-        "mu1",
+        "mup",
         "T",
         "Te1",
         "Te2",
@@ -1029,7 +1036,7 @@ class TPSetOmeff(SimSet):
         Tm1 = self.params["Tm1"]
         Tm2 = self.params["Tm2"]
         q = self.params["q"]
-        mu1 = self.params["mu1"]
+        mup = self.params["mup"]
         omeff1 = self.params["omeff1"]
         omeff2 = self.params["omeff2"]
 
@@ -1038,7 +1045,7 @@ class TPSetOmeff(SimSet):
         paramsname = f"params-{name}.txt"
         suptitle = (
             f"{filename}\n"
-            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
+            f"T={T:0.1e} q={q} " + r"$\mu_{p}=$ " + f"{mup:0.2e}\n"
             f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
             f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
             r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"

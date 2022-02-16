@@ -413,7 +413,7 @@ class FOCompMassOmeff(FOCompMass):
             self.perturb = True
         elif np.abs(self.omeff2) > 0.0:
             self.perturb = True
-
+        
     def H4dofsec(self, t, Y):
         (thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t, Y)
 
@@ -514,6 +514,10 @@ class FOTestPartOmeff(FirstOrder):
         C = self.f3(alpha)
         D = self.f4(alpha)
 
+        if self.i_step < 1:
+            print(Y, alpha)
+            self.i_step = self.i_step + 1
+
         e = np.sqrt(1 - (1 - G / L) ** 2)
 
         ldot = 1 / (L * L * L) + mup * (
@@ -560,33 +564,27 @@ class FOTestPartOmeff(FirstOrder):
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
         if self.perturb:
-            a = L * L * self.ap
-            om1ext = fns.om1ext_n2(self.muext, a, self.ap, self.aext)
-            ompext = fns.om2ext_n2(self.muext, a, self.ap, self.aext)
+            xdot = xdot + self.omEff * sqrt(G) * sin(g)
+            ydot = ydot - self.omEff * sqrt(G) * cos(g)
 
-            om_eff = om1ext - ompext
-
-            xdot = xdot + self.om_eff * sqrt(G) * sin(g)
-            ydot = ydot - self.om_eff * sqrt(G) * cos(g)
-
+            # TODO: NEED TO INCLUDE THESE in final study
             # see above for the ldot secular force from mup
             # these are just ldot secular forcing from ext
-            ldotext = (
-                -self.muext
-                * L
-                * (self.ap * self.ap / self.aext / self.aext)
-                * LC.Db(0.5, 0, a / self.aext)
-            )
-            lpdotext = (
-                -(self.ap * self.ap / self.aext / self.aext)
-                * self.muext
-                * LC.Db(0.5, 0, self.ap / self.aext)
-            )
-
-            if self.Tm > 0:
-                thetapdot = thetapdot + (j + 1) * lpdotext - j * ldotext
-            if self.Tm < 0:
-                thetapdot = thetapdot - j * lpdotext + (j + 1) * ldotext
+            #ldotext = (
+            #    -self.muext
+            #    * L
+            #    * (self.ap * self.ap / self.aext / self.aext)
+            #    * LC.Db(0.5, 0, a / self.aext)
+            #)
+            #lpdotext = (
+            #    -(self.ap * self.ap / self.aext / self.aext)
+            #    * self.muext
+            #    * LC.Db(0.5, 0, self.ap / self.aext)
+            #)
+            #if self.Tm > 0:
+            #    thetapdot = thetapdot + (j + 1) * lpdotext - j * ldotext
+            #if self.Tm < 0:
+            #    thetapdot = thetapdot - j * lpdotext + (j + 1) * ldotext
         print(
             (
                 "alpha: {:0.2f}    "
@@ -602,8 +600,7 @@ class FOTestPartOmeff(FirstOrder):
 
         return np.array([thetapdot, Ldot, xdot, ydot])
 
-    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None, aext=None):
-        print(self)
+    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
         thetap0 = np.random.rand() * 2 * np.pi
         # Here we're using time = tau*t
         self.migrate = False
@@ -611,24 +608,13 @@ class FOTestPartOmeff(FirstOrder):
             self.migrate = True
             self.Tm = Tm
             self.Te = Te
-        print(self.Tm)
 
         self.perturb = False
         # if muext is not None and aext is not None:
-        if om_eff is not None and aext is not None:
-            # will be applied in the rotating frame so that varpi_p =
-            # const = 0. assume that e_ext = 0.
+        self.omEff = om_eff
+        if self.omEff is not None:
             self.perturb = True
-            self.aext = aext
-            self.om_eff = om_eff
-            if self.Tm > 0:
-                ares = (self.j / (self.j + 1)) ** (2.0 / 3.0)
-            if self.Tm < 0:
-                ares = ((self.j + 1) / self.j) ** (2.0 / 3.0)
-            self.muext = self.om_eff / (
-                fns.om1ext_n2(1.0, ares, self.ap, self.aext)
-                - fns.om1ext_n2(1.0, self.ap, self.aext)
-            )
+
 
         self.n_p = 2 * np.pi / sqrt(self.ap)
         # have to use tau = n_p, since anything else changes the
@@ -655,6 +641,7 @@ class FOTestPartOmeff(FirstOrder):
         # scaled H by GM/ap => tau -> sqrt(GM/ap) t; Lambda -> Lambda/sqrt(GM/ap)
         teval = np.linspace(t0, t1, 300000) * self.tau
         span = (teval[0], teval[-1])
+        print(self.Tm, self.Te)
         sol = sp.integrate.solve_ivp(
             RHS,
             span,

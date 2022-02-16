@@ -11,9 +11,9 @@ from mpa.series import FOomEffTPSeries
 
 cwdpath = os.path.abspath(os.getcwd())
 #projpath, _ = os.path.split(cwdpath)
-projpath = cwdpath
+projpath, _ = os.path.split(cwdpath)
 
-seriesname = "tpCap"
+seriesname = "tpOmEff"
 seriesdir = os.path.join(projpath, seriesname)
 paramsname = seriesname+"-params.py"
 runpath = seriesdir

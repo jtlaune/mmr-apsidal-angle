@@ -230,7 +230,6 @@ where $f_3$ is a combination of Laplace coefficients and their derivatives.
 #+caption: The horizontal lines show $\alpha$ values where MMRs occur.
 [[./images/maxq-aext-5.0.png]]
 
-
 * Formal constructions                                             :noexport:
 The *Kepler problem* is a special case of the *2-body problem*.
 Its solutions are...
@@ -258,7 +257,7 @@ bibliographystyle:unsrt
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import os
 
-  os.chdir("/home/jtlaune/multi-planet-architecture/")
+  os.chdir("/home/jtlaune/multi-planet-architecture/projects/omeff/")
   import mpa.fndefs as fns
   from mpa import mpl_styles
   import numpy as np
@@ -301,4 +300,7 @@ bibliographystyle:unsrt
 #+END_SRC
 
 #+RESULTS:
+:RESULTS:
+#+attr_org: :width 442
 [[file:./.ob-jupyter/b5eefa66e6c4f1ad9f4c9c42696f622b80cc6363.png]]
+:END:

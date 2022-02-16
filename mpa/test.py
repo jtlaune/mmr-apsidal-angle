@@ -5,6 +5,7 @@ import unittest
 import os.path
 from .series import FOCompmassSeries
 from .series import FOomEffSeries
+from .series import FOomEffTPSeries
 from . import LaplaceCoefficients as LC
 from . import nbody
 from .fndefs import radNormNegpi, radNormZero
@@ -48,7 +49,7 @@ class ResonanceTestCase(unittest.TestCase):
     def test_TP_disTscales(self):
         seriesname = "tpDisTscales"
         seriesdir = os.path.join(self.projectdir, seriesname)
-        series = FOCompmassSeries(seriesname, seriesdir, load=True)
+        series = FOomEffTPSeries(seriesname, seriesdir, load=True)
         params = series.RUN_PARAMS
         #####################################
         Te1 = np.float64(params[0, 6])
@@ -65,14 +66,14 @@ class ResonanceTestCase(unittest.TestCase):
         teval = teval[0:it]
         a1 = rundata["a1"][0:it]
         a2 = rundata["a2"][0:it]
+        n_p = a2**1.5
         a1dot = np.gradient(a1, teval)
         a2dot = np.gradient(a2, teval)
         avg_a1_a1dot = np.average(a1 / a1dot)
-        avg_a2_a2dot = np.average(a2 / a2dot)
-        print(avg_a2_a2dot)
-        print(Tm2)
-        print(Tm2 / avg_a2_a2dot)
-        self.assertTrue((avg_a2_a2dot - Tm2) < 0.001 * np.abs(Tm2))
+        print(avg_a1_a1dot)
+        print(Tm1)
+        print(Tm1 / avg_a1_a1dot)
+        self.assertTrue((avg_a1_a1dot - Tm1) < 0.01 * np.abs(Tm1))
 
         os.chdir(self.origindir)
 
