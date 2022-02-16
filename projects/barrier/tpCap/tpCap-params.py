@@ -25,7 +25,7 @@ alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
 Nqs = 8
 qs = np.ones(Nqs) * 0.001  # test particle outside
 totmass = 1e-4
-Tw0 = 1000
+Tw0 = 100
 
 ######################
 # Varying parameters #
@@ -34,7 +34,8 @@ E1_0 = np.ones(Nqs) * 0.0
 E2_0 = np.ones(Nqs) * 0.001
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
-
+T1_PROF = np.ones(Nqs)
+T2_PROF = np.logspace(0., -4, Nqs, endpoint=True)
 
 # eccs = np.array([0.1])
 # E1_0, E2_0 = np.meshgrid(eccs, eccs)
@@ -77,6 +78,10 @@ TM2[qs > 1] = -TE2[qs > 1] / 3.46 / HS[qs > 1]**2
 TE1[qs > 1] = TE1[qs > 1]*0.
 TM1[qs > 1] = TM1[qs > 1]*0.
 
+# instantiate migration profiles
+TM1 = TM1*T1_PROF
+TM2 = TM2*T2_PROF
+
 #############################################################
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
 # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
@@ -85,7 +90,7 @@ cutoff_frac = 1.0
 TS = 1e4 * np.ones(Nqs)  # 0.01 * np.maximum(TE1, TE2)
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 CUTOFFS = TS * cutoff_frac
-ALPHA2_0 = (1.55) ** (2.0 / 3) * np.ones(Nqs)
+ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 
 # def muext(omeff, aext):
 def omeffs(q, a0, j, muext, aext):
@@ -100,12 +105,12 @@ def omeffs(q, a0, j, muext, aext):
 ##########
 # OMEFFS #
 ##########
-OMEFFS1 = np.linspace(1e-2, 1e-1, Nqs)
+OMEFFS1 = np.zeros(Nqs)
 OMEFFS2 = np.zeros(Nqs)
 
 NAMES = np.array(
     [
-        f"omeff-{OMEFFS1[i]:0.3e}" f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
+        f"q{qit}-tm{TM1[i]}"
         for i, qit in enumerate(QS)
     ]
 )

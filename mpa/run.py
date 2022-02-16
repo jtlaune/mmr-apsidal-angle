@@ -560,6 +560,7 @@ def run_tp_omeff(
         ep = e2_0
         ap = a2_0
         e0 = e1_0
+        a0 = a1_0
         g0 = g1_0
         Tm = Tm1
         Te = Te1
@@ -569,6 +570,7 @@ def run_tp_omeff(
         ep = e1_0
         ap = a1_0
         e0 = e2_0
+        a0 = a2_0
         g0 = g2_0
         Tm = Tm2
         Te = Te2
@@ -582,41 +584,33 @@ def run_tp_omeff(
             sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0)
 
             (
-                teval,
-                thetap,
-                newresin,
-                newresout,
-                eta,
-                a1,
-                e1,
-                k,
-                kc,
-                alpha0,
-                alpha,
-                g,
-                L,
-                G,
-                ebar,
-                barg,
-                x,
-                y,
+            teval,
+            thetap,
+            a,
+            L,
+            e,
+            x,
+            y,
+            g,
+            G,
             ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=None, aext=None)
 
             if tploc == "int":
                 teval = teval
                 theta = thetap
-                a1 = a1
-                a2 = np.ones(len(teval)) * ap
-                e1 = e1
-                e2 = np.ones(len(teval)) * ep
+                a1 = a
+                e1 = e
                 g1 = g
-                g2 = np.zeros(len(teval))
                 L1 = L
-                L2 = np.ones(len(teval))
                 x1 = x
                 y1 = y
-                x2 = e2
-                y2 = g2
+
+                a2 = np.ones(len(teval)) * ap
+                e2 = np.ones(len(teval)) * ep
+                g2 = np.zeros(len(teval))
+                L2 = np.ones(len(teval))
+                x2 = ep
+                y2 = np.zeros(len(teval))
 
                 np.savez(
                     os.path.join(dirname, filename),
@@ -639,19 +633,19 @@ def run_tp_omeff(
             elif tploc == "ext":
                 teval = teval
                 theta = thetap
-                a2 = a1
-                a1 = np.ones(len(teval)) * ap
-                e2 = e1
-                e1 = np.ones(len(teval)) * ep
+                a2 = a
+                e2 = e
                 g2 = g
-                g1 = np.zeros(len(teval))
-                L1 = np.ones(len(teval))
                 L2 = L
-
-                x1 = e1
-                y1 = np.zeros(len(teval))
                 x2 = x
                 y2 = y
+
+                a1 = np.ones(len(teval)) * ap
+                e1 = np.ones(len(teval)) * ep
+                g1 = np.zeros(len(teval))
+                L1 = np.ones(len(teval))
+                x1 = ep
+                y1 = np.zeros(len(teval))
 
                 np.savez(
                     os.path.join(dirname, filename),
@@ -694,39 +688,32 @@ def run_tp_omeff(
         (
             teval,
             thetap,
-            newresin,
-            newresout,
-            eta,
-            a1,
-            e1,
-            k,
-            kc,
-            alpha0,
-            alpha,
-            g,
+            a,
             L,
-            G,
-            ebar,
-            barg,
+            e,
             x,
             y,
+            g,
+            G,
         ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=None, aext=None)
 
         if tploc == "int":
             teval = teval
             theta = thetap
-            a1 = a1
-            a2 = np.ones(len(teval)) * ap
-            e1 = e1
-            e2 = np.ones(len(teval)) * ep
+
+            a1 = a
+            e1 = e
             g1 = g
-            g2 = np.zeros(len(teval))
             L1 = L
-            L2 = np.ones(len(teval))
             x1 = x
             y1 = y
-            x2 = e2
-            y2 = g2
+
+            a2 = np.ones(len(teval)) * ap
+            e2 = np.ones(len(teval)) * ep
+            g2 = np.zeros(len(teval))
+            L2 = np.ones(len(teval))
+            x2 = ep
+            y2 = np.zeros(len(teval))
 
             np.savez(
                 os.path.join(dirname, filename),
@@ -749,17 +736,18 @@ def run_tp_omeff(
         elif tploc == "ext":
             teval = teval
             theta = thetap
-            a2 = a1
+
             a1 = np.ones(len(teval)) * ap
-            e2 = e1
             e1 = np.ones(len(teval)) * ep
-            g2 = g
             g1 = np.zeros(len(teval))
             L1 = np.ones(len(teval))
-            L2 = L
-
-            x1 = e1
+            x1 = ep
             y1 = np.zeros(len(teval))
+
+            a2 = a
+            e2 = e
+            g2 = g
+            L2 = L
             x2 = x
             y2 = y
 
@@ -786,8 +774,8 @@ def run_tp_omeff(
     alpha = a1 / a2
     period_ratio = (alpha) ** (1.5)
 
-    f1 = fns.f1(alpha, j)
-    f2 = fns.B(alpha, j)
+    f1 = -fns.f27lc(alpha, j)
+    f2 = -fns.f31lc(alpha, j)
     barg1 = np.arctan2(e2 * np.sin(g2), e2 * np.cos(g2) + f2 * e1 / f1)
     barg2 = np.arctan2(e1 * np.sin(g1), e1 * np.cos(g1) + f1 * e2 / f2)
 

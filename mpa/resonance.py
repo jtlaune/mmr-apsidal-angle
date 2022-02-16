@@ -481,6 +481,7 @@ class FOTestPartOmeff(FirstOrder):
         self.g0 = g0
         self.a0 = a0
         self.lambda0 = lambda0
+        self.i_step = 0
 
     def H2dofsec(self, t, Y):
         thetap = Y[0]
@@ -494,28 +495,26 @@ class FOTestPartOmeff(FirstOrder):
         mup = self.mup
         ep = self.ep
         j = self.j
+        theta = thetap + g
 
         # tploc=int
         if self.Tm > 0:
             alpha = L * L
-            theta = thetap + g
             dtheta_dl = -j
             A = self.f1(alpha)
             B = self.f2(alpha)
-            C = self.f3(alpha)
-            D = self.f4(alpha)
-
         # tploc=ext
         else:
             alpha = 1.0 / (L * L)
-            theta = thetap + g
             dtheta_dl = j + 1
-            B = alpha * self.f1(alpha)
             A = alpha * self.f2(alpha)
-            C = alpha * self.f3(alpha)
-            D = alpha * self.f4(alpha)
+            B = alpha * self.f1(alpha)
 
-        e = np.sqrt(2 * G / L)
+        # secular components
+        C = self.f3(alpha)
+        D = self.f4(alpha)
+
+        e = np.sqrt(1 - (1 - G / L) ** 2)
 
         ldot = 1 / (L * L * L) + mup * (
             0.5 * A * e / L * np.cos(theta)
@@ -614,18 +613,6 @@ class FOTestPartOmeff(FirstOrder):
             self.Te = Te
         print(self.Tm)
 
-        int_cond = None
-        if Tm > 0:
-            self.e_eq = np.sqrt(self.Te / (2 * (self.j + 1) * self.Tm))
-            # for some reason this does not work
-            int_cond = fns.check_ratio_tp(1.0)
-            int_cond.terminal = True
-        else:
-            self.e_eq = np.sqrt(self.Te / (2 * self.j * np.abs(self.Tm)))
-            # for some reason this does not work
-            int_cond = fns.check_ratio_tp(1.0)
-            int_cond.terminal = True
-
         self.perturb = False
         # if muext is not None and aext is not None:
         if om_eff is not None and aext is not None:
@@ -643,11 +630,6 @@ class FOTestPartOmeff(FirstOrder):
                 - fns.om1ext_n2(1.0, self.ap, self.aext)
             )
 
-        self.theta_eq = np.arcsin(
-            self.e_eq
-            / (0.8 * self.j * self.mup * Te * (2 * np.pi * (self.j + 1) / self.j))
-        )
-
         self.n_p = 2 * np.pi / sqrt(self.ap)
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
@@ -655,6 +637,10 @@ class FOTestPartOmeff(FirstOrder):
         self.tau = self.n_p
 
         self.T = t1 * self.tau
+
+        # integration conditions
+        int_cond_min = fns.check_ratio_tp(0.5)
+        int_cond_max = fns.check_ratio_tp(0.9)
 
         Lambda0 = np.sqrt(self.a0 / self.ap)
         Gamma0 = Lambda0 * (1 - np.sqrt(1 - self.e0**2))
@@ -674,71 +660,34 @@ class FOTestPartOmeff(FirstOrder):
             span,
             IV,
             method="RK45",
-            events=int_cond,
             t_eval=teval,
             rtol=tol,
             atol=tol,
             dense_output=True,
+            events=[int_cond_min, int_cond_max],
         )
 
         thetap = sol.y[0, :]
+        lenSolns = len(thetap) # for simulations which exited early
+        teval = teval[:lenSolns] / self.tau
         L = sol.y[1, :]
         x = sol.y[2, :]
         y = sol.y[3, :]
-        teval = teval[0 : len(thetap)]
         g = np.arctan2(y, x)
         G = x**2 + y**2
-
-        e1 = np.sqrt(1 - (1 - G / L) ** 2)
-        a1 = L**2 * self.ap
-        if self.Tm > 0:
-            alpha = a1 / self.ap
-            barg = np.arctan2(
-                e1 * np.sin(g),
-                ((e1 * np.cos(g) + self.B(alpha) / self.A(alpha) * self.ep)),
-            )
-            ebar = self.ebar(self.ep, e1, self.A(alpha), self.B(alpha), g)
-        else:
-            alpha = self.ap / a1
-            barg = np.arctan2(
-                e1 * np.sin(g),
-                ((e1 * np.cos(g) + self.A(alpha) / self.B(alpha) * self.ep)),
-            )
-            ebar = self.ebar(self.ep, e1, self.B(alpha), self.A(alpha), g)
-        newresin = (thetap + barg) % (2 * np.pi)
-        newresout = (thetap + barg) % (2 * np.pi)
-        for i in range(len(newresin)):
-            if newresin[i] > np.pi:
-                newresin[i] = newresin[i] - 2 * np.pi
-            if barg[i] > np.pi:
-                barg[i] = barg[i] - 2 * np.pi
-        alpha0 = alpha * (1 + self.j * ebar**2)
-        k = (self.j + 1) * alpha0**1.5 - self.j
-        kc = 3 ** (1.0 / 3.0) * (
-            self.mup * alpha0 * self.j * np.abs(self.A(alpha0))
-        ) ** (2.0 / 3.0)
-        eta = k / kc
-        teval = teval / self.tau
+        e = np.sqrt(1 - (1 - G / L) ** 2)
+        a = L**2 * self.ap
 
         return (
             teval,
             thetap,
-            newresin,
-            newresout,
-            eta,
-            a1,
-            e1,
-            k,
-            kc,
-            alpha0,
-            alpha,
-            g,
+            a,
             L,
-            G,
-            ebar,
-            barg,
+            e,
             x,
             y,
+            g,
+            G,
         )
 
     def evecsec(self, t, Y):

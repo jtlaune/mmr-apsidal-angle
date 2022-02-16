@@ -125,17 +125,6 @@ def format_e(x, pos):
         a = "0"
     return a
 
-
-def check_Lgtr1(t, Y):
-    L = Y[1]
-    return L - 1
-
-
-def check_Lless1(t, Y):
-    L = Y[1]
-    return 1 - L
-
-
 class check_ratio_cm:
     def __init__(self, ratio0, q):
         self.ratio0 = ratio0
