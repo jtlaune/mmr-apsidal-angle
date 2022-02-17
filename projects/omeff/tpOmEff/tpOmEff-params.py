@@ -13,8 +13,6 @@ sys.path.append("/home/jtlaune/multi-planet-architecture/mpa/")
 import mpa
 import mpa.fndefs as fns
 
-mpl.rcParams.update({"font.size": 20, "figure.facecolor": "white"})
-
 #################
 # CONFIGURATION #
 #################
@@ -22,19 +20,28 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 8
+chunk = 8
+Nqs = 32
+eps = [0.0, 0.001, 0.03, 0.1]
 qs = np.ones(Nqs) * 0.001  # test particle inside
+dirn = "internal"
 totmass = 1e-4
 Tw0 = 1000
 
 ######################
 # Varying parameters #
 ######################
-E1_0 = np.ones(Nqs) * 0.001
-E2_0 = np.ones(Nqs) * 0.001
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
 
+E1_0 = np.ones(Nqs) * 0.001
+E2_0 = np.ones(Nqs)
+for jit in range(4):
+    E2_0[jit*chunk:(jit+1)*chunk] = eps[jit]*np.ones(chunk)
+
+DIRNAMES = np.array(
+    [f"{dirn}/Tw0{Tw0}/ep{E2_0[i]:0.3f}/" for i in range(Nqs)]
+)
 
 # eccs = np.array([0.1])
 # E1_0, E2_0 = np.meshgrid(eccs, eccs)
@@ -81,37 +88,28 @@ TM1[qs > 1] = TM1[qs > 1]*0.
 # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
 #############################################################
 cutoff_frac = 1.0
-TS = 1e6 * np.ones(Nqs)
+TS = 3e5 * np.ones(Nqs)
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 CUTOFFS = TS * cutoff_frac
 ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
-
-# def muext(omeff, aext):
-def omeffs(q, a0, j, muext, aext):
-    alpha = (j / (j + 1)) ** (2.0 / 3)
-    a1 = alpha * a0
-    a2 = a0
-    om1 = q * fns.om1ext_n2(muext, a1, a2, aext)
-    om2 = fns.om2ext_n2(muext, a2, aext)
-    return om1 - om2
 
 
 ##########
 # OMEFFS #
 ##########
-OMEFFS1 = np.logspace(-8, -1, Nqs)
+OMEFFS1 = np.ones(Nqs)
+for jit in range(int(Nqs/chunk)):
+    OMEFFS1[jit*chunk:(jit+1)*chunk] = np.logspace(-8, -1, chunk)
+
 OMEFFS2 = np.zeros(Nqs)
 
 NAMES = np.array(
     [
-        f"omeff-{OMEFFS1[i]:0.3e}" f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
+        f"{str(i).zfill(4)}-mup{MUP[i]:0.2e}-omeff{OMEFFS1[i]:0.2e}"
         for i, qit in enumerate(QS)
     ]
 )
-
-DIRNAMES = np.array(
-    [f"q{QS[i]:0.1f}/"+f"Tw0-{Tw0}-mup-{totmass:0.1e}" for i in range(Nqs)]
-)
+print(NAMES)
 
 DIRNAMES_NOSEC = np.array([DIRNAMES[i] + "_NOSEC" for i in range(Nqs)])
 
