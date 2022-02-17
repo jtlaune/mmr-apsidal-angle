@@ -1,0 +1,236 @@
+% Created 2022-02-16 Wed 20:43
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\newtheorem{defn}{Definition}
+\author{JT Laune}
+\date{\textit{<2022-02-08 Tue>}}
+\title{MMR Summary}
+\hypersetup{
+ pdfauthor={JT Laune},
+ pdftitle={MMR Summary},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.5.2)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Assumptions and notation}
+\label{sec:org60efc5e}
+\begin{itemize}
+\item Two comparable mass orbiters, \(i=1,2\)
+\begin{itemize}
+\item Internal/external duality around q=1
+\end{itemize}
+\item Coplanar, \(i_i=0\)
+\item Eccentricities are small, \(e_i\ll 1\)
+\begin{itemize}
+\item First order expansion in \(e_i\)
+\end{itemize}
+\item Orbiter masses are small, \(m_i\ll M\)
+\item Near a first order MMR (1MMR), \(j = 1, 2, \ldots\)
+\item independently parameterized \(\dot\varpi_{1,\rm ext}\) and \(\dot\varpi_{2,\rm ext}\)
+\end{itemize}
+
+\section{Scaling}
+\label{sec:org463d5ca}
+We choose the following units
+\begin{align}
+\frac{[GM_\odot][{\rm au}]}{[2\pi{\rm yr}]^2} = 1
+\end{align}
+
+\noindent so that time \(\tau(t) \equiv 2\pi t\) is the
+dimensionless arc length parameterization of a circular orbit
+with sma=1 au and \(t\) is measured in years.
+
+\section{Perturbation theory in the N-body problem}
+\label{sec:org039a230}
+\section{Disturbing function for N body problem \href{./images/screenshot-02.png}{7.8}}
+\label{sec:org965460f}
+\begin{itemize}
+\item coefficients: \href{./images/screenshot-03.png}{7.9-7.12}
+\item bar(alpha12) = [(alpha12 if j=1 external pert),  (1 if j=2 internal pert)]
+\end{itemize}
+\section{MMR Hamiltonian Model}
+\label{sec:orgd7eca4a}
+Index MMR locations with \(j\), such that first order MMRs (hereafter ``1MMRS'') occur whenever
+\(n_1/n_2\simeq(j+1)/j\).
+Near these points, the relative angle between these 
+
+Near this point, the following geometric angles in the literal expansion of the perturbing
+function (see \cite{murray_solar_2000} for details) have commensurate ``fast'' frequencies
+\begin{align}
+\theta_1 &= (j+1)\lambda_2-j\lambda_1-\varpi_1\\
+\theta_2 &= (j+1)\lambda_2-j\lambda_1-\varpi_2
+\end{align}
+
+
+We may use the Poincair\'e elements to write
+the dimensionless Hamiltonian as:
+\begin{align}
+\label{eq:H_1}
+  \mathcal{H}
+  = -\frac{q^3}{2(1+q)^3 \Lambda_1^2}
+    - \frac{1}{2(1+q)^3\Lambda_2^2}
+   - \frac{\tilde\mu}{(1+q)^2 \Lambda_2^2}\left[
+    f_1\sqrt{\frac{2\Gamma_1}{\Lambda_1}}\cos\theta_1
+    +f_2\sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos\theta_2
+    \right],
+\end{align}
+
+\noindent where we have defined
+\(\tilde\mu=\mu_1\mu_2/(\mu_1+\mu_2)\) to be the reduced mass ratio.
+and the \(\theta_i\) are conjugate to \(\Gamma_i\).  For the limiting
+cases of \(q\to \infty\) (\(m_2=0\)) or \(q\to 0\) (\(m_1=0\)), the ratio
+\(\mathcal{H}/\Lambda_i\) reduces to the standard test particle
+Hamiltonian found in \cite{murray_solar_2000} if the limits are taken
+carefully.
+
+\section{Poincair\'e's conjugate pair}
+\label{sec:org71b92c1}
+We utilize the following dimensionless coordinate-momentum conjugate
+pairs (aka Poincair\'e coordinates):
+\begin{align}
+  \lambda_i \longleftrightarrow\Lambda_i &= \mu_i\sqrt{\alpha_i} \\
+  -\varpi_i \longleftrightarrow\Gamma_i &= \mu_i\sqrt{\alpha_i}(1-\sqrt{1-e_i^2}) \approx \frac12\mu_i\sqrt{\alpha_i}e_i^2,
+\end{align}
+
+\noindent
+where \(\varpi_i\) is the longitude of perihelion and \(\lambda_i\) the mean longitude
+of orbiter \(m_i\).
+
+\section{Dimensionless parameters}
+\label{sec:orgfae2a6a}
+We define:
+\begin{align}
+ q&\equiv \frac{m_1}{m_2}\quad\text{mass ratio with each other}\\ 
+ \mu_i&\equiv \frac{m_i}{M}\quad\text{dimless mass}\\ 
+ \mu_{\rm tot}&\equiv \mu_1+\mu_2\quad\text{total mass},\\ 
+ %\mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
+\end{align}
+
+\noindent
+where \(M\) is the primary mass.
+
+\section{Geometric energy and AM}
+\label{sec:org8dbdc89}
+In the following, we characterize dissipation by its effects on each
+planets' angular momentum (AM) and energy.  A planet's energy,
+\(\mathcal E\), is determined by its semimajor axis (sma), \(a\):
+\begin{align}
+   \mathcal E = -\frac{1}{2a},
+\end{align}
+\noindent
+
+\noindent
+where we have chosen units such that \(GM=1\).
+Angular momentum is given by
+\begin{align}
+h = \mathcal E \sqrt{1-e^2}.
+\end{align}
+
+\subsection{Dissipative effects}
+\label{sec:org263ff1c}
+The dissipative effects are modeled
+by two constant timescales for each planet, 
+\begin{align}
+  \frac{\dot a_i}{a_i} = -\frac{1}{2\pi\tau_{ai}} - \frac{pe_i^2}{2\pi\tau_{ei}} \\
+  \frac{\dot e_i}{e_i} = -\frac{1}{2\pi\tau_{ei}} ,
+\end{align}
+
+where \(\tau_{ai}\) is the exponential e-damping of sma in years.  The
+quantity \(\tau_{ei}\) is the same for eccentricity.
+
+\section{External companion}
+\label{sec:orgde87c73}
+\subsection{Constant \(\omega_{\rm eff}\)}
+\label{sec:orgfcebcce}
+Set \(q=0.5\), inward migration. For simplicity, set \(\dot\varpi_{2,\rm
+ext} = 0\) and \(\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\) to be an
+arbitrary precession frequency on \(m_1\).
+
+\begin{center}
+\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/000-omeff0-0.000e+00-0.000e+00.png}
+\captionof{figure}{Here is the unperturbed system, with \(\mu_{tot}=1e-3\), \$q=0.5, inward migration, and slow dissipative timescales (T\textsubscript{w,0}=10000 years) compared to those in Apsidal Alignment paper.}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/010-omeff0-3.981e-06-0.000e+00.png}
+\captionof{figure}{Here is a perturbed system, with \(\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\approx 4\times10^{-6}\) and  \(\dot\varpi_{2,\rm ext}=0\).}
+\end{center}
+
+\subsubsection{Results summary in final eccentricity and \(\Delta\varpi\)}
+\label{sec:orgec09f85}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/final-Dvarpi-states.png}
+\captionof{figure}{Here we have plotted the final apsidal angle as a function of \(\dot\varpi_{1,\rm ext}\)}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/final-ecc-states.png}
+\captionof{figure}{Here we have plotted the final eccentricities as a function of \(\dot\varpi_{1,\rm ext}\)}
+\end{center}
+
+\subsubsection{Code validation}
+\label{sec:org8c517f8}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{./mpa/tests/omEff/test-omEff.png}
+\captionof{figure}{In the above figure, we have set the total mass to be 1e-7 so that resonant and secular effects are negligible compared to the effects of external precession on \(\gamma_1\).}
+\end{center}
+
+
+\subsection{Secular $\varpi$-precession rates}
+\label{sec:org74e4749}
+Consider a massive planet on a circular orbit which perturbs an MMR
+which lies internal to its orbit.  Let the planet's mass and sma are
+given by \(\mu_{\rm ext}\) and \(a_{\rm ext}\).  For each planet \(m_i\) in
+the resonance, the interaction Hamiltonian with the external
+planet is given by
+\begin{equation}
+  H_{i,\rm ext} = -\frac14 \frac{\Gamma_i}{\Lambda_i} \mu_{\rm ext}
+  \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+\end{equation}
+
+\noindent
+for \(j=1,2\) and we have utilized the approximation \(\Gamma_i \approx \frac12 \Lambda_i e_i^2\).
+
+As a result, each planet experiences a precession in its mean longitude \(\lambda_i\) and
+\(\gamma_i\equiv -\varpi_i\). In particular, the \(\dot\varpi_i\) precession frequency
+is
+\begin{equation}
+\dot\varpi_{i, \rm ext} = \frac14 \frac{1}{\Lambda_j} \mu_{\rm ext} 
+    \left(\frac{a_i}{a_{\rm ext}}\right) b_{3/2}^{(1)}\left(\frac{a_i}{a_{\rm ext}}\right),
+\end{equation}
+
+\subsection{Sign of \(\omega_{\rm eff}\)}
+\label{sec:org57c7f63}
+One can show
+\begin{equation}
+  \dot\varpi_{1,\rm ext}-\dot\varpi_{2,\rm ext}
+\propto \left(\frac{f_3(a_2/a_{\rm ext})}{f_3(a_1/a_{\rm ext})} - q\right)
+\end{equation}
+
+where \(f_3\) is a combination of Laplace coefficients and their derivatives.
+\begin{center}
+\includegraphics[width=.9\linewidth]{./images/maxq-aext-5.0.png}
+\captionof{figure}{Here we have plotted $f_3(a_2/a_{\rm ext})/f_3(a_1/a_{\rm ext})$. The horizontal lines show \(\alpha\) values where MMRs occur.}
+\end{center}
+
+\section{References}
+\label{sec:org9eddb06}
+\bibliography{references}
+\bibliographystyle{unsrt}
+\end{document}

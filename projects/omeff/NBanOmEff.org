@@ -30,7 +30,7 @@ where $\vec x_i$ and $\vec p_i$ are the Cartesian position and momentum vectors,
   - First order expansion in $e_i$
 - Orbiter masses are small, $m_i\ll M$
 - Near a first order MMR (1MMR), $j = 1, 2, \ldots$
-- separable $\dot\varpi_{1,\rm ext}$ and $\dot\varpi_{2,\rm ext}$
+- independently parameterized $\dot\varpi_{1,\rm ext}$ and $\dot\varpi_{2,\rm ext}$
 ** Definitions                                                    :noexport:
 #+attr_latex: :options [Runge-Lenz vector]
 #+begin_defn
@@ -42,87 +42,17 @@ direction of orbital perihelion
 We choose the following units
 #+begin_src latex
   \begin{align}
-  \frac{[GM_\odot][{\rm au}]}{4\pi^2[{\rm yr}]^2} = 1
+  \frac{[GM_\odot][{\rm au}]}{[2\pi{\rm yr}]^2} = 1
   \end{align}
 #+end_src
 @@latex:\noindent@@ so that time $\tau(t) \equiv 2\pi t$ is the
-dimensionless arc length parameterization of a circular orbit and $t$ is measured in years.
+dimensionless arc length parameterization of a circular orbit
+with sma=1 au and $t$ is measured in years.
 
-The dimensionless Hamiltonian is then
-#+begin_src latex
-  \begin{align}
-    \hat{\mathcal H}
-    &\simeq \sum^{n}_{i=1}\left(\frac12 \hat p_i\cdot\hat p_i
-      -\frac{G\mu_i}{2|\hat x_i|} \right)
-      - \sum_{j\neq i}^{n} \left(\frac{G\mu_i\mu_j}{2|\hat x_i - \hat x_j|}
-      \right),\\
-    &\equiv H_0 + H_1
-  \end{align}
-#+end_src
-@@latex:\noindent@@ where $\hat x_i$ and $\hat p_i$ are the
-dimensionless Cartesian coordinates and momenta.  The first sum $H_0$ is
-known as the Keplerian Hamiltonian and is $\mathcal O(\mu_i)$; the second is the
-$\mathcal O(\mu_i\mu_j)$ contribution from mutual interactions, $H_{1}$.
-
-* Dimensionless parameters
-We define:
-#+begin_src latex
-  \begin{align}
-   q&\equiv \frac{m_1}{m_2}\quad\text{mass ratio with each other}\\ 
-   \mu_i&\equiv \frac{m_i}{M}\quad\text{dimless mass}\\ 
-   \mu_{\rm tot}&\equiv \mu_1+\mu_2\quad\text{total mass},\\ 
-   %\mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
-  \end{align}
-#+end_src
-@@latex:\noindent@@
-where $M$ is the primary mass.
-
+* Perturbation theory in the N-body problem
 * Disturbing function for N body problem [[file:./images/screenshot-02.png][7.8]]
 - coefficients: [[file:./images/screenshot-03.png][7.9-7.12]]
 - bar(alpha12) = [(alpha12 if j=1 external pert),  (1 if j=2 internal pert)]
-* Geometric energy and AM
-In the following, we characterize dissipation by its effects on each
-planets' angular momentum (AM) and energy.  A planet's energy,
-$\mathcal E$, is determined by its semimajor axis (sma), $a$:
-#+begin_src latex
-  \begin{align}
-     \mathcal E = -\frac{1}{2a},
-  \end{align}
-  \noindent
-#+end_src
-@@latex:\noindent@@
-where we have chosen units such that $GM=1$.
-Angular momentum is given by
-#+begin_src latex
-  \begin{align}
-  h = \mathcal E \sqrt{1-e^2}.
-  \end{align}
-#+end_src
-** Dissipative effects
-The dissipative effects are modeled
-by two constant timescales for each planet, 
-#+begin_src latex
-  \begin{align}
-    \frac{\dot a_i}{a_i} = -\frac{1}{2\pi\tau_{ai}} - \frac{pe_i^2}{2\pi\tau_{ei}} \\
-    \frac{\dot e_i}{e_i} = -\frac{1}{2\pi\tau_{ei}} ,
-  \end{align}
-#+end_src
-where $\tau_{ai}$ is the exponential e-damping of sma in years.  The
-quantity $\tau_{ei} is the same for eccentricity.
-
-* @@latex:Poincair\'e@@'s conjugate pair
-We utilize the following dimensionless coordinate-momentum conjugate
-pairs (aka @@latex:Poincair\'e@@ coordinates):
-#+begin_src latex
-  \begin{align}
-    \lambda_i \longleftrightarrow\Lambda_i &= \mu_i\sqrt{\alpha_i} \\
-    -\varpi_i \longleftrightarrow\Gamma_i &= \mu_i\sqrt{\alpha_i}(1-\sqrt{1-e_i^2}) \approx \frac12\mu_i\sqrt{\alpha_i}e_i^2,
-  \end{align}
-#+end_src
-@@latex:\noindent@@
-where $\varpi_i$ is the longitude of perihelion and $\lambda_i$ the mean longitude
-of orbiter $m_i$.
-
 * MMR Hamiltonian Model
 Index MMR locations with $j$, such that first order MMRs (hereafter ``1MMRS'') occur whenever
 $n_1/n_2\simeq(j+1)/j$.
@@ -159,6 +89,62 @@ cases of $q\to \infty$ ($m_2=0$) or $q\to 0$ ($m_1=0$), the ratio
 $\mathcal{H}/\Lambda_i$ reduces to the standard test particle
 Hamiltonian found in [[cite:&murray_solar_2000][Murray and Dermott]] if the limits are taken
 carefully.
+
+* @@latex:Poincair\'e@@'s conjugate pair
+We utilize the following dimensionless coordinate-momentum conjugate
+pairs (aka @@latex:Poincair\'e@@ coordinates):
+#+begin_src latex
+  \begin{align}
+    \lambda_i \longleftrightarrow\Lambda_i &= \mu_i\sqrt{\alpha_i} \\
+    -\varpi_i \longleftrightarrow\Gamma_i &= \mu_i\sqrt{\alpha_i}(1-\sqrt{1-e_i^2}) \approx \frac12\mu_i\sqrt{\alpha_i}e_i^2,
+  \end{align}
+#+end_src
+@@latex:\noindent@@
+where $\varpi_i$ is the longitude of perihelion and $\lambda_i$ the mean longitude
+of orbiter $m_i$.
+
+* Dimensionless parameters
+We define:
+#+begin_src latex
+  \begin{align}
+   q&\equiv \frac{m_1}{m_2}\quad\text{mass ratio with each other}\\ 
+   \mu_i&\equiv \frac{m_i}{M}\quad\text{dimless mass}\\ 
+   \mu_{\rm tot}&\equiv \mu_1+\mu_2\quad\text{total mass},\\ 
+   %\mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
+  \end{align}
+#+end_src
+@@latex:\noindent@@
+where $M$ is the primary mass.
+
+* Geometric energy and AM
+In the following, we characterize dissipation by its effects on each
+planets' angular momentum (AM) and energy.  A planet's energy,
+$\mathcal E$, is determined by its semimajor axis (sma), $a$:
+#+begin_src latex
+  \begin{align}
+     \mathcal E = -\frac{1}{2a},
+  \end{align}
+  \noindent
+#+end_src
+@@latex:\noindent@@
+where we have chosen units such that $GM=1$.
+Angular momentum is given by
+#+begin_src latex
+  \begin{align}
+  h = \mathcal E \sqrt{1-e^2}.
+  \end{align}
+#+end_src
+** Dissipative effects
+The dissipative effects are modeled
+by two constant timescales for each planet, 
+#+begin_src latex
+  \begin{align}
+    \frac{\dot a_i}{a_i} = -\frac{1}{2\pi\tau_{ai}} - \frac{pe_i^2}{2\pi\tau_{ei}} \\
+    \frac{\dot e_i}{e_i} = -\frac{1}{2\pi\tau_{ei}} ,
+  \end{align}
+#+end_src
+where $\tau_{ai}$ is the exponential e-damping of sma in years.  The
+quantity $\tau_{ei}$ is the same for eccentricity.
 
 * External companion
 ** Constant $\omega_{\rm eff}$
@@ -256,54 +242,3 @@ semimajor axis (sma) damping, $\tau_m(t)$.
 * References
 bibliography:references.bib
 bibliographystyle:unsrt
-* code                                                             :noexport:
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  import os
-
-  os.chdir("/home/jtlaune/multi-planet-architecture/projects/omeff/")
-  import mpa.fndefs as fns
-  from mpa import mpl_styles
-  import numpy as np
-  import matplotlib as mpl
-  import matplotlib.pyplot as plt
-  from matplotlib import colors
-
-
-  @mpl.rc_context(mpl_styles.analytic)
-  def plot_func(alpha_1, alpha_2, ratio):
-      return plt.contourf(
-          alpha_1,
-          alpha_2,
-          ratio,
-      )
-
-
-  # scalars
-  j = 2
-  a1 = 1
-  Npts = 100
-  alpha = (j / (j + 1)) ** (2.0 / 3)
-  alpha_ext = 5.0 * a1
-
-  # vectors
-  alpha_1 = a1 * np.linspace(0.5, 2, Npts)
-  alpha =  np.linspace(1/1.7, 1., Npts)
-  a1coord, alphacoord = np.meshgrid(alpha_1, alpha)  # units au
-  a2coord = a1coord/alphacoord
-  ratio = fns.sqr_ei_lc(a2coord / alpha_ext) / fns.sqr_ei_lc(a1coord / alpha_ext)
-  cs = plot_func(a1coord, a2coord / a1coord, ratio)
-  cb = plt.colorbar(cs, label=r"max $q$ before sign flip")
-  #plt.text(1.4,4,r"$\frac{f_3(a_2/a_{\rm ext})}{f_3(a_1/a_{\rm ext})}$", fontsize=24)
-  plt.xlabel(r"$a_1$")
-  plt.ylabel(r"$\alpha$")
-  plt.title(r"$a_{\rm ext}=$" + f"{alpha_ext}")
-  for j in range(1, 8):
-      plt.axhline(y=((j + 1) / j) ** (2.0 / 3.0), c="k", ls="--", lw="1")
-  plt.savefig(f"images/maxq-aext-{alpha_ext}.png")
-#+END_SRC
-
-#+RESULTS:
-:RESULTS:
-#+attr_org: :width 442
-[[file:./.ob-jupyter/b5eefa66e6c4f1ad9f4c9c42696f622b80cc6363.png]]
-:END:
