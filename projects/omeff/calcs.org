@@ -184,3 +184,57 @@
 #+end_example
 [[file:./.ob-jupyter/1a10f671bc7c0fabfa6500eb3bbdb7994fcd2a00.png]]
 :END:
+
+* analysis of $q$, omeff, muext, and aext                          :noexport:
+- i'm pretty sure this is totally wrong. secular precession frequency
+  should not be related by factor of $q$
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import os
+
+  os.chdir("/home/jtlaune/multi-planet-architecture/projects/omeff/")
+  import mpa.fndefs as fns
+  from mpa import mpl_styles
+  import numpy as np
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  from matplotlib import colors
+
+
+  @mpl.rc_context(mpl_styles.analytic)
+  def plot_func(alpha_1, alpha_2, ratio):
+      return plt.contourf(
+          alpha_1,
+          alpha_2,
+          ratio,
+      )
+
+
+  # scalars
+  j = 2
+  a1 = 1
+  Npts = 100
+  alpha = (j / (j + 1)) ** (2.0 / 3)
+  alpha_ext = 5.0 * a1
+
+  # vectors
+  alpha_1 = a1 * np.linspace(0.5, 2, Npts)
+  alpha =  np.linspace(1/1.7, 1., Npts)
+  a1coord, alphacoord = np.meshgrid(alpha_1, alpha)  # units au
+  a2coord = a1coord/alphacoord
+  ratio = fns.sqr_ei_lc(a2coord / alpha_ext) / fns.sqr_ei_lc(a1coord / alpha_ext)
+  cs = plot_func(a1coord, a2coord / a1coord, ratio)
+  cb = plt.colorbar(cs, label=r"max $q$ before sign flip")
+  #plt.text(1.4,4,r"$\frac{f_3(a_2/a_{\rm ext})}{f_3(a_1/a_{\rm ext})}$", fontsize=24)
+  plt.xlabel(r"$a_1$")
+  plt.ylabel(r"$\alpha$")
+  plt.title(r"$a_{\rm ext}=$" + f"{alpha_ext}")
+  for j in range(1, 8):
+      plt.axhline(y=((j + 1) / j) ** (2.0 / 3.0), c="k", ls="--", lw="1")
+  plt.savefig(f"images/maxq-aext-{alpha_ext}.png")
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+attr_org: :width 442
+[[file:./.ob-jupyter/b5eefa66e6c4f1ad9f4c9c42696f622b80cc6363.png]]
+:END:
