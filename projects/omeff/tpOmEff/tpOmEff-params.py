@@ -20,25 +20,21 @@ mpl.rcParams.update({"font.size": 20, "figure.facecolor": "white"})
 #################
 j = 2
 a0 = 1.0
-#h = 0.03
+h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 1
-qs = np.ones(Nqs) * 0.  # test particle inside
+Nqs = 8
+qs = np.ones(Nqs) * 0.001  # test particle inside
 totmass = 1e-4
 Tw0 = 1000
-#############################################################
-# BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
-# VALUES. LIKELY A FACTOR OF 2PI THING.                     #
-#############################################################
-cutoff_frac = 1.0
 
 ######################
 # Varying parameters #
 ######################
 E1_0 = np.ones(Nqs) * 0.001
-E2_0 = np.ones(Nqs) * 0.0
+E2_0 = np.ones(Nqs) * 0.001
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
+
 
 # eccs = np.array([0.1])
 # E1_0, E2_0 = np.meshgrid(eccs, eccs)
@@ -50,15 +46,11 @@ E2DS = np.ones(Nqs) * 0.0
 ####################
 G1_0 = np.array([np.random.uniform(0, 2 * np.pi) for i in range(Nqs)])
 G2_0 = np.array([np.random.uniform(0, 2 * np.pi) for i in range(Nqs)])
-HS = np.ones(Nqs)*0.03
+HS = np.ones(Nqs)*h
 JS = np.ones(Nqs) * j
 A0S = np.ones(Nqs) * a0
 QS = qs
-
-MU2 = np.ones(Nqs)
-MU2[qs < 1] = totmass # internal TP
-MU2[qs > 1] = 0. # external TP
-MU1 = totmass - MU2
+MUP = totmass*np.ones(Nqs)
 
 ##########################################################################
 # Dissipative timescales                                                 #
@@ -71,20 +63,25 @@ TM2 = np.ones(Nqs)
 # Tms are opposite direction of the comparable mass case
 # internal
 # tp
-TE1[qs < 1] = Tw0 * TE1[qs < 1]
-TM1[qs < 1] = -TE1[qs < 1] / 3.46 / HS[qs < 1]**2 
+TE1[qs < 1] = Tw0*TE1[qs < 1]
+TM1[qs < 1] = TE1[qs < 1] / HS[qs < 1]**2
 # mup, code should not take these
 TE2[qs < 1] = TE2[qs < 1]*0.
 TM2[qs < 1] = TM2[qs < 1]*0.
 # external
 # tp
-TE2[qs > 1] = Tw0 * TE2[qs > 1]
-TM2[qs > 1] = -TE2[qs > 1] / 3.46 / HS[qs > 1]**2
+TE2[qs > 1] = Tw0*TE2[qs > 1]
+TM2[qs > 1] = -TE2[qs > 1] / HS[qs > 1]**2
 # mup, code should not take these
 TE1[qs > 1] = TE1[qs > 1]*0.
 TM1[qs > 1] = TM1[qs > 1]*0.
 
-TS = 1e2 * np.ones(Nqs)  # 0.01 * np.maximum(TE1, TE2)
+#############################################################
+# BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
+# VALUES. LIKELY A FACTOR OF 2PI THING.                     #
+#############################################################
+cutoff_frac = 1.0
+TS = 1e6 * np.ones(Nqs)
 ALPHA_0 = alpha_0 * np.ones(Nqs)
 CUTOFFS = TS * cutoff_frac
 ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
@@ -102,12 +99,12 @@ def omeffs(q, a0, j, muext, aext):
 ##########
 # OMEFFS #
 ##########
-OMEFFS1 = np.zeros(Nqs) #np.logspace(-8, -4, Nqs, endpoint=True)
+OMEFFS1 = np.logspace(-8, -1, Nqs)
 OMEFFS2 = np.zeros(Nqs)
 
 NAMES = np.array(
     [
-        f"q{qit}-tm{TM2[i]}"
+        f"omeff-{OMEFFS1[i]:0.3e}" f"-e1d-{E1DS[i]:0.3f}-e2d-{E2DS[i]:0.3f}"
         for i, qit in enumerate(QS)
     ]
 )
@@ -127,7 +124,7 @@ RUN_PARAMS = np.column_stack(
         JS,
         A0S,
         QS,
-        MU1,
+        MUP,
         TS,
         TE1,
         TE2,

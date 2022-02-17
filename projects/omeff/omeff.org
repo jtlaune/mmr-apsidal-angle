@@ -1,8 +1,0 @@
-#+TITLE: Effects of a massive secular perturber on mean motion resonant architecture
-#+OPTIONS: author:nil date:nil toc:nil
-#+LATEX_CLASS: mnras
-#+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
-* Intro
-* Methods
-* Results
-* Discussion

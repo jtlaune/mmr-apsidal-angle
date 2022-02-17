@@ -18,7 +18,7 @@ seriesdir = os.path.join(projpath, seriesname)
 paramsname = seriesname+"-params.py"
 runpath = seriesdir
 series = FOomEffTPSeries(seriesname, runpath, load=False,
-                         verbose=True, overwrite=False)
+                         verbose=True, overwrite=True)
 #import pdb; pdb.set_trace()
 start = time.time()
 series(16)
