@@ -23,8 +23,8 @@ alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
 chunk = 8
 Nqs = 32
 eps = [0.0, 0.001, 0.03, 0.1]
-qs = np.ones(Nqs) *  1.1 # test particle outside
-dirn = "lastrun"
+qs = np.ones(Nqs) * 0.001  # test particle inside
+dirn = "internal-negative"
 totmass = 1e-4
 Tw0 = 1000
 
@@ -34,13 +34,13 @@ Tw0 = 1000
 E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
 
-E2_0 = np.ones(Nqs) * 0.001
-E1_0 = np.ones(Nqs)
+E1_0 = np.ones(Nqs) * 0.001
+E2_0 = np.ones(Nqs)
 for jit in range(4):
-    E1_0[jit*chunk:(jit+1)*chunk] = eps[jit]*np.ones(chunk)
+    E2_0[jit*chunk:(jit+1)*chunk] = eps[jit]*np.ones(chunk)
 
 DIRNAMES = np.array(
-    [f"{dirn}/Tw0{Tw0}/ep{E1_0[i]:0.3f}/" for i in range(Nqs)]
+    [f"{dirn}/Tw0{Tw0}/ep{E2_0[i]:0.3f}/" for i in range(Nqs)]
 )
 
 # eccs = np.array([0.1])
@@ -99,7 +99,7 @@ ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 ##########
 OMEFFS1 = np.ones(Nqs)
 for jit in range(int(Nqs/chunk)):
-    OMEFFS1[jit*chunk:(jit+1)*chunk] = -np.logspace(-4, -2, chunk)
+    OMEFFS1[jit*chunk:(jit+1)*chunk] = -np.logspace(-8, -1, chunk)
 
 OMEFFS2 = np.zeros(Nqs)
 

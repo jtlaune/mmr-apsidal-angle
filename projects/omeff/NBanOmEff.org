@@ -94,18 +94,52 @@ The Hamiltonian for an inner test particle is therefore
 #+end_src
 @@latex:\noindent@@
 
-
 * Test particle results for $\dot\varpi_{\rm eff}>0$
 From the definitions of the angles $\theta_1$ and $\theta_2$,
 any external precession frequency will "split" the location
 of $\theta_1$ and $\theta_2$. The effects of this
-shift are summarized in 
+shift are summarized in the diagram.
 
 #+attr_latex: :float :width 1\textwidth
 #+caption: Nominal MMR locations vs how they shift due to external precession.
 [[~/multi-planet-architecture/projects/omeff/images/resShiftDiag.png]]
 
 ** Internal
+Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate
+outwards. The perturber is on a stationary orbit, unlike
+Maryam's paper. Differential rotation couples to the
+perturber eccentricity to possibly disrupt capture.
+The capture process leads to several different
+combinations of librating resonant angles, summarized in the tables.
+
+#+attr_latex: :mode table :environment tabular :align | l | c | c | c | c |
+#+caption: Librating angles for an internal test particle with $\varpi_{\rm eff}>0$.
+|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+| \omega_1  | 10^{-1}                          | 10^{-2}                          | 10^{-3}                | 10^{-4}                |
+|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0     | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0.001 | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0.03  | \theta_1                         | \theta_1, \theta_2, $\hat\theta$ | None                   | None                   |
+|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0.1   | \theta_1, \theta_2, $\hat\theta$ | \theta_1, \theta_2, $\hat\theta$ | None                   | Repulsion              |
+|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+
+#+attr_latex: :mode table :environment tabular :align | l | c | c | c | c |
+#+caption: Librating angles for an internal test particle with $\varpi_{\rm omeff}<0$.
+|-----------+------------------------+------------------------+------------------------+------------------------|
+| \omega_1  | -10^{-1}               | -10^{-2}               | -10^{-3}               | -10^{-4}               |
+|-----------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0     | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|-----------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0.001 | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|-----------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0.03  | \theta_1               | \theta_1               | None                   | Repulsion              |
+|-----------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0.1   | \theta_1               | \theta_1               | None                   | Repulsion              |
+|-----------+------------------------+------------------------+------------------------+------------------------|
+
 
 * Test particle results for capture timescales
 

@@ -1,11 +1,14 @@
-#+TITLE: Rebound MEGNO calculator
+#+TITLE: Rebound 
 
-want to extend to an analysis of the j:j+1 MMRs role in trapping a
+Try: Letting planet migrate into theta_1 and theta_2 overlap and then
+shut off friction. Is the motion chaotic? Is the planet ejected? Does it stay put?
+
+Want to extend to an analysis of the j:j+1 MMRs role in trapping a
 planet into resonance, what kind of "barrier" is it?
 
-I think MEGNO will be a good learning characteristic
+I think MEGNO will be a good learning characteristic.
 
-* Adapted from: [[https://rebound.readthedocs.io/en/doctest/ipython/Megno.html][rebound docs]]
+* MEGNO calculator Adapted from: [[https://rebound.readthedocs.io/en/doctest/ipython/Megno.html][rebound docs]]
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import importlib
   importlib.reload(mpa)

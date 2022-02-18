@@ -68,7 +68,7 @@
 Even before the first detection of an exoplanetary system, planets
 were predicted to migrate from their initial position due to
 interactions with their natal protoplanetary disk
-[[citep:lin79_tidal_torques_accret_discs_binar,goldreich_excitation_1979,goldreich_disk-satellite_1980-1][PPD, ][]].
+[[citep:lin79_tidal_torques_accret_discs_binar,goldreich_excitation_1979,goldreich_disk-satellite_1980-1,moutamid14_coupl_between_corot_lindb_reson][PPD, ][]].
 The associated angular momentum and energy exchange acts to reshape
 the orbital architecture during the first million years of a system's
 life, in particular the planets' semimajor axes and eccentricities.
@@ -1115,10 +1115,13 @@ resonant Hamiltonian $H_{\rm Kep} + H_{\rm res}$ in equation
 #+end_src
 @@latex:\noindent@@ through a series of rotations in phase space.  For
 the details of these transformations, see Appendix [[Reducing the
-Hamiltonian to a single degree of freedom]].  The parameter $\delta$
-quantifies the system's depth into resonance.  We do not include
-$H_{\rm sec}$ in this analysis because it is second order in
-eccentricities.
+Hamiltonian to a single degree of freedom]].
+The Hamiltonian in equation eqref:hhat is well studied
+in the literature.
+[[citep:moutamid14_coupl_between_corot_lindb_reson][for an extensive review in a planetary context, see][]]
+The parameter $\delta$ quantifies
+the system's depth into resonance.  We do not include $H_{\rm sec}$ in
+this analysis because it is second order in eccentricities.
 
 For the case where $q>0$ is finite, both planets will be on eccentric
 osculating orbits.  Hence, we expect the action $\hat R$ in equation
