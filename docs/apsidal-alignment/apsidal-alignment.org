@@ -1130,23 +1130,8 @@ e} = \abs{f_1}\v e_1 - \abs{f_2}\v e_2$ and $\hat e = \abs{\v{\hat
 e}}$, where $\v e_i$ is the Runge-Lenz vector, i.e. the vector with
 magnitude $e_i$ in the direction of perihelion.  The action $\hat R$
 takes the form $\hat R \propto \tilde \mu \hat e^2$, where
-$\tilde\mu=\tilde m/M$ and $\tilde m= m_1m_2/(m_{\rm tot}M)$ is
-the reduced mass ratio of the planets. In order to recover the actions
-given above for the appropriate CR3BP limits, we have
-#+begin_src latex
-  \begin{align}
-  \label{eq:R1hatlimit}
-    \hat R \sim\frac{\hat e^2}{q^{2/3}\hat\mu^{2/3}}
-  \end{align}
-#+end_src
-@@latex:\noindent@@ for $q < 1$ and
-#+begin_src latex
-  \begin{align}
-  \label{eq:R2hatlimit}
-    \hat R \sim\frac{q^{2/3}\hat e^2}{\hat\mu^{2/3}}
-  \end{align}
-#+end_src
-@@latex:\noindent@@ for $q>1$.  The action angle is $\hat\theta$ which
+$\tilde\mu=\tilde m/M$ and $\tilde m= m_1m_2/(m_{\rm tot}M)$ is the
+reduced mass ratio of the planets.  The coordinate angle, $\hat\theta$,
 is given by
 #+BEGIN_SRC latex
   \begin{align}
@@ -1751,7 +1736,8 @@ the reduced mass ratio.  and the $\theta_i$ are conjugate to
 $\Gamma_i$.  For the limiting cases of $q\to \infty$ ($m_2=0$) or
 $q\to 0$ ($m_1=0$), the ratio $\mathcal{H}/\Lambda_i$ reduces to the
 standard test particle Hamiltonian found in citet:murray_solar_2000 if
-the limits are taken carefully.
+the limits are taken along constant perturber mass, eccentricity, and semimajor axis
+[[citep:moutamid14_coupl_between_corot_lindb_reson][e.g.][]]
 *** Reducing rotation
 Now, we would like to find the momenta conjugate to the fast
 coordinates $\lambda_i$ while keeping the slowly varying $\theta_i$.
@@ -1788,7 +1774,7 @@ in the following form:
   \label{eq:H_2}
     \mathcal{H}
     = \mathcal{H}_0(\Gamma_1+\Gamma_2; J_1, J_2, q)
-                    + \mathcal{H}_{\rm pert}(\Gamma_1,\Gamma_2; J_1, J_2, q),
+                    + \mathcal{H}_{\rm pert}(\theta_1, \theta_2, \Gamma_1,\Gamma_2; J_1, J_2, q),
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
@@ -1821,7 +1807,7 @@ $\mathcal{O}(\Gamma_i^2/\Lambda_i^4)$.  Equation eqref:eq:H01 becomes
   \begin{align}
     \label{eq:H02}
     \mathcal{H}_0
-    = -\frac{1}{(1+q)^3}\left[
+    = \mathcal C_0(q, J_1, J_2) -\frac{1}{(1+q)^3}\left[
        \frac{q^3}{2\Lambda_1^2} + \frac{1}{2\Lambda_2^2}
      + 2\left(
        \frac{jq^3}{\Lambda_1^3} - \frac{(j+1)}{\Lambda_2^3}
@@ -1829,11 +1815,13 @@ $\mathcal{O}(\Gamma_i^2/\Lambda_i^4)$.  Equation eqref:eq:H01 becomes
      -\frac32\left( 
        \frac{jq^3}{\Lambda_1^4} - \frac{(j+1)}{\Lambda_2^4}\right)
        (\Gamma_1+\Gamma_2)^2
-       \right]
+       \right],
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
-and equation eqref:eq:Hpert1 reduces to its original form
+where $\mathcal C_0$ is a constant of resonance which depends on initial conditions.
+Hence, we leave $\mathcal C_0$ out of the following calculations.
+Equation eqref:eq:Hpert1 reduces to its original form
 #+BEGIN_SRC latex
   \begin{align}
   \label{eq:H_3}
@@ -1897,8 +1885,8 @@ pert}$ becomes
 #+END_SRC
 @@latex:\noindent@@
 Let $\v \Psi$ be the
-counter-clockwise rotation by angle $\psi$ defined by $\tan\psi=
-g_2/g_1$:
+counter-clockwise phase space rotation by the angle $\psi$, where $\tan\psi=
+g_2/g_1$,
 #+BEGIN_SRC latex
   \begin{align}
     \v \Psi =  \mathcal{A}
@@ -1933,7 +1921,9 @@ Define the coordinates
 @@latex:\noindent@@ so that $w_1 = (g_1 x_1 + g_2 x_2)$.  Hence,
 $\mathcal H_{\rm pert}\propto w_1$ only.  Finally, we revert the $\v
 W$ set back to polar coordinates
-$(\hat\theta_1,\hat\theta_2,S_1,S_2)$. The new resonance angle is
+$(\hat\theta_1,\hat\theta_2,S_1,S_2)$, so that $\mathcal H_{\rm pert}\propto S_1\cos\hat\theta_1$
+only.
+The new resonance angle is
 given by the equation
 #+BEGIN_SRC latex
   \begin{align}
@@ -1951,25 +1941,12 @@ and is conjugate to the momentum
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
-It can be shown that
-#+begin_src latex
-  \begin{equation}
-    \hat{\theta}_1 = (j+1)\lambda_2-j\lambda_1
-    - \hat\varpi,
-  \end{equation}
-#+end_src
-@@latex:\noindent@@
-where
-#+begin_src latex
-  \begin{equation}
-  \hat\varpi = \frac{\abs{f_1} e_1\sin(\varpi_1) -
-    \abs{f_2}e_2\sin(\varpi_2)} {\abs{f_1}e_1\cos(\varpi_1) -
-    \abs{f_2}e_2\cos(\varpi_2)}
-  \end{equation}
-#+end_src
-@@latex:\noindent@@
-We note that the other angle, $\hat\theta_2$,
-is cyclic, and so its conjugate momentum $S_2$ is constant:
+The key characteristic of this action-angle pair is that it does not depend
+on the planetary mass ratio [[citep:deck13_first_order_reson_overl_stabil][e.g.][]].
+
+After the reducing rotation, neither $\mathcal H_0$ nor $\mathcal
+H_{\rm pert}$ depend on $\hat\theta_2$, and so its conjugate momentum,
+$S_2$, is a constant of resonance:
 #+BEGIN_SRC latex
   \begin{align}
   \label{eq:appS2deriv}
@@ -1980,6 +1957,28 @@ is cyclic, and so its conjugate momentum $S_2$ is constant:
 #+END_SRC
 @@latex:\noindent@@
 where $\alpha=a_1/a_2$ is the ratio of semimajor axes.
+
+Because the angle $(j+1)\lambda_2-j\lambda_1$ is
+invariant under rotations of phase space,
+it can be shown that
+#+begin_src latex
+  \begin{equation}
+    \hat{\theta}_1 = (j+1)\lambda_2-j\lambda_1
+    - \hat\varpi_1,
+  \end{equation}
+#+end_src
+@@latex:\noindent@@
+where
+#+begin_src latex
+  \begin{equation}
+  \hat\varpi_1 = \frac{\abs{f_1} e_1\sin(\varpi_1) -
+    \abs{f_2}e_2\sin(\varpi_2)} {\abs{f_1}e_1\cos(\varpi_1) -
+    \abs{f_2}e_2\cos(\varpi_2)}.
+  \end{equation}
+#+end_src
+@@latex:\noindent@@
+so that $\hat\varpi_1$ now plays the role of $\varpi_i$ as it appears in $\theta_i$.
+
 The sum
 #+BEGIN_SRC latex
     \begin{align}
