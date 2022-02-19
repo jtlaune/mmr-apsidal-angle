@@ -1426,7 +1426,7 @@ massive planet becomes planet 2 for example)
 ***                                                                :ignore:
 The results of Section [[Reducing the Hamiltonian]] can be applied to the
 test particle scenario by taking the limit as $q$ approaches $0$ or
-$\infty$ while holding the canonical momenta for the massive perturber
+$\infty$ while holding the orbital elements of the massive perturber
 constant.  All expressions will use either the subscripts $1$
 and $2$ for $0<q<\infty$ or $p$ and no subscript for $q=0,\infty$.
 
@@ -1457,14 +1457,14 @@ $m_2$ force $e_1$ to librate in amplitude.
 
 The internal and external test particle limits are largely analagous,
 and so we focus on the external limit.  The massive inner planet has
-constant $m_1$, $a_1=1$, and $e_1=e_p$, and we take the limit $q$
+constant $m_1=m_p$, $a_1=a_p$, and $e_1=e_p$, and we take the limit $q$
 approaching infinity (i.e., $m_2$ goes to zero). Equivalently, we are
 holding $\Lambda_1$ and $\Gamma_1$ constant and finite while $q$ goes
 to infinity.  The expression for $S_2$ (equation eqref:eq:s2) becomes
 #+BEGIN_SRC latex
   \begin{align}
     \label{eq:s2-canon}
-    \frac{S_2}{2\Lambda_1} = f_2^2\Gamma_1
+    \frac{S_2}{\Lambda_1} = \frac{f_2^2\Gamma_1}{2\Lambda_1}
     -2\abs{f_1f_2}\sqrt{\frac{\Gamma_1}{\Lambda_1^3}}
     \sqrt{\frac{\Gamma_2}{\Lambda_2}}\cos(\varpi_1-\varpi_2)
     + \frac{f_1^2}{\Lambda_1^2\Lambda_2}\Gamma_2.
@@ -1477,8 +1477,8 @@ test particle results may naturally be interpreted as @@latex:``per
 unit $\Lambda_1$''@@.  The fraction $S_2/\Lambda_1$ becomes
 #+BEGIN_SRC latex
   \begin{align}
-    \frac{S_2}{\Lambda_1} = f_2^2e_p^2
-    -2\abs{f_1f_2}e_p
+    \frac{S_2}{\Lambda_1} = \frac{f_2^2e_p^2}{2\Lambda_1}
+    -\abs{f_1f_2}e_p
     \frac{1}{\Lambda_1}
     \sqrt{\frac{2\Gamma_2}{\Lambda_2}}\cos(\varpi_1-\varpi_2)
     + \frac{f_1^2}{\Lambda_1^2\Lambda_2}\Gamma_2.
