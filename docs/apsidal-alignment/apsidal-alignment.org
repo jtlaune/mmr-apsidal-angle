@@ -1527,84 +1527,51 @@ comparable masses.  The larger planet loses eccentricity to the
 smaller planet and the system will always reach an equilibrium with
 $\theta_1$ and $\theta_2$ librating over a long enough timescale.
 This leads to apsidal anti-alignment due to the fact that
-$\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance.  However,
-there are observed exoplanets near resonance which have
-$\Delta\varpi\approx0^\circ$, such as K2-19.
-In this paper, we investigated if resonant dynamics could align
-$\varpi_1$ and $\varpi_2$.
+$\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance, as we found
+in Section [[Standard Picture of Resonance Capture]].  However, there are
+observed exoplanets near resonance which have
+$\Delta\varpi\approx0^\circ$, such as K2-19.  In this paper, we
+investigated if resonant dynamics could align $\varpi_1$ and
+$\varpi_2$.
 
 This investigation began by analyzing the problem of a test particle
-in the vicinity of an MMR with a planet of mass $m_p$ (Section [[Test Particle Results]]).
-Here, we briefly reviewed
-the textbook treatment of the CR3BP and its extension, the ER3BP.
-This formulation of the problem allowed us to adjust $e_p$
-independently to isolate its effect.  We found that apsidal alignment
-occurs for large values of $e_p$ comparable to the aspect ratio. These
-results can be summarized as a competition between the eccentricity
-$e_p$ versus the magnitude of the equilibrium eccentricity naturally
-induced by the disk's damping forces.
+in the vicinity of an MMR with a planet of mass $m_p$ (Section [[Test
+Particle Results]]).  Here, we briefly reviewed the textbook treatment
+of the CR3BP and its extension, the ER3BP.  This formulation of the
+problem allowed us to adjust $e_p$ independently to isolate its
+effect.  We found that apsidal alignment occurs for large values of
+$e_p$ comparable to the aspect ratio. These results can be summarized
+as a competition between the eccentricity $e_p$ versus the magnitude
+of the equilibrium eccentricity naturally induced by the disk's
+damping forces.
 
-Our test particle results
-informed our analysis of how apsidal alignment may arise in the case
-of $q\sim\mathcal{O}(1)$ and prompted the addition of an eccentricity
-driving force.  While previous studies typically assume that the
-eccentricity damps to zero, theoretically this is not always the case,
-as several mechanisms have been proposed that drive eccentricity in
-young exoplanetary systems
+Our test particle results informed our analysis of how apsidal
+alignment may arise in the case of $q\sim\mathcal{O}(1)$ and prompted
+the introduction of an eccentricity driving force for the comparable
+mass case in Section [[Apsidal Angle]].  While previous studies typically
+assume that the eccentricity damps to zero, theoretically this is not
+always the case, as several mechanisms have been proposed that drive
+eccentricity in young exoplanetary systems rather than damp it
 [[citep:ragusa17_eccen_evolut_durin_planet_disc_inter,goldreich03_eccen_evolut_planet_gaseous_disks,teyssandier17_secul_evolut_eccen_protop_discs]].
 
-We find that in the test particle case, for roughly $e_p \gtrsim h$,
-the test particle becomes apsidally aligned with the planet and the
-system finds an equilibrium where $e$ librates around $e_p$.
-
-This lead us to to study the effects of an
-eccentricity driving force on the dynamics of two comparable mass
-planets near a $j:j+1$ MMR.  We observed apsidal alignment for strong
-enough damping forces away from the line $e_2/e_1 \approx q$.
-
-The
-results are largely analagous with the comparable mass case, as long
-as capture occurs and the system remains in resonance.  In fact, we
+For comparable mass systems ($q\sim \mathcal O(1)$) near a $j:j+1$
+MMR, we observed apsidal alignment for strong enough damping forces
+away from the phase space line $e_2/e_1 \approx q$. However,
+the process of apsidal alignment is likely chaotic, because
+there are many combinations of damping forces, initial conditions,
+and mass ratios which lead to disruption of capture.
+In fact, we
 have reached two conclusions throughout this paper:
 #+BEGIN_SRC latex
   \begin{enumerate}[label=\arabic*.]
-    \item An external eccentricity driving force can robustly produce
+    \item An external eccentricity driving force can produce
   apsidal alignment if the system remains captured into resonance.
-    \item Eccentricity driving forces can prevent the libration of $\theta_1$ and/or $\theta_2$.
+    \item Eccentricity driving forces can prevent the libration of $\theta_1$, $\theta_2$ and/or $\hat\theta$.
   \end{enumerate}
 #+END_SRC
-@@latex:\noindent@@ The apsidal alignment in K2-19b and c, along with
-their moderate eccentricities and the fact that we observe
-$\hat\theta$ to librate [[citep:&petit_resonance_2020]], therefore
-suggests that the planets are interacting with such an external force.
-However, our second conclusion implies that such a force threatens to
-destabilize and destroy the resonance in the future.
+@@latex:\noindent@@
 
-Both of these conclusions are also relevant to the distribution of
-period ratios in the Kepler catalogue.  On the one hand, if two
-planets are slightly wide of the nominal period ratio, they could
-still be in resonance if they are observed to be eccentric.  We also
-found evidence that some systems remain locked slightly wide of
-$P_2/P_1=1.5$ for long timescales even after exiting the resonance.
-These two configurations could comprise part of the overabundance of
-observed Kepler systems with period ratios slightly larger than
-$j:j+1$. They would also simultaneously comprise part of the
-underabundance at exactly $P_2/P_1 = (j+1)/j$, simply because exactly
-resonant systems can be pushed to slightly larger period ratios
-whenever the disk drives the planets eccentricities.
-
-This paper represents only a preliminary investigation into the
-effects of eccentricity in mean motion resonant systems. Our results
-come with several caveats, the first of which is that our model
-utilizes constant dissipative timescales. In reality, the coupling
-between the disk and planet is a function of eccentricity, location in
-the disk, and disk profile
-citep:cresswell_evolution_2006,cresswell_three-dimensional_2008.  Full
-hydrodynamic simulations are the most accurate method for calculating
-planet-disk interactions but are too computationally expensive for the
-scope of this paper.
-
-Furthermore, the outcome of planet migration and MMR capture is
+The outcome of planet migration and MMR capture is
 clearly very sensitive to the system's parameters.  For the four
 combinations of $q=0.5,2$ and initial period ratios $P_2/P_1=1.5,1.55$
 in Figure ref:fig:Rhat-grid, capture is not always likely. In fact,
@@ -1615,15 +1582,45 @@ likely complicated functions of the initial conditions and other
 system parameters, and so we leave a more detailed analysis to future
 studies.
 
+This paper represents only a preliminary investigation into the
+effects of eccentricity driving in mean motion resonant systems. Our results
+come with several caveats, the first of which is that our model
+utilizes constant dissipative timescales. In reality, the coupling
+between the disk and planet is a function of eccentricity, location in
+the disk, and disk profile
+citep:cresswell_evolution_2006,cresswell_three-dimensional_2008.  Full
+hydrodynamic simulations are the most accurate method for calculating
+planet-disk interactions but are too computationally expensive for the
+scope of this paper.
+
+Nevertheless, the apsidal alignment in K2-19b and c, along with their
+moderate eccentricities and the fact that we observe $\hat\theta$ to
+librate [[citep:&petit_resonance_2020]], therefore suggests that the
+planets could have interacted with an eccentricity driving force in
+the past.  However, our second conclusion implies that such a force
+threatens to destabilize and destroy the resonance in the future.
+
+Both of these conclusions are also relevant to the distribution of
+period ratios in the Kepler catalogue.  On the one hand, if two
+planets are slightly wide of the nominal period ratio, they could
+still be in resonance if they are observed to be eccentric [[citep:petit_resonance_2020][e.g., ][]]  We also
+found evidence that some systems remain locked slightly wide of
+$P_2/P_1=1.5$ for long timescales even after exiting the resonance.
+These two configurations could comprise part of the overabundance of
+observed Kepler systems with period ratios slightly larger than
+$j:j+1$. They would also simultaneously comprise part of the
+underabundance at exactly $P_2/P_1 = (j+1)/j$, simply because exactly
+resonant systems can be pushed to slightly larger period ratios
+whenever the disk drives the planets eccentricities.
 
 
 
-** TODO finish conclusion                                         :noexport:
-*** TODO add part about moderate eccentricities with assumption e<<1 :noexport:
+** DONE finish conclusion                                         :noexport:
+*** add part about moderate eccentricities with assumption e<<1  :noexport:
 - comment that for strong forces these results should
   theoretically be supported up to very small eccentricities
-*** TODO add caveat: constant timescales
-*** TODO add part about future work
+*** DONE add caveat: constant timescales
+*** DONE add part about future work
 ** DONE review conclusion                                         :noexport:
 * bibliography                                                       :ignore:
 @@latex:%\twocolumn@@
@@ -1997,8 +1994,8 @@ A similar representation of $\mathcal H, \mathcal M$, $\mathcal N$,
 and $\mathcal{K}$ also exists for which the limit $q\to 0$ converges
 to the case of an inner test particle by exchanging the necessary
 factors of $q$ for $\Lambda_1/\Lambda_2 = q\sqrt\alpha$.
-* todos  [3/4]                                                     :noexport:
+* todos  [4/4]                                                     :noexport:
 ** DONE Mention transition to dimless H
 ** DONE Tell people why you are transitioning to test particles
 ** DONE check maryam's paper
-** TODO change cal S to sigma in figures
+** DONE change cal S to sigma in figures
