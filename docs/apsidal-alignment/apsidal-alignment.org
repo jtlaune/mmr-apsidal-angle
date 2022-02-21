@@ -754,16 +754,15 @@ the effect of eccentricity on the apsidal angle.
 The dynamics of first order MMRs with comparable mass planets are
 complicated by the presence of two critical arguments in the
 Hamiltonian, $\theta_1$ and $\theta_2$.  By assuming that one of the
-planets is a test particle, i.e. $m_1=0$, we may ignore the 
-$\theta_2$ resonance because $\varpi_2$ will be fixed. The
+planets is a test particle, i.e. $m_1=0$, we may ignore the variation
+of the other planet, $m_2$.  This greatly simplifies the problem.  The
 respective case for an external test particle is setting $m_2=0$ while
-ignoring the dynamics of $\theta_1$.  Furthermore, absent any external
-forces, these assumptions imply the massive planet will remain on an
-unchanging orbit.  To emphasize the fact that we are only considering
-the dynamics of the test particle, we adopt the following notation:
-The subscript $p$ will denote the constant orbital elements and
-coordinate-momentum pairs of the massive planet, while no subscript
-will indicate these quantities for the test particles.
+keeping the orbit of planet $m_1$ constant.  To emphasize the fact
+that we are formally transitioning to a different problem, we adopt
+the following notation: The subscript $p$ will denote the constant
+orbital elements and coordinate-momentum pairs of the massive planet,
+while no subscript will indicate these quantities for the test
+particles.
 
 We assume that no dissipative forces act on the massive perturber
 while implementing a migration model identical to the one used in
@@ -775,11 +774,12 @@ $T_{m}$ and $T_{e}$, respectively. This problem is well-studied in the
 literature, and so in lieu of a detailed derivation we briefly
 summarize the problem with references to the key results.
 
-*** TODO explain the theta_2 resonance angle in first par        :noexport:
+*** DONE explain the theta_2 resonance angle in first par        :noexport:
 
 ** Equations of motion
-The Hamiltonian, including secular effects, for a test particle in the
-vicinity of an interior MMR is
+We will work with the dimensionless Hamiltonian with units set by the
+perturber's orbital elements.  Including secular effects, the
+Hamiltonian for a test particle in the vicinity of an interior MMR is
 [[citep:xu_migration_2018,goldreich_overstable_2014,wisdom_canonical_1986,deck_migration_2015,henrard86_reduc_trans_apocen_librat][c.f.][]]
 #+BEGIN_SRC latex
   \begin{align*}
@@ -1305,8 +1305,10 @@ $\Delta\varpi=90^\circ$.  In the right panel of Figure
 ref:fig:Rhat-grid, we have plotted the time-averaged final
 eccentricities. The points share the same color-coding as in the right
 panel.  The eccentricities for the aligned cases fall roughly along
-the line $e_1=e_2$. ### The perpendicular runs fall slightly above the
-line $e_2/e_1=q$ , while the anti-aligned runs fall just under it.
+the line $e_1=e_2$. This is because the angle $\hat\theta$ does not
+depend on the mass ratio $q$ (e.g., equation eqref:hattheta).  The
+perpendicular runs fall slightly above the line $e_2/e_1=q$, while the
+anti-aligned runs fall just under it.
 
 The single $\mathtt{x}$ marker in Figure ref:fig:Rhat-grid corresponds to a
 run which is only temporarily caught into resonance.
@@ -1318,7 +1320,7 @@ an anti-aligned configuration throughout. Before escape,
 $\Delta\varpi\lesssim180^\circ$, while after escape,
 $\Delta\varpi\gtrsim180^\circ$.
 
-*** TODO explain e1=e2 line                                      :noexport:
+*** DONE explain e1=e2 line                                      :noexport:
 
 ** Initial period ratio
 *** figures                                                        :ignore:
@@ -1517,7 +1519,6 @@ in ref:fig:tp-grid-ext.  Even though $e$ oscillates for apsidally
 aligned equilibria (e.g., in the bottom left of Figure
 ref:fig:tp-align, $e$ oscillates between $0<e\lesssim 0.08$ in
 equilibrium), our prescription describes the simulation results well.
-
 
 * Conclusion
 In this paper, we briefly summarized the standard picture of MMR
@@ -1987,8 +1988,8 @@ A similar representation of $\mathcal H, \mathcal M$, $\mathcal N$,
 and $\mathcal{K}$ also exists for which the limit $q\to 0$ converges
 to the case of an inner test particle by exchanging the necessary
 factors of $q$ for $\Lambda_1/\Lambda_2 = q\sqrt\alpha$.
-* todos  [0/4]                                                     :noexport:
-** TODO Mention transition to dimless H
-** TODO Tell people why you are transitioning to test particles
-** TODO check maryam's paper
+* todos  [3/4]                                                     :noexport:
+** DONE Mention transition to dimless H
+** DONE Tell people why you are transitioning to test particles
+** DONE check maryam's paper
 ** TODO change cal S to sigma in figures

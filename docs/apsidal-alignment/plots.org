@@ -10,6 +10,9 @@
   from matplotlib.ticker import ScalarFormatter
   import sys
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  import mpa
+  from mpa.fndefs import f27lc as A
+  from mpa.fndefs import f31lc as B
   #from helper import *
   #from plotting import *
   import importlib
@@ -173,7 +176,7 @@
 
 ** get results
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   readme = "totmass q Te1 Te2 e1 e2 |g1-g2| \n " \
            "averages taken from 0.9xT; T = 20.xTe0; Te0=1000"
   H_SECTION = 0.03
@@ -317,7 +320,7 @@
 
 ** eeq eccentricities
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   fig, ax = plt.subplots(figsize=(6,6))
   fontsize=24
   h = HS[0]
@@ -396,7 +399,7 @@
 
 ** eq theta
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   fig, ax = plt.subplots(figsize=(6,6))
   fontsize=24
   results = np.loadtxt(f"standard-h-{h}-Tw0-{int(Tw0)}.txt")
@@ -463,7 +466,7 @@
 
 ** example run
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   readme = "totmass q Te1 Te2 e1 e2 |g1-g2| \n " \
       "averages taken from 0.9xT; T = 20.xTe0; Te0=1000"
   #################
@@ -741,7 +744,7 @@
 * vary Te
 ** get results
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   readme = ""
   qs = [0.5, 1., 2.]
   h=0.03
@@ -848,7 +851,7 @@
 
 ** eeq eccentricities
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   qs = [0.5, 1., 2.]
   TM2 = -np.ones(Nqs)*5e4
   fig, ax = plt.subplots(3, figsize=(8,14), sharex=True)
@@ -928,7 +931,7 @@
 
 ** Dpomega
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   qs = [0.5, 1., 2.]
   TM2 = -np.ones(Nqs)*5e4
   fig, ax = plt.subplots(3, figsize=(8,14), sharex=True)
@@ -991,7 +994,7 @@
 
 * analytic vary Te
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   for q in [0.5, 1., 2.]:
       Tm2 = -5e4
       Tw0 = 1e3
@@ -1046,7 +1049,7 @@
 * vary q
 ** get results
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   ratios = [0.1, 0.5, 1.0, 2., 10.]
   
   for ratio in ratios:
@@ -1168,7 +1171,7 @@
 ** eq ecc
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   readme = "totmass q Te1 Te2 e1 e2 |g1-g2| \n " \
            "averages taken from 0.9xT; T = 20.xTe0; Te0=1000"
   TM2 = -np.ones(Nqs)*5e4
@@ -1222,7 +1225,7 @@
 
 ** eq Dpomega
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/standard-compmass/")
+  os.chdir("/home/jtlaune/apsidal-alignment/standard-compmass/")
   readme = "totmass q Te1 Te2 e1 e2 |g1-g2| \n " \
            "averages taken from 0.9xT; T = 20.xTe0; Te0=1000"
   TM2 = -np.ones(Nqs)*5e4
@@ -1271,7 +1274,7 @@
 ** S2 combined plot
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   def plot_sS1S2(iplot, ax1, ax2, prefix, q):
-      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+      os.chdir("/home/jtlaune/apsidal-alignment/Rhat-grid/")
       #################
       # CONFIGURATION #
       #################
@@ -1449,33 +1452,19 @@
 
 #+RESULTS:
 :RESULTS:
-# [goto error]
-#+begin_example
-  [0;31m---------------------------------------------------------------------------[0m
-  [0;31mFileNotFoundError[0m                         Traceback (most recent call last)
-  [0;32m/tmp/ipykernel_27913/566513217.py[0m in [0;36m<module>[0;34m[0m
-  [1;32m     13[0m [0mprefix[0m [0;34m=[0m [0;34m"inres"[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     14[0m [0mq[0m [0;34m=[0m [0;36m2.0[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 15[0;31m [0mplot_sS1S2[0m[0;34m([0m[0;36m0[0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m0[0m[0;34m,[0m[0;36m0[0m[0;34m][0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m0[0m[0;34m,[0m[0;36m1[0m[0;34m][0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     16[0m [0mplot_sS1S2[0m[0;34m([0m[0;36m2[0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m1[0m[0;34m,[0m[0;36m0[0m[0;34m][0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m1[0m[0;34m,[0m[0;36m1[0m[0;34m][0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     17[0m [0mplot_sS1S2[0m[0;34m([0m[0;36m6[0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m2[0m[0;34m,[0m[0;36m0[0m[0;34m][0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m2[0m[0;34m,[0m[0;36m1[0m[0;34m][0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m/tmp/ipykernel_27913/1007683472.py[0m in [0;36mplot_sS1S2[0;34m(iplot, ax1, ax2, prefix, q)[0m
-  [1;32m      1[0m [0;32mdef[0m [0mplot_sS1S2[0m[0;34m([0m[0miplot[0m[0;34m,[0m [0max1[0m[0;34m,[0m [0max2[0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m----> 2[0;31m     [0mos[0m[0;34m.[0m[0mchdir[0m[0;34m([0m[0;34m"/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m      3[0m     [0;31m#################[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m      4[0m     [0;31m# CONFIGURATION #[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m      5[0m     [0;31m#################[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;31mFileNotFoundError[0m: [Errno 2] No such file or directory: '/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/'
-#+end_example
-[[file:./.ob-jupyter/59cb2a3f3c2d4240d7fb5d6aa68edc6d893fa539.png]]
+: 9
+: e1d-0.000-e2d-0.000.npz
+: 9
+: e1d-0.200-e2d-0.000.npz
+: 9
+: e1d-0.000-e2d-0.200.npz
+[[file:./.ob-jupyter/8eb645dd2406fa3f9897ff78c20b38d7aedf9fe4.png]]
 :END:
 
 ** S2 conserved quantity
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   def plot_S2comps(iplot):
-      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/")
+      os.chdir("/home/jtlaune/apsidal-alignment/Rhat-grid/")
       #################
       # CONFIGURATION #
       #################
@@ -1699,7 +1688,7 @@
 ** Rhat resonance EOM
 i don't think this is right
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/compmass-Rhat/")
+  os.chdir("/home/jtlaune/apsidal-alignment/compmass-Rhat/")
   
   ########################
   # eccentricity driving #
