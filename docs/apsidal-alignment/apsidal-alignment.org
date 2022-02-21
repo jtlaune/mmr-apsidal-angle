@@ -1521,28 +1521,30 @@ ref:fig:tp-align, $e$ oscillates between $0<e\lesssim 0.08$ in
 equilibrium), our prescription describes the simulation results well.
 
 * Conclusion
-In this paper, we briefly summarized the standard picture of MMR
-capture in the literature and illustrated how it robustly leads to
-apsidal anti-alignment due to the fact that
-$\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance.  Regardless
-of the damping ratio $T_{e,1}/T_{e,2}$, which is typically set to
-$1/q$ (see equation eqref:eq:Teratio), we find that the $\theta_1$ and
-$\theta_2$ resonances adjust to the damping ratio and reach an
-equilibrium with $e_2/e_1\sim q$.  Even if the system is initialized
-with large eccentricities, for $e_{1d}=e_{2d}=0$, any comparable mass
-system without an external eccentricity driving force evolves towards
-$\Delta\varpi=180^\circ$. The larger planet loses eccentricity to the
+The standard picture of MMR capture in the literature robustly leads
+to capture into both the $\theta_1$ and $\theta_2$ resonances for
+comparable masses.  The larger planet loses eccentricity to the
 smaller planet and the system will always reach an equilibrium with
 $\theta_1$ and $\theta_2$ librating over a long enough timescale.
+This leads to apsidal anti-alignment due to the fact that
+$\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance.  However,
+there are observed exoplanets near resonance which have
+$\Delta\varpi\approx0^\circ$, such as K2-19.
+In this paper, we investigated if resonant dynamics could align
+$\varpi_1$ and $\varpi_2$.
 
-Because of this, in Section [[Test Particle Results]], we briefly reviewed
+This investigation began by analyzing the problem of a test particle
+in the vicinity of an MMR with a planet of mass $m_p$ (Section [[Test Particle Results]]).
+Here, we briefly reviewed
 the textbook treatment of the CR3BP and its extension, the ER3BP.
 This formulation of the problem allowed us to adjust $e_p$
 independently to isolate its effect.  We found that apsidal alignment
 occurs for large values of $e_p$ comparable to the aspect ratio. These
 results can be summarized as a competition between the eccentricity
 $e_p$ versus the magnitude of the equilibrium eccentricity naturally
-induced by the disk's damping forces.  Our test particle results
+induced by the disk's damping forces.
+
+Our test particle results
 informed our analysis of how apsidal alignment may arise in the case
 of $q\sim\mathcal{O}(1)$ and prompted the addition of an eccentricity
 driving force.  While previous studies typically assume that the
@@ -1553,7 +1555,14 @@ young exoplanetary systems
 
 We find that in the test particle case, for roughly $e_p \gtrsim h$,
 the test particle becomes apsidally aligned with the planet and the
-system finds an equilibrium where $e$ librates around $e_p$.  The
+system finds an equilibrium where $e$ librates around $e_p$.
+
+This lead us to to study the effects of an
+eccentricity driving force on the dynamics of two comparable mass
+planets near a $j:j+1$ MMR.  We observed apsidal alignment for strong
+enough damping forces away from the line $e_2/e_1 \approx q$.
+
+The
 results are largely analagous with the comparable mass case, as long
 as capture occurs and the system remains in resonance.  In fact, we
 have reached two conclusions throughout this paper:
@@ -1561,7 +1570,7 @@ have reached two conclusions throughout this paper:
   \begin{enumerate}[label=\arabic*.]
     \item An external eccentricity driving force can robustly produce
   apsidal alignment if the system remains captured into resonance.
-    \item Eccentricity driving forces can destroy MMRs.
+    \item Eccentricity driving forces can prevent the libration of $\theta_1$ and/or $\theta_2$.
   \end{enumerate}
 #+END_SRC
 @@latex:\noindent@@ The apsidal alignment in K2-19b and c, along with
