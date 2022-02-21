@@ -10,8 +10,8 @@
   from matplotlib.ticker import ScalarFormatter
   import sys
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
-  from helper import *
-  from plotting import *
+  #from helper import *
+  #from plotting import *
   import importlib
   import os
   import seaborn as sns
@@ -1434,9 +1434,9 @@
   
   fig.subplots_adjust(wspace=0.3, hspace=0.5)
   C0 = mpl.lines.Line2D([], [], color='k', marker="o", linestyle='None',
-                        markersize=10, label=r"$\mathcal{S}_1$")
+                        markersize=10, label=r"$\sigma_1$")
   C1 = mpl.lines.Line2D([], [], color='r', marker="o", linestyle='None',
-                        markersize=10, label=r"$\mathcal{S}_2$")
+                        markersize=10, label=r"$\sigma_2$")
   ax[0,0].legend(bbox_to_anchor=(0.21, 1.2),ncol=2,loc="center left", fancybox=True, shadow=True, handles=[C0, C1])
   ax[0,1].set_title(r"$S_2$", fontsize=fontsize, pad=20)
   
@@ -1449,13 +1449,27 @@
 
 #+RESULTS:
 :RESULTS:
-: 9
-: e1d-0.000-e2d-0.000.npz
-: 9
-: e1d-0.200-e2d-0.000.npz
-: 9
-: e1d-0.000-e2d-0.200.npz
-[[file:./.ob-jupyter/b22702a40a0eed34a7cc52c37f4009964b18204f.png]]
+# [goto error]
+#+begin_example
+  [0;31m---------------------------------------------------------------------------[0m
+  [0;31mFileNotFoundError[0m                         Traceback (most recent call last)
+  [0;32m/tmp/ipykernel_27913/566513217.py[0m in [0;36m<module>[0;34m[0m
+  [1;32m     13[0m [0mprefix[0m [0;34m=[0m [0;34m"inres"[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     14[0m [0mq[0m [0;34m=[0m [0;36m2.0[0m[0;34m[0m[0;34m[0m[0m
+  [0;32m---> 15[0;31m [0mplot_sS1S2[0m[0;34m([0m[0;36m0[0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m0[0m[0;34m,[0m[0;36m0[0m[0;34m][0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m0[0m[0;34m,[0m[0;36m1[0m[0;34m][0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [0m[1;32m     16[0m [0mplot_sS1S2[0m[0;34m([0m[0;36m2[0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m1[0m[0;34m,[0m[0;36m0[0m[0;34m][0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m1[0m[0;34m,[0m[0;36m1[0m[0;34m][0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     17[0m [0mplot_sS1S2[0m[0;34m([0m[0;36m6[0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m2[0m[0;34m,[0m[0;36m0[0m[0;34m][0m[0;34m,[0m [0max[0m[0;34m[[0m[0;36m2[0m[0;34m,[0m[0;36m1[0m[0;34m][0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+  [0;32m/tmp/ipykernel_27913/1007683472.py[0m in [0;36mplot_sS1S2[0;34m(iplot, ax1, ax2, prefix, q)[0m
+  [1;32m      1[0m [0;32mdef[0m [0mplot_sS1S2[0m[0;34m([0m[0miplot[0m[0;34m,[0m [0max1[0m[0;34m,[0m [0max2[0m[0;34m,[0m [0mprefix[0m[0;34m,[0m [0mq[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+  [0;32m----> 2[0;31m     [0mos[0m[0;34m.[0m[0mchdir[0m[0;34m([0m[0;34m"/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [0m[1;32m      3[0m     [0;31m#################[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m      4[0m     [0;31m# CONFIGURATION #[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m      5[0m     [0;31m#################[0m[0;34m[0m[0;34m[0m[0m
+
+  [0;31mFileNotFoundError[0m: [Errno 2] No such file or directory: '/home/jtlaune/Dropbox/multi-planet-architecture/runs/Rhat-grid/'
+#+end_example
+[[file:./.ob-jupyter/59cb2a3f3c2d4240d7fb5d6aa68edc6d893fa539.png]]
 :END:
 
 ** S2 conserved quantity
