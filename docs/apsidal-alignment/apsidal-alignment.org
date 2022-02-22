@@ -213,7 +213,7 @@ period ratio $P_2/P_1=(j+1)/j$ and, in this configuration, naturally
 leads to apsidal alignment.
 
 * Standard Picture of Resonance Capture
-*** IC table                                                       :ignore:
+** IC table                                                         :ignore:
 #+ATTR_LATEX: :float table* :center t :placement [htb] :mode table :environment tabular :align | l | c | c | c |
 #+NAME: tab:ICs
 #+CAPTION: Initial conditions for the finite mass ratio integrations in this paper. The quantity
@@ -596,7 +596,7 @@ naturally give rise to apsidal alignment in exoplanetary systems.
       \ref{fig:standardex}.  The dashed lines indicate the analytical
       solutions to equations (\ref{dote1}) -- (\ref{dotdpom}) and
       (\ref{doteta}), as in \ref{fig:standardeqecc}.  The errorbars are
-      calculated in the same way as \ref{fig:standard}, but they fall
+      calculated in the same way as Figure \ref{fig:standard}, but they fall
       within the plot markers.  For $T_{e,1}/T_{e,2}>1$, migration is
       inwards, and vice versa for $T_{e,1}/T_{e,2}<1$, since we keep the
       ratio $T_{e,i}/T_{m,i}\propto h^2$. For $q=0.5$, the inward
@@ -1050,15 +1050,15 @@ perihelia are now perpendicular to each other.
     \includegraphics[width=0.45\textwidth]{{./S2-conserved-inres-q2.0}.png}
     \caption{In the left column, we have plotted $\sigma_1$ and
       $\sigma_2$ from equations (\ref{eq:sS1}) and (\ref{eq:sS2})
-      for the three different combinations of of $e_{1d}$ and $e_{2d}$
+      for the three different combinations of $e_{1d}$ and $e_{2d}$
       in Figures \ref{fig:standardex}, \ref{fig:drivingex}, and
       \ref{fig:perpex}. Each row corresponds to one of the three
       different modes of resonance identified in this paper,
       $\Delta\varpi=180^\circ$, $\Delta\varpi=0^\circ$, and
       $\Delta\varpi=90^\circ$, respectively. In the right column, we
       plot the evolution of the conserved resonance quantity $S_2$
-      (equation (\ref{eq:S2eq})).  For $\Delta\varpi=0^\circ$, all three
-      of $\sigma_1$, $\sigma_1$, and $S_2$ are conserved near
+      (equation (\ref{eq:S2eq})).  For $\Delta\varpi=180^\circ$, all three
+      of $\sigma_1$, $\sigma_2$, and $S_2$ are conserved near
       zero. For the other two cases, $S_2$ transitions to larger values
       near $\sim 0.5$ (middle) and $\sim 0.1$ (bottom) as the
       eccentricity driving reach an equilibrium.  Both $\sigma_1$
@@ -1066,7 +1066,7 @@ perihelia are now perpendicular to each other.
       apsidally aligned case, while only $\sigma_1$ is excited for
       $\Delta\varpi=90^\circ$.  For $\Delta\varpi=0^\circ$ and
       $\Delta\varpi=90^\circ$, the eccentricities oscillate in such a
-      way to conserve $S_2$ according to equation \ref{eq:S2eq}.}
+      way to conserve $S_2$ according to equation (\ref{eq:S2eq}).}
     \label{fig:S2cons}
   \end{figure}
 #+END_SRC
@@ -1243,29 +1243,25 @@ is aligned with $\mathbf{e}_2$.
 ** Saturation eccentricities
 *** figures                                                        :ignore:
 #+BEGIN_SRC latex
-  \begin{figure}
-    \centering
-    \includegraphics[width=0.4\textwidth]{{./Rhat-grids}.png}
-    \caption{\emph{Left:} The resonance architecture for
-      integrations spanning a grid of driving eccentricities. Here
-      we hold $h=0.03$, $T_{e,0}=1000$~yrs, $q=2$, and initial
-      period ratio $P_2/P_1=1.5$ constant, while varying the driving
-      saturation eccentricities $e_{1,d}$ and $e_{2,d}$.  Systems
-      which become unstable and escape resonance are
-      excluded. Roughly, for $e_{1d}\gtrsim e_{2d}$, the system
-      becomes aligned.  For $e_{2d}>e_{1d}$, the system becomes
-      perpendicular for large values of $e_{2d}$. The other
-      simulations remain trapped in both of the $\theta_1$ and
-      $\theta_2$ resonances.  \emph{Right:} The numerically averaged
-      final eccentricities of the systems shown in the left
-      panel. The apsidally aligned systems fall just below the line
-      $e_2=e_1$. Their error bars correspond to the standard
-      deviation of the eccentricities. The perpendicular systems
-      fall just above the line $e_2=2e_1=qe_1$, while the
-      anti-aligned systems fall just below it. Both have small
-      librations compared to the aligned case.}
-    \label{fig:Rhat-grid}
-  \end{figure}
+    \begin{figure} \centering
+  \includegraphics[width=0.4\textwidth]{{./Rhat-grids}.png}
+      \caption{\emph{Left:} The resonance architecture for integrations
+  spanning a grid of driving eccentricities. Here we hold $h=0.03$,
+  $T_{e,0}=1000$~yrs, while varying the driving saturation
+  eccentricities $e_{1,d}$ and $e_{2,d}$.  Systems which are not
+  captured or become unstable and escape resonance are plotted as black
+  ``x''-marks. Roughly, for $e_{1d}\gtrsim e_{2d}$, the system becomes
+  aligned.  For $e_{2d}>e_{1d}$, the system becomes perpendicular for
+  large values of $e_{2d}$. The other simulations remain trapped in both
+  of the $\theta_1$ and $\theta_2$ resonances.  \emph{Right:} The
+  numerically averaged final eccentricities of the systems shown in the
+  left panel. The apsidally aligned systems fall just below the line
+  $e_2=e_1$. Their error bars correspond to the standard deviation of
+  the eccentricities. The perpendicular system fall just above the line
+  $e_2=2e_1=qe_1$, while the anti-aligned systems fall just below
+  it. Both have small librations compared to the aligned case.}
+      \label{fig:Rhat-grid}
+    \end{figure}
 #+END_SRC
 #+BEGIN_SRC latex
     \begin{figure*}
