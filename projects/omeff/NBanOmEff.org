@@ -117,7 +117,7 @@ shift are summarized in the diagram.
 #+caption: Nominal MMR locations vs how they shift due to external precession.
 [[~/multi-planet-architecture/projects/omeff/images/resShiftDiag.png]]
 
-** Internal $\dot\varpi_{\rm eff}\in\log[-8,-1]$ (consistency check)
+** Internal $\dot\varpi_{\rm eff}\in[10^{-8},10^{-1}]$
 Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate
 outwards. The perturber is on a stationary orbit, unlike Maryam's
 paper. Differential rotation couples to the perturber eccentricity to
@@ -167,7 +167,18 @@ frame of $\mu_p$.
 | e_p=0.1              | \theta_1               | \theta_1               | None                   |                        |
 |----------------------+------------------------+------------------------+------------------------+------------------------|
 
-** External
+** External $\dot\varpi_{\rm eff}\in[10^{-4},10^{-2}]$
+|----------------------+---+---+---+---|
+| \dot\varpi_{\rm eff} |   |   |   |   |
+|----------------------+---+---+---+---|
+| e_p=0                |   |   |   |   |
+|----------------------+---+---+---+---|
+| e_p=0.001            |   |   |   |   |
+|----------------------+---+---+---+---|
+| e_p=0.03             |   |   |   |   |
+|----------------------+---+---+---+---|
+| e_p=0.1              |   |   |   |   |
+|----------------------+---+---+---+---|
 * Test particle results for capture timescales
 
 ** Internal

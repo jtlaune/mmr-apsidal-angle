@@ -1,3 +1,4 @@
+#+TITLE: Comparable mass omeff calculations
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   import numpy as np
   import importlib

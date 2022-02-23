@@ -567,9 +567,10 @@ class FOTestPartOmeff(FirstOrder):
             xdot = xdot + self.omEff * sqrt(G) * sin(g)
             ydot = ydot - self.omEff * sqrt(G) * cos(g)
 
-            # TODO: NEED TO INCLUDE THESE in final study
-            # see above for the ldot secular force from mup
-            # these are just ldot secular forcing from ext
+        # TODO: NEED TO INCLUDE THESE in final study
+        # see above for the ldot secular force from mup
+        # these are just ldot secular forcing from ext
+        #if self.ldotExtSecForcing:
             #ldotext = (
             #    -self.muext
             #    * L
