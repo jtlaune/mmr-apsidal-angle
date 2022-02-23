@@ -97,11 +97,11 @@ ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 ##########
 # OMEFFS #
 ##########
-OMEFFS1 = np.ones(Nqs)
+OMEFFS2 = np.ones(Nqs)
 for jit in range(int(Nqs/chunk)):
-    OMEFFS1[jit*chunk:(jit+1)*chunk] = -np.logspace(-4, -2, chunk)
+    OMEFFS2[jit*chunk:(jit+1)*chunk] = -np.logspace(-4, -2, chunk)
 
-OMEFFS2 = np.zeros(Nqs)
+OMEFFS1 = np.zeros(Nqs)
 
 NAMES = np.array(
     [

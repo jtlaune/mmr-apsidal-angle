@@ -107,7 +107,7 @@ The Hamiltonian for an inner test particle is therefore
 #+end_src
 @@latex:\noindent@@
 
-* Test particle results for $\dot\varpi_{\rm eff}>0$
+* Test particle results for $\dot\varpi_{\rm eff}$
 From the definitions of the angles $\theta_1$ and $\theta_2$,
 any external precession frequency will "split" the location
 of $\theta_1$ and $\theta_2$. The effects of this
@@ -115,7 +115,7 @@ shift are summarized in the diagram.
 
 #+attr_latex: :float :width 1\textwidth
 #+caption: Nominal MMR locations vs how they shift due to external precession.
-[[~/multi-planet-architecture/projects/omeff/images/resShiftDiag.png]]
+[[./images/resShiftDiag.png]]
 
 ** Internal $\dot\varpi_{\rm eff}\in[10^{-8},10^{-1}]$
 Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate
@@ -271,41 +271,6 @@ is
 - secular perturbations [[file:./images/screenshot-02.png][7.8]]
 - coefficients: [[file:./images/screenshot-03.png][7.9-7.12]]
 - bar(alpha12) = [(alpha12 if j=1 external pert),  (1 if j=2 internal pert)]
-
-*** Constant $\omega_{\rm eff}$
-Set $q=0.5$, inward migration. For simplicity, set $\dot\varpi_{2,\rm
-ext} = 0$ and $\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}$ to be an
-arbitrary precession frequency on $m_1$.
-
-#+attr_latex: :float :width 0.6\textwidth
-#+caption: Here is the unperturbed system, with $\mu_{tot}=1e-3$,
-#+caption: $q=0.5, inward migration, and slow dissipative timescales (T_{w,0}=10000 years) compared to
-#+caption: those in Apsidal Alignment paper.
-[[./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/000-omeff0-0.000e+00-0.000e+00.png]]
-
-#+attr_latex: :float :width 0.6\textwidth
-#+caption: Here is a perturbed system, with $\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\approx 4\times10^{-6}$
-#+caption: and  $\dot\varpi_{2,\rm ext}=0$.
-[[./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/010-omeff0-3.981e-06-0.000e+00.png]]
-
-**** Results summary in final eccentricity and $\Delta\varpi$
-#+attr_latex: :float :width 0.6\textwidth
-#+caption: Here we have plotted the final apsidal angle as a function of $\dot\varpi_{1,\rm ext}$
-[[./projects/omeff/varyOmeff/final-Dvarpi-states.png]]
-
-#+attr_latex: :float :width 0.6\textwidth
-#+caption: Here we have plotted the final eccentricities as a function of $\dot\varpi_{1,\rm ext}$
-[[./projects/omeff/varyOmeff/final-ecc-states.png]]
-
-**** Code validation
-#+attr_latex: :float :width 0.6\textwidth
-#+caption: In the above figure, we have set the total mass to be 1e-7 so
-#+caption: that resonant and secular effects are negligible compared
-#+caption: to the effects of external precession on $\gamma_1$.
-[[./mpa/tests/omEff/test-omEff.png]]
-
-
-*** Sign of $\omega_{\rm eff}$ and resonance splitting
 
 ** Formal constructions 
 The *Kepler problem* is a special case of the *2-body problem*.

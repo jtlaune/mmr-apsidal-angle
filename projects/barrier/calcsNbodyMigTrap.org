@@ -42,9 +42,9 @@ load sim
   chunk = 100 # load [::chunk ] from sim archive
   Nbs = 2 # number of planets
   NTPs = int(series.RUN_PARAMS[0,-1])
+  sa = series.data[0]
   Npts = int(len(sa)/chunk)
   print(Npts)
-  sa = series.data[0]
   TPsmas = np.zeros((Npts, NTPs))
   TPeccs = np.zeros((Npts, NTPs))
   ts = np.zeros(Npts)
@@ -61,13 +61,11 @@ load sim
 #+END_SRC
 
 #+RESULTS:
-: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:99: RuntimeWarning: The binary file seems to be corrupted. An attempt has been made to read the uncorrupted parts of it.
-:   warnings.warn(message, RuntimeWarning)
+: [['0.03' '1.0' '1e-06' '1.0' '1.4' '100000.0' '1000.0' '100000.0' '0.0'
+:   '0.0' 'nbodyMigTrap' 'mup1.00e-06' '0.0' '0.0' '25']]
+: 6018
 : /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:146: RuntimeWarning: You have to reset function pointers after creating a reb_simulation struct with a binary file.
 :   warnings.warn(message, RuntimeWarning)
-: [['0.03' '1.0' '1e-06' '1.0' '1.4' '100000.0' '1000.0' '100000.0' '0.0'
-:   '0.0' 'nbodyMigTrap' 'mup1.00e-06' '0.0' '0.0' '1']]
-: 43296
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   @mpl.rc_context(analytic)
@@ -97,8 +95,8 @@ load sim
 
 #+RESULTS:
 :RESULTS:
-#+attr_org: :width 416
-[[file:./.ob-jupyter/104fa3bc4c5403a51c3c6972370434e3855085e6.png]]
+#+attr_org: :width 432
+[[file:./.ob-jupyter/7f090ff3f99646f8f7cf74351e3d754c837c3f97.png]]
 :END:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research

@@ -1,4 +1,4 @@
-% Created 2022-02-22 Tue 14:59
+% Created 2022-02-22 Tue 20:00
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -30,7 +30,7 @@
 \maketitle
 
 \section{Problem}
-\label{sec:orgb84be47}
+\label{sec:org74b6c1c}
 Consider \(n\) point \textbf{orbiters} with finite masses
 \(m_1,m_2,m_3,\ldots\ll M\), where \(M\) is the mass of the primary about
 which they orbit. In the absence of dissipation, its Hamiltonian is:
@@ -62,7 +62,7 @@ Runge-Lenz vectors, \(\vec{e}_1\) and \(\vec{e}_2\).  We treat
 \textbf{How does differential apsidal precession affect the dynamics of first order MMRs?}
 
 \subsection{Parameters}
-\label{sec:org297ce46}
+\label{sec:org7ce4e30}
 We define:
 \begin{align}
  q&\equiv \frac{m_1}{m_2}\quad\text{mass ratio with each other}\\ 
@@ -77,7 +77,7 @@ We define:
 where \(M\) is the primary mass.
 
 \subsection{Assumptions and notation}
-\label{sec:orgf0b90df}
+\label{sec:org0aef2ec}
 \begin{itemize}
 \item Coplanar
 \item Orbiter masses are small \(\mu_i\ll 1\)
@@ -102,7 +102,7 @@ with \(j = 1, 2, \ldots\)
 \end{itemize}
 
 \section{MMR Hamiltonian Model}
-\label{sec:org56f6184}
+\label{sec:org8c7b05f}
 Index MMR locations with \(j\), such that first order MMRs (hereafter ``1MMRS'') occur whenever
 \(n_1/n_2\simeq(j+1)/j\).
 Near these points, the following angles in the literal expansion of the perturbing
@@ -134,20 +134,14 @@ The Hamiltonian for an inner test particle is therefore
 
 \noindent
 
-\section{Test particle results for \(\dot\varpi_{\rm eff}>0\)}
-\label{sec:org2e0e44c}
+\section{Test particle results for \(\dot\varpi_{\rm eff}\)}
+\label{sec:orgd8d7b99}
 From the definitions of the angles \(\theta_1\) and \(\theta_2\),
 any external precession frequency will "split" the location
 of \(\theta_1\) and \(\theta_2\). The effects of this
 shift are summarized in the diagram.
-
-\begin{center}
-\includegraphics[width=1\textwidth]{/home/jtlaune/multi-planet-architecture/projects/omeff/images/resShiftDiag.png}
-\captionof{figure}{Nominal MMR locations vs how they shift due to external precession.}
-\end{center}
-
-\subsection{Internal \(\dot\varpi_{\rm eff}\in\log[-8,-1]\) (consistency check)}
-\label{sec:org67b2779}
+\subsection{Internal \(\dot\varpi_{\rm eff}\in[10^{-8},10^{-1}]\)}
+\label{sec:org60feef6}
 Set \(\mu_p=1e-4\), \(a_0=1\), and let the test particle migrate
 outwards. The perturber is on a stationary orbit, unlike Maryam's
 paper. Differential rotation couples to the perturber eccentricity to
@@ -197,16 +191,31 @@ e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{
 \end{tabular}
 \end{table}
 
-\subsection{External}
-\label{sec:orga3e8b1c}
+\subsection{External \(\dot\varpi_{\rm eff}\in[10^{-4},10^{-2}]\)}
+\label{sec:org7e78787}
+\begin{center}
+\begin{tabular}{lllll}
+\hline
+\dot\(\varpi\)\textsubscript{\rm eff} &  &  &  & \\
+\hline
+e\textsubscript{p}=0 &  &  &  & \\
+\hline
+e\textsubscript{p}=0.001 &  &  &  & \\
+\hline
+e\textsubscript{p}=0.03 &  &  &  & \\
+\hline
+e\textsubscript{p}=0.1 &  &  &  & \\
+\hline
+\end{tabular}
+\end{center}
 \section{Test particle results for capture timescales}
-\label{sec:org55a3318}
+\label{sec:orgfc6210e}
 
 \subsection{Internal}
-\label{sec:orgf9a02e2}
+\label{sec:orgd96c8a6}
 
 \section{References}
-\label{sec:orgdd419b5}
+\label{sec:orgc6a7f72}
 \bibliography{references}
 \bibliographystyle{unsrt}
 
@@ -215,7 +224,7 @@ e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{
 \appendix
 
 \section{Poincair\'e's conjugate pair}
-\label{sec:orgabbf997}
+\label{sec:org449fcbd}
 We utilize the following dimensionless coordinate-momentum conjugate
 pairs (aka Poincair\'e coordinates):
 \begin{align}
@@ -228,7 +237,7 @@ where \(\varpi_i\) is the longitude of perihelion and \(\lambda_i\) the mean lon
 of orbiter \(m_i\).
 
 \section{Geometric energy and AM}
-\label{sec:org386b699}
+\label{sec:org42d3f50}
 In the following, we characterize dissipation by its effects on each
 planets' angular momentum (AM) and energy.  A planet's energy,
 \(\mathcal E\), is determined by its semimajor axis (sma), \(a\):
@@ -245,7 +254,7 @@ h = \mathcal E \sqrt{1-e^2}.
 \end{align}
 
 \subsection{Dissipative effects}
-\label{sec:org9f602e4}
+\label{sec:org44b9bd0}
 The dissipative effects are modeled
 by two constant timescales for each planet, 
 \begin{align}
@@ -257,7 +266,7 @@ where \(\tau_{ai}\) is the exponential e-damping of sma in years.  The
 quantity \(\tau_{ei}\) is the same for eccentricity.
 
 \section{Effects of quadrupole potential}
-\label{sec:org1d76aa9}
+\label{sec:org78655e2}
 A quadrupole potential may arise as a result of secular perturbations
 from nearby planets on circular orbits or a \(J_2\) moment in the
 primary's gravitational field. Due to the difference in sma
@@ -265,7 +274,7 @@ between any two orbiters, a quadrupole potential induces
 differential apsidal precession on the orbiters.
 
 \subsection{Derivation of differential precession rate \(\omega_{\rm eff}\)}
-\label{sec:org10c5bee}
+\label{sec:org3e5fb2b}
 Consider a massive planet on a circular orbit which perturbs an MMR
 which lies internal to its orbit.  Let the planet's mass and sma are
 given by \(\mu_{\rm ext}\) and \(a_{\rm ext}\).  For each planet \(m_i\) in
@@ -288,54 +297,15 @@ is
 \end{equation}
 
 \subsubsection{Murray and Dermott}
-\label{sec:org11be515}
+\label{sec:orgd0f3cf3}
 \begin{itemize}
 \item secular perturbations \href{./images/screenshot-02.png}{7.8}
 \item coefficients: \href{./images/screenshot-03.png}{7.9-7.12}
 \item bar(alpha12) = [(alpha12 if j=1 external pert),  (1 if j=2 internal pert)]
 \end{itemize}
 
-\subsection{Constant \(\omega_{\rm eff}\)}
-\label{sec:org4d3d6d1}
-Set \(q=0.5\), inward migration. For simplicity, set \(\dot\varpi_{2,\rm
-ext} = 0\) and \(\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\) to be an
-arbitrary precession frequency on \(m_1\).
-
-\begin{center}
-\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/000-omeff0-0.000e+00-0.000e+00.png}
-\captionof{figure}{Here is the unperturbed system, with \(\mu_{tot}=1e-3\), \$q=0.5, inward migration, and slow dissipative timescales (T\textsubscript{w,0}=10000 years) compared to those in Apsidal Alignment paper.}
-\end{center}
-
-\begin{center}
-\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/q0.50/h-0.03-Tw0-1000-mutot-1.0e-03/010-omeff0-3.981e-06-0.000e+00.png}
-\captionof{figure}{Here is a perturbed system, with \(\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\approx 4\times10^{-6}\) and  \(\dot\varpi_{2,\rm ext}=0\).}
-\end{center}
-
-\subsubsection{Results summary in final eccentricity and \(\Delta\varpi\)}
-\label{sec:org3bb670d}
-\begin{center}
-\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/final-Dvarpi-states.png}
-\captionof{figure}{Here we have plotted the final apsidal angle as a function of \(\dot\varpi_{1,\rm ext}\)}
-\end{center}
-
-\begin{center}
-\includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/final-ecc-states.png}
-\captionof{figure}{Here we have plotted the final eccentricities as a function of \(\dot\varpi_{1,\rm ext}\)}
-\end{center}
-
-\subsubsection{Code validation}
-\label{sec:org2dc94ff}
-\begin{center}
-\includegraphics[width=0.6\textwidth]{./mpa/tests/omEff/test-omEff.png}
-\captionof{figure}{In the above figure, we have set the total mass to be 1e-7 so that resonant and secular effects are negligible compared to the effects of external precession on \(\gamma_1\).}
-\end{center}
-
-
-\subsection{Sign of \(\omega_{\rm eff}\) and resonance splitting}
-\label{sec:org176ceb6}
-
 \section{Formal constructions}
-\label{sec:orgdb963f4}
+\label{sec:org69fa65e}
 The \textbf{Kepler problem} is a special case of the \textbf{2-body problem}.
 Its solutions are\ldots{}
 
@@ -354,9 +324,9 @@ coupling between the eccentricity damping, \(\tau_e(t)\), and the
 semimajor axis (sma) damping, \(\tau_m(t)\).
 
 \section{Hamiltonian Mechanics}
-\label{sec:org13bb7ee}
+\label{sec:orgb2076a0}
 \section{"Natural scaling" in the solar system}
-\label{sec:org32ca15f}
+\label{sec:org1e799b8}
 The following units
 \begin{align}
 \frac{[GM_\odot][{\rm au}]}{[2\pi{\rm yr}]^2} = 1
@@ -366,5 +336,5 @@ The following units
 dimensionless arc length parameterization of a circular orbit
 with sma=1 au and \(t\) is measured in years.
 \section{Disturbing function for N body problem}
-\label{sec:org93fa80f}
+\label{sec:orgc09e6be}
 \end{document}
