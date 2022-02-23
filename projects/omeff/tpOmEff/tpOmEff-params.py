@@ -109,7 +109,6 @@ NAMES = np.array(
         for i, qit in enumerate(QS)
     ]
 )
-print(NAMES)
 
 DIRNAMES_NOSEC = np.array([DIRNAMES[i] + "_NOSEC" for i in range(Nqs)])
 

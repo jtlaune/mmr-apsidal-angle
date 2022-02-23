@@ -58,16 +58,16 @@ load sim
       for j, part in enumerate(sim.particles[Nbs:]):
           TPsmas[i,j] = part.a
           TPeccs[i,j] = part.e
-#+END_SRC
-
-#+RESULTS:
-: [['0.03' '1.0' '1e-06' '1.0' '1.4' '100000.0' '1000.0' '100000.0' '0.0'
-:   '0.0' 'nbodyMigTrap' 'mup1.00e-06' '0.0' '0.0' '25']]
-: 6018
-: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:146: RuntimeWarning: You have to reset function pointers after creating a reb_simulation struct with a binary file.
-:   warnings.warn(message, RuntimeWarning)
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+##+END_SRC
+#
+##+RESULTS:
+#: [['0.03' '1.0' '1e-07' '1.0' '1.1' '100000.0' '1000.0' '100000.0' '0.0'
+#:   '0.0' 'nbodyMigTrap' 'mup1.00e-07' '0.0' '0.0' '1']]
+#: 7928
+#: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:146: RuntimeWarning: You have to reset function pointers after creating a reb_simulation struct with a binary file.
+#:   warnings.warn(message, RuntimeWarning)
+#
+##+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   @mpl.rc_context(analytic)
   def plotfunc():
       fig, ax = plt.subplots()
@@ -79,7 +79,7 @@ load sim
       plt.text(
           0.05,
           0.95,
-          f"{Npts:0.1E}\n"
+          f"Npts={Npts:0.1E}\n"
           r"$T_e=$" + f"{float(params[0,6]):0.1E}\n"
           r"$T_m=$" + f"{float(params[0,7]):0.1E}",
           size=16,
@@ -87,6 +87,7 @@ load sim
           horizontalalignment="left",
           verticalalignment="top"
       )
+      plt.title(r"$\mu_p=$" +f"{params[0,2]}")
       plt.xticks(rotation=45)
 
 
@@ -95,8 +96,15 @@ load sim
 
 #+RESULTS:
 :RESULTS:
-#+attr_org: :width 432
-[[file:./.ob-jupyter/7f090ff3f99646f8f7cf74351e3d754c837c3f97.png]]
+: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:99: RuntimeWarning: The binary file seems to be corrupted. An attempt has been made to read the uncorrupted parts of it.
+:   warnings.warn(message, RuntimeWarning)
+: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:146: RuntimeWarning: You have to reset function pointers after creating a reb_simulation struct with a binary file.
+:   warnings.warn(message, RuntimeWarning)
+: [['0.03' '1.0' '1e-06' '1.0' '1.1' '100000.0' '1000.0' '100000.0' '0.0'
+:   '0.0' 'nbodyMigTrap' 'mup1.00e-06' '0.0' '0.0' '5']]
+: 21304
+#+attr_org: :width 416
+[[file:./.ob-jupyter/a2c446fae4688d0eaa0ea2622b45a3e07ab16329.png]]
 :END:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research

@@ -32,148 +32,70 @@
       projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/"
       seriesname = "tpOmEff"
       seriesdir = os.path.join(projpath, seriesname)
-      paramsname = seriesname+"-params.py"
+      paramsname = seriesname + "-params.py"
       runpath = seriesdir
-      series = FOomEffTPSeries(seriesname, runpath, load=True, verbose=True, overwrite=False)
+      series = FOomEffTPSeries(
+          seriesname, runpath, load=True, verbose=True, overwrite=False, loadall=False
+      )
       params = series.RUN_PARAMS
       fig, ax = plt.subplots()
 
-      for i in [7, 8, 9, 10, 11, 12]:
-          prescomEff = float(params[i,-2]) # prescribed omext1
+      for i in range(32, 47):
+          prescomEff = float(params[i, -1])  # prescribed omext1
           sim = series.data[i]
           teval = sim["teval"]
-          ti = int(len(teval)*0.9)
-          diffom = np.abs(sim["g2"][ti:] - sim["g1"][ti:]) # actual
-          avgDom = np.average(diffom) # average
+          ti = int(len(teval) * 0.9)
+          diffom = np.abs(sim["g2"][ti:] - sim["g1"][ti:])  # actual
+          avgDom = np.average(diffom)  # average
           e1 = sim["e1"][ti:]
           e2 = sim["e2"][ti:]
           e1avg = np.average(e1)
           e2avg = np.average(e2)
+          print(prescomEff)
           ax.scatter(prescomEff, e1avg, c="k", s=10)
           ax.scatter(prescomEff, e2avg, c="r", s=10)
-          #ax.scatter(prescomEff, avgDom, c="r", s=20)
+          # ax.scatter(prescomEff, avgDom, c="r", s=20)
           # ax.scatter(teval, diffom, c="k", s=10)
 
       ax.legend()
       figfp = os.path.join(seriesdir, "final-ecc-states.png")
       fig.savefig(figfp, bbox_inches="tight")
-      ax.set_xscale("log")
-      ax.set_title(r"Final $e_1$, $e_2$ values for varying $\dot\varpi_{1,\rm ext}$",
-                   pad=20)
+      ax.set_title(
+          r"Final $e_1$, $e_2$ values for varying $\dot\varpi_{\rm eff}$", pad=20
+      )
       ax.set_xlabel(r"$\dot\varpi_{1,\rm ext}$")
       ax.set_ylabel(r"final eccentricity")
+
+
   plot()
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 #+begin_example
-  ['0000-mup1.00e-04-omeff-1.00e-04' '0001-mup1.00e-04-omeff-1.36e-04'
-   '0002-mup1.00e-04-omeff-1.85e-04' '0003-mup1.00e-04-omeff-2.51e-04'
-   '0004-mup1.00e-04-omeff-3.41e-04' '0005-mup1.00e-04-omeff-4.64e-04'
-   '0006-mup1.00e-04-omeff-6.31e-04' '0007-mup1.00e-04-omeff-8.58e-04'
-   '0008-mup1.00e-04-omeff-1.17e-03' '0009-mup1.00e-04-omeff-1.58e-03'
-   '0010-mup1.00e-04-omeff-2.15e-03' '0011-mup1.00e-04-omeff-2.93e-03'
-   '0012-mup1.00e-04-omeff-3.98e-03' '0013-mup1.00e-04-omeff-5.41e-03'
-   '0014-mup1.00e-04-omeff-7.36e-03' '0015-mup1.00e-04-omeff-1.00e-02'
-   '0016-mup1.00e-04-omeff-1.00e-04' '0017-mup1.00e-04-omeff-1.36e-04'
-   '0018-mup1.00e-04-omeff-1.85e-04' '0019-mup1.00e-04-omeff-2.51e-04'
-   '0020-mup1.00e-04-omeff-3.41e-04' '0021-mup1.00e-04-omeff-4.64e-04'
-   '0022-mup1.00e-04-omeff-6.31e-04' '0023-mup1.00e-04-omeff-8.58e-04'
-   '0024-mup1.00e-04-omeff-1.17e-03' '0025-mup1.00e-04-omeff-1.58e-03'
-   '0026-mup1.00e-04-omeff-2.15e-03' '0027-mup1.00e-04-omeff-2.93e-03'
-   '0028-mup1.00e-04-omeff-3.98e-03' '0029-mup1.00e-04-omeff-5.41e-03'
-   '0030-mup1.00e-04-omeff-7.36e-03' '0031-mup1.00e-04-omeff-1.00e-02'
-   '0032-mup1.00e-04-omeff-1.00e-04' '0033-mup1.00e-04-omeff-1.36e-04'
-   '0034-mup1.00e-04-omeff-1.85e-04' '0035-mup1.00e-04-omeff-2.51e-04'
-   '0036-mup1.00e-04-omeff-3.41e-04' '0037-mup1.00e-04-omeff-4.64e-04'
-   '0038-mup1.00e-04-omeff-6.31e-04' '0039-mup1.00e-04-omeff-8.58e-04'
-   '0040-mup1.00e-04-omeff-1.17e-03' '0041-mup1.00e-04-omeff-1.58e-03'
-   '0042-mup1.00e-04-omeff-2.15e-03' '0043-mup1.00e-04-omeff-2.93e-03'
-   '0044-mup1.00e-04-omeff-3.98e-03' '0045-mup1.00e-04-omeff-5.41e-03'
-   '0046-mup1.00e-04-omeff-7.36e-03' '0047-mup1.00e-04-omeff-1.00e-02'
-   '0048-mup1.00e-04-omeff-1.00e-04' '0049-mup1.00e-04-omeff-1.36e-04'
-   '0050-mup1.00e-04-omeff-1.85e-04' '0051-mup1.00e-04-omeff-2.51e-04'
-   '0052-mup1.00e-04-omeff-3.41e-04' '0053-mup1.00e-04-omeff-4.64e-04'
-   '0054-mup1.00e-04-omeff-6.31e-04' '0055-mup1.00e-04-omeff-8.58e-04'
-   '0056-mup1.00e-04-omeff-1.17e-03' '0057-mup1.00e-04-omeff-1.58e-03'
-   '0058-mup1.00e-04-omeff-2.15e-03' '0059-mup1.00e-04-omeff-2.93e-03'
-   '0060-mup1.00e-04-omeff-3.98e-03' '0061-mup1.00e-04-omeff-5.41e-03'
-   '0062-mup1.00e-04-omeff-7.36e-03' '0063-mup1.00e-04-omeff-1.00e-02']
-  Cannot find file 0001-mup1.00e-04-omeff-1.36e-04.npz... have you run it?
+  Cannot find file 0048-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0049-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0050-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0051-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0052-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0053-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  -0.0001
+  -0.00013593563908785255
+  -0.00018478497974222906
+  -0.00025118864315095795
+  -0.0003414548873833601
+  -0.00046415888336127773
+  -0.000630957344480193
+  -0.0008576958985908946
+  -0.0011659144011798312
+  -0.001584893192461114
+  -0.002154434690031882
+  -0.0029286445646252374
+  -0.003981071705534973
+  No handles with labels found to put in legend.
+  -0.0054116952654646375
+  -0.007356422544596414
 #+end_example
-# [goto error]
-#+begin_example
-  [0;31m---------------------------------------------------------------------------[0m
-  [0;31mFileNotFoundError[0m                         Traceback (most recent call last)
-  [0;32m/tmp/ipykernel_15555/4134213953.py[0m in [0;36m<module>[0;34m[0m
-  [1;32m     35[0m     [0max[0m[0;34m.[0m[0mset_xlabel[0m[0;34m([0m[0;34mr"$\dot\varpi_{1,\rm ext}$"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     36[0m     [0max[0m[0;34m.[0m[0mset_ylabel[0m[0;34m([0m[0;34mr"final eccentricity"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 37[0;31m [0mplot[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m
-  [0;32m~/miniconda3/envs/science/lib/python3.9/contextlib.py[0m in [0;36minner[0;34m(*args, **kwds)[0m
-  [1;32m     77[0m         [0;32mdef[0m [0minner[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwds[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     78[0m             [0;32mwith[0m [0mself[0m[0;34m.[0m[0m_recreate_cm[0m[0;34m([0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 79[0;31m                 [0;32mreturn[0m [0mfunc[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwds[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     80[0m         [0;32mreturn[0m [0minner[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     81[0m [0;34m[0m[0m
-
-  [0;32m/tmp/ipykernel_15555/4134213953.py[0m in [0;36mplot[0;34m()[0m
-  [1;32m      6[0m     [0mparamsname[0m [0;34m=[0m [0mseriesname[0m[0;34m+[0m[0;34m"-params.py"[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m      7[0m     [0mrunpath[0m [0;34m=[0m [0mseriesdir[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m----> 8[0;31m     [0mseries[0m [0;34m=[0m [0mFOomEffTPSeries[0m[0;34m([0m[0mseriesname[0m[0;34m,[0m [0mrunpath[0m[0;34m,[0m [0mload[0m[0;34m=[0m[0;32mTrue[0m[0;34m,[0m [0mverbose[0m[0;34m=[0m[0;32mTrue[0m[0;34m,[0m [0moverwrite[0m[0;34m=[0m[0;32mFalse[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m      9[0m     [0mparams[0m [0;34m=[0m [0mseries[0m[0;34m.[0m[0mRUN_PARAMS[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     10[0m     [0mfig[0m[0;34m,[0m [0max[0m [0;34m=[0m [0mplt[0m[0;34m.[0m[0msubplots[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m~/multi-planet-architecture/mpa/series.py[0m in [0;36m__init__[0;34m(self, name, seriesdir, load, verbose, overwrite)[0m
-  [1;32m     27[0m         [0mself[0m[0;34m.[0m[0mverbose[0m [0;34m=[0m [0mverbose[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     28[0m         [0mself[0m[0;34m.[0m[0moverwrite[0m [0;34m=[0m [0moverwrite[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 29[0;31m         [0mself[0m[0;34m.[0m[0minitialize[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     30[0m [0;34m[0m[0m
-  [1;32m     31[0m     [0;34m@[0m[0mseries_dir[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m~/multi-planet-architecture/mpa/run.py[0m in [0;36mwrapper1[0;34m(*args)[0m
-  [1;32m     25[0m         [0;31m# do stuff before[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     26[0m         [0;32mtry[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 27[0;31m             [0mf[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     28[0m         [0;32mexcept[0m [0mTypeError[0m [0;32mas[0m [0merr[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     29[0m             [0;32mraise[0m [0merr[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m~/multi-planet-architecture/mpa/series.py[0m in [0;36minitialize[0;34m(self)[0m
-  [1;32m     33[0m         [0mself[0m[0;34m.[0m[0mRUN_PARAMS[0m [0;34m=[0m [0mself[0m[0;34m.[0m[0mload_params[0m[0;34m([0m[0mself[0m[0;34m.[0m[0mparamsfpath[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     34[0m         [0;32mif[0m [0mself[0m[0;34m.[0m[0mload[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 35[0;31m             [0mself[0m[0;34m.[0m[0mload_all_runs[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     36[0m [0;34m[0m[0m
-  [1;32m     37[0m     [0;32mdef[0m [0mload_params[0m[0;34m([0m[0mself[0m[0;34m,[0m [0mfilepath[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m~/multi-planet-architecture/mpa/series.py[0m in [0;36mload_all_runs[0;34m(self)[0m
-  [1;32m     59[0m         [0mNqs[0m [0;34m=[0m [0mlen[0m[0;34m([0m[0mparams[0m[0;34m[[0m[0;34m:[0m[0;34m,[0m [0;36m0[0m[0;34m][0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     60[0m         [0;32mfor[0m [0mind[0m [0;32min[0m [0mrange[0m[0;34m([0m[0mNqs[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 61[0;31m             [0mself[0m[0;34m.[0m[0mload_run[0m[0;34m([0m[0mind[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     62[0m [0;34m[0m[0m
-  [1;32m     63[0m [0;34m[0m[0m
-
-  [0;32m~/multi-planet-architecture/mpa/series.py[0m in [0;36mload_run[0;34m(self, ind)[0m
-  [1;32m     53[0m         [0;32mexcept[0m [0mFileNotFoundError[0m [0;32mas[0m [0merr[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     54[0m             [0mprint[0m[0;34m([0m[0;34mf"Cannot find file {filename}... have you run it?"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 55[0;31m             [0;32mraise[0m [0merr[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     56[0m [0;34m[0m[0m
-  [1;32m     57[0m     [0;32mdef[0m [0mload_all_runs[0m[0;34m([0m[0mself[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m~/multi-planet-architecture/mpa/series.py[0m in [0;36mload_run[0;34m(self, ind)[0m
-  [1;32m     49[0m         [0mfilename[0m [0;34m=[0m [0;34mf"{name}.npz"[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     50[0m         [0;32mtry[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 51[0;31m             [0mdata[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0mload[0m[0;34m([0m[0mos[0m[0;34m.[0m[0mpath[0m[0;34m.[0m[0mjoin[0m[0;34m([0m[0mdirname[0m[0;34m,[0m [0mfilename[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     52[0m             [0mself[0m[0;34m.[0m[0mdata[0m[0;34m[[0m[0mind[0m[0;34m][0m [0;34m=[0m [0mdata[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     53[0m         [0;32mexcept[0m [0mFileNotFoundError[0m [0;32mas[0m [0merr[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m~/miniconda3/envs/science/lib/python3.9/site-packages/numpy/lib/npyio.py[0m in [0;36mload[0;34m(file, mmap_mode, allow_pickle, fix_imports, encoding)[0m
-  [1;32m    415[0m             [0mown_fid[0m [0;34m=[0m [0;32mFalse[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m    416[0m         [0;32melse[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m--> 417[0;31m             [0mfid[0m [0;34m=[0m [0mstack[0m[0;34m.[0m[0menter_context[0m[0;34m([0m[0mopen[0m[0;34m([0m[0mos_fspath[0m[0;34m([0m[0mfile[0m[0;34m)[0m[0;34m,[0m [0;34m"rb"[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m    418[0m             [0mown_fid[0m [0;34m=[0m [0;32mTrue[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m    419[0m [0;34m[0m[0m
-
-  [0;31mFileNotFoundError[0m: [Errno 2] No such file or directory: '/home/jtlaune/multi-planet-architecture/projects/omeff/tpOmEff/lastrun/Tw01000/ep0.000/0001-mup1.00e-04-omeff-1.36e-04.npz'
-#+end_example
+#+attr_org: :width 473
+[[file:./.ob-jupyter/92f09598329ac4c82a7c47b94e7f4d20c9e6e584.png]]
 :END:

@@ -8,7 +8,7 @@ dirname = [f"mup{mutot:0.2e}" for mutot in mutots]
 h = 0.03
 q = 1.
 a0 = 1.0
-alpha2_0 = 1.2
+alpha2_0 = 1.1
 Te = 1e3
 Tm = 1e5
 T = 1.*Tm
@@ -16,7 +16,7 @@ e10 = 0.0
 e20 = 0.0
 g1_0 = 0.
 g2_0 = 0.
-N_tps = 25
+N_tps = 5
 RUN_PARAMS = np.column_stack(
     (
         h,

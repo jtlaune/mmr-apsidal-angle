@@ -17,7 +17,7 @@ class SimSeries(object):
     - loading data from npz files
     """
 
-    def __init__(self, name, seriesdir, load=False, verbose=True, overwrite=True):
+    def __init__(self, name, seriesdir, load=False, verbose=True, overwrite=True, loadall=True):
         # self.RUN_PARAMS = load_params(paramsname)
         self.seriesname = name
         self.sdir = seriesdir
@@ -26,6 +26,7 @@ class SimSeries(object):
         self.load = load
         self.verbose = verbose
         self.overwrite = overwrite
+        self.loadall = loadall
         self.initialize()
 
     @series_dir
@@ -52,7 +53,10 @@ class SimSeries(object):
             self.data[ind] = data
         except FileNotFoundError as err:
             print(f"Cannot find file {filename}... have you run it?")
-            raise err
+            if self.loadall:
+                raise err
+            else:
+                self.data[ind] = None
 
     def load_all_runs(self):
         params = self.RUN_PARAMS
