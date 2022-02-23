@@ -4,10 +4,11 @@
 #+LATEX_CLASS: article
 #+OPTIONS: toc:nil
 #+LATEX_HEADER: \usepackage{amsthm}
+#+LATEX_HEADER: \usepackage[margin=1.5in]{geometry}
 #+LATEX_HEADER: \newtheorem{defn}{Definition}
 #+STARTUP: nolatexpreview
 
-* Start
+* Problem
 Consider $n$ point *orbiters* with finite masses
 $m_1,m_2,m_3,\ldots\ll M$, where $M$ is the mass of the primary about
 which they orbit. In the absence of dissipation, its Hamiltonian is:
@@ -17,36 +18,30 @@ which they orbit. In the absence of dissipation, its Hamiltonian is:
     &\simeq \sum^{n}_{i=1}\left(\frac12 \frac{\vec p_i\cdot\vec p_i}{m_i}
       -\frac{GMm_i}{2|\vec x_i|}
       -\sum_{j\neq i}^{n} \frac{Gm_im_j}{2|\vec x_i - \vec x_j|}
-      \right), \\
+      \right),
   \end{align}
 #+end_src
-where $\vec x_i$ and $\vec p_i$ are the Cartesian position and momentum vectors, respectively.
+\noindent where $\vec x_i$ and $\vec p_i$ are the Cartesian position
+and momentum vectors, respectively.  For now, we'll be considering the
+case of 2 orbiters $m_1$ and $m_2$ around a primary of mass $M$.
 
-* Assumptions and notation
-- Two comparable mass orbiters, $i=1,2$
-  - Internal/external duality around q=1
-- Coplanar, $i_i=0$
-- Eccentricities are small, $e_i\ll 1$
-  - First order expansion in $e_i$
-- Orbiter masses are small, $m_i\ll M$
-- Near a first order MMR (1MMR), $j = 1, 2, \ldots$
-- independently parameterized $\dot\varpi_{1,\rm ext}$ and $\dot\varpi_{2,\rm ext}$
-** Notations
+We now transform to orbital elements and add the following potential
+to the Hamiltonian:
+#+begin_src latex
+  \begin{align}
+    \mathcal H_{\rm ext}
+    &= -\dot\varpi_{1,\rm ext}\Gamma_1 - \dot\varpi_{1,\rm ext}\Gamma_2,
+  \end{align}
+#+end_src
+\noindent where the $\Gamma_i=\frac12m_i\sqrt{a_i}(1-\sqrt{1-e_i^2})$
+are the canonically conjugate momenta for the canonical coordinate
+$-\varpi_i$.  This induces constant differential rotation in the
+Runge-Lenz vectors, $\vec{e}_1$ and $\vec{e}_2$.  We treat
+$\dot\varpi_{i,\rm ext}$ as free, constant parameters.
 
-|--------+------------|
-| Symbol | Definition |
-|--------+------------|
-|        |            |
-|--------+------------|
+*How does differential apsidal precession affect the dynamics of first order MMRs?*
 
-** Definitions
-#+attr_latex: :options [Runge-Lenz vector]
-#+begin_defn
-the Cartesian vector with magnitude @@latex:$e$@@ in the
-direction of orbital perihelion
-#+end_defn
-
-** Dimensionless parameters
+** Parameters
 We define:
 #+begin_src latex
   \begin{align}
@@ -54,10 +49,28 @@ We define:
    \mu_i&\equiv \frac{m_i}{M}\quad\text{dimless mass}\\ 
    \mu_{\rm tot}&\equiv \mu_1+\mu_2\quad\text{total mass},\\ 
    %\mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
+   \dot\varpi_{i, \rm ext} &\equiv \text{externally induced precession of $\varpi_i$} \\
+   \dot\varpi_{\rm eff} &\equiv \dot\varpi_{1,\rm ext}-\dot\varpi_{2,\rm ext} \quad\text{differential precession} \\
   \end{align}
 #+end_src
 @@latex:\noindent@@
 where $M$ is the primary mass.
+
+** Assumptions and notation
+- Coplanar
+- Orbiter masses are small $\mu_i\ll 1$
+- Two situations:
+  - Two comparable mass orbiters, internal/external denoted by
+    $i=1,2$, mass ratio $q\equiv m_1/m_2$.
+  - Test particle limit, $q\to0,\infty$. Denote test particle with no
+    subscript and perturbing mass with $p$ subscript. Test particle
+    can be inside or outside the perturber.
+- Near a first order MMR (1MMR), defined by $P_2/P_1\simeq (j+1)/j$,
+  with $j = 1, 2, \ldots$
+  - Eccentricities are small, $e_i\ll 1$
+    - First order expansion of perturbing potential in $e_i$
+- independently parameterized $\dot\varpi_{1,\rm ext}$ and
+  $\dot\varpi_{2,\rm ext}$ induced by an arbitrary potential
 
 * MMR Hamiltonian Model
 Index MMR locations with $j$, such that first order MMRs (hereafter ``1MMRS'') occur whenever
@@ -104,43 +117,57 @@ shift are summarized in the diagram.
 #+caption: Nominal MMR locations vs how they shift due to external precession.
 [[~/multi-planet-architecture/projects/omeff/images/resShiftDiag.png]]
 
-** Internal
+** Internal $\dot\varpi_{\rm eff}\in\log[-8,-1]$ (consistency check)
 Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate
-outwards. The perturber is on a stationary orbit, unlike
-Maryam's paper. Differential rotation couples to the
-perturber eccentricity to possibly disrupt capture.
-The capture process leads to several different
-combinations of librating resonant angles, summarized in the tables.
+outwards. The perturber is on a stationary orbit, unlike Maryam's
+paper. Differential rotation couples to the perturber eccentricity to
+possibly disrupt capture.  The capture process leads to several
+different combinations of librating resonant angles, summarized in
+Tables ref:tab:int-pos and ref:tab:int-neg.  The simulations extended
+down to $\dot\varpi_{\rm eff}10^{-8}$, but the results were not
+interesting.  We set $\dot\varpi_{\rm eff} = \dot\varpi_{1,\rm ext}$
+and set $\dot\varpi_{2, \rm ext}=0$. The idea here is
+that we can always transfer to the constantly-rotating
+frame of $\mu_p$.
+
 
 #+attr_latex: :mode table :environment tabular :align | l | c | c | c | c |
+#+name: tab:int-pos
 #+caption: Librating angles for an internal test particle with $\varpi_{\rm eff}>0$.
-|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
-| \omega_1  | 10^{-1}                          | 10^{-2}                          | 10^{-3}                | 10^{-4}                |
-|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
-| e_p=0     | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
-|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
-| e_p=0.001 | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
-|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
-| e_p=0.03  | \theta_1                         | \theta_1, \theta_2, $\hat\theta$ | None                   | None                   |
-|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
-| e_p=0.1   | \theta_1, \theta_2, $\hat\theta$ | \theta_1, \theta_2, $\hat\theta$ | None                   | Repulsion              |
-|-----------+----------------------------------+----------------------------------+------------------------+------------------------|
+#+caption: First two rows demonstrate weak coupling to $e_p$ parameter.
+#+caption: Last two rows demonstrate bifurcation in resonance behavior due to
+#+caption: $e_p-\om_{\rm eff}$ coupling.  Blank spots are just our migration
+#+caption: model failing for the internal case (not a problem).  None means the
+#+caption: resonant capture was disrupted and none of the three resonance angles,
+#+caption: $\theta_1$, $\theta_2$, and $\hat\theta$, are librating.
+|------------------+----------------------------------+----------------------------------+------------------------+------------------------|
+| \dot\varpi_{\rm eff} | 10^{-1}                          | 10^{-2}                          | 10^{-3}                | 10^{-4}                |
+|------------------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0            | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|------------------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0.001        | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$           | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|------------------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0.03         | \theta_1                         | \theta_1, \theta_2, $\hat\theta$ | None                   | None                   |
+|------------------+----------------------------------+----------------------------------+------------------------+------------------------|
+| e_p=0.1          | \theta_1, \theta_2, $\hat\theta$ | \theta_1, \theta_2, $\hat\theta$ | None                   |                        |
+|------------------+----------------------------------+----------------------------------+------------------------+------------------------|
 
 #+attr_latex: :mode table :environment tabular :align | l | c | c | c | c |
-#+caption: Librating angles for an internal test particle with $\varpi_{\rm omeff}<0$.
-|-----------+------------------------+------------------------+------------------------+------------------------|
-| \omega_1  | -10^{-1}               | -10^{-2}               | -10^{-3}               | -10^{-4}               |
-|-----------+------------------------+------------------------+------------------------+------------------------|
-| e_p=0     | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
-|-----------+------------------------+------------------------+------------------------+------------------------|
-| e_p=0.001 | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
-|-----------+------------------------+------------------------+------------------------+------------------------|
-| e_p=0.03  | \theta_1               | \theta_1               | None                   | Repulsion              |
-|-----------+------------------------+------------------------+------------------------+------------------------|
-| e_p=0.1   | \theta_1               | \theta_1               | None                   | Repulsion              |
-|-----------+------------------------+------------------------+------------------------+------------------------|
+#+name: tab:int-neg
+#+caption: Same as Table \ref{tab:int-pos} but with $\varpi_{\rm omeff}<0$.
+|----------------------+------------------------+------------------------+------------------------+------------------------|
+| \dot\varpi_{\rm eff} | -10^{-1}               | -10^{-2}               | -10^{-3}               | -10^{-4}               |
+|----------------------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0                | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|----------------------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0.001            | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ | \theta_1, $\hat\theta$ |
+|----------------------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0.03             | \theta_1               | \theta_1               | None                   |                        |
+|----------------------+------------------------+------------------------+------------------------+------------------------|
+| e_p=0.1              | \theta_1               | \theta_1               | None                   |                        |
+|----------------------+------------------------+------------------------+------------------------+------------------------|
 
-
+** External
 * Test particle results for capture timescales
 
 ** Internal

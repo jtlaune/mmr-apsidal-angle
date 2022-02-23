@@ -7,7 +7,7 @@ import rebound
 from multiprocessing import Pool, TimeoutError
 
 
-def run_Nbody(
+def run_NbodyMigTrap(
     verbose,
     tscale,
     secular,
@@ -29,7 +29,6 @@ def run_Nbody(
     e20,
     name,
     dirname,
-    cutoff,
     g1_0,
     g2_0,
     N_tps,
@@ -62,8 +61,6 @@ def run_Nbody(
     # from
     # https://rebound.readthedocs.io/en/latest/ipython_examples/Testparticles/
     sim.N_active = 2
-    #
-
     sim.move_to_com()
 
     # sim.init_megno()
@@ -71,14 +68,36 @@ def run_Nbody(
 
     fpath = os.path.join(dirname, filename)
     fdir, fname = os.path.split(fpath)
-    Path(fdir).mkdir(parents=True, exist_ok=True )
+    Path(fdir).mkdir(parents=True, exist_ok=True)
     print(fpath)
-    sim.automateSimulationArchive(fpath, step=100)
+    sim.automateSimulationArchive(fpath, step=100, deletefile=overwrite)
+
+    ######################################################################
+    # Initiate reboundx                                                  #
+    ######################################################################
+    rebx = reboundx.Extras(sim)
+    # Add the migration force
+    mod_effect = rebx.load_force("exponential_migration")  
+    rebx.add_force(mod_effect)
+
+    # add exponential mig to each test particle
+    if q == 0.0:
+        # internal
+        for particle in sim.particles[2:]:
+            particle.params["em_aini"] = a0
+            particle.params["em_afin"] = alpha2_0
+            particle.params["em_tau_a"] = Tm # rebx should take (-)
+    elif q == 1.0:
+        # external
+        for particle in sim.particles[2:]:
+            particle.params["em_aini"] = alpha2_0
+            particle.params["em_afin"] = a0
+            particle.params["em_tau_a"] = Tm
 
     try:
         # Integrate for 2pi*T from params (i.e. T is in in units of [P0=(a0)^1.5]
         sim.integrate(T * 2.0 * np.pi, exact_finish_time=0)
-        # integrate for 500 years, integrating to the nearest
+        # integrate for T years, integrating to the nearest
         # timestep for each output to keep the timestep constant
         # and preserve WHFast's symplectic nature
 
@@ -90,13 +109,14 @@ def run_Nbody(
         raise err
 
 
-class NbodyTPSet(SimSet):
+class NbodyMigTrapSet(SimSet):
+    # uses randomized li's for TPs but sets initial gi's to gi_0
     params_spec = [
         "h",
         "q",
         "mutot",
-        "a0",
-        "alpha2_0",
+        "a0",  # location of inner body or bodies
+        "alpha2_0", # ratio of outer body/bodies to a0
         "T",
         "Te",
         "Tm",
@@ -104,10 +124,9 @@ class NbodyTPSet(SimSet):
         "e20",
         "name",
         "dirname",
-        "cutoff",
-        "g1_0",
-        "g2_0",
-        "N_tps",
+        "g1_0", # initial pericenter inner body/bodies
+        "g2_0", # initial pericenter outer body/bodies
+        "N_tps", # number of TPs to initialize
     ]
 
     @params_load
@@ -124,7 +143,7 @@ class NbodyTPSet(SimSet):
             f"T={T:0.1e} q={q} " + r"$\mu_{\rm tot}=$ " + f"{mutot:0.2e}\n"
         )
 
-        run_Nbody(  # loaded from decorator
+        run_NbodyMigTrap(  # loaded from decorator
             self.verbose,
             self.tscale,
             self.secular,
@@ -142,6 +161,19 @@ class NbodyTPSet(SimSet):
 
 
 class NbodyMigTrapSeries(SimSeries):
+    def load_run(self, ind):
+        params = self.RUN_PARAMS
+        name = params[ind, -5]
+        dirname = params[ind, -4]
+        dirname = os.path.join(self.sdir, dirname)
+        filename = f"{name}.bin"
+        try:
+            data = rebound.SimulationArchive(os.path.join(dirname, filename))
+            self.data[ind] = data
+        except FileNotFoundError as err:
+            print(f"Cannot find file {filename}... have you run it?")
+            raise err
+
     @series_dir
     def __call__(self, Nproc=8):
         print("__call__ is running")
@@ -151,8 +183,11 @@ class NbodyMigTrapSeries(SimSeries):
             # change to series directory
             N_sims = self.RUN_PARAMS.shape[0]
             overwrite = not self.load
-            integrate = NbodyTPSet(
-                verbose=self.verbose, overwrite=self.overwrite, secular=True, method="RK45"
+            integrate = NbodyMigTrapSet(
+                verbose=self.verbose,
+                overwrite=self.overwrite,
+                secular=True,
+                method="RK45",
             )
             np.savez("RUN_PARAMS", self.RUN_PARAMS)
 

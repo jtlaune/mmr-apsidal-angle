@@ -1,0 +1,109 @@
+Preamble
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  import importlib
+  import matplotlib as mpl
+  import matplotlib.pyplot as plt
+  import matplotlib_inline
+  import rebound
+  import os
+  import numpy as np
+  import sys
+  
+  from matplotlib import ticker
+
+  sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  import mpa
+  from mpa.nbody import NbodyMigTrapSeries
+  from mpa.mpl_styles import analytic
+#+END_SRC
+
+#+RESULTS:
+
+load sim
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  # get run dir information
+  # seriesname is simulation "series"
+  os.chdir("/home/jtlaune/multi-planet-architecture/projects/barrier/")
+
+  cwdpath = os.path.abspath(os.getcwd())
+  # projpath, _ = os.path.split(cwdpath)
+  projpath = cwdpath
+
+  seriesname = "nbodyMigTrap"
+  seriesdir = os.path.join(projpath, seriesname)
+  paramsname = seriesname + "-params.py"
+  runpath = seriesdir
+  series = NbodyMigTrapSeries(
+      seriesname, runpath, load=True, verbose=True, overwrite=False
+  )
+  params = series.RUN_PARAMS
+  print(params)
+
+  chunk = 100 # load [::chunk ] from sim archive
+  Nbs = 2 # number of planets
+  NTPs = int(series.RUN_PARAMS[0,-1])
+  Npts = int(len(sa)/chunk)
+  print(Npts)
+  sa = series.data[0]
+  TPsmas = np.zeros((Npts, NTPs))
+  TPeccs = np.zeros((Npts, NTPs))
+  ts = np.zeros(Npts)
+
+  snapshots = []
+  for i in range(Npts):
+      snapshots = snapshots + [sa[i*chunk]]
+
+  for i, sim in enumerate(snapshots):
+      ts[i] = sim.t
+      for j, part in enumerate(sim.particles[Nbs:]):
+          TPsmas[i,j] = part.a
+          TPeccs[i,j] = part.e
+#+END_SRC
+
+#+RESULTS:
+: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:99: RuntimeWarning: The binary file seems to be corrupted. An attempt has been made to read the uncorrupted parts of it.
+:   warnings.warn(message, RuntimeWarning)
+: /home/jtlaune/miniconda3/envs/science/lib/python3.9/site-packages/rebound/simulationarchive.py:146: RuntimeWarning: You have to reset function pointers after creating a reb_simulation struct with a binary file.
+:   warnings.warn(message, RuntimeWarning)
+: [['0.03' '1.0' '1e-06' '1.0' '1.4' '100000.0' '1000.0' '100000.0' '0.0'
+:   '0.0' 'nbodyMigTrap' 'mup1.00e-06' '0.0' '0.0' '1']]
+: 43296
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  @mpl.rc_context(analytic)
+  def plotfunc():
+      fig, ax = plt.subplots()
+      for i in range(NTPs):
+          ax.plot(ts, TPsmas[:, i])
+      ax.xaxis.set_major_locator(ticker.MaxNLocator(5))
+      ax.xaxis.set_major_formatter(ticker.StrMethodFormatter("{x:0.1E}"))
+      for j in range(1,15): plt.axhline(y=((j+1)/j)**(2./3), ls="--", c="k",lw=0.5)
+      plt.text(
+          0.05,
+          0.95,
+          f"{Npts:0.1E}\n"
+          r"$T_e=$" + f"{float(params[0,6]):0.1E}\n"
+          r"$T_m=$" + f"{float(params[0,7]):0.1E}",
+          size=16,
+          transform=ax.transAxes,
+          horizontalalignment="left",
+          verticalalignment="top"
+      )
+      plt.xticks(rotation=45)
+
+
+  plotfunc()
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+attr_org: :width 416
+[[file:./.ob-jupyter/104fa3bc4c5403a51c3c6972370434e3855085e6.png]]
+:END:
+
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  "{:E}".format(3)
+#+END_SRC
+
+#+RESULTS:
+: 3.000000E+00

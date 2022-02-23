@@ -1,4 +1,4 @@
-% Created 2022-02-17 Thu 10:33
+% Created 2022-02-22 Tue 14:59
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -13,6 +13,7 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \usepackage{amsthm}
+\usepackage[margin=1.5in]{geometry}
 \newtheorem{defn}{Definition}
 \author{JT Laune}
 \date{\textit{<2022-02-08 Tue>}}
@@ -28,8 +29,8 @@
 
 \maketitle
 
-\section{Start}
-\label{sec:org3a135b5}
+\section{Problem}
+\label{sec:orgb84be47}
 Consider \(n\) point \textbf{orbiters} with finite masses
 \(m_1,m_2,m_3,\ldots\ll M\), where \(M\) is the mass of the primary about
 which they orbit. In the absence of dissipation, its Hamiltonian is:
@@ -38,62 +39,70 @@ which they orbit. In the absence of dissipation, its Hamiltonian is:
   &\simeq \sum^{n}_{i=1}\left(\frac12 \frac{\vec p_i\cdot\vec p_i}{m_i}
     -\frac{GMm_i}{2|\vec x_i|}
     -\sum_{j\neq i}^{n} \frac{Gm_im_j}{2|\vec x_i - \vec x_j|}
-    \right), \\
+    \right),
 \end{align}
 
-where \(\vec x_i\) and \(\vec p_i\) are the Cartesian position and momentum vectors, respectively.
+\noindent where \(\vec x_i\) and \(\vec p_i\) are the Cartesian position
+and momentum vectors, respectively.  For now, we'll be considering the
+case of 2 orbiters \(m_1\) and \(m_2\) around a primary of mass \(M\).
 
-\section{Assumptions and notation}
-\label{sec:org3c67772}
-\begin{itemize}
-\item Two comparable mass orbiters, \(i=1,2\)
-\begin{itemize}
-\item Internal/external duality around q=1
-\end{itemize}
-\item Coplanar, \(i_i=0\)
-\item Eccentricities are small, \(e_i\ll 1\)
-\begin{itemize}
-\item First order expansion in \(e_i\)
-\end{itemize}
-\item Orbiter masses are small, \(m_i\ll M\)
-\item Near a first order MMR (1MMR), \(j = 1, 2, \ldots\)
-\item independently parameterized \(\dot\varpi_{1,\rm ext}\) and \(\dot\varpi_{2,\rm ext}\)
-\end{itemize}
-\subsection{Notations}
-\label{sec:orgeb956b7}
+We now transform to orbital elements and add the following potential
+to the Hamiltonian:
+\begin{align}
+  \mathcal H_{\rm ext}
+  &= -\dot\varpi_{1,\rm ext}\Gamma_1 - \dot\varpi_{1,\rm ext}\Gamma_2,
+\end{align}
 
-\begin{center}
-\begin{tabular}{ll}
-\hline
-Symbol & Definition\\
-\hline
- & \\
-\hline
-\end{tabular}
-\end{center}
+\noindent where the \(\Gamma_i=\frac12m_i\sqrt{a_i}(1-\sqrt{1-e_i^2})\)
+are the canonically conjugate momenta for the canonical coordinate
+\(-\varpi_i\).  This induces constant differential rotation in the
+Runge-Lenz vectors, \(\vec{e}_1\) and \(\vec{e}_2\).  We treat
+\(\dot\varpi_{i,\rm ext}\) as free, constant parameters.
 
-\subsection{Definitions}
-\label{sec:orgaa7604a}
-\begin{defn}[Runge-Lenz vector]
-the Cartesian vector with magnitude $e$ in the
-direction of orbital perihelion
-\end{defn}
+\textbf{How does differential apsidal precession affect the dynamics of first order MMRs?}
 
-\subsection{Dimensionless parameters}
-\label{sec:orgb1f51ec}
+\subsection{Parameters}
+\label{sec:org297ce46}
 We define:
 \begin{align}
  q&\equiv \frac{m_1}{m_2}\quad\text{mass ratio with each other}\\ 
  \mu_i&\equiv \frac{m_i}{M}\quad\text{dimless mass}\\ 
  \mu_{\rm tot}&\equiv \mu_1+\mu_2\quad\text{total mass},\\ 
  %\mu_{\rm ext}&\equiv \frac{m_{\rm ext}}{M}\quad\text{total mass},\\ 
+ \dot\varpi_{i, \rm ext} &\equiv \text{externally induced precession of $\varpi_i$} \\
+ \dot\varpi_{\rm eff} &\equiv \dot\varpi_{1,\rm ext}-\dot\varpi_{2,\rm ext} \quad\text{differential precession} \\
 \end{align}
 
 \noindent
 where \(M\) is the primary mass.
 
+\subsection{Assumptions and notation}
+\label{sec:orgf0b90df}
+\begin{itemize}
+\item Coplanar
+\item Orbiter masses are small \(\mu_i\ll 1\)
+\item Two situations:
+\begin{itemize}
+\item Two comparable mass orbiters, internal/external denoted by
+\(i=1,2\), mass ratio \(q\equiv m_1/m_2\).
+\item Test particle limit, \(q\to0,\infty\). Denote test particle with no
+subscript and perturbing mass with \(p\) subscript. Test particle
+can be inside or outside the perturber.
+\end{itemize}
+\item Near a first order MMR (1MMR), defined by \(P_2/P_1\simeq (j+1)/j\),
+with \(j = 1, 2, \ldots\)
+\begin{itemize}
+\item Eccentricities are small, \(e_i\ll 1\)
+\begin{itemize}
+\item First order expansion of perturbing potential in \(e_i\)
+\end{itemize}
+\end{itemize}
+\item independently parameterized \(\dot\varpi_{1,\rm ext}\) and
+\(\dot\varpi_{2,\rm ext}\) induced by an arbitrary potential
+\end{itemize}
+
 \section{MMR Hamiltonian Model}
-\label{sec:org4fd2db9}
+\label{sec:org56f6184}
 Index MMR locations with \(j\), such that first order MMRs (hereafter ``1MMRS'') occur whenever
 \(n_1/n_2\simeq(j+1)/j\).
 Near these points, the following angles in the literal expansion of the perturbing
@@ -126,32 +135,38 @@ The Hamiltonian for an inner test particle is therefore
 \noindent
 
 \section{Test particle results for \(\dot\varpi_{\rm eff}>0\)}
-\label{sec:org6288a20}
+\label{sec:org2e0e44c}
 From the definitions of the angles \(\theta_1\) and \(\theta_2\),
 any external precession frequency will "split" the location
 of \(\theta_1\) and \(\theta_2\). The effects of this
-shift are summarized below
+shift are summarized in the diagram.
 
 \begin{center}
 \includegraphics[width=1\textwidth]{/home/jtlaune/multi-planet-architecture/projects/omeff/images/resShiftDiag.png}
 \captionof{figure}{Nominal MMR locations vs how they shift due to external precession.}
 \end{center}
 
-\subsection{Internal}
-\label{sec:org2ab3394}
+\subsection{Internal \(\dot\varpi_{\rm eff}\in\log[-8,-1]\) (consistency check)}
+\label{sec:org67b2779}
 Set \(\mu_p=1e-4\), \(a_0=1\), and let the test particle migrate
-outwards. The perturber is on a stationary orbit, unlike
-Maryam's paper. Differential rotation couples to the
-perturber eccentricity to possibly disrupt capture.
-The capture process leads to several different
-combinations of librating resonant angles.
+outwards. The perturber is on a stationary orbit, unlike Maryam's
+paper. Differential rotation couples to the perturber eccentricity to
+possibly disrupt capture.  The capture process leads to several
+different combinations of librating resonant angles, summarized in
+Tables \ref{tab:int-pos} and \ref{tab:int-neg}.  The simulations extended
+down to \(\dot\varpi_{\rm eff}10^{-8}\), but the results were not
+interesting.  We set \(\dot\varpi_{\rm eff} = \dot\varpi_{1,\rm ext}\)
+and set \(\dot\varpi_{2, \rm ext}=0\). The idea here is
+that we can always transfer to the constantly-rotating
+frame of \(\mu_p\).
+
 
 \begin{table}[htbp]
-\caption{Librating angles for an internal test particle with \(\varpi_{\rm eff}>0\).}
+\caption{\label{tab:int-pos}Librating angles for an internal test particle with \(\varpi_{\rm eff}>0\). First two rows demonstrate weak coupling to \(e_p\) parameter. Last two rows demonstrate bifurcation in resonance behavior due to \(e_p-\om_{\rm eff}\) coupling.  Blank spots are just our migration model failing for the internal case (not a problem).  None means the resonant capture was disrupted and none of the three resonance angles, \(\theta_1\), \(\theta_2\), and \(\hat\theta\), are librating.}
 \centering
 \begin{tabular}{| l | c | c | c | c |}
 \hline
-\(\omega\)\textsubscript{1} & 10\textsuperscript{-1} & 10\textsuperscript{-2} & 10\textsuperscript{-3} & 10\textsuperscript{-4}\\
+\dot\(\varpi\)\textsubscript{\rm eff} & 10\textsuperscript{-1} & 10\textsuperscript{-2} & 10\textsuperscript{-3} & 10\textsuperscript{-4}\\
 \hline
 e\textsubscript{p}=0 & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\)\\
 \hline
@@ -159,38 +174,39 @@ e\textsubscript{p}=0.001 & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\thet
 \hline
 e\textsubscript{p}=0.03 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{1}, \(\theta\)\textsubscript{2}, \(\hat\theta\) & None & None\\
 \hline
-e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1}, \(\theta\)\textsubscript{2}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\theta\)\textsubscript{2}, \(\hat\theta\) & None & Repulsion\\
+e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1}, \(\theta\)\textsubscript{2}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\theta\)\textsubscript{2}, \(\hat\theta\) & None & \\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[htbp]
-\caption{Librating angles for an internal test particle with \(\varpi_{\rm omeff}<0\).}
+\caption{\label{tab:int-neg}Same as Table \ref{tab:int-pos} but with \(\varpi_{\rm omeff}<0\).}
 \centering
 \begin{tabular}{| l | c | c | c | c |}
 \hline
-\(\omega\)\textsubscript{1} & -10\textsuperscript{-1} & -10\textsuperscript{-2} & -10\textsuperscript{-3} & -10\textsuperscript{-4}\\
+\dot\(\varpi\)\textsubscript{\rm eff} & -10\textsuperscript{-1} & -10\textsuperscript{-2} & -10\textsuperscript{-3} & -10\textsuperscript{-4}\\
 \hline
 e\textsubscript{p}=0 & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\)\\
 \hline
 e\textsubscript{p}=0.001 & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\) & \(\theta\)\textsubscript{1}, \(\hat\theta\)\\
 \hline
-e\textsubscript{p}=0.03 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{1} & None & Repulsion\\
+e\textsubscript{p}=0.03 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{1} & None & \\
 \hline
-e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{1} & None & Repulsion\\
+e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{1} & None & \\
 \hline
 \end{tabular}
 \end{table}
 
-
+\subsection{External}
+\label{sec:orga3e8b1c}
 \section{Test particle results for capture timescales}
-\label{sec:orgb1ada24}
+\label{sec:org55a3318}
 
 \subsection{Internal}
-\label{sec:org3736fe9}
+\label{sec:orgf9a02e2}
 
 \section{References}
-\label{sec:orgc794e6b}
+\label{sec:orgdd419b5}
 \bibliography{references}
 \bibliographystyle{unsrt}
 
@@ -199,7 +215,7 @@ e\textsubscript{p}=0.1 & \(\theta\)\textsubscript{1} & \(\theta\)\textsubscript{
 \appendix
 
 \section{Poincair\'e's conjugate pair}
-\label{sec:orgfa62695}
+\label{sec:orgabbf997}
 We utilize the following dimensionless coordinate-momentum conjugate
 pairs (aka Poincair\'e coordinates):
 \begin{align}
@@ -212,7 +228,7 @@ where \(\varpi_i\) is the longitude of perihelion and \(\lambda_i\) the mean lon
 of orbiter \(m_i\).
 
 \section{Geometric energy and AM}
-\label{sec:org6cd2c51}
+\label{sec:org386b699}
 In the following, we characterize dissipation by its effects on each
 planets' angular momentum (AM) and energy.  A planet's energy,
 \(\mathcal E\), is determined by its semimajor axis (sma), \(a\):
@@ -229,7 +245,7 @@ h = \mathcal E \sqrt{1-e^2}.
 \end{align}
 
 \subsection{Dissipative effects}
-\label{sec:orga4e5e92}
+\label{sec:org9f602e4}
 The dissipative effects are modeled
 by two constant timescales for each planet, 
 \begin{align}
@@ -241,7 +257,7 @@ where \(\tau_{ai}\) is the exponential e-damping of sma in years.  The
 quantity \(\tau_{ei}\) is the same for eccentricity.
 
 \section{Effects of quadrupole potential}
-\label{sec:org31db6c5}
+\label{sec:org1d76aa9}
 A quadrupole potential may arise as a result of secular perturbations
 from nearby planets on circular orbits or a \(J_2\) moment in the
 primary's gravitational field. Due to the difference in sma
@@ -249,7 +265,7 @@ between any two orbiters, a quadrupole potential induces
 differential apsidal precession on the orbiters.
 
 \subsection{Derivation of differential precession rate \(\omega_{\rm eff}\)}
-\label{sec:org104761f}
+\label{sec:org10c5bee}
 Consider a massive planet on a circular orbit which perturbs an MMR
 which lies internal to its orbit.  Let the planet's mass and sma are
 given by \(\mu_{\rm ext}\) and \(a_{\rm ext}\).  For each planet \(m_i\) in
@@ -272,7 +288,7 @@ is
 \end{equation}
 
 \subsubsection{Murray and Dermott}
-\label{sec:orgc92aca6}
+\label{sec:org11be515}
 \begin{itemize}
 \item secular perturbations \href{./images/screenshot-02.png}{7.8}
 \item coefficients: \href{./images/screenshot-03.png}{7.9-7.12}
@@ -280,7 +296,7 @@ is
 \end{itemize}
 
 \subsection{Constant \(\omega_{\rm eff}\)}
-\label{sec:org61d6393}
+\label{sec:org4d3d6d1}
 Set \(q=0.5\), inward migration. For simplicity, set \(\dot\varpi_{2,\rm
 ext} = 0\) and \(\dot\varpi_{1,\rm ext}=\dot\varpi_{\rm eff}\) to be an
 arbitrary precession frequency on \(m_1\).
@@ -296,7 +312,7 @@ arbitrary precession frequency on \(m_1\).
 \end{center}
 
 \subsubsection{Results summary in final eccentricity and \(\Delta\varpi\)}
-\label{sec:org2e3bda7}
+\label{sec:org3bb670d}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{./projects/omeff/varyOmeff/final-Dvarpi-states.png}
 \captionof{figure}{Here we have plotted the final apsidal angle as a function of \(\dot\varpi_{1,\rm ext}\)}
@@ -308,7 +324,7 @@ arbitrary precession frequency on \(m_1\).
 \end{center}
 
 \subsubsection{Code validation}
-\label{sec:org3d7fd0d}
+\label{sec:org2dc94ff}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{./mpa/tests/omEff/test-omEff.png}
 \captionof{figure}{In the above figure, we have set the total mass to be 1e-7 so that resonant and secular effects are negligible compared to the effects of external precession on \(\gamma_1\).}
@@ -316,10 +332,10 @@ arbitrary precession frequency on \(m_1\).
 
 
 \subsection{Sign of \(\omega_{\rm eff}\) and resonance splitting}
-\label{sec:org41a5ed5}
+\label{sec:org176ceb6}
 
 \section{Formal constructions}
-\label{sec:org06c5a82}
+\label{sec:orgdb963f4}
 The \textbf{Kepler problem} is a special case of the \textbf{2-body problem}.
 Its solutions are\ldots{}
 
@@ -338,9 +354,9 @@ coupling between the eccentricity damping, \(\tau_e(t)\), and the
 semimajor axis (sma) damping, \(\tau_m(t)\).
 
 \section{Hamiltonian Mechanics}
-\label{sec:org761d552}
+\label{sec:org13bb7ee}
 \section{"Natural scaling" in the solar system}
-\label{sec:org3e29e0d}
+\label{sec:org32ca15f}
 The following units
 \begin{align}
 \frac{[GM_\odot][{\rm au}]}{[2\pi{\rm yr}]^2} = 1
@@ -350,5 +366,5 @@ The following units
 dimensionless arc length parameterization of a circular orbit
 with sma=1 au and \(t\) is measured in years.
 \section{Disturbing function for N body problem}
-\label{sec:org96d7949}
+\label{sec:org93fa80f}
 \end{document}

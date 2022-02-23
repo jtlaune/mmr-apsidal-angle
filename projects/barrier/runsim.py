@@ -13,11 +13,11 @@ cwdpath = os.path.abspath(os.getcwd())
 #projpath, _ = os.path.split(cwdpath)
 projpath = cwdpath
 
-seriesname = "nbody"
+seriesname = "nbodyMigTrap"
 seriesdir = os.path.join(projpath, seriesname)
 paramsname = seriesname+"-params.py"
 runpath = seriesdir
-series = NbodyMigTrapSeries(seriesname, runpath, load=False, verbose=True, overwrite=False)
+series = NbodyMigTrapSeries(seriesname, runpath, load=False, verbose=True, overwrite=True)
 #import pdb; pdb.set_trace()
 start = time.time()
 series(16)
