@@ -13,7 +13,7 @@ cwdpath = os.path.abspath(os.getcwd())
 #projpath, _ = os.path.split(cwdpath)
 projpath = cwdpath
 
-seriesname = "nbodyMigTrap"
+seriesname = "tpVaryEccP"
 seriesdir = os.path.join(projpath, seriesname)
 paramsname = seriesname+"-params.py"
 runpath = seriesdir
