@@ -1,4 +1,3 @@
-import subprocess
 import numpy as np
 from numpy import sqrt, pi, cos, sin, abs
 import matplotlib as mpl
@@ -21,8 +20,8 @@ a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
 chunk = 16
-Nqs = 64
-eps = [0.0, 0.001, 0.03, 0.1]
+Nqs = 96
+eps = [0.0, 0.001, 0.03, 0.05, 0.07, 0.1]
 qs = np.ones(Nqs) *  1.1 # test particle outside
 dirn = "lastrun"
 totmass = 1e-4
@@ -36,7 +35,7 @@ E2DS = np.ones(Nqs) * 0.0
 
 E2_0 = np.ones(Nqs) * 0.001
 E1_0 = np.ones(Nqs)
-for jit in range(4):
+for jit in range(len(eps)):
     E1_0[jit*chunk:(jit+1)*chunk] = eps[jit]*np.ones(chunk)
 
 DIRNAMES = np.array(

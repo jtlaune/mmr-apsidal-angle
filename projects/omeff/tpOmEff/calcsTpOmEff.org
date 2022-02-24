@@ -39,8 +39,9 @@
       )
       params = series.RUN_PARAMS
       fig, ax = plt.subplots()
+      ax.axvline(x=-(1e-4)**(2./3),ls="--",c="k",lw=2)
 
-      for i in range(32, 47):
+      for i in range(64, 79):
           prescomEff = float(params[i, -1])  # prescribed omext1
           sim = series.data[i]
           teval = sim["teval"]
@@ -73,12 +74,11 @@
 #+RESULTS:
 :RESULTS:
 #+begin_example
-  Cannot find file 0048-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0049-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0050-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0051-mup1.00e-04-omeff0.00e+00.npz... have you run it?
   Cannot find file 0052-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0053-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0077-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0079-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0089-mup1.00e-04-omeff0.00e+00.npz... have you run it?
+  Cannot find file 0095-mup1.00e-04-omeff0.00e+00.npz... have you run it?
   -0.0001
   -0.00013593563908785255
   -0.00018478497974222906
@@ -92,10 +92,32 @@
   -0.002154434690031882
   -0.0029286445646252374
   -0.003981071705534973
-  No handles with labels found to put in legend.
-  -0.0054116952654646375
-  -0.007356422544596414
 #+end_example
-#+attr_org: :width 473
-[[file:./.ob-jupyter/92f09598329ac4c82a7c47b94e7f4d20c9e6e584.png]]
+# [goto error]
+#+begin_example
+  [0;31m---------------------------------------------------------------------------[0m
+  [0;31mTypeError[0m                                 Traceback (most recent call last)
+  [0;32m/tmp/ipykernel_22220/2741807445.py[0m in [0;36m<module>[0;34m[0m
+  [1;32m     40[0m [0;34m[0m[0m
+  [1;32m     41[0m [0;34m[0m[0m
+  [0;32m---> 42[0;31m [0mplot[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [0m
+  [0;32m~/miniconda3/envs/science/lib/python3.9/contextlib.py[0m in [0;36minner[0;34m(*args, **kwds)[0m
+  [1;32m     77[0m         [0;32mdef[0m [0minner[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwds[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     78[0m             [0;32mwith[0m [0mself[0m[0;34m.[0m[0m_recreate_cm[0m[0;34m([0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+  [0;32m---> 79[0;31m                 [0;32mreturn[0m [0mfunc[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwds[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [0m[1;32m     80[0m         [0;32mreturn[0m [0minner[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     81[0m [0;34m[0m[0m
+
+  [0;32m/tmp/ipykernel_22220/2741807445.py[0m in [0;36mplot[0;34m()[0m
+  [1;32m     16[0m         [0mprescomEff[0m [0;34m=[0m [0mfloat[0m[0;34m([0m[0mparams[0m[0;34m[[0m[0mi[0m[0;34m,[0m [0;34m-[0m[0;36m1[0m[0;34m][0m[0;34m)[0m  [0;31m# prescribed omext1[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     17[0m         [0msim[0m [0;34m=[0m [0mseries[0m[0;34m.[0m[0mdata[0m[0;34m[[0m[0mi[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+  [0;32m---> 18[0;31m         [0mteval[0m [0;34m=[0m [0msim[0m[0;34m[[0m[0;34m"teval"[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
+  [0m[1;32m     19[0m         [0mti[0m [0;34m=[0m [0mint[0m[0;34m([0m[0mlen[0m[0;34m([0m[0mteval[0m[0;34m)[0m [0;34m*[0m [0;36m0.9[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     20[0m         [0mdiffom[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0mabs[0m[0;34m([0m[0msim[0m[0;34m[[0m[0;34m"g2"[0m[0;34m][0m[0;34m[[0m[0mti[0m[0;34m:[0m[0;34m][0m [0;34m-[0m [0msim[0m[0;34m[[0m[0;34m"g1"[0m[0;34m][0m[0;34m[[0m[0mti[0m[0;34m:[0m[0;34m][0m[0;34m)[0m  [0;31m# actual[0m[0;34m[0m[0;34m[0m[0m
+
+  [0;31mTypeError[0m: 'NoneType' object is not subscriptable
+#+end_example
+#+attr_org: :width 440
+[[file:./.ob-jupyter/57735a0b39b4c5c3b1454337a6a1672025feabf2.png]]
 :END:

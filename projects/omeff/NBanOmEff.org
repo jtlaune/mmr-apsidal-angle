@@ -111,13 +111,18 @@ The Hamiltonian for an inner test particle is therefore
 From the definitions of the angles $\theta_1$ and $\theta_2$,
 any external precession frequency will "split" the location
 of $\theta_1$ and $\theta_2$. The effects of this
-shift are summarized in the diagram.
+shift are summarized in Figure ref:fig:resShiftDiag.
+
+In ref:fig: , we show the results for an external test particle
+near the 3:2 MMR with $\mu_p
 
 #+attr_latex: :float :width 1\textwidth
+#+name: fig:resShiftDiag
 #+caption: Nominal MMR locations vs how they shift due to external precession.
-[[./images/resShiftDiag.png]]
+[[~/multi-planet-architecture/projects/omeff/images/resShiftDiag.png]]
 
-** Internal $\dot\varpi_{\rm eff}\in[10^{-8},10^{-1}]$
+** Librating angles
+*** Internal $\dot\varpi_{\rm eff}\in[10^{-4},10^{-1}]$
 Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate
 outwards. The perturber is on a stationary orbit, unlike Maryam's
 paper. Differential rotation couples to the perturber eccentricity to
@@ -167,7 +172,7 @@ frame of $\mu_p$.
 | e_p=0.1              | \theta_1               | \theta_1               | None                   |                        |
 |----------------------+------------------------+------------------------+------------------------+------------------------|
 
-** External $\dot\varpi_{\rm eff}\in[10^{-4},10^{-2}]$
+*** External $\dot\varpi_{\rm eff}\in[10^{-4},10^{-1}]$
 |----------------------+---+---+---+---|
 | \dot\varpi_{\rm eff} |   |   |   |   |
 |----------------------+---+---+---+---|
@@ -179,10 +184,6 @@ frame of $\mu_p$.
 |----------------------+---+---+---+---|
 | e_p=0.1              |   |   |   |   |
 |----------------------+---+---+---+---|
-* Test particle results for capture timescales
-
-** Internal
-
 * References
 bibliography:references.bib
 bibliographystyle:unsrt
