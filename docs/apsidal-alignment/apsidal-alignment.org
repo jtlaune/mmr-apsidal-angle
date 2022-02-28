@@ -1486,23 +1486,32 @@ in the limit behaves as $e=e_p/q\to0$ (from equation eqref:dotdpom).
 By sending $e\to0$, we may compute
 #+begin_src latex
   \begin{align}
-  S_{\in\theta}  \equiv \lim_{q\to\infty} S = f_2^2e_p^2,
+  S_{\in\theta}  \equiv \lim_{q\to\infty} S = f_2^2e_p^2, \\
   \end{align}
 #+end_src
-@@latex:\noindent@@
-where the subscript $\in\theta$ denotes that the test particle remains
-in the resonance $\theta$.
-On the other hand, if the test particle is only
-trapped into $\hat\theta$,
-we may set $\Lambda_p=1$ (which is equivalent to setting the units) and compute
+@@latex:\noindent@@ where the subscript $\in\theta$ denotes that the
+test particle remains in the resonance $\theta$.  On the other hand,
+if the test particle is only trapped into $\hat\theta$, $e$ is no longer
+constrained to the line $e/e_p \approx 1/q$.  Then, to calculate the
+corresponding test particle limit for $S_{\notin\theta}$, we may treat
+the coordinate $\Lambda_p = q\sqrt{\alpha}$ as a constant (which is
+equivalent to setting the units). Without loss of generality, we
+choose $\Lambda_p=1$. We may now compute
 #+begin_src latex
   \begin{align}
-  S_{\notin\theta} =  f_2^2e_p^2 - 2\abs{f_1f_2}e_pe\cos(\varpi_1-\varpi_2)
-  + f_1^2e^2.
+    S_{\notin\theta} &= f_2^2e_p^2 -
+                       \frac{2\abs{f_1f_2}}{\Lambda_p} e_pe\cos(\varpi_1-\varpi_2) +
+                       \frac{f_1^2}{\Lambda_p^2} e^2 \\
+                     &=f_2^2e_p^2 -
+                       2\abs{f_1f_2} e_pe\cos(\varpi_1-\varpi_2) +
+                       f_1^2 e^2
   \end{align}
 #+end_src
 @@latex:\noindent@@
-The $(e_p,e)\text{-phase}$ space should then be split between apsidal alignment and circulation
+Complete separation of the $\theta$ and $\hat\theta$ resonances occurs whenever
+the quantity
+$(S_{\notin\theta}-S_{\in\theta})/S_{\in\theta}\gg 1$.
+Hence, the $(e_p,e)\text{-phase}$ space should then be split between apsidal alignment and circulation
 near the line defined by
 #+begin_src latex
   \begin{align}
@@ -1520,7 +1529,7 @@ parameterize the $(e_p,e)\text{-phase}$ phase by $e\sim e_{\rm eq}
 \propto h$ (where the last step is from equation eqref:eq:eeqext).
 Utilizing equation eqref:eq:linedef, we calculate the boundary between
 apsidal alignment and circulation and plot it as the black dashed line
-in ref:fig:tp-grid-ext.  To calculate the @@latex:$x$-intercept@@, we
+in Figure ref:fig:tp-grid-ext.  To calculate the @@latex:$x$-intercept@@, we
 assumed $\Delta\varpi=0$ in equation eqref:eq:linedefcoord.  Even though $e$ oscillates for apsidally
 aligned equilibria (e.g., in the bottom left of Figure
 ref:fig:tp-align, $e$ oscillates between $0<e\lesssim 0.08$ in
