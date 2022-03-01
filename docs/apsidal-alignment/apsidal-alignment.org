@@ -1301,10 +1301,10 @@ $\Delta\varpi=90^\circ$.  In the right panel of Figure
 ref:fig:Rhat-grid, we have plotted the time-averaged final
 eccentricities. The points share the same color-coding as in the right
 panel.  The eccentricities for the aligned cases fall roughly along
-the line $e_1=e_2$. This is because the angle $\hat\theta$ does not
-depend on the mass ratio $q$ (e.g., equation eqref:hattheta).  The
-perpendicular runs fall slightly above the line $e_2/e_1=q$, while the
-anti-aligned runs fall just under it.
+the line $e_1=e_2$, which reflects the fact that the angle
+$\hat\theta$ does not depend on the mass ratio $q$ (e.g., equation
+eqref:hattheta).  The perpendicular runs fall slightly above the line
+$e_2/e_1=q$, while the anti-aligned runs fall just under it.
 
 The single $\mathtt{x}$ marker in Figure ref:fig:Rhat-grid corresponds to a
 run which is only temporarily caught into resonance.
