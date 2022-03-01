@@ -141,9 +141,9 @@ enough migration, capture occurs as the planets cross the resonance
 during convergent migration.  After capture, the system evolves into
 an equilibrium with finite eccentricities which are determined by the
 particular migration timescales.  This leads to pairs and then chains
-of planets in resonance.  However, the effects of eccentricity,
-particularly an externally driven eccentricity, on MMR dynamics are
-unclear, since eccentricity is part of the normal process.
+of planets in resonance.  However, the effects of moderate
+eccentricities on the equilibrium point of the capture problem have
+not been thoroughly examined yet.
 
 In the past 40 years, exoplanet surveys have given us a wealth of
 systems to test our understanding of disk migration and resonant
@@ -343,7 +343,7 @@ a primary of mass $M$ is
 #+END_SRC
 @@latex:\noindent@@ where $m_1$, $m_2$ are the masses of the planets
 and $\mathbf{r}_1$, $\mathbf{r}_2$ their position vectors with respect
-to $M$.  The third term is known as the @@latex:``disturbing function,''@@ and can
+to $M$.  The third term is known as the @@latex:``disturbing function'',@@ and can
 be expanded into cosine terms with angles and amplitudes
 involving the orbital elements of the two planets.
 For details of this derivation, see Chapter 6 of
@@ -579,9 +579,9 @@ and consequently apsidally anti-aligned.
 In the next two sections, we will explore the effects of eccentricity
 damping ratio $T_{e,1}/T_{e,2}$ on the apsidal angle in MMR
 equilibrium.  By forcing the ratio away from $T_{e,1}/T_{e,2}\sim
-1/q$, we hope to illuminate the conflict between disk and resonant
-forces, with the ultimate goal of finding disk conditions which
-naturally give rise to apsidal alignment in exoplanetary systems.
+1/q$, we hope to shift the capture equilibrium, with the ultimate goal
+of finding disk conditions which naturally give rise to apsidal
+alignment in exoplanetary systems.
 
 ** Eccentricity damping timescales
 *** figures                                                        :ignore:
@@ -1508,11 +1508,11 @@ choose $\Lambda_p=1$. We may now compute
   \end{align}
 #+end_src
 @@latex:\noindent@@
-Complete separation of the $\theta$ and $\hat\theta$ resonances occurs whenever
-the quantity
-$(S_{\notin\theta}-S_{\in\theta})/S_{\in\theta}\gg 1$.
-Hence, the $(e_p,e)\text{-phase}$ space should then be split between apsidal alignment and circulation
-near the line defined by
+Complete separation of the $\theta$ and
+$\hat\theta$ resonances occurs whenever the quantity
+$(S_{\notin\theta}-S_{\in\theta})/S_{\in\theta}\gg 1$.  The
+$(e_p,e)\text{-phase}$ space should then be split between apsidal
+alignment and circulation near the line defined by
 #+begin_src latex
   \begin{align}
   S_{\in\theta} &\simeq S_{\notin\theta}-S_{\in\theta} \label{eq:linedef}\\
@@ -1598,22 +1598,19 @@ system parameters, and so we leave a more detailed analysis to future
 studies.
 
 This paper represents only a preliminary investigation into the
-effects of eccentricity driving in mean motion resonant systems. Our results
-come with several caveats, the first of which is that our model
-utilizes constant dissipative timescales. In reality, the coupling
-between the disk and planet is a function of eccentricity, location in
-the disk, and disk profile
+effects of eccentricity driving in mean motion resonant systems. Our
+results come with several caveats, the first of which is that our
+model utilizes constant dissipative timescales. In reality, the
+coupling between the disk and planet is a function of eccentricity,
+location in the disk, and disk profile
 citep:cresswell_evolution_2006,cresswell_three-dimensional_2008.  Full
 hydrodynamic simulations are the most accurate method for calculating
 planet-disk interactions but are too computationally expensive for the
-scope of this paper.
-
-Nevertheless, the apsidal alignment in K2-19b and c, along with their
-moderate eccentricities and the fact that we observe $\hat\theta$ to
-librate [[citep:&petit_resonance_2020]], therefore suggests that the
-planets could have interacted with an eccentricity driving force in
-the past.  However, our second conclusion implies that such a force
-threatens to destabilize and destroy the resonance in the future.
+scope of this paper.  Nevertheless, the apsidal alignment in K2-19b
+and c, along with their moderate eccentricities and the fact that we
+observe $\hat\theta$ to librate [[citep:&petit_resonance_2020]], therefore
+suggests that the planets could have interacted with an eccentricity
+driving force in the past.
 
 Both of these conclusions are also relevant to the distribution of
 period ratios in the Kepler catalogue.  On the one hand, if two
