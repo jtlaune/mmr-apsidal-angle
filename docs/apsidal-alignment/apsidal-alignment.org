@@ -56,7 +56,7 @@
   system to a finite, nonzero saturation value.  We find that, for
   certain saturation eccentricities, apsidal alignment is a natural
   outcome if the external driving force overpowers the resonance.  In
-  this configuration, both planets' resonance angles circulate, but
+  this configuration, both planets' resonance angles cease to librate, but
   there is a combined resonance angle which still librates and traps the
   planets near the nominal resonance location.  Conversely, we find that
   eccentricity forcing may also disrupt resonance capture or destroy an
@@ -782,14 +782,14 @@ perturber's orbital elements.  Including secular effects, the
 Hamiltonian for a test particle in the vicinity of an interior MMR is
 [[citep:xu_migration_2018,goldreich_overstable_2014,wisdom_canonical_1986,deck_migration_2015,henrard86_reduc_trans_apocen_librat][c.f.][]]
 #+BEGIN_SRC latex
-  \begin{align*}
+  \begin{align}
     \label{eq:tpint}
     H
     &= - \frac{1}{2(a/a_p)} - \mu_p\left(f_1
-      e\cos\theta +f_2 e_p\cos\theta_p\right) \\
+      e\cos\theta +f_2 e_p\cos\theta_p\right) \nolabel\\
     &- \mu_p \left(f_2\left(e^2 + e_p^2\right)
       + f_4e_p e\cos\varpi\right)
-  \end{align*}
+  \end{align}
 #+END_SRC
 @@latex:\noindent@@
 where
@@ -1114,8 +1114,8 @@ resonant Hamiltonian $H_{\rm Kep} + H_{\rm res}$ in equation
   \end{equation}
 #+end_src
 @@latex:\noindent@@ through a series of rotations in phase space.  For
-the details of these transformations, see Appendix [[Reducing the
-Hamiltonian to a single degree of freedom]].
+the details of these transformations, see Appendix
+[[Reducing the Comparable Mass Hamiltonian to a single degree of freedom]].
 The Hamiltonian in equation eqref:hhat is well studied
 in the literature.
 [[citep:moutamid14_coupl_between_corot_lindb_reson][for an extensive review in a planetary context, see][]]
@@ -1141,7 +1141,7 @@ is given by
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
-Appendix [[Reducing the Hamiltonian to a single degree of freedom]]
+Appendix [[Reducing the Comparable Mass Hamiltonian to a single degree of freedom]]
 describes the detailed behavior of $\hat H$, $\hat \theta$,
 and $\hat R$ in the CR3BP limits.
 This angle is the same one that [[citet:&petit_resonance_2020]]
@@ -1431,6 +1431,14 @@ massive planet becomes planet 2 for example)
 
 ** Test particle limit
 ***                                                                :ignore:
+The results of Section [[Reducing the Hamiltonian]] can be applied to the
+test particle scenario by taking the limit as $q$ approaches $0$ or
+$\infty$ while holding the orbital elements of the massive perturber
+constant.  All expressions will use either the subscripts $1$ and $2$
+for $0<q<\infty$ or $p$ and no subscript for $q=0,\infty$.  The
+internal and external test particle limits are similar; we will focus
+on the external limit (where $q\to\infty$).
+
 Whether or not the test particle becomes aligned with the planet can
 be understood as a competition between the equilibrium value of $e$, which
 we denote by $e_{\rm eq}$,
@@ -1441,37 +1449,16 @@ coefficient $q$. The test particle
 analysis simplifies the problem considerably because the vector
 $\mathbf{e}_p$ remains constant in time. 
 
-The results of Section [[Reducing the Hamiltonian]] can be applied to the
-test particle scenario by taking the limit as $q$ approaches $0$ or
-$\infty$ while holding the orbital elements of the massive perturber
-constant.  All expressions will use either the subscripts $1$
-and $2$ for $0<q<\infty$ or $p$ and no subscript for $q=0,\infty$.
+We denote the angles which correspond to $\theta_1$ and $\theta_2$ as $\theta_p=(j+1)\lambda-\lambda_p$
 The resonant angle $\hat\theta$ is given by
 #+BEGIN_SRC latex
   \begin{align}
-    \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta + \abs{f_2/f_1}e_p},
+    \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta + \abs{f_2/f_1}e_p\cos\theta_p},
   \end{align}
 #+END_SRC
-@@latex:\noindent@@ which is the the test particle limit of equation
+@@latex:\noindent@@
+which is the the test particle limit of equation
 eqref:hattheta assuming $\varpi_p=0$.
-
-The two equilibrium configurations we observe for a test particle, as
-summarized in Figure ref:fig:tp-grid-ext, are as follows: The first is
-circulation of the particle's perihelion while $\theta$ librates (open
-circles).  The second is alignment of the particle's perihelion with
-the massive planet's perihelion while $\theta$ circulates and only
-$\hat\theta$ librates (closed circles).  In
-[[citet:moutamid14_coupl_between_corot_lindb_reson]], $\theta$ is the
-apsidal co-rotation resonance (ACR) and $\hat\theta$ is the Lindblad
-eccentric resonance (LER).
-
-The internal and external test particle limits are largely analagous,
-and so we focus on the external limit, with $q$ approaching infinity.
-The massive inner planet has constant $m_1=m_p$, $a_1=a_p$, $e_1=e_p$,
-and $\varpi_1=\varpi_p$. The test particle has $m_2=m\to0$, $a_2=a$,
-$e_2=e$, and $\varpi_2=\varpi$.  We will now describe the phase space
-disruption induced by $e_p$, which splits the resonances $\theta$ and
-$\hat\theta$. 
 
 We denote the quantity $S_2/\Lambda_p$ by $S$, which gives
 #+begin_src latex
@@ -1492,33 +1479,11 @@ By sending $e\to0$, we may compute
 @@latex:\noindent@@ where the subscript $\in\theta$ denotes that the
 test particle remains in the resonance $\theta$.  On the other hand,
 if the test particle is only trapped into $\hat\theta$, $e$ is no longer
-constrained to the line $e/e_p \approx 1/q$.  Then, to calculate the
-corresponding test particle limit for $S_{\notin\theta}$, we may treat
-the coordinate $\Lambda_p = q\sqrt{\alpha}$ as a constant (which is
-equivalent to setting the units). Without loss of generality, we
-choose $\Lambda_p=1$. We may now compute
-#+begin_src latex
-  \begin{align}
-    S_{\notin\theta} &= f_2^2e_p^2 -
-                       \frac{2\abs{f_1f_2}}{\Lambda_p} e_pe\cos(\varpi_1-\varpi_2) +
-                       \frac{f_1^2}{\Lambda_p^2} e^2 \\
-                     &=f_2^2e_p^2 -
-                       2\abs{f_1f_2} e_pe\cos(\varpi_1-\varpi_2) +
-                       f_1^2 e^2
-  \end{align}
-#+end_src
-@@latex:\noindent@@
-Complete separation of the $\theta$ and
-$\hat\theta$ resonances occurs whenever the quantity
-$(S_{\notin\theta}-S_{\in\theta})/S_{\in\theta}\gg 1$.  The
-$(e_p,e)\text{-phase}$ space should then be split between apsidal
-alignment and circulation near the line defined by
-#+begin_src latex
-  \begin{align}
-  S_{\in\theta} &\simeq S_{\notin\theta}-S_{\in\theta} \label{eq:linedef}\\
-  \Rightarrow f_2e_p^2 &\simeq -2\abs{f_1f_2}e_pe\cos(\varpi_1-\varpi_2) + f_1^2e^2 \label{eq:linedefcoord}.
-  \end{align}
-#+end_src
+constrained to the line $e/e_p \approx 1/q$.
+
+##########
+cite the results about the test particle from the appendix
+##########
 
 Up until now, we have been considering an analysis of the $j:j+1$ MMR
 Hamiltonian manifold without any external dissipative forces acting on
@@ -1642,7 +1607,7 @@ bibliographystyle:mnras
 @@latex:\clearpage@@
 @@latex:\onecolumn@@
 @@latex:\appendix@@
-** Reducing the Hamiltonian to a single degree of freedom
+** Reducing the Comparable Mass Hamiltonian to a single degree of freedom
 *** Scaling the Hamiltonian
 The Hamiltonian for two comparable mass planets near a first order $j:j+1$
 resonance is
@@ -1704,7 +1669,7 @@ $\Gamma_i$.  For the limiting cases of $q\to \infty$ ($m_2=0$) or
 $q\to 0$ ($m_1=0$), the ratio $\mathcal{H}/\Lambda_i$ reduces to the
 standard test particle Hamiltonian found in citet:murray_solar_2000 if
 the limits are taken along constant perturber mass, eccentricity, and semimajor axis
-[[citep:moutamid14_coupl_between_corot_lindb_reson][e.g.][]]
+[[citep:moutamid14_coupl_between_corot_lindb_reson,deck13_first_order_reson_overl_stabil][e.g.,][]]
 *** Reducing rotation
 Now, we would like to find the momenta conjugate to the fast
 coordinates $\lambda_i$ while keeping the slowly varying $\theta_i$.
@@ -1819,8 +1784,8 @@ leaving only the terms which include factors of $(\Gamma_1+\Gamma_2)$:
   \end{align}
 #+END_SRC
 
-Following citep:henrard86_reduc_trans_apocen_librat
-[[citep:wisdom_canonical_1986][or equivalently][]], let $\v X$ be the
+Following citet:henrard86_reduc_trans_apocen_librat
+[[citep:wisdom_canonical_1986,moutamid14_coupl_between_corot_lindb_reson][equivalently, ][]], let $\v X$ be the
 cartesian formulation
 #+BEGIN_SRC latex
   \begin{align}
@@ -2006,6 +1971,168 @@ A similar representation of $\mathcal H, \mathcal M$, $\mathcal N$,
 and $\mathcal{K}$ also exists for which the limit $q\to 0$ converges
 to the case of an inner test particle by exchanging the necessary
 factors of $q$ for $\Lambda_1/\Lambda_2 = q\sqrt\alpha$.
+** Deriving the conserved quantity for a test particle
+We will now derive the test particle equivalent of $S_2$ in equation
+eqref:eq:s2.  The internal and external test particle limits are
+largely analagous, and so we focus on the external limit, with $q$
+approaching infinity.  The inner planet now has constant $m_1=m_p>0$,
+$a_1=a_p$, $e_1=e_p$, and $\varpi_1=\varpi_p$. We may arbitrarily set
+$\varpi_p=0$ due to rotational symmetry.  The test particle has
+$m_2=0$, $a_2=a$, $e_2=e$, and $\varpi_2=\varpi$.  The Hamiltonian is
+given by eqref:eq:tpint.  We are again neglecting dissipative and
+secular effects in our analysis.  After transforming to the
+@@latex:Poincair\'e@@ elements $\Lambda=\sqrt{a/a_p}$ and
+$\Gamma=\Lambda(1-\sqrt{1-e^2})\approx \frac12\Lambda e^2$,
+#+BEGIN_SRC latex
+  \begin{align}
+  \label{eq:tpresH}
+    H
+    &= - \frac{1}{2\Lambda^2} - \mu_p\left(f_2
+      \sqrt{\frac{2\Gamma}{\Lambda}}\cos(\theta_p+\gamma) + f_1 e_p\cos\theta_p\right),
+  \end{align}
+#+END_SRC
+\noindent
+where $\theta_p = (j+1)\lambda - jn_pt$ is now an explicit
+function of time. The coordinate $\gamma=-\varpi$ is conjugate
+to $\Gamma$. Utilizing the approximation that $\alpha$ is varying
+adiabatically, we can effectively treat $\Lambda$ and $f_i$ as
+constants while in resonance. 
+
+Because we are now dealing with a potential that is an explicit
+function of time, the test particle formulation is formally different
+than the comparable mass problem, which is defined only for the
+parameter range $0<q<\infty$.  The canonical transformation described
+in Appendix [[Reducing the Comparable Mass Hamiltonian to a single
+degree of freedom]], which is generated by the infinitessimal rotation
+about the origin, must also formally change.  The corresponding
+transformation here is generated by the infinitessimal translation
+towards the inner planet's Runge-Lenz vector, $\mathbf{e_p}$.
+
+We will reduce equation eqref:eq:tpresH to a single
+degree of freedom Hamiltonian. If $e_p=0$, the resonance
+angle is $\theta=\theta_p+\gamma$. For $e_p>0$, we will
+derive an angle $\hat\theta$, analagous to $\hat\theta_1$
+in equation eqref:hattheta, which incorporates the value $e_p$.
+The parameter $e_p$ splits therefore splits
+resonances $\theta$ and $\hat\theta$
+[[citep:wisdom_canonical_1986,moutamid17_deriv_captur_probab_corot_eccen][c.f. ][]].
+
+Similar to our comparable mass derivation,
+we first switch to Cartesian coordinates
+$\mathbf X = (X,Y) = (\sqrt{\Gamma}\cos\gamma, \sqrt{\Gamma}\sin\gamma)$
+so that the Hamiltonian now becomes
+#+BEGIN_SRC latex
+  \begin{align}
+    H
+    &= - \frac{1}{2\Lambda^2} - \mu_p\left(f_2
+      \sqrt{\frac{2}{\Lambda}}X\cos\theta_p + Y\sin\theta_p + f_1 e_p\cos\theta_p\right).
+  \end{align}
+#+END_SRC
+\noindent The first and third term now have identical dependence on
+$\theta_p$.  The transformation of
+$\mathbf X$ coordinates given by
+#+begin_src  latex
+  \begin{align}
+    X' &= X + \frac{f_1e_p}{f_2}\sqrt{\frac{2}{\Lambda}} \\
+    Y' &= Y
+  \end{align}
+#+end_src
+\noindent
+induces a new canonically conjugate pair $\mathbf X'=(X',Y')$.
+The Hamiltonian becomes
+#+BEGIN_SRC latex
+  \begin{align}
+    H
+    &= - \frac{1}{2\Lambda^2} - \mu_p\left(f_2
+      \sqrt{\frac{2}{\Lambda}}X'\cos\theta_p + Y'\sin\theta_p \right).
+  \end{align}
+#+END_SRC
+\noindent
+Finally, returning back to the canonical polar coordinates,
+#+BEGIN_SRC latex
+  \begin{align}
+    \tan\hat\gamma
+    &= \frac{Y'}{X'} \\
+    &= \frac{f_2e\sin\gamma}{f_2e\cos\gamma + f_1e_p},\label{eq:hatgtp}\\
+    \hat\Gamma
+    &= X'^2 + Y'^2 \\
+    &= \Gamma + \frac{f_1e_p}{f_2}\sqrt\frac{\Lambda\Gamma}{2}
+      + \frac{f_1^2}{f_2^2}\frac{\Lambda e_p^2}{2},\label{eq:hatGtp}\\
+  \end{align}
+#+END_SRC
+\noindent
+we may write the Hamiltonian as
+#+BEGIN_SRC latex
+  \begin{align}
+    H
+    &= - \frac{1}{2\Lambda^2} - \mu_p\left(f_2
+      \sqrt{\frac{2\hat\Gamma}{\Lambda}}X'\cos(\theta_p+\hat\gamma) \right).
+  \end{align}
+#+END_SRC
+\noindent
+The derivation may now continue as if this were the CR3BP,
+which culminates with the following action-angle pair:
+#+BEGIN_SRC latex
+  \begin{align}
+  \hat R \propto
+  \frac{2f_2^2}{\Lambda}\hat\Gamma
+    &\propto(f_1^2 e_p^2 + 2 f_2 f_1 e_pe\cos\hat\gamma + f_2^2 e^2 ) \\
+  \hat\theta
+    &= \theta_p + \hat\gamma
+  \end{align}
+#+END_SRC
+
+
+
+
+
+We will now describe the phase
+space disruption induced by $e_p$.
+The two equilibrium configurations we observe for a test particle, as
+summarized in Figure ref:fig:tp-grid-ext, are as follows: The first is
+circulation of the particle's perihelion while $\theta$ librates (open
+circles).  The second is alignment of the particle's perihelion with
+the massive planet's perihelion while $\theta$ circulates and only
+$\hat\theta$ librates (closed circles).  In
+[[citet:moutamid14_coupl_between_corot_lindb_reson]], $\theta$ is the
+apsidal co-rotation resonance (ACR) and $\hat\theta$ is the Lindblad
+eccentric resonance (LER).
+
+
+
+
+
+
+
+
+Then, to calculate the
+corresponding test particle limit for $S_{\notin\theta}$, we may treat
+the coordinate $\Lambda_p = q\sqrt{\alpha}$ as a constant (which is
+equivalent to setting the units). Without loss of generality, we
+choose $\Lambda_p=1$. We may now compute
+#+begin_src latex
+  \begin{align}
+    S_{\notin\theta} &= f_2^2e_p^2 -
+                       \frac{2\abs{f_1f_2}}{\Lambda_p} e_pe\cos(\varpi_1-\varpi_2) +
+                       \frac{f_1^2}{\Lambda_p^2} e^2 \\
+                     &=f_2^2e_p^2 -
+                       2\abs{f_1f_2} e_pe\cos(\varpi_1-\varpi_2) +
+                       f_1^2 e^2
+  \end{align}
+#+end_src
+@@latex:\noindent@@
+Complete separation of the $\theta$ and
+$\hat\theta$ resonances occurs whenever the quantity
+$(S_{\notin\theta}-S_{\in\theta})/S_{\in\theta}\gg 1$.  The
+$(e_p,e)\text{-phase}$ space should then be split between apsidal
+alignment and circulation near the line defined by
+#+begin_src latex
+  \begin{align}
+  S_{\in\theta} &\simeq S_{\notin\theta}-S_{\in\theta} \label{eq:linedef}\\
+  \Rightarrow f_2e_p^2 &\simeq -2\abs{f_1f_2}e_pe\cos(\varpi_1-\varpi_2) + f_1^2e^2 \label{eq:linedefcoord}.
+  \end{align}
+#+end_src
+
 * todos  [5/5]                                                     :noexport:
 ** DONE Mention transition to dimless H
 ** DONE Tell people why you are transitioning to test particles
