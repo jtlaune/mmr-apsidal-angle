@@ -588,7 +588,7 @@ def run_tp_omeff(
         os.makedirs(dirname, exist_ok=True)
     if os.path.exists(os.path.join(dirname, filename)):
         if overwrite:
-            sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0)
+            sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff)
 
             (
             teval,
@@ -690,7 +690,7 @@ def run_tp_omeff(
             y2 = data["y2"]
 
     else:
-        sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0)
+        sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff)
 
         (
             teval,

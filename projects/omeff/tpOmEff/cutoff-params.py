@@ -19,11 +19,10 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-chunk = 16
-Nqs = 96
-eps = [0.0, 0.001, 0.03, 0.05, 0.07, 0.1]
+Nqs = 8
+eps = 0.03
 qs = np.ones(Nqs) *  1.1 # test particle outside
-dirn = "lastrun"
+dirn = f"cutoff-ep{eps}"
 totmass = 1e-4
 Tw0 = 1000
 
@@ -34,12 +33,10 @@ E1DS = np.ones(Nqs) * 0.0
 E2DS = np.ones(Nqs) * 0.0
 
 E2_0 = np.ones(Nqs) * 0.001
-E1_0 = np.ones(Nqs)
-for jit in range(len(eps)):
-    E1_0[jit*chunk:(jit+1)*chunk] = eps[jit]*np.ones(chunk)
+E1_0 = np.ones(Nqs) * eps
 
 DIRNAMES = np.array(
-    [f"{dirn}/Tw0{Tw0}/ep{E1_0[i]:0.3f}/" for i in range(Nqs)]
+    [f"{dirn}/" for i in range(Nqs)]
 )
 
 # eccs = np.array([0.1])
@@ -86,10 +83,10 @@ TM1[qs > 1] = TM1[qs > 1]*0.
 # BUG: SETTING CUTOFF TO T RESULTS IN DIFFERENCES BETWEEN T #
 # VALUES. LIKELY A FACTOR OF 2PI THING.                     #
 #############################################################
-cutoff_frac = 1.0
 TS = 3e5 * np.ones(Nqs)
 ALPHA_0 = alpha_0 * np.ones(Nqs)
-CUTOFFS = TS * cutoff_frac
+cutoff_frac = 0.5
+CUTOFFS = cutoff_frac*np.ones(Nqs)
 ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 
 
@@ -97,14 +94,13 @@ ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 # OMEFFS #
 ##########
 OMEFFS2 = np.ones(Nqs)
-for jit in range(int(Nqs/chunk)):
-    OMEFFS2[jit*chunk:(jit+1)*chunk] = -np.logspace(-4, -2, chunk)
+OMEFFS2 = -np.logspace(-4, -2, Nqs)
 
 OMEFFS1 = np.zeros(Nqs)
 
 NAMES = np.array(
     [
-        f"{str(i).zfill(4)}-mup{MUP[i]:0.2e}-omeff{OMEFFS1[i]:0.2e}"
+        f"{str(i).zfill(4)}-omeff{OMEFFS2[i]:0.2e}"
         for i, qit in enumerate(QS)
     ]
 )

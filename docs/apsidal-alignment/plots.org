@@ -2134,3 +2134,27 @@ i don't think this is right
 #+RESULTS:
 [[file:./.ob-jupyter/ea4dec0b1a34b5289b1b1f00d58a954f3a23e754.png]]
 
+
+* scratch
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  e = np.linspace(0,0.1,1000)
+  f1 = 2.
+  f2 = -2.5
+  E1, E2 = np.meshgrid(e, e)
+  E2 = sqrt(2/1.78)*E2
+  Sinf = f1**2*E1**2 + 2*f1*f2*E1*E2 + f2**2*E2**2
+  Sgtr1 = f2**2*E1**2 + 2*f2*f2*E1*E2 + f1**2*E2**2
+  plt.pcolormesh(E1, E2, -(Sinf-Sgtr1)/Sgtr1>1 )
+  plt.plot(e, -(f1/f2)*e-0.02)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+: /tmp/ipykernel_24589/1212614895.py:8: RuntimeWarning: invalid value encountered in true_divide
+:   plt.pcolormesh(E1, E2, -(Sinf-Sgtr1)/Sgtr1>1 )
+: /tmp/ipykernel_24589/1212614895.py:8: MatplotlibDeprecationWarning: shading='flat' when X and Y have the same dimensions as C is deprecated since 3.3.  Either specify the corners of the quadrilaterals with X and Y, or pass shading='auto', 'nearest' or 'gouraud', or set rcParams['pcolor.shading'].  This will become an error two minor releases later.
+:   plt.pcolormesh(E1, E2, -(Sinf-Sgtr1)/Sgtr1>1 )
+| <matplotlib.lines.Line2D | at | 0x7fe1cf88fa60> |
+#+attr_org: :width 462
+[[file:./.ob-jupyter/18bc2407b49b43107855fe1171d6b51b77c5e8f6.png]]
+:END:

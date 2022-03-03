@@ -11,6 +11,7 @@
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
   from mpa.mpl_styles import analytic
   from mpa.series import FOomEffTPSeries
+  import mpa.fndefs as fns
 
   deg_conv = 180./np.pi
 
@@ -27,9 +28,11 @@
 * external 1e-4<omeff<1e-2
 *** final eccentricities
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  chunk = 16
+  projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/"
+
   @mpl.rc_context(analytic)
-  def plot():
-      projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/"
+  def plot(iep):
       seriesname = "tpOmEff"
       seriesdir = os.path.join(projpath, seriesname)
       paramsname = seriesname + "-params.py"
@@ -40,84 +43,72 @@
       params = series.RUN_PARAMS
       fig, ax = plt.subplots()
       ax.axvline(x=-(1e-4)**(2./3),ls="--",c="k",lw=2)
+      j = 2
 
-      for i in range(64, 79):
+      for i in range(iep*chunk, (iep+1)*chunk):
           prescomEff = float(params[i, -1])  # prescribed omext1
           sim = series.data[i]
           teval = sim["teval"]
           ti = int(len(teval) * 0.9)
           diffom = np.abs(sim["g2"][ti:] - sim["g1"][ti:])  # actual
           avgDom = np.average(diffom)  # average
-          e1 = sim["e1"][ti:]
-          e2 = sim["e2"][ti:]
+          theta  = sim["thetap"][ti:]
+          a1     = sim["a1"][ti:]
+          a2     = sim["a2"][ti:]
+          e1     = sim["e1"][ti:]
+          e2     = sim["e2"][ti:]
+          g1     = sim["g1"][ti:]
+          g2     = sim["g2"][ti:]
           e1avg = np.average(e1)
           e2avg = np.average(e2)
-          print(prescomEff)
-          ax.scatter(prescomEff, e1avg, c="k", s=10)
-          ax.scatter(prescomEff, e2avg, c="r", s=10)
+          f1 = fns.f27lc(a1/a2, j)
+          f2 = fns.f31lc(a1/a2, j)
+          theta1 = (theta+g1)%(2*np.pi)
+          theta2 = (theta+g2)%(2*np.pi)
+          hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
+                                e1*cos(theta1) + f2/f1*e2*cos(theta2))
+          inres = 1-2*np.all(np.abs(theta1) > 1.)
+          #ax.scatter(prescomEff, e1avg, c="k", s=10)
+          ax.axhline(y=e1avg, lw=2, ls="--", c="k")
+          ax.scatter(prescomEff, inres*e2avg, c="r", s=20)
           # ax.scatter(prescomEff, avgDom, c="r", s=20)
           # ax.scatter(teval, diffom, c="k", s=10)
 
+      ax.set_ylim(0., 0.1)
+      ax.text(0.1, 0.9, r"$e_p=$"+f"{e1avg:0.2f}", transform=ax.transAxes, fontsize=16)
       ax.legend()
       figfp = os.path.join(seriesdir, "final-ecc-states.png")
       fig.savefig(figfp, bbox_inches="tight")
       ax.set_title(
-          r"Final $e_1$, $e_2$ values for varying $\dot\varpi_{\rm eff}$", pad=20
+          r"Final $e$ values for varying $\dot\varpi_{\rm eff}$", pad=20
       )
-      ax.set_xlabel(r"$\dot\varpi_{1,\rm ext}$")
-      ax.set_ylabel(r"final eccentricity")
+      ax.set_xlabel(r"$\dot\varpi_{\rm eff}$")
+      ax.set_ylabel(r"final eccentricity (numerical)")
+      figname = f"external-tp-ep{e1avg:0.2f}.png"
+      fig.savefig(os.path.join(projpath, figname), bbox_inches="tight")
 
 
-  plot()
+  for iep in range(6): plot(iep)
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-#+begin_example
-  Cannot find file 0052-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0077-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0079-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0089-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  Cannot find file 0095-mup1.00e-04-omeff0.00e+00.npz... have you run it?
-  -0.0001
-  -0.00013593563908785255
-  -0.00018478497974222906
-  -0.00025118864315095795
-  -0.0003414548873833601
-  -0.00046415888336127773
-  -0.000630957344480193
-  -0.0008576958985908946
-  -0.0011659144011798312
-  -0.001584893192461114
-  -0.002154434690031882
-  -0.0029286445646252374
-  -0.003981071705534973
-#+end_example
-# [goto error]
-#+begin_example
-  [0;31m---------------------------------------------------------------------------[0m
-  [0;31mTypeError[0m                                 Traceback (most recent call last)
-  [0;32m/tmp/ipykernel_22220/2741807445.py[0m in [0;36m<module>[0;34m[0m
-  [1;32m     40[0m [0;34m[0m[0m
-  [1;32m     41[0m [0;34m[0m[0m
-  [0;32m---> 42[0;31m [0mplot[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m
-  [0;32m~/miniconda3/envs/science/lib/python3.9/contextlib.py[0m in [0;36minner[0;34m(*args, **kwds)[0m
-  [1;32m     77[0m         [0;32mdef[0m [0minner[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwds[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     78[0m             [0;32mwith[0m [0mself[0m[0;34m.[0m[0m_recreate_cm[0m[0;34m([0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 79[0;31m                 [0;32mreturn[0m [0mfunc[0m[0;34m([0m[0;34m*[0m[0margs[0m[0;34m,[0m [0;34m**[0m[0mkwds[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     80[0m         [0;32mreturn[0m [0minner[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     81[0m [0;34m[0m[0m
-
-  [0;32m/tmp/ipykernel_22220/2741807445.py[0m in [0;36mplot[0;34m()[0m
-  [1;32m     16[0m         [0mprescomEff[0m [0;34m=[0m [0mfloat[0m[0;34m([0m[0mparams[0m[0;34m[[0m[0mi[0m[0;34m,[0m [0;34m-[0m[0;36m1[0m[0;34m][0m[0;34m)[0m  [0;31m# prescribed omext1[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     17[0m         [0msim[0m [0;34m=[0m [0mseries[0m[0;34m.[0m[0mdata[0m[0;34m[[0m[0mi[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 18[0;31m         [0mteval[0m [0;34m=[0m [0msim[0m[0;34m[[0m[0;34m"teval"[0m[0;34m][0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     19[0m         [0mti[0m [0;34m=[0m [0mint[0m[0;34m([0m[0mlen[0m[0;34m([0m[0mteval[0m[0;34m)[0m [0;34m*[0m [0;36m0.9[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     20[0m         [0mdiffom[0m [0;34m=[0m [0mnp[0m[0;34m.[0m[0mabs[0m[0;34m([0m[0msim[0m[0;34m[[0m[0;34m"g2"[0m[0;34m][0m[0;34m[[0m[0mti[0m[0;34m:[0m[0;34m][0m [0;34m-[0m [0msim[0m[0;34m[[0m[0;34m"g1"[0m[0;34m][0m[0;34m[[0m[0mti[0m[0;34m:[0m[0;34m][0m[0;34m)[0m  [0;31m# actual[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;31mTypeError[0m: 'NoneType' object is not subscriptable
-#+end_example
-#+attr_org: :width 440
-[[file:./.ob-jupyter/57735a0b39b4c5c3b1454337a6a1672025feabf2.png]]
+: No handles with labels found to put in legend.
+: No handles with labels found to put in legend.
+: No handles with labels found to put in legend.
+: No handles with labels found to put in legend.
+: No handles with labels found to put in legend.
+: No handles with labels found to put in legend.
+#+attr_org: :width 460
+[[file:./.ob-jupyter/dd4089b2625ad24695cfc180a031eb8495c37ab8.png]]
+#+attr_org: :width 460
+[[file:./.ob-jupyter/dceed43fc679751237258823ee0dcc413953d67f.png]]
+#+attr_org: :width 460
+[[file:./.ob-jupyter/7be60d69ddc8f36d0b311937ed705f77fef80576.png]]
+#+attr_org: :width 460
+[[file:./.ob-jupyter/1c4806d8ccb7f112e4595bdb3c3e2f5d75a1d30e.png]]
+#+attr_org: :width 460
+[[file:./.ob-jupyter/6ad11c2cdf2be1eda9b8dff09bb32eb1018cd570.png]]
+#+attr_org: :width 460
+[[file:./.ob-jupyter/9c08bb13d707702d0be3fc5304e8d25faff01ff6.png]]
 :END:

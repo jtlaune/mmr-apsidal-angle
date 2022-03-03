@@ -469,12 +469,12 @@ $e_1$, $e_2$,and $\Delta\varpi$:
 #+begin_src latex
   \begin{equation}
   \label{dote1}
-    \dot e_1 = \frac{\mu_2}{\alpha_2} [f_1\sin(\theta_1) - De_2 \sin(\varpi_1-\varpi_2)] - \frac{e_1}{T_{e,1}}=0
+    \dot e_1 = \frac{\mu_2}{\alpha_2} [f_1\sin(\theta_1) - f_4e_2 \sin(\varpi_1-\varpi_2)] - \frac{e_1}{T_{e,1}}=0
   \end{equation}
   
   \begin{equation}
   \label{dote2}
-    \dot e_2 = \frac{q\mu_2}{\alpha_2} [f_2\sin(\theta_2) - De_1 \sin(\varpi_2-\varpi_1)]- \frac{e_2}{T_{e,2}}=0
+    \dot e_2 = \frac{q\mu_2}{\alpha_2} [f_2\sin(\theta_2) - f_4e_1 \sin(\varpi_2-\varpi_1)]- \frac{e_2}{T_{e,2}}=0
   \end{equation}
   
   \begin{align}
@@ -482,8 +482,8 @@ $e_1$, $e_2$,and $\Delta\varpi$:
     \frac{d}{dt}\Delta\varpi = \dot\varpi_1-\dot\varpi_2
     &= \frac{\mu_2}{\alpha_2} \left[ \frac{f_1\cos\theta_1}{\alpha_1^{1/2} e_1}
        - \frac{qf_2\cos\theta_2}{\alpha_2^{1/2}e_2}\right.\nonumber \\
-    &\quad+ \left.\frac{2C}{\alpha_1^{1/2}} + \frac{De_2}{\alpha_1^{1/2} e_1}
-      - \frac{2qC}{\alpha_2^{1/2}} - \frac{qDe_1}{ \alpha_2^{1/2}e_2}\right]=0.
+    &\quad+ \left.\frac{2f_3}{\alpha_1^{1/2}} + \frac{f_4e_2}{\alpha_1^{1/2} e_1}
+      - \frac{2qf_3}{\alpha_2^{1/2}} - \frac{qf_4e_1}{ \alpha_2^{1/2}e_2}\right]=0.
   \end{align}
 #+end_src
 @@latex:\noindent@@ To first order in eccentricity, the first two
@@ -849,7 +849,7 @@ test particle, the equilibrium eccentricity is
 #+BEGIN_SRC latex
   \begin{equation}
   \label{eq:eeqint}
-    e_{\rm eq} = \sqrt{\frac{T_e}{2(j+1)T_m}} = h\sqrt{\frac{1.78}{j+1}}.
+    e_{\rm eq} = \sqrt{\frac{T_e}{2(j+1)T_m}} = h\sqrt{\frac{1.73}{j+1}}.
   \end{equation}
 #+END_SRC
 @@latex:\noindent@@
@@ -857,7 +857,7 @@ For an external test particle,
 #+BEGIN_SRC latex
   \begin{equation}
   \label{eq:eeqext}
-    e_{\rm eq} = \sqrt{\frac{T_e}{2jT_m}} = h\sqrt{\frac{1.78}{j}}.
+    e_{\rm eq} = \sqrt{\frac{T_e}{2jT_m}} = h\sqrt{\frac{1.73}{j}}.
   \end{equation}
 #+END_SRC
 
@@ -918,7 +918,7 @@ eccentricity librates with slightly larger amplitude than
 in the previous case. Finally, the system becomes apsidally aligned.
 
 In Figure ref:fig:tp-grid-ext, we summarize the behavior of
-$\Delta\varpi$ for an internal and external test particle while
+$\Delta\varpi$ for an external test particle while
 varying the values $e_p$ and $h$ (and subsequently $e_{\rm
 eq}$). Generally, for large enough $e_{\rm eq}\gtrsim e_p$, the system
 becomes apsidally aligned.
@@ -1117,8 +1117,8 @@ resonant Hamiltonian $H_{\rm Kep} + H_{\rm res}$ in equation
 the details of these transformations, see Appendix
 [[Reducing the Comparable Mass Hamiltonian to a single degree of freedom]].
 The Hamiltonian in equation eqref:hhat is well studied
-in the literature.
-[[citep:moutamid14_coupl_between_corot_lindb_reson][for an extensive review in a planetary context, see][]]
+in the literature
+[[citep:moutamid14_coupl_between_corot_lindb_reson][for an extensive review in a planetary context, see][]].
 The parameter $\delta$ quantifies
 the system's depth into resonance.  We do not include $H_{\rm sec}$ in
 this analysis because it is second order in eccentricities.
@@ -1473,7 +1473,7 @@ in the limit behaves as $e=e_p/q\to0$ (from equation eqref:dotdpom).
 By sending $e\to0$, we may compute
 #+begin_src latex
   \begin{align}
-  S_{\in\theta}  \equiv \lim_{q\to\infty} S = f_2^2e_p^2, \\
+  S_{\in\theta}  \equiv \lim_{q\to\infty} S = f_2^2e_p^2, 
   \end{align}
 #+end_src
 @@latex:\noindent@@ where the subscript $\in\theta$ denotes that the
@@ -1490,7 +1490,7 @@ Hamiltonian manifold without any external dissipative forces acting on
 the system. However, we may still test equation eqref:eq:linedef on
 our time-dependent, dissipative integrations for test particles in
 Section [[Test Particle Results]].  As a first order approximation, we
-parameterize the $(e_p,e)\text{-phase}$ phase by $e\sim e_{\rm eq}
+parameterize the phase phase by $e\sim e_{\rm eq}
 \propto h$ (where the last step is from equation eqref:eq:eeqext).
 Utilizing equation eqref:eq:linedef, we calculate the boundary between
 apsidal alignment and circulation and plot it as the black dashed line

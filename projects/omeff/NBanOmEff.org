@@ -113,27 +113,56 @@ any external precession frequency will "split" the location
 of $\theta_1$ and $\theta_2$. The effects of this
 shift are summarized in Figure ref:fig:resShiftDiag.
 
-In ref:fig: , we show the results for an external test particle
-near the 3:2 MMR with $\mu_p
 
 #+attr_latex: :float :width 1\textwidth
 #+name: fig:resShiftDiag
 #+caption: Nominal MMR locations vs how they shift due to external precession.
 [[~/multi-planet-architecture/projects/omeff/images/resShiftDiag.png]]
 
+In the next section, we show the results of time dependent integrations
+of the Hamiltonian.
+
+** Equilibrium eccentricities
+Set $\mu_p=1e-4$, $a_p=1$, and let the test particle migrate starting
+wide of the $3:2$ MMR. The perturber is on a stationary orbit, unlike
+Maryam's paper. Differential rotation couples to the perturber
+eccentricity to possibly disrupt capture. Timescales $T_e = 10^3$ and
+$T_m = 10^5$ yrs.
+
+#+attr_latex: :float :width 0.6\textwidth
+#+name: fig:
+#+caption: Final averaged eccentricity from the time-dependent
+#+caption: integrations of the Hamiltonian. The vertical line denotes the
+#+caption: resonance width, $\delta\sim\mu_p^{2/3}$.  The horizontal line denotes
+#+caption: $e_p$.  We leave $\varpi_p=0$ fixed and assume we are in the rotating
+#+caption: frame of the planet. The differential precession is parameterized by
+#+caption: $\dot\varpi_{\rm eff} \equiv \dot\varpi_{1, \rm eff}$ (i.e., we only
+#+caption: apply precession to the test particle). For frequencies
+#+caption: $\dot\varpi_{\rm\eff}\gtrsim\delta$, the particle's average
+#+caption: eccentricities in equilibrium are altered by external
+#+caption: precession.
+[[~/multi-planet-architecture/projects/omeff/external-tp-ep0.03.png]]
+
+*** Additional examples
+#+attr_latex: :float :width 0.6\textwidth
+[[~/multi-planet-architecture/projects/omeff/external-tp-ep0.00.png]]
+#+attr_latex: :float :width 0.6\textwidth
+[[~/multi-planet-architecture/projects/omeff/external-tp-ep0.05.png]]
+#+attr_latex: :float :width 0.6\textwidth
+[[~/multi-planet-architecture/projects/omeff/external-tp-ep0.07.png]]
+#+attr_latex: :float :width 0.6\textwidth
+[[~/multi-planet-architecture/projects/omeff/external-tp-ep0.10.png]]
+
 ** Librating angles
 *** Internal $\dot\varpi_{\rm eff}\in[10^{-4},10^{-1}]$
-Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate
-outwards. The perturber is on a stationary orbit, unlike Maryam's
-paper. Differential rotation couples to the perturber eccentricity to
-possibly disrupt capture.  The capture process leads to several
-different combinations of librating resonant angles, summarized in
-Tables ref:tab:int-pos and ref:tab:int-neg.  The simulations extended
-down to $\dot\varpi_{\rm eff}10^{-8}$, but the results were not
-interesting.  We set $\dot\varpi_{\rm eff} = \dot\varpi_{1,\rm ext}$
-and set $\dot\varpi_{2, \rm ext}=0$. The idea here is
-that we can always transfer to the constantly-rotating
-frame of $\mu_p$.
+Set $\mu_p=1e-4$, $a_0=1$, and let the test particle migrate outwards.
+The capture process leads to several different combinations of
+librating resonant angles, summarized in Tables ref:tab:int-pos and
+ref:tab:int-neg.  The simulations extended down to $\dot\varpi_{\rm
+eff}=10^{-8}$, but the results were not interesting.  We set
+$\dot\varpi_{\rm eff} = \dot\varpi_{1,\rm ext}$ and set
+$\dot\varpi_{2, \rm ext}=0$. The idea here is that we can always
+transfer to the constantly-rotating frame of $\mu_p$.
 
 
 #+attr_latex: :mode table :environment tabular :align | l | c | c | c | c |
@@ -184,6 +213,18 @@ frame of $\mu_p$.
 |----------------------+---+---+---+---|
 | e_p=0.1              |   |   |   |   |
 |----------------------+---+---+---+---|
+** Examples for $e_p=0.03$
+*** Cutoff at 150kyr
+The systems are stable for $e_p=0.03$ even after shutting off
+the dissipative forces halfway through. Appears to be a stable
+equilibrium.
+
+#+attr_latex: :float :width 0.7\textwidth
+#+name: fig:resShiftDiag
+[[./tpOmEff/cutoff-ep0.03/0000-omeff-1.00e-04.png]]
+[[./tpOmEff/cutoff-ep0.03/0004-omeff-1.39e-03.png]]
+[[./tpOmEff/cutoff-ep0.03/0005-omeff-2.68e-03.png]]
+[[./tpOmEff/cutoff-ep0.03/0007-omeff-1.00e-02.png]]
 * References
 bibliography:references.bib
 bibliographystyle:unsrt

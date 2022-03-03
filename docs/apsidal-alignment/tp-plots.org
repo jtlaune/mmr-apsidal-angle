@@ -47,7 +47,19 @@
 #+END_SRC
 
 #+RESULTS:
-: ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
+:RESULTS:
+# [goto error]
+: [0;31m---------------------------------------------------------------------------[0m
+: [0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+: [0;32m/tmp/ipykernel_24589/38611148.py[0m in [0;36m<module>[0;34m[0m
+: [1;32m     10[0m [0;32mimport[0m [0msys[0m[0;34m[0m[0;34m[0m[0m
+: [1;32m     11[0m [0msys[0m[0;34m.[0m[0mpath[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0;34m"/home/jtlaune/multi-planet-architecture/"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+: [0;32m---> 12[0;31m [0;32mfrom[0m [0mhelper[0m [0;32mimport[0m [0;34m*[0m[0;34m[0m[0;34m[0m[0m
+: [0m[1;32m     13[0m [0;32mfrom[0m [0mplotting[0m [0;32mimport[0m [0;34m*[0m[0;34m[0m[0;34m[0m[0m
+: [1;32m     14[0m [0;32mimport[0m [0mimportlib[0m[0;34m[0m[0;34m[0m[0m
+: 
+: [0;31mModuleNotFoundError[0m: No module named 'helper'
+:END:
 
 * tp h-ep grid 
 - fix this bullshit fucking code thanks
@@ -818,7 +830,7 @@
 
 #+RESULTS:
 :RESULTS:
-: <matplotlib.legend.Legend at 0x7f72a580ed00>
+: <matplotlib.legend.Legend at 0x7fe20083a130>
 [[file:./.ob-jupyter/59f65f1dee65643d4b92411cb2834065df8df666.png]]
 :END:
 

@@ -413,7 +413,7 @@ class FOCompMassOmeff(FOCompMass):
             self.perturb = True
         elif np.abs(self.omeff2) > 0.0:
             self.perturb = True
-        
+
     def H4dofsec(self, t, Y):
         (thetadot, L1dot, L2dot, x1dot, y1dot, x2dot, y2dot) = super().H4dofsec(t, Y)
 
@@ -471,7 +471,7 @@ class FOCompMassOmeff(FOCompMass):
 class FOTestPartOmeff(FirstOrder):
     # This class integrates the Hamiltonian for a test
     # particle with migration.
-    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0):
+    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0, cutoff_frac):
         # set other params and dirname in child classes
         self.j = j
         self.mup = mup
@@ -482,6 +482,7 @@ class FOTestPartOmeff(FirstOrder):
         self.a0 = a0
         self.lambda0 = lambda0
         self.i_step = 0
+        self.cutoff_frac = cutoff_frac
 
     def H2dofsec(self, t, Y):
         thetap = Y[0]
@@ -545,7 +546,7 @@ class FOTestPartOmeff(FirstOrder):
 
         ydot = mup * (-0.5 * np.sin(g) * GdotoversqrtG - np.cos(g) * sqrtGgdot)
 
-        if self.migrate:
+        if self.migrate and (t < self.cutoff_time):
             # Here we're using time = tau*t
             # Add in the dissipative terms for migration
             Tm = self.Tm * self.tau
@@ -570,22 +571,22 @@ class FOTestPartOmeff(FirstOrder):
         # TODO: NEED TO INCLUDE THESE in final study
         # see above for the ldot secular force from mup
         # these are just ldot secular forcing from ext
-        #if self.ldotExtSecForcing:
-            #ldotext = (
-            #    -self.muext
-            #    * L
-            #    * (self.ap * self.ap / self.aext / self.aext)
-            #    * LC.Db(0.5, 0, a / self.aext)
-            #)
-            #lpdotext = (
-            #    -(self.ap * self.ap / self.aext / self.aext)
-            #    * self.muext
-            #    * LC.Db(0.5, 0, self.ap / self.aext)
-            #)
-            #if self.Tm > 0:
-            #    thetapdot = thetapdot + (j + 1) * lpdotext - j * ldotext
-            #if self.Tm < 0:
-            #    thetapdot = thetapdot - j * lpdotext + (j + 1) * ldotext
+        # if self.ldotExtSecForcing:
+        # ldotext = (
+        #    -self.muext
+        #    * L
+        #    * (self.ap * self.ap / self.aext / self.aext)
+        #    * LC.Db(0.5, 0, a / self.aext)
+        # )
+        # lpdotext = (
+        #    -(self.ap * self.ap / self.aext / self.aext)
+        #    * self.muext
+        #    * LC.Db(0.5, 0, self.ap / self.aext)
+        # )
+        # if self.Tm > 0:
+        #    thetapdot = thetapdot + (j + 1) * lpdotext - j * ldotext
+        # if self.Tm < 0:
+        #    thetapdot = thetapdot - j * lpdotext + (j + 1) * ldotext
         print(
             (
                 "alpha: {:0.2f}    "
@@ -616,7 +617,6 @@ class FOTestPartOmeff(FirstOrder):
         if self.omEff is not None:
             self.perturb = True
 
-
         self.n_p = 2 * np.pi / sqrt(self.ap)
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
@@ -624,10 +624,16 @@ class FOTestPartOmeff(FirstOrder):
         self.tau = self.n_p
 
         self.T = t1 * self.tau
+        self.cutoff_time = self.cutoff_frac*self.T
 
         # integration conditions
-        int_cond_min = fns.check_ratio_tp(0.5)
-        int_cond_max = fns.check_ratio_tp(0.9)
+        # internal
+        int_cond_min1 = fns.check_ratio_tp(0.5)
+        int_cond_max1 = fns.check_ratio_tp(0.9)
+
+        # external
+        int_cond_min2 = fns.check_ratio_tp(1 / 0.5)
+        int_cond_max2 = fns.check_ratio_tp(1 / 0.9)
 
         Lambda0 = np.sqrt(self.a0 / self.ap)
         Gamma0 = Lambda0 * (1 - np.sqrt(1 - self.e0**2))
@@ -652,11 +658,11 @@ class FOTestPartOmeff(FirstOrder):
             rtol=tol,
             atol=tol,
             dense_output=True,
-            events=[int_cond_min, int_cond_max],
+            events=[int_cond_min1, int_cond_max1, int_cond_min2, int_cond_max2],
         )
 
         thetap = sol.y[0, :]
-        lenSolns = len(thetap) # for simulations which exited early
+        lenSolns = len(thetap)  # for simulations which exited early
         teval = teval[:lenSolns] / self.tau
         L = sol.y[1, :]
         x = sol.y[2, :]
