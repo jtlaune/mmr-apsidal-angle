@@ -1873,7 +1873,7 @@ and is conjugate to the momentum
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
-The key characteristic of this action-angle pair is that it does not depend
+The key characteristic of this conjugate pair is that it does not depend
 on the planetary mass ratio [[citep:deck13_first_order_reson_overl_stabil][e.g.][]].
 
 After the reducing rotation, neither $\mathcal H_0$ nor $\mathcal
@@ -1883,8 +1883,7 @@ $S_2$, is a constant of resonance:
   \begin{align}
   \label{eq:appS2deriv}
     S_2 = w_2^2 + W_2^2 = q\sqrt{\alpha}f_2^2e_1^2
-  -2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2
-  ,
+  +2\abs{f_1f_2}e_1e_2\cos(\varpi_1-\varpi_2) + \frac{f_1^2}{q\sqrt\alpha}e_2^2
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
