@@ -1869,7 +1869,7 @@ and is conjugate to the momentum
 #+BEGIN_SRC latex
   \begin{align}
     S_1 = w_1^2 + W_1^2 = f_1^2e_1^2
-    + 2f_1f_2e_1e_2\cos(\varpi_1 - \varpi_2) + f_2^2e_2^2.
+    - 2f_1f_2e_1e_2\cos(\varpi_1 - \varpi_2) + f_2^2e_2^2.
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
