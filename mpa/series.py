@@ -52,7 +52,8 @@ class SimSeries(object):
             data = np.load(os.path.join(dirname, filename))
             self.data[ind] = data
         except FileNotFoundError as err:
-            print(f"Cannot find file {filename}... have you run it?")
+            print(f"In directory {dirname} \n" \
+                  f"cannot find file {filename}... have you run it?")
             if self.loadall:
                 raise err
             else:

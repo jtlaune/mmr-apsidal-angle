@@ -7,10 +7,12 @@
   import scipy as sp
   import matplotlib as mpl
   import matplotlib.pyplot as plt
+  from matplotlib.ticker import FuncFormatter
   import sys
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
+  import mpa
   from mpa.mpl_styles import analytic
-  from mpa.series import FOomEffTPSeries
+  import mpa.series
   import mpa.fndefs as fns
 
   deg_conv = 180./np.pi
@@ -25,19 +27,20 @@
 
 #+RESULTS:
 
-* external 1e-4<omeff<1e-2
-*** final eccentricities
+* external -1e-4<omeff<-1e-2
+** final eccentricities
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  importlib.reload(mpa.series)
   chunk = 16
-  projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/"
+  projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/tpOmEff/"
 
   @mpl.rc_context(analytic)
   def plot(iep):
-      seriesname = "tpOmEff"
+      seriesname = "grid"
       seriesdir = os.path.join(projpath, seriesname)
       paramsname = seriesname + "-params.py"
       runpath = seriesdir
-      series = FOomEffTPSeries(
+      series = mpa.series.FOomEffTPSeries(
           seriesname, runpath, load=True, verbose=True, overwrite=False, loadall=False
       )
       params = series.RUN_PARAMS
@@ -61,6 +64,7 @@
           g2     = sim["g2"][ti:]
           e1avg = np.average(e1)
           e2avg = np.average(e2)
+          de2avg = np.std(e2)
           f1 = fns.f27lc(a1/a2, j)
           f2 = fns.f31lc(a1/a2, j)
           theta1 = (theta+g1)%(2*np.pi)
@@ -70,22 +74,27 @@
           inres = 1-2*np.all(np.abs(theta1) > 1.)
           #ax.scatter(prescomEff, e1avg, c="k", s=10)
           ax.axhline(y=e1avg, lw=2, ls="--", c="k")
-          ax.scatter(prescomEff, inres*e2avg, c="r", s=20)
+          example_indices = iep*chunk - 1 + np.array([0, 1, 10, 11, 12, 16]) 
+          ax.errorbar(prescomEff, inres*e2avg, c="r", ms=5, capsize=5, yerr=de2avg)
+
+          if i in example_indices:
+              ax.errorbar(prescomEff, inres*e2avg, c="r", ms=20, capsize=5, marker="*", yerr=de2avg)
+          #example_mask = np.zeros(Nqs) > 1 # initialize false
+          #for ind in example_indices: example_mask[ind] = True # switch to true
+          #ax.scatter(prescomEff[example_mask], inres[example_mask]*e2avg[example_mask], c="r", s=80, marker="*")
           # ax.scatter(prescomEff, avgDom, c="r", s=20)
           # ax.scatter(teval, diffom, c="k", s=10)
 
       ax.set_ylim(0., 0.1)
-      ax.text(0.1, 0.9, r"$e_p=$"+f"{e1avg:0.2f}", transform=ax.transAxes, fontsize=16)
+      ax.text(0.1, 0.9, r"$e_p=$"+f"{e1avg:0.2e}", transform=ax.transAxes, fontsize=16)
       ax.legend()
-      figfp = os.path.join(seriesdir, "final-ecc-states.png")
-      fig.savefig(figfp, bbox_inches="tight")
       ax.set_title(
           r"Final $e$ values for varying $\dot\varpi_{\rm eff}$", pad=20
       )
       ax.set_xlabel(r"$\dot\varpi_{\rm eff}$")
       ax.set_ylabel(r"final eccentricity (numerical)")
-      figname = f"external-tp-ep{e1avg:0.2f}.png"
-      fig.savefig(os.path.join(projpath, figname), bbox_inches="tight")
+      figfp = os.path.join(seriesdir, f"images/external-tp-ep{e1avg:0.2f}.png")
+      fig.savefig(os.path.join(projpath, figfp), bbox_inches="tight")
 
 
   for iep in range(6): plot(iep)
@@ -99,16 +108,204 @@
 : No handles with labels found to put in legend.
 : No handles with labels found to put in legend.
 : No handles with labels found to put in legend.
-#+attr_org: :width 460
-[[file:./.ob-jupyter/dd4089b2625ad24695cfc180a031eb8495c37ab8.png]]
-#+attr_org: :width 460
-[[file:./.ob-jupyter/dceed43fc679751237258823ee0dcc413953d67f.png]]
-#+attr_org: :width 460
-[[file:./.ob-jupyter/7be60d69ddc8f36d0b311937ed705f77fef80576.png]]
-#+attr_org: :width 460
-[[file:./.ob-jupyter/1c4806d8ccb7f112e4595bdb3c3e2f5d75a1d30e.png]]
-#+attr_org: :width 460
-[[file:./.ob-jupyter/6ad11c2cdf2be1eda9b8dff09bb32eb1018cd570.png]]
-#+attr_org: :width 460
-[[file:./.ob-jupyter/9c08bb13d707702d0be3fc5304e8d25faff01ff6.png]]
+#+attr_org: :width 461
+[[file:./.ob-jupyter/af0223ae0ddbd46015bcfdff3498a6118c5813d4.png]]
+#+attr_org: :width 461
+[[file:./.ob-jupyter/768bef9a298452c9585d2f1ce76178037c40d144.png]]
+#+attr_org: :width 461
+[[file:./.ob-jupyter/259f56920a4faea65d79a3724b381573007e139e.png]]
+#+attr_org: :width 461
+[[file:./.ob-jupyter/b1604d864d57a4515a3f4662d76d94e0352a4539.png]]
+#+attr_org: :width 461
+[[file:./.ob-jupyter/3414bfc0d774c9585f0fa05f44cb8a8a93712c1c.png]]
+#+attr_org: :width 461
+[[file:./.ob-jupyter/72e664b9d7e8dd56b2f02cd5f8796d03809b5b2b.png]]
+:END:
+* external -1e-4<omeff<-1e-2, e_p = 0.03 
+** phase space paths
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  importlib.reload(mpa.series)
+  Nqs = 17
+  projpath = "/home/jtlaune/multi-planet-architecture/projects/omeff/tpOmEff"
+
+
+  @mpl.rc_context(analytic)
+  def plot(iep):
+      seriesname = "cutoff"
+      #seriesdir = os.path.join(projpath, seriesname)
+      seriesdir = projpath
+      paramsname = seriesname + "-params.py"
+      runpath = seriesdir
+      series = mpa.series.FOomEffTPSeries(
+          seriesname, runpath, load=True, verbose=True, overwrite=False, loadall=False
+      )
+      params = series.RUN_PARAMS
+      j = 2
+
+      #for i in range(iep * chunk, (iep) * chunk + 1):  # for dev
+      for i in range(Nqs): # gen all
+          prescomEff = float(params[i, -1])  # prescribed omext1
+          print(prescomEff)
+          sim = series.data[i]
+          teval = sim["teval"]
+          # ti = int(len(teval) * 0.9)
+          ti = 0  # all of it
+          diffom = np.abs(sim["g2"][ti:] - sim["g1"][ti:])  # actual
+          avgDom = np.average(diffom)  # average
+          theta = sim["thetap"][ti:]
+          a1 = sim["a1"][ti:]
+          a2 = sim["a2"][ti:]
+          e1 = sim["e1"][ti:]
+          e2 = sim["e2"][ti:]
+          g1 = sim["g1"][ti:]
+          g2 = sim["g2"][ti:]
+          Dpom = g2 - g1  # pom_1-pom_2
+          e1avg = np.average(e1)
+          e2avg = np.average(e2)
+          f1 = fns.f27lc(a1 / a2, j)
+          f2 = fns.f31lc(a1 / a2, j)
+          theta1 = (theta + g1) % (2 * np.pi)
+          theta2 = (theta + g2) % (2 * np.pi)
+          hattheta1 = np.arctan2(
+              e1 * sin(theta1) + f2 / f1 * e2 * sin(theta2),
+              e1 * cos(theta1) + f2 / f1 * e2 * cos(theta2),
+          )
+          inres = 1 - 2 * np.all(np.abs(theta1) > 1.0)
+
+          fig, ax = plt.subplots(3, figsize=(5, 13))
+
+          ehat = sqrt(
+              f1**2 * e1**2
+              - np.abs(f1 * f2) * e1 * e2 * cos(Dpom)
+              + f2**2 * e2**2
+          )
+
+          # ax.scatter(prescomEff, e1avg, c="k", s=10)
+          # ax.axhline(y=e1avg, lw=2, ls="--", c="k")
+          # ax.scatter(prescomEff, inres*e2avg, c="r", s=20)
+          # ax.scatter(prescomEff, avgDom, c="r", s=20)
+          # ax.scatter(teval, diffom, c="k", s=10)
+          e1cosThp = e1 * cos(theta1)
+          e2cosTh = e2 * cos(theta2)
+          e1sinThp = e1 * sin(theta1)
+          e2sinTh = e2 * sin(theta2)
+          ehatcosThhat = ehat * cos(hattheta1)
+          ehatsinThhat = ehat * sin(hattheta1)
+
+          plotsx = [e2cosTh, ehatcosThhat, teval[ti:]]
+          plotsy = [e2sinTh, ehatsinThhat, theta2*180./np.pi]
+          labsx = [
+              r"$e\cos\theta$",
+              r"$\hat e\cos\hat\theta$",
+              r"orbits [$P_p$]",
+          ]
+          labsy = [
+              r"$e\sin\theta$",
+              r"$\hat e\sin\hat\theta$",
+              r"$\theta_p$",
+          ]
+
+          for jax, axis in enumerate(ax):
+              if jax in [0,1]:
+                  im = axis.scatter(plotsx[jax], plotsy[jax], c=teval[ti:],s=0.5,alpha=0.2)
+                  axis.set_xlabel(labsx[jax])
+                  axis.set_ylabel(labsy[jax])
+                  axis.scatter(0, 0, s=40, c="red")
+                  axis.axvline(0, ls="--", c="red", lw="1.5")
+                  axis.axhline(0, ls="--", c="red", lw="1.5")
+              if jax in [0]:
+                  axis.set_xlim((-0.075,0.075))
+                  axis.set_ylim((-0.075,0.075))
+              if jax in [1]:
+                  axis.set_xlim((-0.15,0.15))
+                  axis.set_ylim((-0.15,0.15))
+              if jax in [2]:
+                  axis.set_xlim((teval[ti], teval[-1]))
+                  axis.set_ylim((0,360))
+                  im = axis.scatter(plotsx[jax], plotsy[jax], c=teval[ti:],s=0.5,alpha=0.2)
+                  axis.set_xlabel(labsx[jax])
+                  axis.set_ylabel(labsy[jax])
+
+          ax[0].set_title(
+              r"$e_p=$"
+              + f"{e1avg:0.2f}\n"
+              + r"$\dot\varpi_{\rm eff}=$"
+              + f"${prescomEff:0.2e} n_p$",
+              pad=20,
+          )
+          # ax[0].text(0.1, 0.9, r"$e_p=$"+f"{e1avg:0.2f}", transform=ax[0].transAxes, fontsize=16)
+          # ax[0].set_ylim(0., 0.1)
+          # ax[0].legend()
+          # ax[0].set_xlabel(r"$\dot\varpi_{\rm eff}$")
+          # ax[0].set_ylabel(r"final eccentricity (numerical)")
+          fig.subplots_adjust(right=0.8)
+          fmt = lambda x, pos: f"{x:0.1E} $P_p$"
+          cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+          cbar = fig.colorbar(
+              im, cax=cbar_ax, format=FuncFormatter(fmt)
+          )  # im will be the last row by default, i.e. cb will correspond to last row
+
+          fig.subplots_adjust(hspace=0.3)
+          figfp = os.path.join(seriesdir, f"images/{str(i).zfill(4)}-external-tp-ep{e1avg:0.2f}-omeff{prescomEff:0.3e}-phasepath.png")
+          fig.savefig(os.path.join(projpath, figfp), bbox_inches="tight")
+
+
+  plot(2)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#+begin_example
+  0.0
+  -0.0001
+  -0.00013593563908785255
+  -0.00018478497974222906
+  -0.00025118864315095795
+  -0.0003414548873833601
+  -0.00046415888336127773
+  -0.000630957344480193
+  -0.0008576958985908946
+  -0.0011659144011798312
+  -0.001584893192461114
+  -0.002154434690031882
+  -0.0029286445646252374
+  -0.003981071705534973
+  -0.0054116952654646375
+  -0.007356422544596414
+  -0.01
+#+end_example
+#+attr_org: :width 517
+[[file:./.ob-jupyter/a65f36dfe71ac0ef6c80ffa07dc3fbe92346f2a5.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/0ce07591c386a474edeec77515c447d353df2ea8.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/5b26e06b42118ab30f2256b4c11d115c56de6aef.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/dc8b73380cae8645a3d5e9d46c03170264928784.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/846ddc8c87abc9b929d1d08d2cfd58d433a5167b.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/939559120d61c9d1174e19cd68a67f6756018e14.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/e80612e148ef43a6e1f10c7ba9a0b1ebd40423dd.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/b9d974e496708a1f87fc8dba2b126dcc599ffd33.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/fdee50b013bc066dd826af6ac33fb8fb56cc3978.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/a23971e861fd6825dcdd1fce71e102cc1c457795.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/dd287ab4d5e851145a884d119f1fd6e5b1c5eab1.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/5dd6a010b94f6ff88352b4570f1f61a48c32d7fb.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/5867c41cae144fed43d3a15207acc16d307b55bf.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/61a3fb1c66cc1f9f4d93b3f379d4e027bc759996.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/eeaf162ba792548c106fe84cb55b4c8f97c2cad9.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/7e92c0154184d1d1da06e5de36d839c546798d75.png]]
+#+attr_org: :width 517
+[[file:./.ob-jupyter/f5ff0f923174961ba6f80e830c33f52b081a0d9d.png]]
 :END:

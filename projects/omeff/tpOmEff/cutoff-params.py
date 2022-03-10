@@ -19,7 +19,7 @@ j = 2
 a0 = 1.0
 h = 0.03
 alpha_0 = (j / (j + 1)) ** (2.0 / 3.0)
-Nqs = 8
+Nqs = 17
 eps = 0.03
 qs = np.ones(Nqs) *  1.1 # test particle outside
 dirn = f"cutoff-ep{eps}"
@@ -93,8 +93,8 @@ ALPHA2_0 = (1.65) ** (2.0 / 3) * np.ones(Nqs)
 ##########
 # OMEFFS #
 ##########
-OMEFFS2 = np.ones(Nqs)
-OMEFFS2 = -np.logspace(-4, -2, Nqs)
+OMEFFS2 = np.zeros(Nqs)
+OMEFFS2[1:] = -np.logspace(-4, -2, Nqs-1)
 
 OMEFFS1 = np.zeros(Nqs)
 
