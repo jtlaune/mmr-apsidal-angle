@@ -10,11 +10,11 @@
   from matplotlib.ticker import ScalarFormatter
   import sys
   sys.path.append("/home/jtlaune/multi-planet-architecture/")
-  from helper import *
-  from plotting import *
+  import mpa
+  from mpa import fndefs
+  from mpa.mpl_styles import analytic
   import importlib
   import os
-  import seaborn as sns
   from scipy.ndimage import uniform_filter1d
   j = 2
   plt.rcParams.update({"font.size": 20,
@@ -35,6 +35,7 @@
   #colors = ["#FF0B04", "#4374B3"]# Set your custom color palette
   #sns.set_palette("dark")
 
+  import seaborn as sns
   pal = sns.color_palette("colorblind").as_hex()
   blue = pal[0]
   orange = pal[3]
@@ -47,19 +48,7 @@
 #+END_SRC
 
 #+RESULTS:
-:RESULTS:
-# [goto error]
-: [0;31m---------------------------------------------------------------------------[0m
-: [0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-: [0;32m/tmp/ipykernel_24589/38611148.py[0m in [0;36m<module>[0;34m[0m
-: [1;32m     10[0m [0;32mimport[0m [0msys[0m[0;34m[0m[0;34m[0m[0m
-: [1;32m     11[0m [0msys[0m[0;34m.[0m[0mpath[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0;34m"/home/jtlaune/multi-planet-architecture/"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-: [0;32m---> 12[0;31m [0;32mfrom[0m [0mhelper[0m [0;32mimport[0m [0;34m*[0m[0;34m[0m[0;34m[0m[0m
-: [0m[1;32m     13[0m [0;32mfrom[0m [0mplotting[0m [0;32mimport[0m [0;34m*[0m[0;34m[0m[0;34m[0m[0m
-: [1;32m     14[0m [0;32mimport[0m [0mimportlib[0m[0;34m[0m[0;34m[0m[0m
-: 
-: [0;31mModuleNotFoundError[0m: No module named 'helper'
-:END:
+: ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
 
 * tp h-ep grid 
 - fix this bullshit fucking code thanks
@@ -166,7 +155,7 @@
   hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
   fig, ax = plt.subplots()
   for j, h in enumerate(hs):
-      os.chdir("/home/jtlaune/Dropbox/multi-planet-architecture/runs/external-tp/")
+      os.chdir("/home/jtlaune/Dropbox/apsidal-alignment/external-tp/")
       aligned_arr   = np.loadtxt(os.path.join(".", f"behaviors-h-{h:0.3f}.txt"))
       aligned_arr = aligned_arr[8:]
       mups          = aligned_arr[:,0]
@@ -205,8 +194,8 @@
       j = 2. 
       alpha2 = ((j+1)/j)**(2./3)
       cosDpom = 1
-      f1 = A(1/alpha2, j)
-      f2 = B(1/alpha2, j)
+      f1 = fndefs.f27lc(1/alpha2, j)
+      f2 = fndefs.f31lc(1/alpha2, j)
       xi = sqrt(0.5)*np.abs(f1/f2) # h = xi*sqrt(j/1.73)*e fudge factor
       n = 11
       eps = np.logspace(-2,np.log10(0.15),n,endpoint=True)
@@ -230,37 +219,43 @@
       shift_ep = eeqs[0]
       xs = np.linspace(0,0.1,1000)
       hs = np.abs(f1/f2)*xs*sqrt(2*j/3.46)
-      ax.plot(shift_ep+xs, hs, ls="--", c="k")
+      #ax.plot(shift_ep+xs, hs, ls="--", c="k")
       #hs = eeqs*sqrt(2*j/3.46)
       #ax.plot(eps, hs)
       os.chdir("/home/jtlaune/multi-planet-architecture/docs/apsidal-alignment/")
       ax.set_xlim(0,0.08)
       ax.set_ylim(0.01,0.08)
+      x = np.linspace(0,0.1,100)
+      ax.plot(x, x)
       fig.savefig(os.path.join(".",
                   f"tp-grid-ext.png"),
                   bbox_inches="tight")
+  print(f2/f1)
+  print(sqrt(1.73/2))
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
 #+begin_example
-  /tmp/ipykernel_14867/1537902029.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
-    eeqs[i] = rts_R[rts_win][0]
-  /tmp/ipykernel_14867/1537902029.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
-  no root for ep = 0.15
-  /tmp/ipykernel_14867/1537902029.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
-    eeqs[i] = rts_R[rts_win][0]
-  /tmp/ipykernel_14867/1537902029.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
-  no root for ep = 0.15
-  /tmp/ipykernel_14867/1537902029.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
+  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  no root for ep = 0.15
+  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  no root for ep = 0.15
+  -1.2265343439240521
+  0.9300537618869137
 #+end_example
-[[file:./.ob-jupyter/a52bee595822178f61b2cbddb5228be530061bfa.png]]
+[[file:./.ob-jupyter/7f51f096d7d4fba5c37f718908d7bec1eedb4cf3.png]]
 :END:
 
 * tp examples
