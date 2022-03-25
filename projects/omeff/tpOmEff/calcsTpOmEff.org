@@ -44,9 +44,10 @@
           seriesname, runpath, load=True, verbose=True, overwrite=False, loadall=False
       )
       params = series.RUN_PARAMS
-      fig, ax = plt.subplots()
-      ax.axvline(x=-(1e-4)**(2./3),ls="--",c="k",lw=2)
+      fig, ax = plt.subplots(2, figsize=(5,10))
+      ax[0].axvline(x=-(1e-4)**(2./3),ls="--",c="k",lw=2) # LER
       j = 2
+      mup = 1e-4
 
       for i in range(iep*chunk, (iep+1)*chunk):
           prescomEff = float(params[i, -1])  # prescribed omext1
@@ -72,54 +73,63 @@
           hattheta1 = np.arctan2(e1*sin(theta1) + f2/f1*e2*sin(theta2),
                                 e1*cos(theta1) + f2/f1*e2*cos(theta2))
           inres = 1-2*np.all(np.abs(theta1) > 1.)
-          #ax.scatter(prescomEff, e1avg, c="k", s=10)
-          ax.axhline(y=e1avg, lw=2, ls="--", c="k")
+          widthCER = 2*(j+1)*np.sqrt(2*np.abs(f1)*mup)*e1avg**(1.5) # 0.00062
+          ax[1].plot(teval[ti:], widthCER, c="k")
+          print(widthCER)
+          #ax[0].scatter(prescomEff, e1avg, c="k", s=10)
+          ax[0].axvline(x=-0.00062,ls="--",c="b",lw=2) # CER
+          ax[0].axhline(y=e1avg, lw=2, ls="--", c="k")
           example_indices = iep*chunk - 1 + np.array([0, 1, 10, 11, 12, 16]) 
-          ax.errorbar(prescomEff, inres*e2avg, c="r", ms=5, capsize=5, yerr=de2avg)
+          ax[0].errorbar(prescomEff, inres*e2avg, c="r", ms=5, capsize=5, yerr=de2avg)
 
           if i in example_indices:
-              ax.errorbar(prescomEff, inres*e2avg, c="r", ms=20, capsize=5, marker="*", yerr=de2avg)
+              ax[0].errorbar(prescomEff, inres*e2avg, c="r", ms=20, capsize=5, marker="*", yerr=de2avg)
           #example_mask = np.zeros(Nqs) > 1 # initialize false
           #for ind in example_indices: example_mask[ind] = True # switch to true
-          #ax.scatter(prescomEff[example_mask], inres[example_mask]*e2avg[example_mask], c="r", s=80, marker="*")
-          # ax.scatter(prescomEff, avgDom, c="r", s=20)
-          # ax.scatter(teval, diffom, c="k", s=10)
+          #ax[0].scatter(prescomEff[example_mask], inres[example_mask]*e2avg[example_mask], c="r", s=80, marker="*")
+          # ax[0].scatter(prescomEff, avgDom, c="r", s=20)
+          # ax[0].scatter(teval, diffom, c="k", s=10)
 
-      ax.set_ylim(0., 0.1)
-      ax.text(0.1, 0.9, r"$e_p=$"+f"{e1avg:0.2e}", transform=ax.transAxes, fontsize=16)
-      ax.legend()
-      ax.set_title(
+      ax[0].set_ylim(0., 0.1)
+      ax[0].text(0.1, 0.9, r"$e_p=$"+f"{e1avg:0.2e}", transform=ax[0].transAxes, fontsize=16)
+      ax[0].legend()
+      ax[0].set_title(
           r"Final $e$ values for varying $\dot\varpi_{\rm eff}$", pad=20
       )
-      ax.set_xlabel(r"$\dot\varpi_{\rm eff}$")
-      ax.set_ylabel(r"final eccentricity (numerical)")
+      ax[0].set_xlabel(r"$\dot\varpi_{\rm eff}$")
+      ax[0].set_ylabel(r"final eccentricity (numerical)")
       figfp = os.path.join(seriesdir, f"images/external-tp-ep{e1avg:0.2f}.png")
+      fig.subplots_adjust(hspace=1)
+      ax[1].set_title("CER resonance width at the end of the simulation")
+      ax[1].set_xlabel("t [orbits]")
       fig.savefig(os.path.join(projpath, figfp), bbox_inches="tight")
 
-
-  for iep in range(6): plot(iep)
+  for iep in [2]: plot(iep)
 #+END_SRC
 
 #+RESULTS:
 :RESULTS:
-: No handles with labels found to put in legend.
-: No handles with labels found to put in legend.
-: No handles with labels found to put in legend.
-: No handles with labels found to put in legend.
-: No handles with labels found to put in legend.
-: No handles with labels found to put in legend.
-#+attr_org: :width 461
-[[file:./.ob-jupyter/af0223ae0ddbd46015bcfdff3498a6118c5813d4.png]]
-#+attr_org: :width 461
-[[file:./.ob-jupyter/768bef9a298452c9585d2f1ce76178037c40d144.png]]
-#+attr_org: :width 461
-[[file:./.ob-jupyter/259f56920a4faea65d79a3724b381573007e139e.png]]
-#+attr_org: :width 461
-[[file:./.ob-jupyter/b1604d864d57a4515a3f4662d76d94e0352a4539.png]]
-#+attr_org: :width 461
-[[file:./.ob-jupyter/3414bfc0d774c9585f0fa05f44cb8a8a93712c1c.png]]
-#+attr_org: :width 461
-[[file:./.ob-jupyter/72e664b9d7e8dd56b2f02cd5f8796d03809b5b2b.png]]
+#+begin_example
+  [0.00062443 0.00062442 0.00062442 ... 0.00062462 0.00062462 0.00062462]
+  [0.00062438 0.00062439 0.0006244  ... 0.00062462 0.00062463 0.00062463]
+  [0.00062457 0.00062456 0.00062455 ... 0.00062466 0.00062466 0.00062466]
+  [0.00062411 0.00062411 0.00062411 ... 0.00062455 0.00062454 0.00062452]
+  [0.00062402 0.00062403 0.00062403 ... 0.00062446 0.00062444 0.00062442]
+  [0.00062389 0.00062389 0.0006239  ... 0.00062388 0.00062388 0.00062389]
+  [0.00062416 0.00062419 0.00062422 ... 0.00062393 0.00062391 0.00062389]
+  [0.00062811 0.00062815 0.00062819 ... 0.0006237  0.00062348 0.00062327]
+  [0.00062528 0.00062525 0.00062521 ... 0.00062538 0.00062535 0.00062532]
+  [0.00062602 0.00062629 0.00062655 ... 0.00062796 0.00062779 0.00062761]
+  [0.00062706 0.00062719 0.00062731 ... 0.00062271 0.00062249 0.00062228]
+  [0.00062324 0.00062322 0.00062321 ... 0.00062075 0.00062058 0.00062042]
+  No handles with labels found to put in legend.
+  [0.00063332 0.00063328 0.00063321 ... 0.0006191  0.0006193  0.00061952]
+  [0.00062313 0.00062347 0.0006238  ... 0.00062569 0.00062575 0.00062579]
+  [0.0006181  0.00061786 0.00061763 ... 0.00061771 0.00061795 0.00061819]
+  [0.00061899 0.00061919 0.00061936 ... 0.00061979 0.00061987 0.00061992]
+#+end_example
+#+attr_org: :width 565
+[[file:./.ob-jupyter/b56a83cefffab084bfce8261f406e1a6c7f10982.png]]
 :END:
 * external -1e-4<omeff<-1e-2, e_p = 0.03 
 ** phase space paths
