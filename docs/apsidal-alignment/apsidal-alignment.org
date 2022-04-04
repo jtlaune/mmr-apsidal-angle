@@ -197,20 +197,19 @@ used in the literature.  In Section [[Standard Picture of Resonance
 Capture]], we present the classical picture of resonant capture and
 explore the parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
-conditions which robustly lead to apsidal alignment.  In Section [[Test
-Particle Results]], we explore apsidal alignment for a test particle in
-the vicinity of an eccentric planet's MMR. These results guide our
-analysis in Section [[Apsidal Angle]], where we design a toy model which
-relies on eccentricity driving to a finite, non-zero value and argue
-that it can reproduce the apsidal alignment between K2-19b and c.
-Such an external force which drives the eccentricities beyond their
-equilibrium ratio $e_2/e_1 = m_1/m_2$ can
-break the MMR system out of the $\theta_1$ and $\theta_2$ resonances.
-However, through a series of canonical rotations, we demonstrate that
-there is a third resonance angle, $\hat\theta$, which may
-librate.  If so, this resonance still traps the system near the nominal
-period ratio $P_2/P_1=(j+1)/j$ and, in this configuration, naturally
-leads to apsidal alignment.
+conditions which robustly lead to apsidal alignment.  In Section [[Test Particle Results]],
+we explore apsidal alignment for a test particle in the vicinity of an
+eccentric planet's MMR. These results guide our analysis in Section
+[[Apsidal Angle]], where we design a toy model which relies on
+eccentricity driving to a finite, non-zero value and argue that it can
+reproduce the apsidal alignment between K2-19b and c.  Such an
+external force which drives the eccentricities beyond their
+equilibrium ratio $e_2/e_1 = m_1/m_2$ can break the MMR system out of
+the $\theta_1$ and $\theta_2$ resonances.  However, through a series
+of canonical rotations, we demonstrate that there is a third resonance
+angle, $\hat\theta$, which may librate.  If so, this resonance still
+traps the system near the nominal period ratio $P_2/P_1=(j+1)/j$ and,
+in this configuration, naturally leads to apsidal alignment.
 
 * Standard Picture of Resonance Capture
 ** IC table                                                         :ignore:
@@ -930,11 +929,11 @@ independently of the $\theta_i$ resonances and traps the planets into
 resonance despite the circulation of both $\theta_i$. For a detailed
 analysis of how $\hat\theta$ reduces from the comparable mass
 ($0<q<\infty$) case to the test particle case ($q\to0$ or
-$q\to\infty$), see Section [[Test particle limit]]. In the same section,
-we will also describe how we calculate the dashed line in Figure
-ref:fig:tp-grid-ext, which depicts our analytical estimate for the
-boundary between the @@latex:$\varpi$-aligned and $\varpi$-circulating@@
-regions.
+$q\to\infty$), see Section [[*Relation to the test particle limit][Relation to the test particle limit]]. In the
+same section, we will also describe how we calculate the dashed line
+in Figure ref:fig:tp-grid-ext, which depicts our analytical estimate
+for the boundary between the @@latex:$\varpi$-aligned and
+$\varpi$-circulating@@ regions.
 
 * Apsidal Angle
 ** DONE review apsidal angle                                      :noexport:
@@ -1429,76 +1428,69 @@ We need to comment on rows three and four. Is it expected that we get
 anti-alignment where we had alignment before? (because the more
 massive planet becomes planet 2 for example)
 
-** Test particle limit
+** Relation to the test particle limit
+*** notes                                                        :noexport:
+original as of <2022-04-04 Mon> edits, [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
+ 
 ***                                                                :ignore:
-The results of Section [[Reducing the Hamiltonian]] can be applied to the
-test particle scenario by taking the limit as $q$ approaches $0$ or
-$\infty$ while holding the orbital elements of the massive perturber
-constant.  All expressions will use either the subscripts $1$ and $2$
-for $0<q<\infty$ or $p$ and no subscript for $q=0,\infty$.  The
-internal and external test particle limits are similar; we will focus
-on the external limit (where $q\to\infty$).
+
+In Section [[*Apsidal Angle]], we shifted our study of apsidal alignment
+from the test particle treatment (Section [[*Test Particle Results]]) to
+comparable mass planets.  We introduced the reducing rotation, which
+transforms the Hamiltonian in equation eqref:hamiltonian into the
+single dof form in equation eqref:hhat.  We then numerically
+investigated the apsidal behavior of systems in resonance for $1/2\geq
+q\leq 2$.
+
+Because the perturbation Hamiltonian in equation
+eqref:eq:Hpert1 is of the form 
+
+linear with coupling coefficient $q$, the
+comparable mass case is /roughly/ the superposition of two 
+
+dynamical mechanisms involved in the alignment process of two independent .
+
+Relative to the comparable mass case, the test particle
+analysis simplifies the problem considerably because the vector
+$\mathbf{e}_p$ remains constant in time.  Because of this, we now
+return to the test particle treatment, with the goal of a heuristic
+understanding of apsidal alignment in planetary systems.
+
+For consistency, we again adopt the notation used in Section [[*Test
+Particle Results]].  The inner planet has mass $m_p$ (subscript $p$) and
+the outer planet is a test particle (no subscript). This setup
+formally corresponds to the limit of $q$ approaching infinity in the
+comparable mass Hamiltonian.
+
+
+
+
+As we saw in Section 
+
+
+We will now offer 
+
+
+The test particle
+
+ 
+
 
 Whether or not the test particle becomes aligned with the planet can
-be understood as a competition between the equilibrium value of $e$, which
-we denote by $e_{\rm eq}$,
-and the parameter $e_p$. The comparable mass case can then be thought
-of as a superposition of this mechanism since the perturbation
-Hamiltonian in equation eqref:eq:Hpert1 is linear with coupling
-coefficient $q$. The test particle
-analysis simplifies the problem considerably because the vector
-$\mathbf{e}_p$ remains constant in time. 
+be understood as a competition between the equilibrium value of $e$,
+which we denote by $e_{\rm eq}$, and the parameter $e_p$.  
 
-We denote the angles which correspond to $\theta_1$ and $\theta_2$ as $\theta_p=(j+1)\lambda-\lambda_p$
-The resonant angle $\hat\theta$ is given by
+We denote the angles which correspond to $\theta_1$ and $\theta_2$ as
+$\theta_p=(j+1)\lambda-\lambda_p$ and $\theta= \theta_p-\varpi$.  The
+resonant angle $\hat\theta$ can now be written as
 #+BEGIN_SRC latex
   \begin{align}
-    \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta + \abs{f_2/f_1}e_p\cos\theta_p},
+    \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta - \abs{f_1/f_2}e_p\cos\theta_p},
   \end{align}
 #+END_SRC
 @@latex:\noindent@@
 which is the the test particle limit of equation
 eqref:hattheta assuming $\varpi_p=0$.
-
-We denote the quantity $S_2/\Lambda_p$ by $S$, which gives
-#+begin_src latex
-  \begin{align}
-  S =  f_2^2e_p^2 - \frac{2\abs{f_1f_2}}{q\sqrt{\alpha}}e_pe\cos(\varpi_1-\varpi_2)
-  + \frac{f_1^2}{q^2\alpha}e^2.
-  \end{align}
-#+end_src
-@@latex:\noindent@@
-If $m$ is in $\theta$, its eccentricity
-in the limit behaves as $e=e_p/q\to0$ (from equation eqref:dotdpom).
-By sending $e\to0$, we may compute
-#+begin_src latex
-  \begin{align}
-  S_{\in\theta}  \equiv \lim_{q\to\infty} S = f_2^2e_p^2, 
-  \end{align}
-#+end_src
-@@latex:\noindent@@ where the subscript $\in\theta$ denotes that the
-test particle remains in the resonance $\theta$.  On the other hand,
-if the test particle is only trapped into $\hat\theta$, $e$ is no longer
-constrained to the line $e/e_p \approx 1/q$.
-
-##########
-cite the results about the test particle from the appendix
-##########
-
-Up until now, we have been considering an analysis of the $j:j+1$ MMR
-Hamiltonian manifold without any external dissipative forces acting on
-the system. However, we may still test equation eqref:eq:linedef on
-our time-dependent, dissipative integrations for test particles in
-Section [[Test Particle Results]].  As a first order approximation, we
-parameterize the phase phase by $e\sim e_{\rm eq}
-\propto h$ (where the last step is from equation eqref:eq:eeqext).
-Utilizing equation eqref:eq:linedef, we calculate the boundary between
-apsidal alignment and circulation and plot it as the black dashed line
-in Figure ref:fig:tp-grid-ext.  To calculate the @@latex:$x$-intercept@@, we
-assumed $\Delta\varpi=0$ in equation eqref:eq:linedefcoord.  Even though $e$ oscillates for apsidally
-aligned equilibria (e.g., in the bottom left of Figure
-ref:fig:tp-align, $e$ oscillates between $0<e\lesssim 0.08$ in
-equilibrium), our prescription describes the simulation results well.
 
 * Conclusion
 The standard picture of MMR capture in the literature robustly leads
