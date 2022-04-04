@@ -1434,67 +1434,33 @@ massive planet becomes planet 2 for example)
 original as of <2022-04-04 Mon> edits, [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
  
 ***                                                                :ignore:
-The test particle Hamiltonian in eqref:eq:tpint can also
-be transformed into the form of equation eqref:hhat.
+The test particle Hamiltonian in equation eqref:eq:tpint can also
+be transformed into the form of equation eqref:hhat through
+a canonical shift, equivalent to the reducing rotation of
+Section [[*Reducing the Hamiltonian]].
 This is a well-known result in the literature
 [[citep:wisdom_canonical_1986,xu_migration_2018,deck_migration_2015,moutamid14_coupl_between_corot_lindb_reson][see e.g.][]]
 and implies that the limit of the comparable mass Hamiltonian
-(equation eqref:hamiltonian) must reduce to the restricted case
+(equation eqref:hamiltonian) /must/ reduce to the restricted case
 [[citep:deck13_first_order_reson_overl_stabil]].
-We may therefore return to the test particle treatment of Section
-[[*Test Particle Results]] in order to understand the apsidal alignment
-process in this section for comparable mass planets.
-
-For simplicity, we restrict ourselves to an external test particle,
-which corresponds to the limit $q\to\infty$ (Figure
-ref:fig:tp-grid-ext).
-We may then compare it to the $q=2>1$ case, which we numerically investigated in
-Section [[*Apsidal Angle]] (i.e., the first two rows Figure ref:fig:Rhat-grid).
-
-Because the resonant Hamiltonian in equation
-eqref:eq:Hcompmassres is a superposition
-of terms involving $e_1$ and $e_2$, the
-
-of terms corresponding to 
-
-linear with coupling coefficient $q$, the
-comparable mass case is /roughly/ the superposition of two 
-
-dynamical mechanisms involved in the alignment process of two independent .
-
 Relative to the comparable mass case, the test particle
 analysis simplifies the problem considerably because the vector
-$\mathbf{e}_p$ remains constant in time.  Because of this, we now
-return to the test particle treatment, with the goal of a heuristic
+$\mathbf{e}_p$ remains constant in time.
+Because of this, we now return to the test particle treatment of
+Section [[*Test Particle Results]], with the goal of a heuristic
 understanding of apsidal alignment in planetary systems.
 
+For simplicity, we restrict ourselves to an external test particle
+(Figure ref:fig:tp-grid-ext), which corresponds to the formal limit of
+equation eqref:hamiltonian as $q\to\infty$.
+We then compare it to the $q=2>1$ case, which we numerically investigated in
+Section [[*Apsidal Angle]] (i.e., the first two rows Figure ref:fig:Rhat-grid).
 For consistency, we again adopt the notation used in Section [[*Test
 Particle Results]].  The inner planet has mass $m_p$ (subscript $p$) and
-the outer planet is a test particle (no subscript). This setup
-formally corresponds to the limit of $q$ approaching infinity in the
-comparable mass Hamiltonian.
-
-
-
-
-As we saw in Section 
-
-
-We will now offer 
-
-
-The test particle
-
- 
-
-
-Whether or not the test particle becomes aligned with the planet can
-be understood as a competition between the equilibrium value of $e$,
-which we denote by $e_{\rm eq}$, and the parameter $e_p$.  
-
+the outer planet is a test particle (no subscript). 
 We denote the angles which correspond to $\theta_1$ and $\theta_2$ as
-$\theta_p=(j+1)\lambda-\lambda_p$ and $\theta= \theta_p-\varpi$.  The
-resonant angle $\hat\theta$ can now be written as
+$\theta_p=(j+1)\lambda-\lambda_p$ and $\theta= \theta_p-\varpi$.
+The resonant angle $\hat\theta$ can now be written as
 #+BEGIN_SRC latex
   \begin{align}
     \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta - \abs{f_1/f_2}e_p\cos\theta_p},
@@ -1503,6 +1469,17 @@ resonant angle $\hat\theta$ can now be written as
 @@latex:\noindent@@
 which is the the test particle limit of equation
 eqref:hattheta assuming $\varpi_p=0$.
+
+Whether or not the test particle becomes aligned with the planet can
+be understood as a competition between the equilibrium value of $e$,
+which we denote by $e_{\rm eq}$, and the parameter $e_p$.  
+
+As we saw in Section 
+
+We will now offer 
+
+The test particle
+
 
 * Conclusion
 The standard picture of MMR capture in the literature robustly leads
