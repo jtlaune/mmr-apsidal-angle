@@ -349,11 +349,12 @@ For details of this derivation, see Chapter 6 of
 [[citet:&murray_solar_2000]].
 If the planets are
 coplanar, have $m_1$, $m_2\ll M$, and have periods near a first order
-MMR, the Hamiltonian can be aproximated to order $\mathcal{O}(e^2)$ as
+MMR, the Hamiltonian can be approximated to order $\mathcal{O}(e^2)$ as
 citep:murray_solar_2000:
 #+BEGIN_SRC latex
   \begin{align}
     H_{\rm kep} = & -\frac{G M m_{1}}{2 a_{1}}-\frac{G M m_{2}}{2 a_{2}}\\
+    \label{eq:Hcompmassres}
     H_{\rm res} = & -\frac{G m_{1} m_{2}}{a_{2}}
                     \left[
                     f_{1} e_{1} \cos \theta_{1} 
@@ -1433,17 +1434,28 @@ massive planet becomes planet 2 for example)
 original as of <2022-04-04 Mon> edits, [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
  
 ***                                                                :ignore:
+The test particle Hamiltonian in eqref:eq:tpint can also
+be transformed into the form of equation eqref:hhat.
+This is a well-known result in the literature
+[[citep:wisdom_canonical_1986,xu_migration_2018,deck_migration_2015,moutamid14_coupl_between_corot_lindb_reson][see e.g.][]]
+and implies that the limit of the comparable mass Hamiltonian
+(equation eqref:hamiltonian) must reduce to the restricted case
+[[citep:deck13_first_order_reson_overl_stabil]].
+We may therefore return to the test particle treatment of Section
+[[*Test Particle Results]] in order to understand the apsidal alignment
+process in this section for comparable mass planets.
 
-In Section [[*Apsidal Angle]], we shifted our study of apsidal alignment
-from the test particle treatment (Section [[*Test Particle Results]]) to
-comparable mass planets.  We introduced the reducing rotation, which
-transforms the Hamiltonian in equation eqref:hamiltonian into the
-single dof form in equation eqref:hhat.  We then numerically
-investigated the apsidal behavior of systems in resonance for $1/2\geq
-q\leq 2$.
+For simplicity, we restrict ourselves to an external test particle,
+which corresponds to the limit $q\to\infty$ (Figure
+ref:fig:tp-grid-ext).
+We may then compare it to the $q=2>1$ case, which we numerically investigated in
+Section [[*Apsidal Angle]] (i.e., the first two rows Figure ref:fig:Rhat-grid).
 
-Because the perturbation Hamiltonian in equation
-eqref:eq:Hpert1 is of the form 
+Because the resonant Hamiltonian in equation
+eqref:eq:Hcompmassres is a superposition
+of terms involving $e_1$ and $e_2$, the
+
+of terms corresponding to 
 
 linear with coupling coefficient $q$, the
 comparable mass case is /roughly/ the superposition of two 
