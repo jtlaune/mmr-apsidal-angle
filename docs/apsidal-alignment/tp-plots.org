@@ -51,9 +51,7 @@
 : ['#0173b2', '#d55e00', '#de8f05', '#cc78bc', '#ca9161', '#fbafe4', '#949494', '#ece133', '#56b4e9']
 
 * tp h-ep grid 
-- fix this bullshit fucking code thanks
-  - you're a stupid fucking dipshit the angles are circulating not anti-aligned
-*** gen behaviortxt
+** gen behaviortxt
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
   for h in hs:
@@ -150,7 +148,7 @@
 
 #+RESULTS:
 
-*** plot
+** plot
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
   hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
   fig, ax = plt.subplots()
@@ -226,10 +224,11 @@
       ax.set_xlim(0,0.08)
       ax.set_ylim(0.01,0.08)
       x = np.linspace(0,0.1,100)
-      ax.plot(x, x)
+      ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
       fig.savefig(os.path.join(".",
                   f"tp-grid-ext.png"),
                   bbox_inches="tight")
+      fig.savefig("/home/jtlaune/org/images/w4hf4.png")
   print(f2/f1)
   print(sqrt(1.73/2))
 #+END_SRC
@@ -237,25 +236,26 @@
 #+RESULTS:
 :RESULTS:
 #+begin_example
-  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
-  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  no root for ep = 0.15
+  no root for ep = 0.15
+  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+    eeqs[i] = rts_R[rts_win][0]
+  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
-  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
-    eeqs[i] = rts_R[rts_win][0]
-  no root for ep = 0.15
-  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
-    eeqs[i] = rts_R[rts_win][0]
-  no root for ep = 0.15
-  /tmp/ipykernel_20918/984910014.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
-    eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
   -1.2265343439240521
   0.9300537618869137
 #+end_example
-[[file:./.ob-jupyter/7f51f096d7d4fba5c37f718908d7bec1eedb4cf3.png]]
+#+attr_org: :width 470
+[[file:./.ob-jupyter/85d3181c8a185f5c37f5c28e862be324b3397f3e.png]]
 :END:
 
 * tp examples
@@ -825,8 +825,28 @@
 
 #+RESULTS:
 :RESULTS:
-: <matplotlib.legend.Legend at 0x7fe20083a130>
-[[file:./.ob-jupyter/59f65f1dee65643d4b92411cb2834065df8df666.png]]
+# [goto error]
+#+begin_example
+  [0;31m---------------------------------------------------------------------------[0m
+  [0;31mNameError[0m                                 Traceback (most recent call last)
+  [0;32m/tmp/ipykernel_24382/3207902669.py[0m in [0;36m<module>[0;34m[0m
+  [1;32m     14[0m [0mcosDpom[0m [0;34m=[0m [0;36m1[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     15[0m [0;32mfor[0m [0me[0m [0;32min[0m [0mes[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+  [0;32m---> 16[0;31m     [0mS2dotvals[0m [0;34m=[0m [0mS2dot[0m[0;34m([0m[0me[0m[0;34m,[0m [0meps[0m[0;34m,[0m [0malpha2[0m[0;34m,[0m [0mj[0m[0;34m,[0m [0mcosDpom[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [0m[1;32m     17[0m     [0max[0m[0;34m.[0m[0mplot[0m[0;34m([0m[0meps[0m[0;34m,[0m [0mS2dotvals[0m[0;34m,[0m [0mlabel[0m[0;34m=[0m[0;34mr"$e=$"[0m[0;34m+[0m[0;34mf"{e:0.3f}"[0m[0;34m,[0m [0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m     18[0m [0;31m#ax.set_ylim(-0.01, 0.01)[0m[0;34m[0m[0;34m[0m[0m
+
+  [0;32m/tmp/ipykernel_24382/3207902669.py[0m in [0;36mS2dot[0;34m(e, ep, alpha2, j, cosDpom)[0m
+  [1;32m      1[0m [0mfig[0m[0;34m,[0m [0max[0m [0;34m=[0m [0mplt[0m[0;34m.[0m[0msubplots[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m      2[0m [0;32mdef[0m [0mS2dot[0m[0;34m([0m[0me[0m[0;34m,[0m [0mep[0m[0;34m,[0m [0malpha2[0m[0;34m,[0m [0mj[0m[0;34m,[0m [0mcosDpom[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+  [0;32m----> 3[0;31m     [0mf1[0m [0;34m=[0m [0mA[0m[0;34m([0m[0;36m1[0m[0;34m/[0m[0malpha2[0m[0;34m,[0m [0mj[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [0m[1;32m      4[0m     [0mf2[0m [0;34m=[0m [0mB[0m[0;34m([0m[0;36m1[0m[0;34m/[0m[0malpha2[0m[0;34m,[0m [0mj[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+  [1;32m      5[0m     [0;31m#return(2*abs(f1*f2)*cosDpom*ep*e[0m[0;34m[0m[0;34m[0m[0m
+
+  [0;31mNameError[0m: name 'A' is not defined
+#+end_example
+#+attr_org: :width 430
+[[file:./.ob-jupyter/9b13dbb9589317d93485340c2ca61a6b7d8c2465.png]]
 :END:
 
 #+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
