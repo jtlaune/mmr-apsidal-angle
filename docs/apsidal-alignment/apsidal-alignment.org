@@ -1431,7 +1431,11 @@ massive planet becomes planet 2 for example)
 
 ** Relation to the test particle limit
 *** notes                                                        :noexport:
-original as of <2022-04-04 Mon> edits, [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
+- original as of <2022-04-04 Mon> [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
+- the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
+  #+begin_src python
+    ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
+  #+end_src
  
 ***                                                                :ignore:
 The test particle Hamiltonian in equation eqref:eq:tpint can also
@@ -1453,8 +1457,8 @@ understanding of apsidal alignment in planetary systems.
 For simplicity, we restrict ourselves to an external test particle
 (Figure ref:fig:tp-grid-ext), which corresponds to the formal limit of
 equation eqref:hamiltonian as $q\to\infty$.
-We then compare it to the $q=2>1$ case, which we numerically investigated in
-Section [[*Apsidal Angle]] (i.e., the first two rows Figure ref:fig:Rhat-grid).
+We then compare it to the $q=2$ case, which we numerically investigated in
+Section [[*Apsidal Angle]] (i.e. the first two rows Figure ref:fig:Rhat-grid).
 For consistency, we again adopt the notation used in Section [[*Test
 Particle Results]].  The inner planet has mass $m_p$ (subscript $p$) and
 the outer planet is a test particle (no subscript). 
@@ -1470,8 +1474,27 @@ The resonant angle $\hat\theta$ can now be written as
 which is the the test particle limit of equation
 eqref:hattheta assuming $\varpi_p=0$.
 
+In this 
+
+
+Figures ref:fig:tp-ep0 - ref:fig:tp-align depict the capture outcome
+of an external test particle for planets with mass ratios
+$\mu_p=10^{-4}$ and eccentricities $e_p=0$, $0.04$, and $0.054$
+embedded within
+a disk with aspect ratio $h=0.03$.
+The aspect ratio sets the equilibrium value of $e=e_{\rm eq}$
+for $e_p=0$ (equation eqref:eq:eeqext), which corresponds
+to Figure ref:fig:tp-ep0.
+
+For $e_p>0$
+the test particle reaches 
+
 Whether or not the test particle becomes aligned with the planet can
-be understood as a competition between the equilibrium value of $e$,
+be understood as a competition between the value of $e$ and $e_p$ in resonance.
+For a test particle in resonance with $e_p>0$, we observe $e$ to take
+on a range of values between 0 and $\sim1.6e_{\rm eq}$ (Figures
+ref:fig:tp-circ - ref:fig:tp-align).
+
 which we denote by $e_{\rm eq}$, and the parameter $e_p$.  
 
 As we saw in Section 
@@ -1479,7 +1502,6 @@ As we saw in Section
 We will now offer 
 
 The test particle
-
 
 * Conclusion
 The standard picture of MMR capture in the literature robustly leads
