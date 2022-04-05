@@ -1431,12 +1431,16 @@ massive planet becomes planet 2 for example)
 
 ** Relation to the test particle limit
 *** notes                                                        :noexport:
-- original as of <2022-04-04 Mon> [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
-- the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
+**** history
+original as of <2022-04-04 Mon> [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
+  - this section was a hotly debated (~1mo)
+    topic btn me and LR
+  - talked to dong and got this argument midpoint ~[[orgit-rev:~/multi-planet-architecture/::f152573866e754c8b2087c24e112f92b48d168e8][(magit-rev f152573)]]
+**** the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
   #+begin_src python
     ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
   #+end_src
-- more details on the limit (gut feeling)
+**** more details on the limit (gut feeling)
   - Larger values of $q$ (within the $(q, h, e_{1,\rm d}, e_{2,\rm d})$
     parameter space) lead to a longer "alignment time" within
     the system. Hence, for an arbitrarily large value
@@ -1445,7 +1449,7 @@ massive planet becomes planet 2 for example)
 ***                                                                :ignore:
 The test particle Hamiltonian in equation eqref:eq:tpint can also
 be transformed into the form of equation eqref:hhat through
-a canonical shift, equivalent to the reducing rotation of
+a canonical shift, analagous to the reducing rotation utilized in 
 Section [[*Reducing the Hamiltonian]].
 This is a well-known result in the literature
 [[citep:wisdom_canonical_1986,xu_migration_2018,deck_migration_2015,moutamid14_coupl_between_corot_lindb_reson][see e.g.][]]
@@ -1460,42 +1464,44 @@ Because of this, we now return to the test particle treatment of
 Section [[*Test Particle Results]], with the goal of a heuristic
 understanding of apsidal alignment in planetary systems.
 For simplicity, we restrict ourselves to an external test particle (as
-in Figure ref:fig:tp-grid-ext), which is the formal
+in Figure ref:fig:tp-grid-ext), which is equivalent to the formal
 limit $q\to\infty$ (which we denote by $q=\infty$).
 In the comparable mass ($0<q<\infty$) regime, this should correspond
 to an inner planet that is more massive than the outer planet
 (i.e. $q>1$).
 
-We now compare the $q=\infty$ case to the
-$q=2$ case, which we numerically investigated in Section [[*Apsidal
-Angle]] (i.e. the first two rows Figure ref:fig:Rhat-grid).
-In this configuration, traversing Figure ref:fig:tp-grid-ext along the
-horizontal $e_p$ axis is equivalent to traversing the horizontal
-$e_{1,\rm d}$ axis in Figure ref:fig:Rhat-grid.  One can see in Figure
-ref:fig:Rhat-grid that, for $q=2$ systems that do not escape, the
-division between $\varpi-\text{aligned}$ and
-$\varpi-\text{anti-aligned}$ roughly corresponds with the division
-between $\varpi-\text{aligned}$ and $\varpi-\text{circulating}$ for
-the test particles in Figure ref:fig:tp-grid-ext.
-We therefore argue that the $\varpi-\text{circulating}$
-and $\varpi-\text{anti-aligned}$ states correspond with
-each other in the limit $q\to\infty$.
+We now compare the $q=\infty$ case to the $q=2$ case, the latter of
+which we numerically investigated in Section [[*Apsidal Angle]] (i.e. the
+first two rows Figure ref:fig:Rhat-grid).  Traversing Figure
+ref:fig:tp-grid-ext along the /horizontal/ $e_p$ axis is therefore
+equivalent to traversing the horizontal $e_{1,\rm d}$ axis in Figure
+ref:fig:Rhat-grid.  However, the /vertical/ axis of Figure
+ref:fig:tp-grid-ext ($h$) /not/ equivalent to the vertical axis in
+Figure ref:fig:Rhat-grid ($e_{2,\rm d}$).  To relate these two
+quantities, we use $e_{\rm eq}$ ($= h\sqrt{1.73/j}$, see
+eqref:eq:eeqext) as a proxy for the disk-driven eccentricity $e_{1,\rm
+d}$ for $q=2$.  One can see in Figure ref:fig:Rhat-grid that, for
+$q=2$ systems that do not escape, the division between
+$\varpi-\text{aligned}$ and $\varpi-\text{anti-aligned}$ roughly
+corresponds with the division between $\varpi-\text{aligned}$ and
+$\varpi-\text{circulating}$ for the test particle systems in Figure
+ref:fig:tp-grid-ext.
 
-Because the outer planet's behavior in the $q>1$ comparable mass
-regime approaches the $q=\infty$ test particle dynamics in the limit
-$q\to\infty$, there must be a critical value of $q$ (or range of $q$
-values) where the correspondence is not so clear.  However, the
-rigorous details of this regime are not clear and beyond the scope of
-this paper. For our purposes, it suffices to treat 
-$\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ as
-being equivalent dynamical states.
-
+We know that the outer planet's behavior in the $q>1$ comparable mass
+regime must approach the $q=\infty$ test particle dynamics in the
+limit $q\to\infty$.  It follows that there is a critical value of $q$
+(or range of $q$ values) where the correspondence is not so clear.
+However, the rigorous details of this regime are beyond the scope of
+this paper.  For our purposes, it suffices to treat
+$\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ as being
+equivalent dynamical states.  We therefore conclude that the
+$\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ states
+correspond with each other in the limit $q\to\infty$.  Similarly, the
+apsidally-aligned regions of the $q=\infty$ and $q=2$ parameter spaces
+also correspond with each other.
 
 For consistency, we again adopt the notation used in Section [[*Test
-Particle Results]].  The inner planet has mass $m_p$ (subscript $p$) and
-the outer planet is a test particle (no subscript). 
-We denote the angles which correspond to $\theta_1$ and $\theta_2$ as
-$\theta_p=(j+1)\lambda-\lambda_p$ and $\theta= \theta_p-\varpi$.
+Particle Results]] for $q=\infty$.
 The resonant angle $\hat\theta$ can now be written as
 #+BEGIN_SRC latex
   \begin{align}
