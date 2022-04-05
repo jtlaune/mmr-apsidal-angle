@@ -823,32 +823,76 @@
   ax.legend(bbox_to_anchor=[1.1, 1.], loc="upper left")
 #+END_SRC
 
+** hhat 
+#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
+  #hs = [0.015, 0.030, 0.045, 0.060, 0.0750]
+  #for h in hs:
+  h = 0.03
+  os.chdir("/home/jtlaune/apsidal-alignment/external-tp/")
+  nruns = 17
+  H   = np.ones(nruns)*h
+  J   = np.ones(nruns)*2.
+  MUP = np.ones(nruns)*1e-4
+  AP  = np.ones(nruns)
+  A0  = np.ones(nruns)*(1.6)**(2./3)
+  EP = np.zeros(nruns)
+  EP[1:]  = np.logspace(-3,-1,nruns-1)
+  E0  = np.ones(nruns)*0.001
+  G0  = np.random.randn(nruns)*np.pi*2
+  TE  = np.ones(nruns)*1000.
+  TM  = TE/3.46/H**2*(-1*(A0>AP)+1*(AP>A0))
+  T   = 150.*TE
+  tploc = np.array(["ext" for i in range(nruns)])
+  tploc[A0<AP] = "int"
+  DIRNAME    = np.array([f"h-{H[i]:0.3f}-{tploc[i]}"
+                         for i in range(nruns)])
+  FILENAME   = np.array([f"ep-{EP[i]:0.4f}.npz" for i in range(nruns)])
+  FIGNAME    = np.array([f"ep-{EP[i]:0.4f}.png" for i in range(nruns)])
+  PARAMSNAME = np.array([f"parms-ep-{EP[i]:0.4f}.txt"
+                         for i in range(nruns)])
+  TSCALE     = np.ones(nruns)*1e3
+  TOL        = np.ones(nruns)*1e-9
+  OVERWRITE  = np.ones(nruns)>0
+
+  # for h=0.03:
+  # circulating i=13
+  # aligned i = 14
+  i = 14
+
+  dirname = DIRNAME[i]
+  filename = FILENAME[i]
+  data = np.load(os.path.join(dirname, filename))
+  teval  = data["teval"]
+  thetap = data["thetap"]
+  a1     = data["a1"]
+  a2     = data["a2"]
+  e1     = data["e1"]
+  e2     = data["e2"]
+  g1     = data["g1"]
+  g2     = data["g2"]
+  L1     = data["L1"]
+  L2     = data["L2"]
+  x1     = data["x1"]
+  y1     = data["y1"]
+  x2     = data["x2"]
+  y2     = data["y2"]
+
+  fontsize=24
+  fig, ax = plt.subplots()
+
+  alpha = a1/a2
+  j=2
+  f1 = fndefs.f27lc(alpha, j)
+  f2 = fndefs.f31lc(alpha, j)
+  theta = thetap - g2
+  hattheta = np.arctan( e2*np.sin(theta), e2*np.cos(theta) -
+                        np.abs(f1/f2)*e1 )
+  plt.plot(teval,hattheta)
+#+END_SRC
+
 #+RESULTS:
 :RESULTS:
-# [goto error]
-#+begin_example
-  [0;31m---------------------------------------------------------------------------[0m
-  [0;31mNameError[0m                                 Traceback (most recent call last)
-  [0;32m/tmp/ipykernel_24382/3207902669.py[0m in [0;36m<module>[0;34m[0m
-  [1;32m     14[0m [0mcosDpom[0m [0;34m=[0m [0;36m1[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     15[0m [0;32mfor[0m [0me[0m [0;32min[0m [0mes[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m---> 16[0;31m     [0mS2dotvals[0m [0;34m=[0m [0mS2dot[0m[0;34m([0m[0me[0m[0;34m,[0m [0meps[0m[0;34m,[0m [0malpha2[0m[0;34m,[0m [0mj[0m[0;34m,[0m [0mcosDpom[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m     17[0m     [0max[0m[0;34m.[0m[0mplot[0m[0;34m([0m[0meps[0m[0;34m,[0m [0mS2dotvals[0m[0;34m,[0m [0mlabel[0m[0;34m=[0m[0;34mr"$e=$"[0m[0;34m+[0m[0;34mf"{e:0.3f}"[0m[0;34m,[0m [0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m     18[0m [0;31m#ax.set_ylim(-0.01, 0.01)[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;32m/tmp/ipykernel_24382/3207902669.py[0m in [0;36mS2dot[0;34m(e, ep, alpha2, j, cosDpom)[0m
-  [1;32m      1[0m [0mfig[0m[0;34m,[0m [0max[0m [0;34m=[0m [0mplt[0m[0;34m.[0m[0msubplots[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m      2[0m [0;32mdef[0m [0mS2dot[0m[0;34m([0m[0me[0m[0;34m,[0m [0mep[0m[0;34m,[0m [0malpha2[0m[0;34m,[0m [0mj[0m[0;34m,[0m [0mcosDpom[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
-  [0;32m----> 3[0;31m     [0mf1[0m [0;34m=[0m [0mA[0m[0;34m([0m[0;36m1[0m[0;34m/[0m[0malpha2[0m[0;34m,[0m [0mj[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [0m[1;32m      4[0m     [0mf2[0m [0;34m=[0m [0mB[0m[0;34m([0m[0;36m1[0m[0;34m/[0m[0malpha2[0m[0;34m,[0m [0mj[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-  [1;32m      5[0m     [0;31m#return(2*abs(f1*f2)*cosDpom*ep*e[0m[0;34m[0m[0;34m[0m[0m
-
-  [0;31mNameError[0m: name 'A' is not defined
-#+end_example
-#+attr_org: :width 430
-[[file:./.ob-jupyter/9b13dbb9589317d93485340c2ca61a6b7d8c2465.png]]
+| <matplotlib.lines.Line2D | at | 0x7f16db4358b0> |
+#+attr_org: :width 470
+[[file:./.ob-jupyter/8752aebd7f0a1f5726f27b648b599d4143c2e943.png]]
 :END:
-
-#+BEGIN_SRC jupyter-python :session /jpy:localhost#8888:research
-  
-#+END_SRC

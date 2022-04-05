@@ -927,14 +927,14 @@ These test particle results motivate the eccentricity driving ansatz
 we employ in the next section for comparable mass planets. We
 demonstrate that there is a resonance $\hat\theta$ which operates
 independently of the $\theta_i$ resonances and traps the planets into
-resonance despite the circulation of both $\theta_i$. For a detailed
-analysis of how $\hat\theta$ reduces from the comparable mass
+resonance despite the circulation of both $\theta_i$. For a more detailed
+analysis of how $\hat\theta$ behaves in the the limit from the comparable mass
 ($0<q<\infty$) case to the test particle case ($q\to0$ or
-$q\to\infty$), see Section [[*Relation to the test particle limit][Relation to the test particle limit]]. In the
-same section, we will also describe how we calculate the dashed line
-in Figure ref:fig:tp-grid-ext, which depicts our analytical estimate
-for the boundary between the @@latex:$\varpi$-aligned and
-$\varpi$-circulating@@ regions.
+$q\to\infty$), see Section [[*Test particle limit]]. In the same section,
+we will also describe how we calculate the dashed line in Figure
+ref:fig:tp-grid-ext, which depicts our analytical estimate for the
+boundary between the $\varpi-\text{aligned}$ and
+$\varpi-\text{circulating}$ regions.
 
 * Apsidal Angle
 ** DONE review apsidal angle                                      :noexport:
@@ -1429,10 +1429,12 @@ We need to comment on rows three and four. Is it expected that we get
 anti-alignment where we had alignment before? (because the more
 massive planet becomes planet 2 for example)
 
-** Relation to the test particle limit
+** Test particle limit
 *** notes                                                        :noexport:
+**** hhat behavior [[file:tp-plots.org::*hhat][here]]
 **** history
-original as of <2022-04-04 Mon> [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
+- cut off some at [[orgit-rev:~/multi-planet-architecture/::80143707929a14fa9eb7851806946c49971dc1d5][~/multi-planet-architecture/ (magit-rev 8014370)]]
+- original as of <2022-04-04 Mon> [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-planet-architecture/::1441edd576f6a193626d922f2ede041cfb87b09c][(1441edd)]]
   - this section was a hotly debated (~1mo)
     topic btn me and LR
   - talked to dong and got this argument midpoint ~[[orgit-rev:~/multi-planet-architecture/::f152573866e754c8b2087c24e112f92b48d168e8][(magit-rev f152573)]]
@@ -1446,7 +1448,7 @@ original as of <2022-04-04 Mon> [[orgit-rev:/mnt/ext_adata_ssd/Dropbox/multi-pla
     the system. Hence, for an arbitrarily large value
     of $q$, the system observed at any given time will
     almost surely appear to have a circulating apsidal angle.
-***                                                                :ignore:
+*** Relationship to the comparable mass case
 The test particle Hamiltonian in equation eqref:eq:tpint can also
 be transformed into the form of equation eqref:hhat through
 a canonical shift, analagous to the reducing rotation utilized in 
@@ -1476,7 +1478,7 @@ first two rows Figure ref:fig:Rhat-grid).  Traversing Figure
 ref:fig:tp-grid-ext along the /horizontal/ $e_p$ axis is therefore
 equivalent to traversing the horizontal $e_{1,\rm d}$ axis in Figure
 ref:fig:Rhat-grid.  However, the /vertical/ axis of Figure
-ref:fig:tp-grid-ext ($h$) /not/ equivalent to the vertical axis in
+ref:fig:tp-grid-ext ($h$) is /not/ equivalent to the vertical axis in
 Figure ref:fig:Rhat-grid ($e_{2,\rm d}$).  To relate these two
 quantities, we use $e_{\rm eq}$ ($= h\sqrt{1.73/j}$, see
 eqref:eq:eeqext) as a proxy for the disk-driven eccentricity $e_{1,\rm
@@ -1494,49 +1496,37 @@ limit $q\to\infty$.  It follows that there is a critical value of $q$
 However, the rigorous details of this regime are beyond the scope of
 this paper.  For our purposes, it suffices to treat
 $\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ as being
-equivalent dynamical states.  We therefore conclude that the
-$\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ states
-correspond with each other in the limit $q\to\infty$.  Similarly, the
+equivalent dynamical states.  Similarly, the
 apsidally-aligned regions of the $q=\infty$ and $q=2$ parameter spaces
 also correspond with each other.
 
-For consistency, we again adopt the notation used in Section [[*Test
+*** Calculation of the phase space interface
+We again adopt the notation used in Section [[*Test
 Particle Results]] for $q=\infty$.
 The resonant angle $\hat\theta$ can now be written as
 #+BEGIN_SRC latex
   \begin{align}
+    \label{eq:tphhat}
     \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta - \abs{f_1/f_2}e_p\cos\theta_p},
   \end{align}
 #+END_SRC
-@@latex:\noindent@@
-which is the the test particle limit of equation
-eqref:hattheta assuming $\varpi_p=0$.
+@@latex:\noindent@@ which is the the test particle limit of equation
+eqref:hattheta assuming $\varpi_p=0$.  In the circulating case,
+$\theta$ librates (Figure ref:fig:tp-circ), corresponding to
+$\theta_1$ librating for $q=2$ in the anti-aligned state (see, e.g.,
+Figure ref:fig:drivingex).  In the aligned case, neither $\theta_p$
+nor $\theta$ librate (Figure ref:fig:tp-align).  The angle in
+equation eqref:eq:tphhat /does/ librate in both the aligned
+and circulating cases (not plotted), just as in the $q=2$ comparable mass case
+(Figures ref:fig:standardex and ref:fig:drivingex).
 
-Figures ref:fig:tp-ep0 - ref:fig:tp-align depict the capture outcome
-of an external test particle for planets with mass ratios
-$\mu_p=10^{-4}$ and eccentricities $e_p=0$, $0.04$, and $0.054$
-embedded within
-a disk with aspect ratio $h=0.03$.
-The aspect ratio sets the equilibrium value of $e=e_{\rm eq}$
-for $e_p=0$ (equation eqref:eq:eeqext), which corresponds
-to Figure ref:fig:tp-ep0.
+Hence, the upper left triangular regions of phase space for $q=2$
+(equivalently $q=\infty$) has both $\theta$ and $\hat\theta$
+($\theta_2$ and $\theta\hat$).  On the other hand, the lower right
+triangular regions (corresponding to apsidal alignment) have only
+$\hat\theta$ librating.  The angle $\theta$ ($\theta_2$) therefore
+determines the behavior of $\Delta\varpi$.
 
-For $e_p>0$
-the test particle reaches 
-
-Whether or not the test particle becomes aligned with the planet can
-be understood as a competition between the value of $e$ and $e_p$ in resonance.
-For a test particle in resonance with $e_p>0$, we observe $e$ to take
-on a range of values between 0 and $\sim1.6e_{\rm eq}$ (Figures
-ref:fig:tp-circ - ref:fig:tp-align).
-
-which we denote by $e_{\rm eq}$, and the parameter $e_p$.  
-
-As we saw in Section 
-
-We will now offer 
-
-The test particle
 
 * Conclusion
 The standard picture of MMR capture in the literature robustly leads
