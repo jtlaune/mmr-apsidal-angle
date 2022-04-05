@@ -1436,7 +1436,12 @@ massive planet becomes planet 2 for example)
   #+begin_src python
     ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
   #+end_src
- 
+- more details on the limit (gut feeling)
+  - Larger values of $q$ (within the $(q, h, e_{1,\rm d}, e_{2,\rm d})$
+    parameter space) lead to a longer "alignment time" within
+    the system. Hence, for an arbitrarily large value
+    of $q$, the system observed at any given time will
+    almost surely appear to have a circulating apsidal angle.
 ***                                                                :ignore:
 The test particle Hamiltonian in equation eqref:eq:tpint can also
 be transformed into the form of equation eqref:hhat through
@@ -1447,18 +1452,45 @@ This is a well-known result in the literature
 and implies that the limit of the comparable mass Hamiltonian
 (equation eqref:hamiltonian) /must/ reduce to the restricted case
 [[citep:deck13_first_order_reson_overl_stabil]].
+
 Relative to the comparable mass case, the test particle
 analysis simplifies the problem considerably because the vector
 $\mathbf{e}_p$ remains constant in time.
 Because of this, we now return to the test particle treatment of
 Section [[*Test Particle Results]], with the goal of a heuristic
 understanding of apsidal alignment in planetary systems.
+For simplicity, we restrict ourselves to an external test particle (as
+in Figure ref:fig:tp-grid-ext), which is the formal
+limit $q\to\infty$ (which we denote by $q=\infty$).
+In the comparable mass ($0<q<\infty$) regime, this should correspond
+to an inner planet that is more massive than the outer planet
+(i.e. $q>1$).
 
-For simplicity, we restrict ourselves to an external test particle
-(Figure ref:fig:tp-grid-ext), which corresponds to the formal limit of
-equation eqref:hamiltonian as $q\to\infty$.
-We then compare it to the $q=2$ case, which we numerically investigated in
-Section [[*Apsidal Angle]] (i.e. the first two rows Figure ref:fig:Rhat-grid).
+We now compare the $q=\infty$ case to the
+$q=2$ case, which we numerically investigated in Section [[*Apsidal
+Angle]] (i.e. the first two rows Figure ref:fig:Rhat-grid).
+In this configuration, traversing Figure ref:fig:tp-grid-ext along the
+horizontal $e_p$ axis is equivalent to traversing the horizontal
+$e_{1,\rm d}$ axis in Figure ref:fig:Rhat-grid.  One can see in Figure
+ref:fig:Rhat-grid that, for $q=2$ systems that do not escape, the
+division between $\varpi-\text{aligned}$ and
+$\varpi-\text{anti-aligned}$ roughly corresponds with the division
+between $\varpi-\text{aligned}$ and $\varpi-\text{circulating}$ for
+the test particles in Figure ref:fig:tp-grid-ext.
+We therefore argue that the $\varpi-\text{circulating}$
+and $\varpi-\text{anti-aligned}$ states correspond with
+each other in the limit $q\to\infty$.
+
+Because the outer planet's behavior in the $q>1$ comparable mass
+regime approaches the $q=\infty$ test particle dynamics in the limit
+$q\to\infty$, there must be a critical value of $q$ (or range of $q$
+values) where the correspondence is not so clear.  However, the
+rigorous details of this regime are not clear and beyond the scope of
+this paper. For our purposes, it suffices to treat 
+$\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ as
+being equivalent dynamical states.
+
+
 For consistency, we again adopt the notation used in Section [[*Test
 Particle Results]].  The inner planet has mass $m_p$ (subscript $p$) and
 the outer planet is a test particle (no subscript). 
@@ -1473,9 +1505,6 @@ The resonant angle $\hat\theta$ can now be written as
 @@latex:\noindent@@
 which is the the test particle limit of equation
 eqref:hattheta assuming $\varpi_p=0$.
-
-In this 
-
 
 Figures ref:fig:tp-ep0 - ref:fig:tp-align depict the capture outcome
 of an external test particle for planets with mass ratios
