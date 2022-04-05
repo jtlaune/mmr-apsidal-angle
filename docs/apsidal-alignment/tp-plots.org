@@ -857,7 +857,7 @@
   # for h=0.03:
   # circulating i=13
   # aligned i = 14
-  i = 14
+  i = 13
 
   dirname = DIRNAME[i]
   filename = FILENAME[i]
@@ -892,7 +892,7 @@
 
 #+RESULTS:
 :RESULTS:
-| <matplotlib.lines.Line2D | at | 0x7f16db4358b0> |
-#+attr_org: :width 470
-[[file:./.ob-jupyter/8752aebd7f0a1f5726f27b648b599d4143c2e943.png]]
+| <matplotlib.lines.Line2D | at | 0x7fcc98f68fd0> |
+#+attr_org: :width 459
+[[file:./.ob-jupyter/11aa7c8780f8d1220ba28a708fa8ec0af80dcf99.png]]
 :END:

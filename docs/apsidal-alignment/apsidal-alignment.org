@@ -1510,38 +1510,28 @@ The resonant angle $\hat\theta$ can now be written as
     \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta - \abs{f_1/f_2}e_p\cos\theta_p},
   \end{align}
 #+END_SRC
-@@latex:\noindent@@ which is the the test particle limit of equation
-eqref:hattheta assuming $\varpi_p=0$.  In the circulating case,
-$\theta$ librates (Figure ref:fig:tp-circ), corresponding to
-$\theta_1$ librating for $q=2$ in the anti-aligned state (see, e.g.,
-Figure ref:fig:drivingex).  In the aligned case, neither $\theta_p$
-nor $\theta$ librate (Figure ref:fig:tp-align).  The angle in
-equation eqref:eq:tphhat /does/ librate in both the aligned
-and circulating cases (not plotted), just as in the $q=2$ comparable mass case
-(Figures ref:fig:standardex and ref:fig:drivingex).
+\noindent which is the the test particle limit of equation
+eqref:hattheta and we have assumed $\varpi_p=0$ is constant.  In the
+circulating case, $\theta$ librates while $\theta_p$ circulates
+(Figure ref:fig:tp-circ).  In the aligned case, neither $\theta_p$ nor
+$\theta$ librate (Figure ref:fig:tp-align).
+  
+The angle $\hat\theta$ (as written in equation eqref:eq:tphhat)
+librates around zero in both the aligned and circulating cases (not
+plotted), just as $\hat\theta$ librates in the $q=2$ comparable mass
+case (c.f. Figures ref:fig:standardex and ref:fig:drivingex).  Hence,
+the upper left triangular regions of phase space for $q=\infty$ has
+both $\theta$ and $\hat\theta$ ($\theta_2$ and $\theta\hat$), while
+the lower right triangular regions (corresponding to apsidal
+alignment) have only $\hat\theta$ librating.  The angle $\theta$
+($\theta_2$) therefore determines the behavior of $\Delta\varpi$ in
+resonance for a test particle.
 
-Hence, the upper left triangular regions of phase space for $q=2$
-(equivalently $q=\infty$) has both $\theta$ and $\hat\theta$
-($\theta_2$ and $\theta\hat$).  On the other hand, the lower right
-triangular regions (corresponding to apsidal alignment) have only
-$\hat\theta$ librating.  The angle $\theta$ ($\theta_2$) therefore
-determines the behavior of $\Delta\varpi$.
-
+- Now, consider the aligned case
+- Now, in order for $\theta$
 
 * Conclusion
-The standard picture of MMR capture in the literature robustly leads
-to capture into both the $\theta_1$ and $\theta_2$ resonances for
-comparable masses.  The larger planet loses eccentricity to the
-smaller planet and the system will always reach an equilibrium with
-$\theta_1$ and $\theta_2$ librating over a long enough timescale.
-This leads to apsidal anti-alignment due to the fact that
-$\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance, as we found
-in Section [[Standard Picture of Resonance Capture]].  However, there are
-observed exoplanets near resonance which have
-$\Delta\varpi\approx0^\circ$, such as K2-19.  In this paper, we
-investigated if resonant dynamics could align $\varpi_1$ and
-$\varpi_2$.
-
+The standard picture of MMR capture in the literature robustly leads to capture into both the $\theta_1$ and $\theta_2$ resonances for comparable masses.  The larger planet loses eccentricity to the smaller planet and the system will always reach an equilibrium with $\theta_1$ and $\theta_2$ librating over a long enough timescale. This leads to apsidal anti-alignment due to the fact that $\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance, as we found in Section [[Standard Picture of Resonance Capture]].  However, there are observed exoplanets near resonance which have $\Delta\varpi\approx0^\circ$, such as K2-19.  In this paper, we investigated if resonant dynamics could align $\varpi_1$ and $\varpi_2$. 
 This investigation began by analyzing the problem of a test particle
 in the vicinity of an MMR with a planet of mass $m_p$ (Section [[Test
 Particle Results]]).  Here, we briefly reviewed the textbook treatment
