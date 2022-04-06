@@ -1438,7 +1438,7 @@ massive planet becomes planet 2 for example)
   - this section was a hotly debated (~1mo)
     topic btn me and LR
   - talked to dong and got this argument midpoint ~[[orgit-rev:~/multi-planet-architecture/::f152573866e754c8b2087c24e112f92b48d168e8][(magit-rev f152573)]]
-**** the 
+**** the [[orgit-rev:~/multi-planet-architecture/::69b5d7691f14f5aca672e01ba96931da2ae8957c][current version (69b5d76)]]
 #+begin_src python
   ax.plot(x, np.sqrt(2/1.73)*np.abs(f1/f2)*x - 0.015, ls="--", c="k")
 #+end_src
