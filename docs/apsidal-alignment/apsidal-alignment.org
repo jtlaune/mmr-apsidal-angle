@@ -1438,7 +1438,12 @@ massive planet becomes planet 2 for example)
   - this section was a hotly debated (~1mo)
     topic btn me and LR
   - talked to dong and got this argument midpoint ~[[orgit-rev:~/multi-planet-architecture/::f152573866e754c8b2087c24e112f92b48d168e8][(magit-rev f152573)]]
-**** the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
+**** the 
+#+begin_src python
+  ax.plot(x, np.sqrt(2/1.73)*np.abs(f1/f2)*x - 0.015, ls="--", c="k")
+#+end_src
+
+***** the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
   #+begin_src python
     ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
   #+end_src
@@ -1448,7 +1453,7 @@ massive planet becomes planet 2 for example)
     the system. Hence, for an arbitrarily large value
     of $q$, the system observed at any given time will
     almost surely appear to have a circulating apsidal angle.
-*** Relationship to the comparable mass case
+***                                                                :ignore:
 The test particle Hamiltonian in equation eqref:eq:tpint can also
 be transformed into the form of equation eqref:hhat through
 a canonical shift, analagous to the reducing rotation utilized in 
@@ -1459,12 +1464,13 @@ and implies that the limit of the comparable mass Hamiltonian
 (equation eqref:hamiltonian) /must/ reduce to the restricted case
 [[citep:deck13_first_order_reson_overl_stabil]].
 
+*** Relationship to the comparable mass case
 Relative to the comparable mass case, the test particle
 analysis simplifies the problem considerably because the vector
 $\mathbf{e}_p$ remains constant in time.
 Because of this, we now return to the test particle treatment of
 Section [[*Test Particle Results]], with the goal of a heuristic
-understanding of apsidal alignment in planetary systems.
+understanding of apsidal alignment in real planetary systems (i.e. $0<q<\infty$).
 For simplicity, we restrict ourselves to an external test particle (as
 in Figure ref:fig:tp-grid-ext), which is equivalent to the formal
 limit $q\to\infty$ (which we denote by $q=\infty$).
@@ -1480,7 +1486,7 @@ equivalent to traversing the horizontal $e_{1,\rm d}$ axis in Figure
 ref:fig:Rhat-grid.  However, the /vertical/ axis of Figure
 ref:fig:tp-grid-ext ($h$) is /not/ equivalent to the vertical axis in
 Figure ref:fig:Rhat-grid ($e_{2,\rm d}$).  To relate these two
-quantities, we use $e_{\rm eq}$ ($= h\sqrt{1.73/j}$, see
+quantities, we use $e_{\rm eq}$ ($= h\sqrt{1.73/j}$, see equation
 eqref:eq:eeqext) as a proxy for the disk-driven eccentricity $e_{1,\rm
 d}$ for $q=2$.  One can see in Figure ref:fig:Rhat-grid that, for
 $q=2$ systems that do not escape, the division between
@@ -1496,9 +1502,9 @@ limit $q\to\infty$.  It follows that there is a critical value of $q$
 However, the rigorous details of this regime are beyond the scope of
 this paper.  For our purposes, it suffices to treat
 $\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ as being
-equivalent dynamical states.  Similarly, the
-apsidally-aligned regions of the $q=\infty$ and $q=2$ parameter spaces
-also correspond with each other.
+equivalent dynamical states.  Similarly, the apsidally-aligned regions
+of the $q=\infty$ and $q=2$ parameter spaces also correspond with each
+other.
 
 *** Calculation of the phase space interface
 We again adopt the notation used in Section [[*Test
@@ -1514,25 +1520,74 @@ The resonant angle $\hat\theta$ can now be written as
 eqref:hattheta and we have assumed $\varpi_p=0$ is constant.  In the
 circulating case, $\theta$ librates while $\theta_p$ circulates
 (Figure ref:fig:tp-circ).  In the aligned case, neither $\theta_p$ nor
-$\theta$ librate (Figure ref:fig:tp-align).
-  
-The angle $\hat\theta$ (as written in equation eqref:eq:tphhat)
-librates around zero in both the aligned and circulating cases (not
-plotted), just as $\hat\theta$ librates in the $q=2$ comparable mass
-case (c.f. Figures ref:fig:standardex and ref:fig:drivingex).  Hence,
-the upper left triangular regions of phase space for $q=\infty$ has
-both $\theta$ and $\hat\theta$ ($\theta_2$ and $\theta\hat$), while
-the lower right triangular regions (corresponding to apsidal
-alignment) have only $\hat\theta$ librating.  The angle $\theta$
-($\theta_2$) therefore determines the behavior of $\Delta\varpi$ in
-resonance for a test particle.
+$\theta$ librate (Figure ref:fig:tp-align).  The angle $\hat\theta$
+(as written in equation eqref:eq:tphhat) librates around zero in both
+the aligned and circulating cases (not plotted), just as $\hat\theta$
+librates in the $q=2$ comparable mass case (c.f. Figures
+ref:fig:standardex and ref:fig:drivingex).
+Hence, the upper left triangular regions (apsidal circulation) of phase space for $q=\infty$
+has both $\theta$ and $\hat\theta$ ($\theta_2$ and $\hat\theta$),
+while the lower right triangular regions (apsidal alignment) have only
+$\hat\theta$ librating.
 
-- Now, consider the aligned case
-- Now, in order for $\theta$
+The angle $\theta$ ($\theta_2$) therefore determines the behavior of
+$\Delta\varpi$ in resonance for a test particle.  Based on the results
+depicted in Figure ref:fig:tp-grid-ext, we assume that the division
+between apsidal circulation and alignment is linear at these
+eccentricity scales. We must therefore find a slope, $dh/de_p$, and an
+$e_p$ intercept, $e_p = e_{\rm int}$.
+
+Consider the denominator of equation eqref:eq:tphhat.  For small
+$e_p$, in the apsidal circulation region, $\theta$ librates near
+$180^\circ$ and so $e\cos\theta\approx -e$.  The denominator then
+becomes $\approx -e -|f_1/f_2|e_p\cos\theta_p$.  Because $\theta_p$
+always circulates, the second term oscillates between $-|f_1/f_2|e_p$
+and $|f_1/f_2|e_p$.  Hence, in order for $\theta$ and $\hat\theta$ to
+both librate, the denominator must obey
+#+BEGIN_SRC latex
+  \begin{align}
+    \label{eq:tphhat}
+    -e + \left|\frac{f_1}{f_2}\right|e_p > 0
+  \end{align}
+#+END_SRC
+\noindent
+which implies the line dividing phase space in Figure
+ref:fig:tp-grid-ext should have have slope
+#+BEGIN_SRC latex
+  \begin{align}
+    \frac{de_{\rm eq}}{de_p} \leq \left|\frac{f_1}{f_2}\right|e_p.
+  \end{align}
+#+END_SRC
+\noindent As one can see in Figures ref:fig:tp-ep0, ref:fig:tp-circ and
+ref:fig:tp-align, $e$ oscillates between roughly $0$ and
+$e_{\rm eq} + \mathcal O(e_p)$. The latter term we estimate
+as
+#+BEGIN_SRC latex
+  \begin{align}
+    e_{p,0} \equiv e_{\rm eq}(h_{\rm min}) = h_{\rm min}\sqrt{\frac{1.73}{j}},
+  \end{align}
+#+END_SRC
+\noindent where $h_{\rm min}=0.015$ is the smallest aspect ratio in
+Figure ref:fig:tp-grid-ext (see Table ref:tab:ICs).
+The dashed line in ... is the line
+
+hence, our analysis seems to ...
 
 * Conclusion
-The standard picture of MMR capture in the literature robustly leads to capture into both the $\theta_1$ and $\theta_2$ resonances for comparable masses.  The larger planet loses eccentricity to the smaller planet and the system will always reach an equilibrium with $\theta_1$ and $\theta_2$ librating over a long enough timescale. This leads to apsidal anti-alignment due to the fact that $\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance, as we found in Section [[Standard Picture of Resonance Capture]].  However, there are observed exoplanets near resonance which have $\Delta\varpi\approx0^\circ$, such as K2-19.  In this paper, we investigated if resonant dynamics could align $\varpi_1$ and $\varpi_2$. 
-This investigation began by analyzing the problem of a test particle
+The standard picture of MMR capture in the literature robustly leads
+to capture into both the $\theta_1$ and $\theta_2$ resonances for
+comparable masses.  The larger planet loses eccentricity to the
+smaller planet and the system will always reach an equilibrium with
+$\theta_1$ and $\theta_2$ librating over a long enough timescale. This
+leads to apsidal anti-alignment due to the fact that
+$\Delta\varpi=\theta_1-\theta_2=180^\circ$ in resonance, as we found
+in Section [[Standard Picture of Resonance Capture]].  However, there are
+observed exoplanets near resonance which have
+$\Delta\varpi\approx0^\circ$, such as K2-19.  In this paper, we
+investigated if resonant dynamics could align $\varpi_1$ and
+$\varpi_2$.
+
+Our investigation began by analyzing the problem of a test particle
 in the vicinity of an MMR with a planet of mass $m_p$ (Section [[Test
 Particle Results]]).  Here, we briefly reviewed the textbook treatment
 of the CR3BP and its extension, the ER3BP.  This formulation of the
@@ -1981,7 +2036,7 @@ by
       \right)\frac{1}{\Lambda_1^3}\\
     \mathcal K
     &= \frac{q^2}{(1+q)^2}
-      \frac{\alpha^{3/2}\Lambda_2}{f_1^2\sqrt{1+\alpha^{1/2}f_1^2/f_2^2}\Lambda_1^{5/2}}.\\
+      \frac{\alpha^{3/2}\Lambda_2}{f_1^2\sqrt{1+\alpha^{1/2}f_1^2/f_2^2}\Lambda_1^{5/2}}.
   \end{align}
 #+END_SRC
 A similar representation of $\mathcal H, \mathcal M$, $\mathcal N$,

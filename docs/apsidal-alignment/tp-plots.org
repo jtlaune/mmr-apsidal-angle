@@ -224,7 +224,7 @@
       ax.set_xlim(0,0.08)
       ax.set_ylim(0.01,0.08)
       x = np.linspace(0,0.1,100)
-      ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
+      ax.plot(x, np.sqrt(2/1.73)*np.abs(f1/f2)*x - 0.015, ls="--", c="k")
       fig.savefig(os.path.join(".",
                   f"tp-grid-ext.png"),
                   bbox_inches="tight")
@@ -236,26 +236,26 @@
 #+RESULTS:
 :RESULTS:
 #+begin_example
-  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_9935/4069442626.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
-  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_9935/4069442626.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
-  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_9935/4069442626.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
   no root for ep = 0.15
   no root for ep = 0.15
-  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_9935/4069442626.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
-  /tmp/ipykernel_2755/3800072676.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
+  /tmp/ipykernel_9935/4069442626.py:58: ComplexWarning: Casting complex values to real discards the imaginary part
     eeqs[i] = rts_R[rts_win][0]
   no root for ep = 0.15
   no root for ep = 0.15
   -1.2265343439240521
   0.9300537618869137
 #+end_example
-#+attr_org: :width 470
-[[file:./.ob-jupyter/85d3181c8a185f5c37f5c28e862be324b3397f3e.png]]
+#+attr_org: :width 471
+[[file:./.ob-jupyter/4b722642f7ea11aed4b308a49c4c97f06106e784.png]]
 :END:
 
 * tp examples
