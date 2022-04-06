@@ -1486,9 +1486,8 @@ equivalent to traversing the horizontal $e_{1,\rm d}$ axis in Figure
 ref:fig:Rhat-grid.  However, the /vertical/ axis of Figure
 ref:fig:tp-grid-ext ($h$) is /not/ equivalent to the vertical axis in
 Figure ref:fig:Rhat-grid ($e_{2,\rm d}$).  To relate these two
-quantities, we use $e_{\rm eq}$ ($= h\sqrt{1.73/j}$, see equation
-eqref:eq:eeqext) as a proxy for the disk-driven eccentricity $e_{1,\rm
-d}$ for $q=2$.  One can see in Figure ref:fig:Rhat-grid that, for
+quantities, we use $e_{\rm eq}$ $= h\sqrt{1.73/j}$ (equation
+eqref:eq:eeqext) as a proxy for the ``disk-driven eccentricity'' of the test particle.  One can see in Figure ref:fig:Rhat-grid that, for
 $q=2$ systems that do not escape, the division between
 $\varpi-\text{aligned}$ and $\varpi-\text{anti-aligned}$ roughly
 corresponds with the division between $\varpi-\text{aligned}$ and
@@ -1517,25 +1516,23 @@ The resonant angle $\hat\theta$ can now be written as
   \end{align}
 #+END_SRC
 \noindent which is the the test particle limit of equation
-eqref:hattheta and we have assumed $\varpi_p=0$ is constant.  In the
+eqref:hattheta, and we have assumed $\varpi_p=0$ is constant.  In the
 circulating case, $\theta$ librates while $\theta_p$ circulates
 (Figure ref:fig:tp-circ).  In the aligned case, neither $\theta_p$ nor
 $\theta$ librate (Figure ref:fig:tp-align).  The angle $\hat\theta$
 (as written in equation eqref:eq:tphhat) librates around zero in both
-the aligned and circulating cases (not plotted), just as $\hat\theta$
-librates in the $q=2$ comparable mass case (c.f. Figures
-ref:fig:standardex and ref:fig:drivingex).
-Hence, the upper left triangular regions (apsidal circulation) of phase space for $q=\infty$
-has both $\theta$ and $\hat\theta$ ($\theta_2$ and $\hat\theta$),
-while the lower right triangular regions (apsidal alignment) have only
-$\hat\theta$ librating.
+the aligned and circulating cases.  Hence, the upper left triangular
+regions (apsidal circulation) of phase space for $q=\infty$ has both
+$\theta$ and $\hat\theta$ ($\theta_2$ and $\hat\theta$ for $q=2$)
+librating, while the lower right triangular regions (apsidal
+alignment) have only $\hat\theta$ librating.
 
-The angle $\theta$ ($\theta_2$) therefore determines the behavior of
+The angle $\theta$ therefore determines the behavior of
 $\Delta\varpi$ in resonance for a test particle.  Based on the results
 depicted in Figure ref:fig:tp-grid-ext, we assume that the division
 between apsidal circulation and alignment is linear at these
 eccentricity scales. We must therefore find a slope, $dh/de_p$, and an
-$e_p$ intercept, $e_p = e_{\rm int}$.
+$e_p$ intercept.
 
 Consider the denominator of equation eqref:eq:tphhat.  For small
 $e_p$, in the apsidal circulation region, $\theta$ librates near
@@ -1555,13 +1552,12 @@ which implies the line dividing phase space in Figure
 ref:fig:tp-grid-ext should have have slope
 #+BEGIN_SRC latex
   \begin{align}
-    \frac{de_{\rm eq}}{de_p} \leq \left|\frac{f_1}{f_2}\right|e_p.
+    \frac{de_{\rm eq}}{de_p} \sim \left|\frac{f_1}{f_2}\right|.
   \end{align}
 #+END_SRC
 \noindent As one can see in Figures ref:fig:tp-ep0, ref:fig:tp-circ and
 ref:fig:tp-align, $e$ oscillates between roughly $0$ and
-$e_{\rm eq} + \mathcal O(e_p)$. The latter term we estimate
-as
+$e_{\rm eq} + \mathcal O(e_p)$. The latter term we estimate with
 #+BEGIN_SRC latex
   \begin{align}
     e_{p,0} \equiv e_{\rm eq}(h_{\rm min}) = h_{\rm min}\sqrt{\frac{1.73}{j}},
@@ -1569,9 +1565,42 @@ as
 #+END_SRC
 \noindent where $h_{\rm min}=0.015$ is the smallest aspect ratio in
 Figure ref:fig:tp-grid-ext (see Table ref:tab:ICs).
-The dashed line in ... is the line
+After converting back to $h$, again utilizing the formula for $e_{\rm eq}$,
+we estimate the transition to aligned perihelia to occur for $h>h_{c}(e_p)$, where $h_c$
+is the function given by
+#+begin_src latex
+  \begin{align}
+  \label{eq:phasespaceline}
+    h_c(e_p) = \sqrt{\frac{j}{1.73}}\left|\frac{f_1}{f_2}\right|e_p - 0.015.
+  \end{align}
+#+end_src
+\noindent We plot this equation in Figure ref:fig:tp-grid-ext.
+Despite our many approximations, this analysis reproduces the
+numerical results fairly well.
 
-hence, our analysis seems to ...
+*** Discussion for $0<q<\infty$
+In the previous sections, we have demonstrated that test particle
+apsidal alignment can be understood as a competition between the
+magnitude of $h$, which characterizes the relative strength of disk
+damping forces and sets $e_{\rm eq}$, and $e_p$, the eccentricity of
+the perturber.  The natural interpretation of these results in the
+comparable mass context is to identify the disk driven eccentricities
+of Section [[*Apsidal Angle]] with $e_{\rm eq}$ and $e_p$ in Section [[*Test
+Particle Results]].
+
+Apsidal behavior in the comparable mass regime is more complex than
+the ER3BP.  We observe $|\Delta\varpi|=0$, $=90^\circ$, and
+$=180^\circ$.  Each planet's eccentricity works
+on the other to anti-align their periapses in
+resonance. However, if disk forces drive them /away/ from the ratio
+$e_1/e_2=1/q$, the anti-alignment can be overcome, resulting in a
+different configuration.  The resulting configuration has a
+complicated dependence on the planet and disk parameters, with some
+systems escaping resonance (see Figure ref:fig:Rhat-grid).
+It is likely that a detailed analysis of the parameters $q$, $h$,
+$T_e$, and $e_{i,d}$ would reveal a set of 3 equations analagous to
+equation eqref:eq:phasespaceline for the comparable mass regime,
+but that is beyond the scope of this paper.
 
 * Conclusion
 The standard picture of MMR capture in the literature robustly leads
