@@ -786,7 +786,7 @@ Hamiltonian for a test particle in the vicinity of an interior MMR is
     \label{eq:tpint}
     H
     &= - \frac{1}{2(a/a_p)} - \mu_p\left(f_1
-      e\cos\theta +f_2 e_p\cos\theta_p\right) \nolabel\\
+      e\cos\theta +f_2 e_p\cos\theta_p\right) \nonumber\\
     &- \mu_p \left(f_2\left(e^2 + e_p^2\right)
       + f_4e_p e\cos\varpi\right)
   \end{align}
@@ -802,7 +802,7 @@ where
 @@latex:\noindent@@
 For an external MMR, 
 #+BEGIN_SRC latex
-  \begin{align*}
+  \begin{align}
     \label{eq:tpext}
     H
     &= - \frac{1}{2(a/a_p)} + \mu_p\left(f_1
@@ -811,7 +811,7 @@ For an external MMR,
     &- \mu_p \left(f_2\left(e^2
         + e_p^2\right) + f_4e_p
       e\cos\varpi\right)
-  \end{align*}
+  \end{align}
 #+END_SRC
 @@latex:\noindent@@
 and
@@ -1438,15 +1438,18 @@ massive planet becomes planet 2 for example)
   - this section was a hotly debated (~1mo)
     topic btn me and LR
   - talked to dong and got this argument midpoint ~[[orgit-rev:~/multi-planet-architecture/::f152573866e754c8b2087c24e112f92b48d168e8][(magit-rev f152573)]]
-**** the [[orgit-rev:~/multi-planet-architecture/::69b5d7691f14f5aca672e01ba96931da2ae8957c][current version (69b5d76)]]
+**** the [[orgit:~/multi-planet-architecture/][current version (ea22ba6)]]
+#+begin_src python
+      ax.plot(x, np.sqrt(2/1.73)*(np.abs(f1/f2)*x - 0.015), ls="--", c="k")
+#+end_src
+***** the [[orgit-rev:~/multi-planet-architecture/::69b5d7691f14f5aca672e01ba96931da2ae8957c][current version (69b5d76)]]
 #+begin_src python
   ax.plot(x, np.sqrt(2/1.73)*np.abs(f1/f2)*x - 0.015, ls="--", c="k")
 #+end_src
-
-***** the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
-  #+begin_src python
-    ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
-  #+end_src
+****** the [[orgit-rev:~/multi-planet-architecture/::e8aa86a0923ef41d349c23813185fb2ef673d753][current version (e8aa86a)]] has
+#+begin_src python
+  ax.plot(x,np.sqrt(2/1.73)*np.abs(f1/f2)*(x-np.sqrt(1.73/2)*0.015), ls="--", c="k")
+#+end_src
 **** more details on the limit (gut feeling)
   - Larger values of $q$ (within the $(q, h, e_{1,\rm d}, e_{2,\rm d})$
     parameter space) lead to a longer "alignment time" within
@@ -1487,23 +1490,14 @@ ref:fig:Rhat-grid.  However, the /vertical/ axis of Figure
 ref:fig:tp-grid-ext ($h$) is /not/ equivalent to the vertical axis in
 Figure ref:fig:Rhat-grid ($e_{2,\rm d}$).  To relate these two
 quantities, we use $e_{\rm eq}$ $= h\sqrt{1.73/j}$ (equation
-eqref:eq:eeqext) as a proxy for the ``disk-driven eccentricity'' of the test particle.  One can see in Figure ref:fig:Rhat-grid that, for
+eqref:eq:eeqext) as a proxy for the ``disk-driven eccentricity'' of
+the test particle.  One can see in Figure ref:fig:Rhat-grid that, for
 $q=2$ systems that do not escape, the division between
 $\varpi-\text{aligned}$ and $\varpi-\text{anti-aligned}$ roughly
 corresponds with the division between $\varpi-\text{aligned}$ and
 $\varpi-\text{circulating}$ for the test particle systems in Figure
-ref:fig:tp-grid-ext.
-
-We know that the outer planet's behavior in the $q>1$ comparable mass
-regime must approach the $q=\infty$ test particle dynamics in the
-limit $q\to\infty$.  It follows that there is a critical value of $q$
-(or range of $q$ values) where the correspondence is not so clear.
-However, the rigorous details of this regime are beyond the scope of
-this paper.  For our purposes, it suffices to treat
-$\varpi-\text{circulating}$ and $\varpi-\text{anti-aligned}$ as being
-equivalent dynamical states.  Similarly, the apsidally-aligned regions
-of the $q=\infty$ and $q=2$ parameter spaces also correspond with each
-other.
+ref:fig:tp-grid-ext. In the following, we treat $\varpi-\text{circulating}$ and
+$\varpi-\text{anti-aligned}$ as being equivalent dynamical states.
 
 *** Calculation of the phase space interface
 We again adopt the notation used in Section [[*Test
@@ -1515,64 +1509,49 @@ The resonant angle $\hat\theta$ can now be written as
     \tan\hat\theta = \frac{e\sin\theta}{e\cos\theta - \abs{f_1/f_2}e_p\cos\theta_p},
   \end{align}
 #+END_SRC
-\noindent which is the the test particle limit of equation
-eqref:hattheta, and we have assumed $\varpi_p=0$ is constant.  In the
-circulating case, $\theta$ librates while $\theta_p$ circulates
-(Figure ref:fig:tp-circ).  In the aligned case, neither $\theta_p$ nor
-$\theta$ librate (Figure ref:fig:tp-align).  The angle $\hat\theta$
-(as written in equation eqref:eq:tphhat) librates around zero in both
-the aligned and circulating cases.  Hence, the upper left triangular
-regions (apsidal circulation) of phase space for $q=\infty$ has both
-$\theta$ and $\hat\theta$ ($\theta_2$ and $\hat\theta$ for $q=2$)
-librating, while the lower right triangular regions (apsidal
-alignment) have only $\hat\theta$ librating.
+\noindent which is the test particle limit of equation eqref:hattheta,
+and we have assumed $\varpi_p=0$ is constant.  In both the
+$\varpi-\text{aligned}$ and circulating cases, $\theta_p$ circulates
+and $\hat\theta$ (as written in equation eqref:eq:tphhat) librates
+around $0^\circ$. However, $\theta$ librates around $180^\circ$ when
+$\varpi$ circulates, and it circulates when $\varpi$ librates around
+$0$.  This can be understood with the test particle Hamiltonian
+(equation eqref:eq:tpint): $\dot\varpi$ is proportional to
+$\cos\theta$, and so $\varpi$ cannot librate if $\theta$ remains close
+to $180^\circ$.
 
-The angle $\theta$ therefore determines the behavior of
-$\Delta\varpi$ in resonance for a test particle.  Based on the results
-depicted in Figure ref:fig:tp-grid-ext, we assume that the division
-between apsidal circulation and alignment is linear at these
-eccentricity scales. We must therefore find a slope, $dh/de_p$, and an
-$e_p$ intercept.
-
-Consider the denominator of equation eqref:eq:tphhat.  For small
-$e_p$, in the apsidal circulation region, $\theta$ librates near
-$180^\circ$ and so $e\cos\theta\approx -e$.  The denominator then
-becomes $\approx -e -|f_1/f_2|e_p\cos\theta_p$.  Because $\theta_p$
-always circulates, the second term oscillates between $-|f_1/f_2|e_p$
-and $|f_1/f_2|e_p$.  Hence, in order for $\theta$ and $\hat\theta$ to
-both librate, the denominator must obey
+The angle $\theta$ therefore determines the behavior
+of $\Delta\varpi$ in resonance for a test particle.
+Consider equation eqref:eq:tphhat: since $\hat\theta$ always librates
+around $0$, then $\tan\hat\theta$ remains finite.  This implies that
+the denominator should not reach $0$.  Because $\theta_p$ always
+circulates, $\cos\theta_p$ takes on values between $-1$ and $1$.
+Thus, when $\theta$ librates around $180^\circ$, the following
+constraint is required for $\hat\theta$ to librate.
 #+BEGIN_SRC latex
   \begin{align}
     \label{eq:tphhat}
-    -e + \left|\frac{f_1}{f_2}\right|e_p > 0
+    -e + \left|\frac{f_1}{f_2}\right|e_p < 0.
   \end{align}
 #+END_SRC
 \noindent
-which implies the line dividing phase space in Figure
-ref:fig:tp-grid-ext should have have slope
-#+BEGIN_SRC latex
-  \begin{align}
-    \frac{de_{\rm eq}}{de_p} \sim \left|\frac{f_1}{f_2}\right|.
-  \end{align}
-#+END_SRC
-\noindent As one can see in Figures ref:fig:tp-ep0, ref:fig:tp-circ and
-ref:fig:tp-align, $e$ oscillates between roughly $0$ and
-$e_{\rm eq} + \mathcal O(e_p)$. The latter term we estimate with
-#+BEGIN_SRC latex
-  \begin{align}
-    e_{p,0} \equiv e_{\rm eq}(h_{\rm min}) = h_{\rm min}\sqrt{\frac{1.73}{j}},
-  \end{align}
-#+END_SRC
-\noindent where $h_{\rm min}=0.015$ is the smallest aspect ratio in
-Figure ref:fig:tp-grid-ext (see Table ref:tab:ICs).
-After converting back to $h$, again utilizing the formula for $e_{\rm eq}$,
-we estimate the transition to aligned perihelia to occur for $h>h_{c}(e_p)$, where $h_c$
-is the function given by
+Assuming $e=e_{\rm eq} + \Delta_e$, we suppose that $\Delta_e$ is constant
+within our parameter range and use the data in Figure ref:fig:tp-grid-ext to estimate its value
+for $j=2$,
 #+begin_src latex
-  \begin{align}
+  \begin{equation}
+  \Delta_e \sim 0.015.
+  \end{equation}
+#+end_src
+\noindent
+Finally, using equation eqref:eq:eeqext to relate $h$ and $e_{\rm eq}$, we estimate
+the transition to aligned perihelia to occur for $h<h_c(e_p)$, where $h_c$
+is given by
+#+begin_src latex
+  \begin{equation}
   \label{eq:phasespaceline}
-    h_c(e_p) = \sqrt{\frac{j}{1.73}}\left|\frac{f_1}{f_2}\right|e_p - 0.015.
-  \end{align}
+  h_c(e_p) = \sqrt{\frac{j}{1.73}}\left(\left|\frac{f_1}{f_2}\right|e_p-0.015\right)
+  \end{equation}
 #+end_src
 \noindent We plot this equation in Figure ref:fig:tp-grid-ext.
 Despite our many approximations, this analysis reproduces the
@@ -1584,7 +1563,7 @@ apsidal alignment can be understood as a competition between the
 magnitude of $h$, which characterizes the relative strength of disk
 damping forces and sets $e_{\rm eq}$, and $e_p$, the eccentricity of
 the perturber.  The natural interpretation of these results in the
-comparable mass context is to identify the disk driven eccentricities
+comparable mass context is to identify the disk driven eccentricities $e_{1,d}$ and $e_{2,d}$
 of Section [[*Apsidal Angle]] with $e_{\rm eq}$ and $e_p$ in Section [[*Test
 Particle Results]].
 
@@ -1598,7 +1577,8 @@ different configuration.  The resulting configuration has a
 complicated dependence on the planet and disk parameters, with some
 systems escaping resonance (see Figure ref:fig:Rhat-grid).
 It is likely that a detailed analysis of the parameters $q$, $h$,
-$T_e$, and $e_{i,d}$ would reveal a set of 3 equations analagous to
+$T_e$, and $e_{i,d}$ would reveal
+transitions between the resonance modes analogous to
 equation eqref:eq:phasespaceline for the comparable mass regime,
 but that is beyond the scope of this paper.
 
