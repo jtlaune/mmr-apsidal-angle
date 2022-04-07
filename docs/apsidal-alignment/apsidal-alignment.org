@@ -2,8 +2,10 @@
 #+TITLE: Apsidal Architecture of Planetary Systems in Mean Motion Resonance
 #+OPTIONS: author:nil date:nil toc:nil
 #+LATEX_CLASS: mnras
-#+LaTeX_CLASS_OPTIONS: [usenatbib,twocolumn]
+#+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
 #+latex_header: \usepackage{caption}
+#+latex_header: \usepackage{setspace}
+#+latex_header: \doublespacing
 #+latex_header: \usepackage{tabularx}
 #+latex_header: \usepackage{subcaption}
 #+latex_header: \usepackage{pdfpages}
