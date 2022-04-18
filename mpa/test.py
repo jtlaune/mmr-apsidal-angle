@@ -108,6 +108,7 @@ class ResonanceTestCase(unittest.TestCase):
 
         os.chdir(self.origindir)
 
+    # Secular
     def test_Compmass_secular(self):
         seriesname = "secular"
         seriesdir = os.path.join(self.projectdir, seriesname)
@@ -155,9 +156,104 @@ class ResonanceTestCase(unittest.TestCase):
 
         os.chdir(self.origindir)
 
+    def test_Compmass_nosecular(self):
+        seriesname = "nosecular"
+        seriesdir = os.path.join(self.projectdir, "secular")
+        series = FOCompmassSeries(seriesname, seriesdir, load=True)
+        params = series.RUN_PARAMS
+
+        #######################################################################
+        # params
+        #######################################################################
+        mu1 = np.float64(params[:, 4])
+        q = np.float64(params[:, 3])
+        mu2 = mu1/q
+        a0 = np.float64(params[:, 2])
+        j = np.float64(params[:, 1])
+        #######################################################################
+
+        fig, ax = plt.subplots()
+
+        rundata = series.data[0]
+
+        teval = rundata["teval"]
+        it = int(0.3*len(teval))
+        teval = teval[0:it]
+        print(a0)
+        a1 = rundata["a1"][0:it]
+        a2 = rundata["a2"][0:it]
+        g1 = radNormNegpi(rundata["g1"][0:it])
+        g2 = radNormNegpi(rundata["g2"][0:it])
+        dg = radNormNegpi(g1-g2)
+
+        dotg1 = np.gradient(g1, teval)
+        avgdotg1 = np.average(dotg1)
+        dotg2 = np.gradient(g2, teval)
+        avgdotg2 = np.average(dotg2)
+
+        ax.set_title(r"$q=$" + f"{q}")
+
+        ddg = np.gradient(dg, teval)
+        ax.plot(teval, ddg, ls="--", c="k", label="data")
+        #ax.plot(teval, oms, label="analytic")
+        ax.legend()
+
+        figfp = os.path.join(seriesdir, "test-nosecular.png")
+        fig.savefig(figfp, bbox_inches="tight")
+
+        os.chdir(self.origindir)
+
+    def test_TP_secular(self):
+        seriesname = "TPsecular"
+        seriesdir = os.path.join(self.projectdir, "secular")
+        series = FOCompmassSeries(seriesname, seriesdir, load=True)
+        params = series.RUN_PARAMS
+
+        #######################################################################
+        # params
+        #######################################################################
+        mu1 = np.float64(params[:, 4])
+        q = np.float64(params[:, 3])
+        mu2 = mu1/q
+        a0 = np.float64(params[:, 2])
+        j = np.float64(params[:, 1])
+        #######################################################################
+
+        fig, ax = plt.subplots()
+
+        rundata = series.data[0]
+
+        teval = rundata["teval"]
+        it = int(0.3*len(teval))
+        teval = teval[0:it]
+        print(a0)
+        a1 = rundata["a1"][0:it]
+        a2 = rundata["a2"][0:it]
+        g1 = radNormNegpi(rundata["g1"][0:it])
+        g2 = radNormNegpi(rundata["g2"][0:it])
+        dg = radNormNegpi(g1-g2)
+
+        dotg1 = np.gradient(g1, teval)
+        avgdotg1 = np.average(dotg1)
+        dotg2 = np.gradient(g2, teval)
+        avgdotg2 = np.average(dotg2)
+
+        ax.set_title(r"$q=$" + f"{q}")
+
+        ddg = np.gradient(dg, teval)
+        ax.plot(teval, ddg, ls="--", c="k", label="data")
+        #ax.plot(teval, oms, label="analytic")
+        ax.legend()
+
+        figfp = os.path.join(seriesdir, "test-TPsecular.png")
+        fig.savefig(figfp, bbox_inches="tight")
+
+        os.chdir(self.origindir)
+
     def test_Compmass_eqecc(self):
         pass
 
+    # External Precession
     @mpl.rc_context(analytic)
     def test_Compmass_OmEff(self):
         seriesname = "omEff"

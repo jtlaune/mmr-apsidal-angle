@@ -25,10 +25,20 @@ os.chdir(testdir)
 #series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False)
 #series()
 
-seriesname = "tpDisTscales"
-seriesdir = os.path.join(testdir, seriesname)
+#seriesname = "nosecular"
+#seriesdir = os.path.join(testdir, "secular")
+#series = mpa.series.FOCompmassSeries(seriesname, seriesdir, load=False, secular=False)
+#series()
+
+seriesname = "TPsecular"
+seriesdir = os.path.join(testdir, "secular")
 series = mpa.series.FOomEffTPSeries(seriesname, seriesdir, load=False)
 series()
+
+#seriesname = "tpDisTscales"
+#seriesdir = os.path.join(testdir, seriesname)
+#series = mpa.series.FOomEffTPSeries(seriesname, seriesdir, load=False)
+#series()
 
 #seriesname = "tpOmEff"
 #seriesdir = os.path.join(testdir, seriesname)

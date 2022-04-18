@@ -288,6 +288,7 @@ class FOCompMass(FirstOrder):
         method="RK45",
     ):
         self.secular = secular
+        print(self.secular)
         self.verbose = verbose
         self.T = self.T0 * t1
         int_cond_min = fns.check_ratio_cm(0.6, self.q)
@@ -496,7 +497,7 @@ class FOTestPartOmeff(FirstOrder):
         mup = self.mup
         ep = self.ep
         j = self.j
-        theta = thetap + g
+        theta = thetap + g 
 
         # tploc=int
         if self.Tm > 0:
@@ -603,7 +604,10 @@ class FOTestPartOmeff(FirstOrder):
         return np.array([thetapdot, Ldot, xdot, ydot])
 
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
-        thetap0 = np.random.rand() * 2 * np.pi
+        # TEMP: testing out various values of thetap0. need to change this back and not commit it
+        #thetap0 = np.random.rand() * 2 * np.pi
+        #
+        thetap0 = np.pi
         # Here we're using time = tau*t
         self.migrate = False
         if Tm is not None and Te is not None:

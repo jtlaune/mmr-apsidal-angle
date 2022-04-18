@@ -546,14 +546,14 @@ def run_tp_omeff(
     lambda0 = np.random.randn() * 2 * np.pi
     t0 = 0.0
     t1 = T
+    omEff = omeff1 - omeff2
+
     if q < 1:
         mu1 = 0.
         mu2 = mup
-        omEff = omeff1
     else:
         mu2 = 0.
         mu1 = mup
-        omEff = omeff2
     a1_0 = a0
     a2_0 = a0*alpha2_0
     tol = 1e-9

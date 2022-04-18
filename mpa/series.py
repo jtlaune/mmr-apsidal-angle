@@ -15,9 +15,20 @@ class SimSeries(object):
     - file management
     - setting up files, reading RUN_PARAMS from file
     - loading data from npz files
+    - params=RUN_PARAMS is useful if working interactively
     """
 
-    def __init__(self, name, seriesdir, load=False, verbose=True, overwrite=True, loadall=True):
+    def __init__(
+        self,
+        name,
+        seriesdir,
+        load=False,
+        secular=True,
+        verbose=True,
+        overwrite=True,
+        loadall=True,
+        params=None, # if you want to directly supply RUN_PARAMS
+    ):
         # self.RUN_PARAMS = load_params(paramsname)
         self.seriesname = name
         self.sdir = seriesdir
@@ -27,7 +38,11 @@ class SimSeries(object):
         self.verbose = verbose
         self.overwrite = overwrite
         self.loadall = loadall
-        self.initialize()
+        self.secular = secular
+        if params is None:
+            self.initialize()
+        else:
+            self.RUN_PARAMS = params
 
     @series_dir
     def initialize(self):
@@ -52,8 +67,10 @@ class SimSeries(object):
             data = np.load(os.path.join(dirname, filename))
             self.data[ind] = data
         except FileNotFoundError as err:
-            print(f"In directory {dirname} \n" \
-                  f"cannot find file {filename}... have you run it?")
+            print(
+                f"In directory {dirname} \n"
+                f"cannot find file {filename}... have you run it?"
+            )
             if self.loadall:
                 raise err
             else:
@@ -84,7 +101,7 @@ class FOCompmassSeries(SimSeries):
             integrate = CompmassSet(
                 verbose=self.verbose,
                 overwrite=self.overwrite,
-                secular=True,
+                secular=self.secular,
                 method="RK45",
             )
 
@@ -108,7 +125,7 @@ class FOomEffSeries(SimSeries):
             integrate = CompmassSetOmeff(
                 verbose=self.verbose,
                 overwrite=self.overwrite,
-                secular=True,
+                secular=self.secular,
                 method="RK45",
             )
 
@@ -132,7 +149,7 @@ class FOomEffTPSeries(SimSeries):
             integrate = TPSetOmeff(
                 verbose=self.verbose,
                 overwrite=self.overwrite,
-                secular=True,
+                secular=self.secular,
                 method="RK45",
             )
 

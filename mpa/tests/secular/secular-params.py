@@ -10,6 +10,7 @@ _, RUNSNAME = os.path.split(os.getcwd())
 import importlib
 
 mpl.rcParams.update({"font.size": 20, "figure.facecolor": "white"})
+print("loading secular-params.py")
 
 #################
 # CONFIGURATION #
