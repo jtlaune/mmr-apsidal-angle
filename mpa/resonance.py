@@ -486,7 +486,7 @@ class FOTestPartOmeff(FirstOrder):
         self.cutoff_frac = cutoff_frac
 
     def H2dofsec(self, t, Y):
-        thetap = Y[0]
+        theta0 = Y[0]
         L = Y[1]
         x = Y[2]
         y = Y[3]
@@ -497,7 +497,10 @@ class FOTestPartOmeff(FirstOrder):
         mup = self.mup
         ep = self.ep
         j = self.j
-        theta = thetap + g 
+        theta = theta0 + g 
+
+        if self.perturb:
+            thetap = theta0 + self.omEff*t
 
         # tploc=int
         if self.Tm > 0:
@@ -621,7 +624,7 @@ class FOTestPartOmeff(FirstOrder):
         if self.omEff is not None:
             self.perturb = True
 
-        self.n_p = 2 * np.pi / sqrt(self.ap)
+        self.n_p = 2 * np.pi / sqrt(self.ap)**3
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
         # up. can fix by adjusting EoM accordingly
