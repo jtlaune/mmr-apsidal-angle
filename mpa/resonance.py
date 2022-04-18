@@ -499,8 +499,8 @@ class FOTestPartOmeff(FirstOrder):
         j = self.j
         theta = theta0 + g 
 
-        if self.perturb:
-            thetap = theta0 + self.omEff*t
+        if self.pertpomp:
+            thetap = theta0 - self.omEff*t # working in tau units already
 
         # tploc=int
         if self.Tm > 0:
@@ -568,7 +568,7 @@ class FOTestPartOmeff(FirstOrder):
         else:
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
-        if self.perturb:
+        if self.pertpom:
             xdot = xdot + self.omEff * sqrt(G) * sin(g)
             ydot = ydot - self.omEff * sqrt(G) * cos(g)
 
@@ -607,9 +607,11 @@ class FOTestPartOmeff(FirstOrder):
         return np.array([thetapdot, Ldot, xdot, ydot])
 
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
+        pertpomp=True
+        # pertpomp=True corresponds to perturbing theta_p instead of theta.
+
         # TEMP: testing out various values of thetap0. need to change this back and not commit it
         #thetap0 = np.random.rand() * 2 * np.pi
-        #
         thetap0 = np.pi
         # Here we're using time = tau*t
         self.migrate = False
@@ -618,11 +620,15 @@ class FOTestPartOmeff(FirstOrder):
             self.Tm = Tm
             self.Te = Te
 
-        self.perturb = False
+        self.pertpom = False
+        self.pertpomp = False
         # if muext is not None and aext is not None:
         self.omEff = om_eff
         if self.omEff is not None:
-            self.perturb = True
+            if pertpomp:
+                self.pertpomp = True
+            else:
+                self.pertpom = True
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
         # have to use tau = n_p, since anything else changes the
