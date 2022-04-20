@@ -568,13 +568,10 @@ class FOTestPartOmeff(FirstOrder):
         else:
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
-<<<<<<< Updated upstream
         #if self.pertpom:
         #    xdot = xdot + self.omEff * sqrt(G) * sin(g)
         #    ydot = ydot - self.omEff * sqrt(G) * cos(g)
 
-=======
->>>>>>> Stashed changes
         if self.pert: # perturbing pomega of TP
             xdot = xdot + self.om_ext * sqrt(G) * sin(g)
             ydot = ydot - self.om_ext * sqrt(G) * cos(g)
