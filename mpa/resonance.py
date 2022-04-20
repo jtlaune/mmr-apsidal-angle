@@ -568,9 +568,16 @@ class FOTestPartOmeff(FirstOrder):
         else:
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
-        if self.pertpom:
-            xdot = xdot + self.omEff * sqrt(G) * sin(g)
-            ydot = ydot - self.omEff * sqrt(G) * cos(g)
+        #if self.pertpom:
+        #    xdot = xdot + self.omEff * sqrt(G) * sin(g)
+        #    ydot = ydot - self.omEff * sqrt(G) * cos(g)
+
+        if self.pert: # perturbing pomega of TP
+            xdot = xdot + self.om_ext * sqrt(G) * sin(g)
+            ydot = ydot - self.om_ext * sqrt(G) * cos(g)
+
+        if self.p_pert: # perturbing pomega of TP
+            thetapdot = thetapdot + self.p_pert
 
         # TODO: NEED TO INCLUDE THESE in final study
         # see above for the ldot secular force from mup
@@ -606,10 +613,15 @@ class FOTestPartOmeff(FirstOrder):
 
         return np.array([thetapdot, Ldot, xdot, ydot])
 
+<<<<<<< Updated upstream
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
         pertpomp=True
         # pertpomp=True corresponds to perturbing theta_p instead of theta.
 
+=======
+    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
+                 om_pext=None, om_ext=None):
+>>>>>>> Stashed changes
         # TEMP: testing out various values of thetap0. need to change this back and not commit it
         #thetap0 = np.random.rand() * 2 * np.pi
         thetap0 = np.pi
@@ -620,6 +632,7 @@ class FOTestPartOmeff(FirstOrder):
             self.Tm = Tm
             self.Te = Te
 
+<<<<<<< Updated upstream
         self.pertpom = False
         self.pertpomp = False
         # if muext is not None and aext is not None:
@@ -629,6 +642,18 @@ class FOTestPartOmeff(FirstOrder):
                 self.pertpomp = True
             else:
                 self.pertpom = True
+=======
+        
+        self.p_pert = False
+        self.pert = False
+        # if muext is not None and aext is not None:
+        self.om_pext = om_pext
+        self.om_ext = om_ext
+        if self.om_pext is not None:
+            self.p_pert = True
+        if self.om_ext is not None:
+            self.pert = True
+>>>>>>> Stashed changes
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
         # have to use tau = n_p, since anything else changes the
