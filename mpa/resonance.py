@@ -568,10 +568,6 @@ class FOTestPartOmeff(FirstOrder):
         else:
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
-        #if self.pertpom:
-        #    xdot = xdot + self.omEff * sqrt(G) * sin(g)
-        #    ydot = ydot - self.omEff * sqrt(G) * cos(g)
-
         if self.pert: # perturbing pomega of TP
             xdot = xdot + self.om_ext * sqrt(G) * sin(g)
             ydot = ydot - self.om_ext * sqrt(G) * cos(g)
@@ -616,10 +612,15 @@ class FOTestPartOmeff(FirstOrder):
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
         pertpomp=True
         # pertpomp=True corresponds to perturbing theta_p instead of theta.
 
+=======
+    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
+                 om_pext=None, om_ext=None):
+>>>>>>> Stashed changes
 =======
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
                  om_pext=None, om_ext=None):
@@ -642,6 +643,7 @@ class FOTestPartOmeff(FirstOrder):
             self.Tm = Tm
             self.Te = Te
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -671,6 +673,12 @@ class FOTestPartOmeff(FirstOrder):
         self.pert = False
         # if muext is not None and aext is not None:
 >>>>>>> Stashed changes
+=======
+        
+        self.p_pert = False
+        self.pert = False
+        # if muext is not None and aext is not None:
+>>>>>>> Stashed changes
         self.om_pext = om_pext
         self.om_ext = om_ext
         if self.om_pext is not None:
@@ -679,10 +687,13 @@ class FOTestPartOmeff(FirstOrder):
             self.pert = True
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
