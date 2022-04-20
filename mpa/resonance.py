@@ -615,10 +615,15 @@ class FOTestPartOmeff(FirstOrder):
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
         pertpomp=True
         # pertpomp=True corresponds to perturbing theta_p instead of theta.
 
+=======
+    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
+                 om_pext=None, om_ext=None):
+>>>>>>> Stashed changes
 =======
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
                  om_pext=None, om_ext=None):
@@ -637,6 +642,7 @@ class FOTestPartOmeff(FirstOrder):
             self.Tm = Tm
             self.Te = Te
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
         self.pertpom = False
@@ -659,6 +665,12 @@ class FOTestPartOmeff(FirstOrder):
         self.pert = False
         # if muext is not None and aext is not None:
 >>>>>>> Stashed changes
+=======
+        
+        self.p_pert = False
+        self.pert = False
+        # if muext is not None and aext is not None:
+>>>>>>> Stashed changes
         self.om_pext = om_pext
         self.om_ext = om_ext
         if self.om_pext is not None:
@@ -666,10 +678,13 @@ class FOTestPartOmeff(FirstOrder):
         if self.om_ext is not None:
             self.pert = True
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
 =======
+=======
+>>>>>>> Stashed changes
 
         self.n_p = 2 * np.pi / sqrt(self.ap)
 >>>>>>> Stashed changes
