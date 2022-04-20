@@ -568,10 +568,13 @@ class FOTestPartOmeff(FirstOrder):
         else:
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
+<<<<<<< Updated upstream
         #if self.pertpom:
         #    xdot = xdot + self.omEff * sqrt(G) * sin(g)
         #    ydot = ydot - self.omEff * sqrt(G) * cos(g)
 
+=======
+>>>>>>> Stashed changes
         if self.pert: # perturbing pomega of TP
             xdot = xdot + self.om_ext * sqrt(G) * sin(g)
             ydot = ydot - self.om_ext * sqrt(G) * cos(g)
@@ -614,10 +617,15 @@ class FOTestPartOmeff(FirstOrder):
         return np.array([thetapdot, Ldot, xdot, ydot])
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
         pertpomp=True
         # pertpomp=True corresponds to perturbing theta_p instead of theta.
 
+=======
+    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
+                 om_pext=None, om_ext=None):
+>>>>>>> Stashed changes
 =======
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
                  om_pext=None, om_ext=None):
@@ -633,6 +641,7 @@ class FOTestPartOmeff(FirstOrder):
             self.Te = Te
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         self.pertpom = False
         self.pertpomp = False
         # if muext is not None and aext is not None:
@@ -647,15 +656,26 @@ class FOTestPartOmeff(FirstOrder):
         self.p_pert = False
         self.pert = False
         # if muext is not None and aext is not None:
+=======
+        
+        self.p_pert = False
+        self.pert = False
+        # if muext is not None and aext is not None:
+>>>>>>> Stashed changes
         self.om_pext = om_pext
         self.om_ext = om_ext
         if self.om_pext is not None:
             self.p_pert = True
         if self.om_ext is not None:
             self.pert = True
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
+=======
+
+        self.n_p = 2 * np.pi / sqrt(self.ap)
+>>>>>>> Stashed changes
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
         # up. can fix by adjusting EoM accordingly
