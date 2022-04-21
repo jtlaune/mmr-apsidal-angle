@@ -490,6 +490,7 @@ class FOTestPartOmeff(FirstOrder):
         L = Y[1]
         x = Y[2]
         y = Y[3]
+        pom_p = Y[4]
 
         g = np.arctan2(y, x)
         G = x * x + y * y
@@ -499,8 +500,7 @@ class FOTestPartOmeff(FirstOrder):
         j = self.j
         theta = theta0 + g 
 
-        if self.pertpomp:
-            thetap = theta0 - self.omEff*t # working in tau units already
+        thetap = theta0 - pom_p
 
         # tploc=int
         if self.Tm > 0:
@@ -568,12 +568,10 @@ class FOTestPartOmeff(FirstOrder):
         else:
             thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
 
-        if self.pert: # perturbing pomega of TP
-            xdot = xdot + self.om_ext * sqrt(G) * sin(g)
-            ydot = ydot - self.om_ext * sqrt(G) * cos(g)
+        xdot = xdot + self.om_ext * sqrt(G) * sin(g)
+        ydot = ydot - self.om_ext * sqrt(G) * cos(g)
 
-        if self.p_pert: # perturbing pomega of TP
-            thetapdot = thetapdot + self.p_pert
+        dpom_p = self.om_pext
 
         # TODO: NEED TO INCLUDE THESE in final study
         # see above for the ldot secular force from mup
@@ -607,32 +605,10 @@ class FOTestPartOmeff(FirstOrder):
             end="\r",
         )
 
-        return np.array([thetapdot, Ldot, xdot, ydot])
+        return np.array([thetapdot, Ldot, xdot, ydot, dpom_p])
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None, om_eff=None):
-        pertpomp=True
-        # pertpomp=True corresponds to perturbing theta_p instead of theta.
-
-=======
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
-                 om_pext=None, om_ext=None):
->>>>>>> Stashed changes
-=======
-    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
-                 om_pext=None, om_ext=None):
->>>>>>> Stashed changes
-=======
-    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
-                 om_pext=None, om_ext=None):
->>>>>>> Stashed changes
-=======
-    def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
-                 om_pext=None, om_ext=None):
->>>>>>> Stashed changes
+                 om_pext=0., om_ext=0.):
         # TEMP: testing out various values of thetap0. need to change this back and not commit it
         #thetap0 = np.random.rand() * 2 * np.pi
         thetap0 = np.pi
@@ -642,63 +618,12 @@ class FOTestPartOmeff(FirstOrder):
             self.migrate = True
             self.Tm = Tm
             self.Te = Te
-
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        self.pertpom = False
-        self.pertpomp = False
-        # if muext is not None and aext is not None:
-        self.omEff = om_eff
-        if self.omEff is not None:
-            if pertpomp:
-                self.pertpomp = True
-            else:
-                self.pertpom = True
-=======
         
-        self.p_pert = False
-        self.pert = False
-        # if muext is not None and aext is not None:
-=======
-        
-        self.p_pert = False
-        self.pert = False
-        # if muext is not None and aext is not None:
->>>>>>> Stashed changes
-=======
-        
-        self.p_pert = False
-        self.pert = False
-        # if muext is not None and aext is not None:
->>>>>>> Stashed changes
-=======
-        
-        self.p_pert = False
-        self.pert = False
-        # if muext is not None and aext is not None:
->>>>>>> Stashed changes
-        self.om_pext = om_pext
-        self.om_ext = om_ext
-        if self.om_pext is not None:
-            self.p_pert = True
-        if self.om_ext is not None:
-            self.pert = True
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+        self.om_pext = om_pext/self.n_p
+        self.om_ext = om_ext/self.n_p
 
-        self.n_p = 2 * np.pi / sqrt(self.ap)
->>>>>>> Stashed changes
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
         # up. can fix by adjusting EoM accordingly
@@ -725,9 +650,10 @@ class FOTestPartOmeff(FirstOrder):
             Lambda0,
             sqrt(Gamma0) * cos(self.g0),
             sqrt(Gamma0) * sin(self.g0),
+            thetap0
         )
         # scaled H by GM/ap => tau -> sqrt(GM/ap) t; Lambda -> Lambda/sqrt(GM/ap)
-        teval = np.linspace(t0, t1, 300000) * self.tau
+        teval = np.linspace(t0, t1, 30000) * self.tau
         span = (teval[0], teval[-1])
         print(self.Tm, self.Te)
         sol = sp.integrate.solve_ivp(
@@ -742,7 +668,9 @@ class FOTestPartOmeff(FirstOrder):
             events=[int_cond_min1, int_cond_max1, int_cond_min2, int_cond_max2],
         )
 
-        thetap = sol.y[0, :]
+        theta0 = sol.y[0, :]
+        pomp = sol.y[4, :]
+        thetap = theta0 - pomp
         lenSolns = len(thetap)  # for simulations which exited early
         teval = teval[:lenSolns] / self.tau
         L = sol.y[1, :]
@@ -755,7 +683,7 @@ class FOTestPartOmeff(FirstOrder):
 
         return (
             teval,
-            thetap,
+            theta0,
             a,
             L,
             e,
@@ -763,6 +691,7 @@ class FOTestPartOmeff(FirstOrder):
             y,
             g,
             G,
+            pomp,
         )
 
     def evecsec(self, t, Y):

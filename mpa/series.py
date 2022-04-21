@@ -1,10 +1,228 @@
 import importlib
 import os
 from .run import series_dir
-from .run import CompmassSet, TPSetOmeff
+#from .run import CompmassSet, TPSetOmeff
 import numpy as np
-from .run import CompmassSetOmeff
+#from .run import CompmassSetOmeff
 from multiprocessing import Pool, TimeoutError
+from .run import params_load
+
+from .run import run_compmass
+from .run import run_compmass_omeff
+from .run import run_tp_omeff
+
+##########################################################################
+# Simulation sets, one+ parallel executions
+##########################################################################
+
+class SimSet(object):
+    params = {}
+
+    def __init__(
+        self, verbose=False, overwrite=False, secular=True, tscale=1000.0, method="RK45"
+    ):
+        self.verbose = verbose
+        self.overwrite = overwrite
+        self.secular = secular
+        self.method = method
+        self.tscale = tscale
+
+
+class CompmassSet(SimSet):
+    params_seec = [
+        "h",
+        "j",
+        "a0",
+        "q",
+        "mu1",
+        "T",
+        "Te1",
+        "Te2",
+        "Tm1",
+        "Tm2",
+        "e1_0",
+        "e2_0",
+        "e1d",
+        "e2d",
+        "alpha2_0",
+        "name",
+        "dirname",
+        "cutoff",
+        "g1_0",
+        "g2_0",
+    ]
+
+    @params_load
+    def __call__(self, params):
+        name = self.params["name"]
+        T = self.params["T"]
+        Te1 = self.params["Te1"]
+        Te2 = self.params["Te2"]
+        e1d = self.params["e1d"]
+        e2d = self.params["e2d"]
+        Tm1 = self.params["Tm1"]
+        Tm2 = self.params["Tm2"]
+        q = self.params["q"]
+        mu1 = self.params["mu1"]
+
+        filename = f"{name}.npz"
+        figname = f"{name}.png"
+        paramsname = f"params-{name}.txt"
+        suptitle = (
+            f"{filename}\n"
+            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
+            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
+            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
+            r"$e_{1,d}$ = " + f"{e1d:0.3f} "
+            r"$e_{2,d}$ = " + f"{e2d:0.3f}"
+        )
+
+        run_compmass(
+            self.verbose,
+            self.tscale,
+            self.secular,
+            self.overwrite,
+            self.method,
+            suptitle,
+            filename,
+            figname,
+            paramsname,  # end of positional params
+            **self.params,
+        )
+
+
+class CompmassSetOmeff(SimSet):
+    params_spec = [
+        "h",
+        "j",
+        "a0",
+        "q",
+        "mu1",
+        "T",
+        "Te1",
+        "Te2",
+        "Tm1",
+        "Tm2",
+        "e1_0",
+        "e2_0",
+        "e1d",
+        "e2d",
+        "alpha2_0",
+        "name",
+        "dirname",
+        "cutoff",
+        "g1_0",
+        "g2_0",
+        "omeff1",
+        "omeff2",
+    ]
+
+    @params_load
+    def __call__(self, params):  # params NEEDS to be here for
+        # decorator to work.
+        # TODO put params in argument of params_load
+        name = self.params["name"]
+        T = self.params["T"]
+        Te1 = self.params["Te1"]
+        Te2 = self.params["Te2"]
+        Tm1 = self.params["Tm1"]
+        Tm2 = self.params["Tm2"]
+        q = self.params["q"]
+        mu1 = self.params["mu1"]
+        omeff1 = self.params["omeff1"]
+        omeff2 = self.params["omeff2"]
+
+        filename = f"{name}.npz"
+        figname = f"{name}.png"
+        paramsname = f"params-{name}.txt"
+        suptitle = (
+            f"{filename}\n"
+            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
+            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
+            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
+            r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
+            r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
+        )
+
+        run_compmass_omeff(
+            self.verbose,
+            self.tscale,
+            self.secular,
+            self.overwrite,
+            self.method,
+            suptitle,
+            filename,
+            figname,
+            paramsname,
+            **self.params,
+        )
+
+
+class TPSetOmeff(SimSet):
+    params_spec = [
+        "h",
+        "j",
+        "a0",
+        "q",
+        "mup",
+        "T",
+        "Te1",
+        "Te2",
+        "Tm1",
+        "Tm2",
+        "e1_0",
+        "e2_0",
+        "e1d",
+        "e2d",
+        "alpha2_0",
+        "name",
+        "dirname",
+        "cutoff",
+        "g1_0",
+        "g2_0",
+        "om_ext",
+        "om_pext",
+    ]
+
+    @params_load
+    def __call__(self, params):  # params NEEDS to be here for
+        # decorator to work.
+        # TODO put params in argument of params_load
+        name = self.params["name"]
+        T = self.params["T"]
+        Te1 = self.params["Te1"]
+        Te2 = self.params["Te2"]
+        Tm1 = self.params["Tm1"]
+        Tm2 = self.params["Tm2"]
+        q = self.params["q"]
+        mup = self.params["mup"]
+        om_ext = self.params["om_ext"]
+        om_pext = self.params["om_pext"]
+
+        filename = f"{name}.npz"
+        figname = f"{name}.png"
+        paramsname = f"params-{name}.txt"
+        suptitle = (
+            f"{filename}\n"
+            f"T={T:0.1e} q={q} " + r"$\mu_{p}=$ " + f"{mup:0.2e}\n"
+            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
+            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
+            #r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
+            #r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
+        )
+
+        run_tp_omeff(
+            self.verbose,
+            self.tscale,
+            self.secular,
+            self.overwrite,
+            self.method,
+            suptitle,
+            filename,
+            figname,
+            paramsname,
+            **self.params,
+        )
 
 
 ##########################################################################

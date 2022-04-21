@@ -539,14 +539,14 @@ def run_tp_omeff(
     cutoff,
     g1_0,
     g2_0,
-    omeff1,
-    omeff2,
+    om_ext,
+    om_pext,
 ):
-
+    print(om_ext)
+    print(om_pext)
     lambda0 = np.random.randn() * 2 * np.pi
     t0 = 0.0
     t1 = T
-    omEff = omeff1 - omeff2
 
     if q < 1:
         mu1 = 0.
@@ -554,6 +554,7 @@ def run_tp_omeff(
     else:
         mu2 = 0.
         mu1 = mup
+
     a1_0 = a0
     a2_0 = a0*alpha2_0
     tol = 1e-9
@@ -586,198 +587,74 @@ def run_tp_omeff(
 
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
-    if os.path.exists(os.path.join(dirname, filename)):
-        if overwrite:
-            sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff)
 
-            (
-            teval,
-            thetap,
-            a,
-            L,
-            e,
-            x,
-            y,
-            g,
-            G,
-            ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=omEff)
+    sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff)
+    
+    (
+    teval,
+    theta0,
+    a,
+    L,
+    e,
+    x,
+    y,
+    g,
+    G,
+    pomp
+    ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_pext=om_pext, om_ext=om_ext)
 
-            if tploc == "int":
-                teval = teval
-                theta = thetap
-                a1 = a
-                e1 = e
-                g1 = g
-                L1 = L
-                x1 = x
-                y1 = y
+    if tploc == "int":
+        teval = teval
+        a1 = a
+        e1 = e
+        g1 = g
+        g2 = -pomp
+        L1 = L
+        x1 = x
+        y1 = y
 
-                a2 = np.ones(len(teval)) * ap
-                e2 = np.ones(len(teval)) * ep
-                g2 = np.zeros(len(teval))
-                L2 = np.ones(len(teval))
-                x2 = ep
-                y2 = np.zeros(len(teval))
+        a2 = np.ones(len(teval)) * ap
+        e2 = np.ones(len(teval)) * ep
+        L2 = np.ones(len(teval))
+        x2 = ep
+        y2 = np.zeros(len(teval))
 
-                np.savez(
-                    os.path.join(dirname, filename),
-                    teval=teval,
-                    thetap=theta,
-                    a1=a1,
-                    a2=a2,
-                    e1=e1,
-                    e2=e2,
-                    g1=g1,
-                    g2=g2,
-                    L1=L1,
-                    L2=L2,
-                    x1=x1,
-                    y1=y1,
-                    x2=x2,
-                    y2=y2,
-                )
+    elif tploc == "ext":
+        teval = teval
+        a2 = a
+        e2 = e
+        g1 = -pomp
+        g2 = g
+        L2 = L
+        x2 = x
+        y2 = y
 
-            elif tploc == "ext":
-                teval = teval
-                theta = thetap
-                a2 = a
-                e2 = e
-                g2 = g
-                L2 = L
-                x2 = x
-                y2 = y
+        a1 = np.ones(len(teval)) * ap
+        e1 = np.ones(len(teval)) * ep
+        L1 = np.ones(len(teval))
+        x1 = ep
+        y1 = np.zeros(len(teval))
 
-                a1 = np.ones(len(teval)) * ap
-                e1 = np.ones(len(teval)) * ep
-                g1 = np.zeros(len(teval))
-                L1 = np.ones(len(teval))
-                x1 = ep
-                y1 = np.zeros(len(teval))
+    np.savez(
+        os.path.join(dirname, filename),
+        teval=teval,
+        theta0=theta0,
+        a1=a1,
+        a2=a2,
+        e1=e1,
+        e2=e2,
+        g1=g1,
+        g2=g2,
+        L1=L1,
+        L2=L2,
+        x1=x1,
+        y1=y1,
+        x2=x2,
+        y2=y2,
+    )
 
-                np.savez(
-                    os.path.join(dirname, filename),
-                    teval=teval,
-                    thetap=theta,
-                    a1=a1,
-                    a2=a2,
-                    e1=e1,
-                    e2=e2,
-                    g1=g1,
-                    g2=g2,
-                    L1=L1,
-                    L2=L2,
-                    x1=x1,
-                    y1=y1,
-                    x2=x2,
-                    y2=y2,
-                )
-
-        else:
-            data = np.load(os.path.join(dirname, filename))
-            teval = data["teval"]
-            theta = data["thetap"]
-            a1 = data["a1"]
-            a2 = data["a2"]
-            e1 = data["e1"]
-            e2 = data["e2"]
-            g1 = data["g1"]
-            g2 = data["g2"]
-            L1 = data["L1"]
-            L2 = data["L2"]
-            x1 = data["x1"]
-            y1 = data["y1"]
-            x2 = data["x2"]
-            y2 = data["y2"]
-
-    else:
-        sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff)
-
-        (
-            teval,
-            thetap,
-            a,
-            L,
-            e,
-            x,
-            y,
-            g,
-            G,
-        ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_eff=omEff)
-
-        if tploc == "int":
-            teval = teval
-            theta = thetap
-
-            a1 = a
-            e1 = e
-            g1 = g
-            L1 = L
-            x1 = x
-            y1 = y
-
-            a2 = np.ones(len(teval)) * ap
-            e2 = np.ones(len(teval)) * ep
-            g2 = np.zeros(len(teval))
-            L2 = np.ones(len(teval))
-            x2 = ep
-            y2 = np.zeros(len(teval))
-
-            np.savez(
-                os.path.join(dirname, filename),
-                teval=teval,
-                thetap=theta,
-                a1=a1,
-                a2=a2,
-                e1=e1,
-                e2=e2,
-                g1=g1,
-                g2=g2,
-                L1=L1,
-                L2=L2,
-                x1=x1,
-                y1=y1,
-                x2=x2,
-                y2=y2,
-            )
-
-        elif tploc == "ext":
-            teval = teval
-            theta = thetap
-
-            a1 = np.ones(len(teval)) * ap
-            e1 = np.ones(len(teval)) * ep
-            g1 = np.zeros(len(teval))
-            L1 = np.ones(len(teval))
-            x1 = ep
-            y1 = np.zeros(len(teval))
-
-            a2 = a
-            e2 = e
-            g2 = g
-            L2 = L
-            x2 = x
-            y2 = y
-
-            np.savez(
-                os.path.join(dirname, filename),
-                teval=teval,
-                thetap=theta,
-                a1=a1,
-                a2=a2,
-                e1=e1,
-                e2=e2,
-                g1=g1,
-                g2=g2,
-                L1=L1,
-                L2=L2,
-                x1=x1,
-                y1=y1,
-                x2=x2,
-                y2=y2,
-            )
-
-    theta1 = (theta + g1) % (2 * np.pi)
-    theta2 = (theta + g2) % (2 * np.pi)
+    theta1 = (theta0 + g1) % (2 * np.pi)
+    theta2 = (theta0 + g2) % (2 * np.pi)
     alpha = a1 / a2
     period_ratio = (alpha) ** (1.5)
 
@@ -786,8 +663,8 @@ def run_tp_omeff(
     barg1 = np.arctan2(e2 * np.sin(g2), e2 * np.cos(g2) + f2 * e1 / f1)
     barg2 = np.arctan2(e1 * np.sin(g1), e1 * np.cos(g1) + f1 * e2 / f2)
 
-    bartheta1 = (theta + barg1) % (2 * np.pi)
-    bartheta2 = (theta + barg2) % (2 * np.pi)
+    bartheta1 = (theta0 + barg1) % (2 * np.pi)
+    bartheta2 = (theta0 + barg2) % (2 * np.pi)
     # from the reducing rotation (Henrard et al 1986)
     hattheta1 = np.arctan2(
         e1 * sin(theta1) + f2 / f1 * e2 * sin(theta2),
@@ -809,15 +686,12 @@ def run_tp_omeff(
         tscale,
         fontsize,
         (r"$a_1$", a1),
-        (r"$\varpi_1-\varpi_2$", g1 - g2),
         (r"$e_1$", e1),
         (r"$e_2$", e2),
         (r"$\theta_1$", theta1),
         (r"$\theta_2$", theta2),
-        (r"$\overline{\theta}_1$", bartheta1),
-        (r"$\overline{\theta}_2$", bartheta2),
-        (r"$\hat{\theta}_1$", hattheta1),
-        (r"$\hat{\theta}_2$", hattheta2),
+        (r"$\varpi_1$", -g1),
+        (r"$\varpi_2$", -g2),
         yfigupper=0.99,
     )
 
@@ -853,214 +727,3 @@ def run_tp_omeff(
     return fig
 
 
-##########################################################################
-# Simulation sets, one+ parallel executions
-##########################################################################
-class SimSet(object):
-    params = {}
-
-    def __init__(
-        self, verbose=False, overwrite=False, secular=True, tscale=1000.0, method="RK45"
-    ):
-        self.verbose = verbose
-        self.overwrite = overwrite
-        self.secular = secular
-        self.method = method
-        self.tscale = tscale
-
-
-class CompmassSet(SimSet):
-    params_spec = [
-        "h",
-        "j",
-        "a0",
-        "q",
-        "mu1",
-        "T",
-        "Te1",
-        "Te2",
-        "Tm1",
-        "Tm2",
-        "e1_0",
-        "e2_0",
-        "e1d",
-        "e2d",
-        "alpha2_0",
-        "name",
-        "dirname",
-        "cutoff",
-        "g1_0",
-        "g2_0",
-    ]
-
-    @params_load
-    def __call__(self, params):
-        name = self.params["name"]
-        T = self.params["T"]
-        Te1 = self.params["Te1"]
-        Te2 = self.params["Te2"]
-        e1d = self.params["e1d"]
-        e2d = self.params["e2d"]
-        Tm1 = self.params["Tm1"]
-        Tm2 = self.params["Tm2"]
-        q = self.params["q"]
-        mu1 = self.params["mu1"]
-
-        filename = f"{name}.npz"
-        figname = f"{name}.png"
-        paramsname = f"params-{name}.txt"
-        suptitle = (
-            f"{filename}\n"
-            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
-            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
-            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            r"$e_{1,d}$ = " + f"{e1d:0.3f} "
-            r"$e_{2,d}$ = " + f"{e2d:0.3f}"
-        )
-
-        run_compmass(
-            self.verbose,
-            self.tscale,
-            self.secular,
-            self.overwrite,
-            self.method,
-            suptitle,
-            filename,
-            figname,
-            paramsname,  # end of positional params
-            **self.params,
-        )
-
-
-class CompmassSetOmeff(SimSet):
-    params_spec = [
-        "h",
-        "j",
-        "a0",
-        "q",
-        "mu1",
-        "T",
-        "Te1",
-        "Te2",
-        "Tm1",
-        "Tm2",
-        "e1_0",
-        "e2_0",
-        "e1d",
-        "e2d",
-        "alpha2_0",
-        "name",
-        "dirname",
-        "cutoff",
-        "g1_0",
-        "g2_0",
-        "omeff1",
-        "omeff2",
-    ]
-
-    @params_load
-    def __call__(self, params):  # params NEEDS to be here for
-        # decorator to work.
-        # TODO put params in argument of params_load
-        name = self.params["name"]
-        T = self.params["T"]
-        Te1 = self.params["Te1"]
-        Te2 = self.params["Te2"]
-        Tm1 = self.params["Tm1"]
-        Tm2 = self.params["Tm2"]
-        q = self.params["q"]
-        mu1 = self.params["mu1"]
-        omeff1 = self.params["omeff1"]
-        omeff2 = self.params["omeff2"]
-
-        filename = f"{name}.npz"
-        figname = f"{name}.png"
-        paramsname = f"params-{name}.txt"
-        suptitle = (
-            f"{filename}\n"
-            f"T={T:0.1e} q={q} " + r"$\mu_{1}=$ " + f"{mu1:0.2e}\n"
-            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
-            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
-            r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
-        )
-
-        run_compmass_omeff(
-            self.verbose,
-            self.tscale,
-            self.secular,
-            self.overwrite,
-            self.method,
-            suptitle,
-            filename,
-            figname,
-            paramsname,
-            **self.params,
-        )
-
-
-class TPSetOmeff(SimSet):
-    params_spec = [
-        "h",
-        "j",
-        "a0",
-        "q",
-        "mup",
-        "T",
-        "Te1",
-        "Te2",
-        "Tm1",
-        "Tm2",
-        "e1_0",
-        "e2_0",
-        "e1d",
-        "e2d",
-        "alpha2_0",
-        "name",
-        "dirname",
-        "cutoff",
-        "g1_0",
-        "g2_0",
-        "omeff1",
-        "omeff2",
-    ]
-
-    @params_load
-    def __call__(self, params):  # params NEEDS to be here for
-        # decorator to work.
-        # TODO put params in argument of params_load
-        name = self.params["name"]
-        T = self.params["T"]
-        Te1 = self.params["Te1"]
-        Te2 = self.params["Te2"]
-        Tm1 = self.params["Tm1"]
-        Tm2 = self.params["Tm2"]
-        q = self.params["q"]
-        mup = self.params["mup"]
-        omeff1 = self.params["omeff1"]
-        omeff2 = self.params["omeff2"]
-
-        filename = f"{name}.npz"
-        figname = f"{name}.png"
-        paramsname = f"params-{name}.txt"
-        suptitle = (
-            f"{filename}\n"
-            f"T={T:0.1e} q={q} " + r"$\mu_{p}=$ " + f"{mup:0.2e}\n"
-            f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
-            f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
-            r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
-        )
-
-        run_tp_omeff(
-            self.verbose,
-            self.tscale,
-            self.secular,
-            self.overwrite,
-            self.method,
-            suptitle,
-            filename,
-            figname,
-            paramsname,
-            **self.params,
-        )
