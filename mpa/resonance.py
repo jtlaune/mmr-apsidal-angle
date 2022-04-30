@@ -564,9 +564,9 @@ class FOTestPartOmeff(FirstOrder):
             )
 
         if self.Tm > 0:
-            thetapdot = (j + 1) * self.n_p / self.tau - j * ldot
+            theta0dot = (j + 1) * self.n_p / self.tau - j * ldot
         else:
-            thetapdot = (j + 1) * ldot - j * self.n_p / self.tau
+            theta0dot = (j + 1) * ldot - j * self.n_p / self.tau
 
         xdot = xdot + self.om_ext * sqrt(G) * sin(g)
         ydot = ydot - self.om_ext * sqrt(G) * cos(g)
@@ -605,7 +605,7 @@ class FOTestPartOmeff(FirstOrder):
             end="\r",
         )
 
-        return np.array([thetapdot, Ldot, xdot, ydot, dpom_p])
+        return np.array([theta0dot, Ldot, xdot, ydot, dpom_p])
 
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
                  om_pext=0., om_ext=0.):
