@@ -1,5 +1,5 @@
 * preamble                                                           :ignore:
-#+TITLE: Apsidal Architecture of Planetary Systems in Mean Motion Resonance
+#+TITLE: Apsidal Alignment and Anti-Alignment of Planets in MMR: Disk-Driven Migration and Eccentricity Driving and Damping
 #+OPTIONS: author:nil date:nil toc:nil
 #+LATEX_CLASS: mnras
 #+LaTeX_CLASS_OPTIONS: [usenatbib,onecolumn]
@@ -32,7 +32,7 @@
 #+latex_header: \DeclarePairedDelimiter{\norm}{||}{||}
 #+latex_header: \DeclarePairedDelimiter{\p}{(}{)}
 #+latex_header: \DeclarePairedDelimiter{\we}{\langle}{\rangle}
-#+latex_header: \title[MMR Architecture]{Architecture of Planetary Systems in Mean Motion Resonance}
+#+latex_header: \title[Apsidal Angle in MMR]{Apsidal Alignment and Anti-Alignment of Planets in MMR: Disk-Driven Migration and Eccentricity Driving and Damping}
 #+latex_header: \author[Laune et al.]{
 #+latex_header: JT Laune,$^{1}$
 #+latex_header: Laetitia Rodet,$^{1}$
