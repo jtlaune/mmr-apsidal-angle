@@ -32,4 +32,6 @@ analytic = {
     "ytick.direction": "in",
     "xtick.major.pad": 5,
     "ytick.major.pad": 5,
+    "font.family": "serif",
+    "font.serif": "Computer Modern",
 }
