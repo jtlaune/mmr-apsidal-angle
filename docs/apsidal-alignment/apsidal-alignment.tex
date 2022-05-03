@@ -1,4 +1,4 @@
-% Created 2022-05-02 Mon 13:32
+% Created 2022-05-02 Mon 14:05
 % Intended LaTeX compiler: pdflatex
 \documentclass[usenatbib,onecolumn]{mnras}
 \usepackage[utf8]{inputenc}
@@ -51,16 +51,17 @@ and Dong Lai$^{1}$
 \\
 $^{1}$Department of Astronomy and Space Sciences, Cornell University\\}
 \date{}
-\title{}
+\title{Apsidal Alignment and Anti-Alignment of Planets in MMR: Disk-Driven Migration and Eccentricity Driving and Damping}
 \hypersetup{
  pdfauthor={JT Laune},
- pdftitle={},
+ pdftitle={Apsidal Alignment and Anti-Alignment of Planets in MMR: Disk-Driven Migration and Eccentricity Driving and Damping},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 28.1 (Org mode 9.5.2)}, 
  pdflang={English}}
 \begin{document}
 
+\maketitle
 \begin{abstract} Long before the first exoplanet detection,
 theoretical works predicted that young planets migrate across their
 natal disk and sweep up other planets into mean motion resonances,
@@ -86,7 +87,7 @@ existing resonance.
 \end{abstract}
 
 \section{Introduction}
-\label{sec:orgc6a5c44}
+\label{sec:org49b4e7c}
 Even before the first detection of an exoplanetary system, planets
 were predicted to migrate from their initial position due to
 interactions with their natal protoplanetary disk
@@ -214,13 +215,13 @@ through resonance capture and mutual migration will offer us an
 insight into its dynamical history as well as a better understanding
 of the genesis of extrasolar orbital configurations in general.  In
 this paper, we review the analytically simple migration model commonly
-used in the literature.  In Section \ref{sec:org86b38a8}, we present the classical picture of resonant capture and
+used in the literature.  In Section \ref{sec:org9ab2fbd}, we present the classical picture of resonant capture and
 explore the parameter space for the coupling between the resonant
 eccentricities and the protoplanetary disk. We fail to find any disk
-conditions which robustly lead to apsidal alignment.  In Section \ref{sec:org78f928e},
+conditions which robustly lead to apsidal alignment.  In Section \ref{sec:org2e908e8},
 we explore apsidal alignment for a test particle in the vicinity of an
 eccentric planet's MMR. These results guide our analysis in Section
-\ref{sec:org558e1a1}, where we design a toy model which relies on
+\ref{sec:org22c7b9c}, where we design a toy model which relies on
 eccentricity driving to a finite, non-zero value and argue that it can
 reproduce the apsidal alignment between K2-19b and c.  Such an
 external force which drives the eccentricities beyond their
@@ -232,7 +233,7 @@ traps the system near the nominal period ratio \(P_2/P_1=(j+1)/j\) and,
 in this configuration, naturally leads to apsidal alignment.
 
 \section{Standard Picture of Resonance Capture}
-\label{sec:org86b38a8}
+\label{sec:org9ab2fbd}
 \begin{table*}[htb]
 \caption{\label{tab:ICs}Initial conditions for the finite mass ratio integrations in this paper. The quantity \(\epsilon\) is the tolerance used in the numerical integrator.}
 \centering
@@ -322,7 +323,7 @@ vice versa for outward migration.  Hence, for \(q>1\), we set \(T_{m,i}<
 0\); for \(q<1\), we set \(T_{m,i}>0\).  For all of the runs in this paper,
 we choose \(h=0.03\) and \(T_{e,0}=1000~\rm{years}\).
 \subsection{Resonant Hamiltonian}
-\label{sec:org50b3861}
+\label{sec:orgc6723eb}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{./standard-example-h-0.03-Tw0-1000}.png}
@@ -438,7 +439,7 @@ Figure \ref{fig:standardex} are caught into both \(\theta_1\) and
 \(\theta_2\), respectively, since those angles are librating.
 
 \subsection{Equilibrium}
-\label{sec:orgc9f17ef}
+\label{sec:org17d404c}
 \begin{figure}
   \centering
   \begin{subfigure}[t]{0.225\textwidth}
@@ -582,7 +583,7 @@ of finding disk conditions which naturally give rise to apsidal
 alignment in exoplanetary systems.
 
 \subsection{Eccentricity damping timescales}
-\label{sec:org0c46dfa}
+\label{sec:org73e5a46}
 \begin{figure}
   \centering
   \includegraphics[width=0.3\textwidth]{{./varyTe-eeqs-h-0.03-Tw0-1000}.png}
@@ -673,7 +674,7 @@ mass planet. The planet's orbit is unchanging, and so we may isolate
 the effect of eccentricity on the apsidal angle.
 
 \section{Test Particle Results}
-\label{sec:org78f928e}
+\label{sec:org2e908e8}
 \begin{figure*} \centering
   \includegraphics[width=0.7\textwidth]{{tp-h0.030-ext-ep0.000-circ}.png}
   \caption{Here we have plotted the capture outcome for a test particle
@@ -751,7 +752,7 @@ particles.
 
 We assume that no dissipative forces act on the massive perturber
 while implementing a migration model identical to the one used in
-Section \ref{sec:org86b38a8} for the test particle.
+Section \ref{sec:org9ab2fbd} for the test particle.
 Equivalently, the dissipative timescales acting on the massive planet
 are assumed to approach infinity.  To remain consistent with notation,
 we label the sma- and \(e\text{-damping}\) for the test particle as
@@ -760,7 +761,7 @@ literature, and so in lieu of a detailed derivation we briefly
 summarize the problem with references to the key results.
 
 \subsection{Equations of motion}
-\label{sec:org4b7c6c1}
+\label{sec:org8506c1c}
 We will work with the dimensionless Hamiltonian with units set by the
 perturber's orbital elements.  Including secular effects, the
 Hamiltonian for a test particle in the vicinity of an interior MMR is
@@ -817,7 +818,7 @@ perihelion, \(\varpi\), and the other resonance angle, \(\theta_p\),
 circulates.
 
 \subsection{Equilibrium eccentricity and stability}
-\label{sec:org885505c}
+\label{sec:org33a6686}
 When a test particle is caught into a stable resonance, its
 eccentricity grows and saturates at a finite value which depends on
 the ratio \(T_{e}/T_{m}\).  For a detailed derivation, see e.g.
@@ -872,7 +873,7 @@ damp to zero around \(e_{\rm eq}\).
 %growth following the initial capture into resonance.
 
 \subsection{Eccentric massive planet}
-\label{sec:org75bf994}
+\label{sec:orgc607502}
 Now, after considering the
 CR3BP, we may move on to the ER3BP, where \(e_p>0\).  For moderate
 eccentricities, \(0<e_p\lesssim 0.1\), the qualitative features of the
@@ -903,14 +904,14 @@ independently of the \(\theta_i\) resonances and traps the planets into
 resonance despite the circulation of both \(\theta_i\). For a more detailed
 analysis of how \(\hat\theta\) behaves in the the limit from the comparable mass
 (\(0<q<\infty\)) case to the test particle case (\(q\to0\) or
-\(q\to\infty\)), see Section \ref{sec:org51c490f}. In the same section,
+\(q\to\infty\)), see Section \ref{sec:org6a9a081}. In the same section,
 we will also describe how we calculate the dashed line in Figure
 \ref{fig:tp-grid-ext}, which depicts our analytical estimate for the
 boundary between the \(\varpi-\text{aligned}\) and
 \(\varpi-\text{circulating}\) regions.
 
 \section{Apsidal Angle}
-\label{sec:org558e1a1}
+\label{sec:org22c7b9c}
 As we have seen, capture into the \(\theta_1\) and \(\theta_2\) resonance
 always leads to \(\Delta\varpi\approx 180^\circ\) due to their
 equilibrium values being close to \(180^\circ\) and \(0^\circ\),
@@ -934,7 +935,7 @@ Hamiltonian to connect $\varpi$-alignment in the comparable
 mass to the results in the previous section.
 
 \subsection{Eccentricity driving forces}
-\label{sec:org1f5cb70}
+\label{sec:org5bd08e7}
 \begin{figure*}
   \centering
   \includegraphics[width=0.7\textwidth]{{inres-driving-example-h-0.03-Tw0-1000-q2.0}.png}
@@ -1010,7 +1011,7 @@ result, \(\Delta\varpi\) approaches \(90^\circ\) and so the planets'
 perihelia are now perpendicular to each other.
 
 \subsection{Reducing the Hamiltonian}
-\label{sec:orgce74784}
+\label{sec:org038cd6f}
 \begin{figure}
   \centering
   \includegraphics[width=0.45\textwidth]{{./S2-conserved-inres-q2.0}.png}
@@ -1076,7 +1077,7 @@ resonant Hamiltonian \(H_{\rm Kep} + H_{\rm res}\) in equation
 
 \noindent through a series of rotations in phase space.  For
 the details of these transformations, see Appendix
-\ref{sec:org1a85672}.
+\ref{sec:org8ae2edf}.
 The Hamiltonian in equation \eqref{hhat} is well studied
 in the literature
 \citep[for an extensive review in a planetary context, see][]{moutamid14_coupl_between_corot_lindb_reson}.
@@ -1101,14 +1102,14 @@ is given by
 \end{align}
 
 \noindent
-Appendix \ref{sec:org1a85672}
+Appendix \ref{sec:org8ae2edf}
 describes the detailed behavior of \(\hat H\), \(\hat \theta\),
 and \(\hat R\) in the CR3BP limits.
 This angle is the same one that \citet{petit_resonance_2020}
 found to librate in K2-19b and c.
 
 \subsection{Three modes of resonance}
-\label{sec:org5127bf8}
+\label{sec:org03499bf}
 Under the assumption that the semimajor axes are stationary (or slowly
 varying), the Hamiltonian in equation \eqref{hamiltonian} has two
 degrees of freedom (dof) as written: the angles \(\theta_1\) and
@@ -1162,7 +1163,7 @@ row is for the standard eccentricity damping case where
 is well conserved (top left) and small. Both \(\sigma_1\) and
 \(\sigma_2\) are also close to zero. From equations \eqref{eq:sS1}
 and \eqref{eq:sS2}, we see this corresponds to \(e_2/e_1 \sim q\), as we
-found in Section \ref{sec:org86b38a8}.
+found in Section \ref{sec:org9ab2fbd}.
 
 The second row corresponds to the integration shown in Figure
 \ref{fig:drivingex}, where \(e_{1d}=0.2\) and \(e_{2d}=0\).  For early
@@ -1197,7 +1198,7 @@ the other two vectors.  In the last row, \(\mathbf{e}_1\) and
 is aligned with \(\mathbf{e}_2\).
 
 \subsection{Saturation eccentricities}
-\label{sec:orgeb7a789}
+\label{sec:orgde6d8fa}
 \begin{figure} \centering
 \includegraphics[width=0.4\textwidth]{{./Rhat-grids}.png}
     \caption{\emph{Left:} The resonance architecture for integrations
@@ -1269,7 +1270,7 @@ an anti-aligned configuration throughout. Before escape,
 \(\Delta\varpi\gtrsim180^\circ\).
 
 \subsection{Initial period ratio}
-\label{sec:orgf6a694f}
+\label{sec:org66549ea}
 \begin{figure}
   \centering
   \includegraphics[width=0.45\textwidth]{{./addenda/longrun-closeres-q2.0-e1d-0.000-e2d-0.200}.png}
@@ -1331,7 +1332,7 @@ turns around, and then skips the resonance from below.  Then, the
 period ratio continues increasing for the rest of the integration.
 
 \subsection{Mass ratio}
-\label{sec:org3dc7757}
+\label{sec:org0ee70b3}
 \begin{figure}
   \centering
   \includegraphics[width=0.45\textwidth]{{./addenda/longrun-inres-q0.5-e1d-0.200-e2d-0.100}.png}
@@ -1353,7 +1354,7 @@ two rows becomes apsidally aligned, while for all cases with
 \(e_{2,d}=0\), the planets are anti-aligned.  The top-left-most points
 (i.e. \(e_{2,d}>e_{1,d}\)) all escape resonance whenever \(q<1\).  This is
 due to the fact that the inner planet, \(m_1\), is now smaller than the
-outer planet.  As we saw earlier in Section \ref{sec:org78f928e}, the
+outer planet.  As we saw earlier in Section \ref{sec:org2e908e8}, the
 inner test particle case is plagued by resonance instabilities.
 Similar instabilities likely contribute to disrupting the apsidal
 alignment process in the \(q<1\) case.
@@ -1368,11 +1369,11 @@ inner planet \(m_1\) is kicked outwards and \(m_2\) continues migrating
 inwards until the planets are orbit crossing.
 
 \subsection{Test particle limit}
-\label{sec:org51c490f}
+\label{sec:org6a9a081}
 The test particle Hamiltonian in equation \eqref{eq:tpint} can also
 be transformed into the form of equation \eqref{hhat} through
 a canonical shift, analagous to the reducing rotation utilized in 
-Section \ref{sec:orgce74784}.
+Section \ref{sec:org038cd6f}.
 This is a well-known result in the literature
 \citep[see e.g.][]{wisdom_canonical_1986,xu_migration_2018,deck_migration_2015,moutamid14_coupl_between_corot_lindb_reson}
 and implies that the limit of the comparable mass Hamiltonian
@@ -1380,12 +1381,12 @@ and implies that the limit of the comparable mass Hamiltonian
 \citep{deck13_first_order_reson_overl_stabil}.
 
 \subsubsection{Relationship to the comparable mass case}
-\label{sec:orgd2b03de}
+\label{sec:orgb654405}
 Relative to the comparable mass case, the test particle
 analysis simplifies the problem considerably because the vector
 \(\mathbf{e}_p\) remains constant in time.
 Because of this, we now return to the test particle treatment of
-Section \ref{sec:org78f928e}, with the goal of a heuristic
+Section \ref{sec:org2e908e8}, with the goal of a heuristic
 understanding of apsidal alignment in real planetary systems (i.e. \(0<q<\infty\)).
 For simplicity, we restrict ourselves to an external test particle (as
 in Figure \ref{fig:tp-grid-ext}), which is equivalent to the formal
@@ -1395,7 +1396,7 @@ to an inner planet that is more massive than the outer planet
 (i.e. \(q>1\)).
 
 We now compare the \(q=\infty\) case to the \(q=2\) case, the latter of
-which we numerically investigated in Section \ref{sec:org558e1a1} (i.e. the
+which we numerically investigated in Section \ref{sec:org22c7b9c} (i.e. the
 first two rows Figure \ref{fig:Rhat-grid}).  Traversing Figure
 \ref{fig:tp-grid-ext} along the \emph{horizontal} \(e_p\) axis is therefore
 equivalent to traversing the horizontal \(e_{1,\rm d}\) axis in Figure
@@ -1413,8 +1414,8 @@ corresponds with the division between \(\varpi-\text{aligned}\) and
 \(\varpi-\text{anti-aligned}\) as being equivalent dynamical states.
 
 \subsubsection{Calculation of the phase space interface}
-\label{sec:orge6acfd2}
-We again adopt the notation used in Section \ref{sec:org78f928e} for \(q=\infty\).
+\label{sec:org65380b1}
+We again adopt the notation used in Section \ref{sec:org2e908e8} for \(q=\infty\).
 The resonant angle \(\hat\theta\) can now be written as
 \begin{align}
   \label{eq:tphhat}
@@ -1467,14 +1468,14 @@ Despite our many approximations, this analysis reproduces the
 numerical results fairly well.
 
 \subsubsection{Discussion for \(0<q<\infty\)}
-\label{sec:orgd665d2a}
+\label{sec:org991c41e}
 In the previous sections, we have demonstrated that test particle
 apsidal alignment can be understood as a competition between the
 magnitude of \(h\), which characterizes the relative strength of disk
 damping forces and sets \(e_{\rm eq}\), and \(e_p\), the eccentricity of
 the perturber.  The natural interpretation of these results in the
 comparable mass context is to identify the disk driven eccentricities \(e_{1,d}\) and \(e_{2,d}\)
-of Section \ref{sec:org558e1a1} with \(e_{\rm eq}\) and \(e_p\) in Section \ref{sec:org78f928e}.
+of Section \ref{sec:org22c7b9c} with \(e_{\rm eq}\) and \(e_p\) in Section \ref{sec:org2e908e8}.
 
 Apsidal behavior in the comparable mass regime is more complex than
 the ER3BP.  We observe \(|\Delta\varpi|=0\), \(=90^\circ\), and
@@ -1492,7 +1493,7 @@ equation \eqref{eq:phasespaceline} for the comparable mass regime,
 but that is beyond the scope of this paper.
 
 \section{Conclusion}
-\label{sec:orgacfd78d}
+\label{sec:org6f42385}
 The standard picture of MMR capture in the literature robustly leads
 to capture into both the \(\theta_1\) and \(\theta_2\) resonances for
 comparable masses.  The larger planet loses eccentricity to the
@@ -1500,14 +1501,14 @@ smaller planet and the system will always reach an equilibrium with
 \(\theta_1\) and \(\theta_2\) librating over a long enough timescale. This
 leads to apsidal anti-alignment due to the fact that
 \(\Delta\varpi=\theta_1-\theta_2=180^\circ\) in resonance, as we found
-in Section \ref{sec:org86b38a8}.  However, there are
+in Section \ref{sec:org9ab2fbd}.  However, there are
 observed exoplanets near resonance which have
 \(\Delta\varpi\approx0^\circ\), such as K2-19.  In this paper, we
 investigated if resonant dynamics could align \(\varpi_1\) and
 \(\varpi_2\).
 
 Our investigation began by analyzing the problem of a test particle
-in the vicinity of an MMR with a planet of mass \(m_p\) (Section \ref{sec:org78f928e}).  Here, we briefly reviewed the textbook treatment
+in the vicinity of an MMR with a planet of mass \(m_p\) (Section \ref{sec:org2e908e8}).  Here, we briefly reviewed the textbook treatment
 of the CR3BP and its extension, the ER3BP.  This formulation of the
 problem allowed us to adjust \(e_p\) independently to isolate its
 effect.  We found that apsidal alignment occurs for large values of
@@ -1519,7 +1520,7 @@ damping forces.
 Our test particle results informed our analysis of how apsidal
 alignment may arise in the case of \(q\sim\mathcal{O}(1)\) and prompted
 the introduction of an eccentricity driving force for the comparable
-mass case in Section \ref{sec:org558e1a1}.  While previous studies typically
+mass case in Section \ref{sec:org22c7b9c}.  While previous studies typically
 assume that the eccentricity damps to zero, theoretically this is not
 always the case, as several mechanisms have been proposed that drive
 eccentricity in young exoplanetary systems rather than damp it
@@ -1586,9 +1587,9 @@ whenever the disk drives the planets eccentricities.
 \onecolumn
 \appendix
 \section{Reducing the Comparable Mass Hamiltonian to a single degree of freedom}
-\label{sec:org1a85672}
+\label{sec:org8ae2edf}
 \subsection{Scaling the Hamiltonian}
-\label{sec:orgae28c32}
+\label{sec:org3023068}
 The Hamiltonian for two comparable mass planets near a first order \(j:j+1\)
 resonance is
 \begin{align}
@@ -1647,7 +1648,7 @@ standard test particle Hamiltonian found in \citet{murray_solar_2000} if
 the limits are taken along constant perturber mass, eccentricity, and semimajor axis
 \citep[e.g.,][]{moutamid14_coupl_between_corot_lindb_reson,deck13_first_order_reson_overl_stabil}
 \subsection{Reducing rotation}
-\label{sec:org99335ba}
+\label{sec:org4994e81}
 Now, we would like to find the momenta conjugate to the fast
 coordinates \(\lambda_i\) while keeping the slowly varying \(\theta_i\).
 A canonical transformation preserves the form
@@ -1923,7 +1924,7 @@ and \(\mathcal{K}\) also exists for which the limit \(q\to 0\) converges
 to the case of an inner test particle by exchanging the necessary
 factors of \(q\) for \(\Lambda_1/\Lambda_2 = q\sqrt\alpha\).
 \section{Deriving the conserved quantity for a test particle}
-\label{sec:org236ea6c}
+\label{sec:org7e22861}
 We will now derive the test particle equivalent of \(S_2\) in equation
 \eqref{eq:s2}.  The internal and external test particle limits are
 largely analagous, and so we focus on the external limit, with \(q\)
@@ -1953,7 +1954,7 @@ Because we are now dealing with a potential that is an explicit
 function of time, the test particle formulation is formally different
 than the comparable mass problem, which is defined only for the
 parameter range \(0<q<\infty\).  The canonical transformation described
-in Appendix \ref{sec:org1a85672}, which is generated by the infinitessimal rotation
+in Appendix \ref{sec:org8ae2edf}, which is generated by the infinitessimal rotation
 about the origin, must also formally change.  The corresponding
 transformation here is generated by the infinitessimal translation
 towards the inner planet's Runge-Lenz vector, \(\mathbf{e_p}\).
