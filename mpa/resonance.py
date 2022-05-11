@@ -650,7 +650,7 @@ class FOTestPartOmeff(FirstOrder):
             Lambda0,
             sqrt(Gamma0) * cos(self.g0),
             sqrt(Gamma0) * sin(self.g0),
-            thetap0
+            0.0 
         )
         # scaled H by GM/ap => tau -> sqrt(GM/ap) t; Lambda -> Lambda/sqrt(GM/ap)
         teval = np.linspace(t0, t1, 30000) * self.tau
