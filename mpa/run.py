@@ -370,7 +370,8 @@ def run_compmass_omeff(
                 y2=y2,
             )
 
-        else: return(None)
+        else:
+            return None
     else:
         sim = FOCompMassOmeff(
             j,
@@ -549,14 +550,14 @@ def run_tp_omeff(
     t1 = T
 
     if q < 1:
-        mu1 = 0.
+        mu1 = 0.0
         mu2 = mup
     else:
-        mu2 = 0.
+        mu2 = 0.0
         mu1 = mup
 
     a1_0 = a0
-    a2_0 = a0*alpha2_0
+    a2_0 = a0 * alpha2_0
     tol = 1e-9
 
     # this is a sloppy way but preserves the code for test particles
@@ -582,26 +583,17 @@ def run_tp_omeff(
         g0 = g2_0
         Tm = Tm2
         Te = Te2
-    else: # something is messed up
+    else:  # something is messed up
         raise Warning("q is neither > or < 1")
 
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
 
     sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff)
-    
-    (
-    teval,
-    theta0,
-    a,
-    L,
-    e,
-    x,
-    y,
-    g,
-    G,
-    pomp
-    ) = sim.int_Hsec(t0, t1, tol, Tm=Tm, Te=Te, om_pext=om_pext, om_ext=om_ext)
+
+    (teval, theta0, a, L, e, x, y, g, G, pomp) = sim.int_Hsec(
+        t0, t1, tol, Tm=Tm, Te=Te, om_pext=om_pext, om_ext=om_ext, secular=secular
+    )
 
     if tploc == "int":
         teval = teval
@@ -725,5 +717,3 @@ def run_tp_omeff(
         f.write("\ncommit {}".format(commit))
 
     return fig
-
-

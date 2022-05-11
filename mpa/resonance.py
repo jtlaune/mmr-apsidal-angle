@@ -484,6 +484,7 @@ class FOTestPartOmeff(FirstOrder):
         self.lambda0 = lambda0
         self.i_step = 0
         self.cutoff_frac = cutoff_frac
+        self.alpha0 = (j/(j+1))**(2./3)
 
     def H2dofsec(self, t, Y):
         theta0 = Y[0]
@@ -506,18 +507,22 @@ class FOTestPartOmeff(FirstOrder):
         if self.Tm > 0:
             alpha = L * L
             dtheta_dl = -j
-            A = self.f1(alpha)
-            B = self.f2(alpha)
+            A = self.f1(self.alpha0)
+            B = self.f2(self.alpha0)
         # tploc=ext
         else:
             alpha = 1.0 / (L * L)
             dtheta_dl = j + 1
-            A = alpha * self.f2(alpha)
-            B = alpha * self.f1(alpha)
+            A = alpha * self.f2(self.alpha0)
+            B = alpha * self.f1(self.alpha0)
 
         # secular components
-        C = self.f3(alpha)
-        D = self.f4(alpha)
+        if self.secular:
+            C = self.f3(alpha)
+            D = self.f4(alpha)
+        else:
+            C=0
+            D=0
 
         if self.i_step < 1:
             print(Y, alpha)
@@ -608,9 +613,10 @@ class FOTestPartOmeff(FirstOrder):
         return np.array([theta0dot, Ldot, xdot, ydot, dpom_p])
 
     def int_Hsec(self, t0, t1, tol, Tm=None, Te=None,
-                 om_pext=0., om_ext=0.):
+                 om_pext=0., om_ext=0., secular=True):
         # TEMP: testing out various values of thetap0. need to change this back and not commit it
         #thetap0 = np.random.rand() * 2 * np.pi
+        self.secular = secular
         thetap0 = np.pi
         # Here we're using time = tau*t
         self.migrate = False
