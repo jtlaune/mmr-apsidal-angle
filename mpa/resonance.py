@@ -472,7 +472,7 @@ class FOCompMassOmeff(FOCompMass):
 class FOTestPartOmeff(FirstOrder):
     # This class integrates the Hamiltonian for a test
     # particle with migration.
-    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0, cutoff_frac):
+    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0, cutoff_frac, h):
         # set other params and dirname in child classes
         self.j = j
         self.mup = mup
@@ -483,6 +483,7 @@ class FOTestPartOmeff(FirstOrder):
         self.a0 = a0
         self.lambda0 = lambda0
         self.i_step = 0
+        self.h = h
         self.cutoff_frac = cutoff_frac
         self.alpha0 = (j/(j+1))**(2./3)
 
@@ -507,14 +508,18 @@ class FOTestPartOmeff(FirstOrder):
         if self.Tm > 0:
             alpha = L * L
             dtheta_dl = -j
-            A = self.f1(self.alpha0)
-            B = self.f2(self.alpha0)
+            #A = self.f1(self.alpha0)
+            #B = self.f2(self.alpha0)
+            A = self.f1(alpha)
+            B = self.f2(alpha)
         # tploc=ext
         else:
             alpha = 1.0 / (L * L)
             dtheta_dl = j + 1
-            A = alpha * self.f2(self.alpha0)
-            B = alpha * self.f1(self.alpha0)
+            #A = alpha * self.f2(self.alpha0)
+            #B = alpha * self.f1(self.alpha0)
+            A = alpha * self.f2(alpha)
+            B = alpha * self.f1(alpha)
 
         # secular components
         if self.secular:
@@ -560,6 +565,7 @@ class FOTestPartOmeff(FirstOrder):
             # Add in the dissipative terms for migration
             Tm = self.Tm * self.tau
             Te = self.Te * self.tau
+            #Te = Te*(1-0.14*(e/self.h)**2+0.06*(e/self.h)**3)
             Ldot = Ldot + (L / 2) * (1 / Tm - 4 * G / L / Te)
             xdot = xdot + cos(g) * sqrt(G) * (
                 -1.0 / Te + 0.25 * (1.0 / Tm - 4 * G / Te / L)
