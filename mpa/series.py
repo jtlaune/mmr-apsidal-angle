@@ -1,9 +1,11 @@
 import importlib
 import os
 from .run import series_dir
-#from .run import CompmassSet, TPSetOmeff
+
+# from .run import CompmassSet, TPSetOmeff
 import numpy as np
-#from .run import CompmassSetOmeff
+
+# from .run import CompmassSetOmeff
 from multiprocessing import Pool, TimeoutError
 from .run import params_load
 
@@ -15,11 +17,17 @@ from .run import run_tp_omeff
 # Simulation sets, one+ parallel executions
 ##########################################################################
 
+
 class SimSet(object):
     params = {}
 
     def __init__(
-        self, verbose=False, overwrite=False, secular=True, tscale=1000.0, method="RK45"
+        self,
+        verbose=False,
+        overwrite=False,
+        secular=True,
+        tscale=1000.0,
+        method="RK45",
     ):
         self.verbose = verbose
         self.overwrite = overwrite
@@ -184,6 +192,24 @@ class TPSetOmeff(SimSet):
         "om_pext",
     ]
 
+    def __init__(
+        self,
+        verbose=False,
+        overwrite=False,
+        secular=True,
+        tscale=1000.0,
+        method="RK45",
+        cresswell_Te=False,
+    ):
+        super().__init__(
+            verbose=False,
+            overwrite=False,
+            secular=True,
+            tscale=1000.0,
+            method="RK45",
+        )
+        self.cresswell_Te = cresswell_Te
+
     @params_load
     def __call__(self, params):  # params NEEDS to be here for
         # decorator to work.
@@ -207,8 +233,8 @@ class TPSetOmeff(SimSet):
             f"T={T:0.1e} q={q} " + r"$\mu_{p}=$ " + f"{mup:0.2e}\n"
             f"Tm1={Tm1:0.1e} Te1={Te1:0.1e}\n"
             f"Tm2={Tm2:0.1e} Te2={Te2:0.1e}\n"
-            #r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
-            #r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
+            # r"$\omega_{\rm 1,ext}$ = " + f"{omeff1:0.3e}"
+            # r"$\omega_{\rm 2,ext}$ = " + f"{omeff2:0.3e}"
         )
 
         run_tp_omeff(
@@ -217,6 +243,7 @@ class TPSetOmeff(SimSet):
             self.secular,
             self.overwrite,
             self.method,
+            self.cresswell_Te,
             suptitle,
             filename,
             figname,
@@ -245,7 +272,7 @@ class SimSeries(object):
         verbose=True,
         overwrite=True,
         loadall=True,
-        params=None, # if you want to directly supply RUN_PARAMS
+        params=None,  # if you want to directly supply RUN_PARAMS
     ):
         # self.RUN_PARAMS = load_params(paramsname)
         self.seriesname = name
@@ -354,7 +381,32 @@ class FOomEffSeries(SimSeries):
 class FOomEffTPSeries(SimSeries):
     """
     - Class to run first order TP simulations with omeff
+    - if cresswell_Te==True: use Cresswell & Nelson 2008 e/h-dependent Te
     """
+
+    def __init__(
+        self,
+        name,
+        seriesdir,
+        load=False,
+        secular=True,
+        verbose=True,
+        overwrite=True,
+        loadall=True,
+        params=None,  # if you want to directly supply RUN_PARAMS
+        cresswell_Te=False,
+    ):
+        super().__init__(
+            name,
+            seriesdir,
+            load=load,
+            secular=secular,
+            verbose=verbose,
+            overwrite=overwrite,
+            loadall=loadall,
+            params=params,
+        )
+        self.cresswell_Te = cresswell_Te
 
     # This decorator takes care of the project/series/runsim file
     # management. intended to be executed from runsim (symbolic link)
@@ -368,6 +420,7 @@ class FOomEffTPSeries(SimSeries):
                 verbose=self.verbose,
                 overwrite=self.overwrite,
                 secular=self.secular,
+                cresswell_Te=self.cresswell_Te,
                 method="RK45",
             )
 

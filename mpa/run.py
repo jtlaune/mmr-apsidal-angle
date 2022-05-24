@@ -516,6 +516,7 @@ def run_tp_omeff(
     secular,
     overwrite,
     method,
+    cresswell_Te,
     suptitle,
     filename,
     figname,
@@ -589,7 +590,7 @@ def run_tp_omeff(
     if not os.path.isdir(dirname):
         os.makedirs(dirname, exist_ok=True)
 
-    sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff, h)
+    sim = FOTestPartOmeff(j, mup, ep, e0, ap, g0, a0, lambda0, cutoff, h, cresswell_Te)
 
     (teval, theta0, a, L, e, x, y, g, G, pomp) = sim.int_Hsec(
         t0, t1, tol, Tm=Tm, Te=Te, om_pext=om_pext, om_ext=om_ext, secular=secular

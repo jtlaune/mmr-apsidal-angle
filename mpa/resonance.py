@@ -472,7 +472,7 @@ class FOCompMassOmeff(FOCompMass):
 class FOTestPartOmeff(FirstOrder):
     # This class integrates the Hamiltonian for a test
     # particle with migration.
-    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0, cutoff_frac, h):
+    def __init__(self, j, mup, ep, e0, ap, g0, a0, lambda0, cutoff_frac, h, cresswell_Te):
         # set other params and dirname in child classes
         self.j = j
         self.mup = mup
@@ -484,6 +484,7 @@ class FOTestPartOmeff(FirstOrder):
         self.lambda0 = lambda0
         self.i_step = 0
         self.h = h
+        self.cresswell_Te = cresswell_Te
         self.cutoff_frac = cutoff_frac
         self.alpha0 = (j/(j+1))**(2./3)
 
@@ -565,7 +566,8 @@ class FOTestPartOmeff(FirstOrder):
             # Add in the dissipative terms for migration
             Tm = self.Tm * self.tau
             Te = self.Te * self.tau
-            #Te = Te*(1-0.14*(e/self.h)**2+0.06*(e/self.h)**3)
+            if self.cresswell_Te:
+                Te = Te*(1-0.14*(e/self.h)**2+0.06*(e/self.h)**3)
             Ldot = Ldot + (L / 2) * (1 / Tm - 4 * G / L / Te)
             xdot = xdot + cos(g) * sqrt(G) * (
                 -1.0 / Te + 0.25 * (1.0 / Tm - 4 * G / Te / L)
