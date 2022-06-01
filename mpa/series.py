@@ -202,11 +202,11 @@ class TPSetOmeff(SimSet):
         cresswell_Te=False,
     ):
         super().__init__(
-            verbose=False,
-            overwrite=False,
-            secular=True,
-            tscale=1000.0,
-            method="RK45",
+            verbose=verbose,
+            overwrite=overwrite,
+            secular=secular,
+            tscale=tscale,
+            method=method,
         )
         self.cresswell_Te = cresswell_Te
 
