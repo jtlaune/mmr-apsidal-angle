@@ -509,26 +509,26 @@ class FOTestPartOmeff(FirstOrder):
         if self.Tm > 0:
             alpha = L * L
             dtheta_dl = -j
-            #A = self.f1(self.alpha0)
-            #B = self.f2(self.alpha0)
-            A = self.f1(alpha)
-            B = self.f2(alpha)
+            A = self.f1(self.alpha0)
+            B = self.f2(self.alpha0)
+            #A = self.f1(alpha)
+            #B = self.f2(alpha)
         # tploc=ext
         else:
             alpha = 1.0 / (L * L)
             dtheta_dl = j + 1
-            #A = alpha * self.f2(self.alpha0)
-            #B = alpha * self.f1(self.alpha0)
-            A = alpha * self.f2(alpha)
-            B = alpha * self.f1(alpha)
+            A = alpha * self.f2(self.alpha0)
+            B = alpha * self.f1(self.alpha0)
+            #A = alpha * self.f2(alpha)
+            #B = alpha * self.f1(alpha)
 
         # secular components
         if self.secular:
             C = self.f3(alpha)
             D = self.f4(alpha)
         else:
-            C=0
-            D=0
+            C = 0.
+            D = 0.
 
         if self.i_step < 1:
             print(Y, alpha)
@@ -568,6 +568,7 @@ class FOTestPartOmeff(FirstOrder):
             Te = self.Te * self.tau
             if self.cresswell_Te:
                 Te = Te*(1-0.14*(e/self.h)**2+0.06*(e/self.h)**3)
+                Tm = Tm*(1+(e/2.25/self.h)**1.2+(e/2.84/self.h)**6)/(1-(e/2.02/self.h)**4)
             Ldot = Ldot + (L / 2) * (1 / Tm - 4 * G / L / Te)
             xdot = xdot + cos(g) * sqrt(G) * (
                 -1.0 / Te + 0.25 * (1.0 / Tm - 4 * G / Te / L)
