@@ -636,8 +636,9 @@ class FOTestPartOmeff(FirstOrder):
         
 
         self.n_p = 2 * np.pi / sqrt(self.ap)**3
-        self.om_pext = om_pext/self.n_p
-        self.om_ext = om_ext/self.n_p
+        # can just input 
+        self.om_pext = om_pext #/ self.n_p
+        self.om_ext = om_ext   #/ self.n_p
 
         # have to use tau = n_p, since anything else changes the
         # scaling of the Hamiltonian and the variables. messes results
