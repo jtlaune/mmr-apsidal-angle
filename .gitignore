@@ -21,3 +21,7 @@ scripts
 docs/**/*.py
 auto
 tramp.*
+docs/
+notebooks/
+projects/
+notebook.org
